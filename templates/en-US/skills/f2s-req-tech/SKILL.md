@@ -56,14 +56,22 @@ Splitting before this precondition is complete violates the hard constraint. Onl
 
 ## Steps
 
-1. **Read the requirement**: get requirement content from the path or text provided by the user; include requirement conditions if any.
-2. **Load project context**: actively read and apply:
+1. **Clarification-completeness gate (hard constraint)**: Before entering the write phase, decide whether the current requirement is **already clarified**:
+   - **Clarified** criteria (any one suffices): ① **This turn was auto-chained from `f2s-req-clarify`** with the just-written clarification document path passed in as input (this is the preferred path — the user can flow from `f2s-req-clarify` straight through to the design within one turn); ② the user explicitly provides a path such as `.Knowledge/req-docs/*_需求澄清.md` or an equivalent clarification document; ③ the user explicitly says "already clarified / requirement is settled / just draft the design"; ④ the input itself is a complete PRD (scope, key flows, boundaries, acceptance criteria) and **within this turn** contains no obvious undefined concepts or contradictions.
+   - **Not-clarified** signals (any one triggers): the requirement description contains hedges such as "I understand it as / I plan to / roughly / probably / to be determined / not decided yet"; interfaces / tables / state machines / interactions with existing modules only state "what to do" without "what counts as done"; the user's input already lists three or more key questions that are still unanswered; and **this turn is not chained from `f2s-req-clarify`**.
+   - **If not clarified, switch to clarify**: **do not** enter the write phase within the same turn. Instead switch into `f2s-req-clarify` to complete the clarification write, then let its auto-chain rule **come back to this skill within the same turn to continue** (this is the intended direct path; it does not interrupt the user). If switching to clarify is not possible (e.g., the user explicitly says "just do the design; skip clarification"), list 3–6 clarification questions that most affect how the design is written and wait for answers; **do not draft the design**.
+2. **Read the requirement**: get requirement content from the path or text provided by the user (or the clarification path handed in by `f2s-req-clarify`); include requirement conditions if any.
+3. **Load project context**: actively read and apply:
    - Relevant topic rules/flows under `.Knowledge/topics/`;
    - Background documents and historical technical designs under `.Knowledge/stock-docs/`;
    - **Structural reference** `.Knowledge/template/technical-spec-template.md`.
-3. **Align with project conventions**: keep naming conventions, directory structure, configuration conventions, message queues, error codes, data models, and similar items consistent with the existing project.
-4. **Write the document**: select and write section blocks from `.Knowledge/template/technical-spec-template.md` as needed. When a delivery unit involves behavior logic, write the processing flow in the same section so the deliverable and flow are not disconnected. If splitting is enabled, the sub agent must use the "project convention summary" plus the clarification document as mandatory input and must not expand the reading scope on its own.
-5. **Output location**: default `.Knowledge/req-docs/<design-name>_技术方案.md`; if the user specifies a path, use that path. After completion, state that the technical design is ready for code implementation.
+4. **Align with project conventions**: keep naming conventions, directory structure, configuration conventions, message queues, error codes, data models, and similar items consistent with the existing project.
+5. **Write the document**: select and write section blocks from `.Knowledge/template/technical-spec-template.md` as needed. When a delivery unit involves behavior logic, write the processing flow in the same section so the deliverable and flow are not disconnected. If splitting is enabled, the sub agent must use the "project convention summary" plus the clarification document as mandatory input and must not expand the reading scope on its own.
+6. **Output location**: default `.Knowledge/req-docs/<design-name>_技术方案.md`; if the user specifies a path, use that path.
+7. **Closing stop (hard constraint)**: After the design is written to disk, output only a single-line hint "Technical design ready: `<path>`; run `f2s-req-plan` to break down tasks, or `implement-tech-design` to implement when you're ready", then **stop**. **Prohibited**:
+   - Automatically chaining into `f2s-req-plan` / `implement-tech-design` / any other `f2s-*` skill within the same turn (`f2s-req-clarify` → `f2s-req-tech` is the allowed **single hop**; anything after the design requires a new user turn);
+   - Appending an `f2s-kb-distill` closing hint at the end of the design document or immediately after it (see the prohibited section of `rules/f2s-kb-feedback-closing.*` — process-orchestration skills do not trigger distill on write);
+   - Proactively listing an "A/B/C next-step menu" that funnels the user straight into the next skill.
 
 ---
 

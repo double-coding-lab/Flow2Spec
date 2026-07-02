@@ -15,7 +15,12 @@ Run this rule only when all of the following are true:
 - This turn has **not entered** an `f2s-*` skill, `implement-tech-design`, `f2s-git-commit`, or another existing follow-up flow;
 - This turn read business source code and the final answer cites source-code facts.
 
-**Prohibited**: When this turn has already entered `f2s-kb-distill`, do NOT output **any** of this rule's case 1–4 closing blocks at the end of the skill — `f2s-kb-distill` is the skill that ingests this turn's knowledge into the KB; appending its own ingestion hint is both redundant and self-referential. Other `f2s-kb-*` skills (e.g., `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-sync`) **still judge per the four cases** after they finish: if this turn's answer contains reusable knowledge facts **outside the main path** that the current SKILL **did not ingest** (typical scenarios: while fixing a bug you incidentally read another module's source, or you answered a follow-up unrelated to the current SKILL's main subject), output the closing block as usual; the agent judges by what was actually written this turn, not by a blanket prohibition.
+**Prohibited**: Do NOT output **any** of this rule's case 1–4 closing blocks in either of the following situations —
+
+1. **This turn has already entered `f2s-kb-distill`**: `f2s-kb-distill` is the skill that ingests this turn's knowledge into the KB; appending its own ingestion hint is both redundant and self-referential.
+2. **This turn entered a process-orchestration skill**: `f2s-req-clarify` / `f2s-req-tech` / `f2s-req-plan` / `f2s-doc-arch` / `f2s-doc-final` / `f2s-doc-milestone` / `f2s-doc-pdf`. The deliverable of these skills is a **`.Knowledge/req-docs/*`, `docs/*`, or task-planning artifact for this specific delivery**; reading source code serves that deliverable, it is not "picking up a piece of general knowledge on the side". Even if source code was read and its facts were written into the clarification / design / planning document, **do not** append a distill hint (clarification / design docs live under `req-docs`, not under `topics` / `stock-docs`; planning artifacts are archived with the task; doc skills each have their own write target).
+
+Other `f2s-kb-*` skills (e.g., `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-sync`) **still judge per the four cases** after they finish: if this turn's answer contains reusable knowledge facts **outside the main path** that the current SKILL **did not ingest** (typical scenarios: while fixing a bug you incidentally read another module's source, or you answered a follow-up unrelated to the current SKILL's main subject), output the closing block as usual; the agent judges by what was actually written this turn, not by a blanket prohibition.
 
 ## Judgment Timing and Basis
 

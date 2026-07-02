@@ -17,9 +17,10 @@ alwaysApply: true
 1. An explicit user `$f2s-*` command has the highest priority; execute the explicit command.
 2. If the user clearly says "only discuss / don't change yet / don't execute / evaluate first / discuss the plan first", do not auto-invoke any Skill.
 3. If an `f2s-*` flow is already in progress, stay in the current flow; do not automatically switch to another flow unless the user explicitly says "stop the current flow and switch to X".
-4. If the user asks for code changes but the requirement is incomplete, prefer `f2s-req-clarify`; do not directly enter `f2s-kb-feat` / `f2s-kb-fix`.
-5. If the user is only asking, comparing, evaluating, or requesting an explanation, do not invoke a Skill.
-6. For low-confidence intent or conflicting multiple intents, briefly state the candidate routes and ask a clarifying question; do not invoke a Skill.
+4. **Incomplete requirements block auto-entering write-phase skills**: If the user asks for code changes but the requirement is incomplete, prefer `f2s-req-clarify`; do not directly enter `f2s-kb-feat` / `f2s-kb-fix`. Likewise, if the user asks to "draft a design / generate technical design" while the requirement still has clear open questions, prefer `f2s-req-clarify`; **do not** directly enter `f2s-req-tech`. If the user asks to "break down tasks / implement" but the design has not been written to disk yet, prefer `f2s-req-tech`; **do not** directly enter `f2s-req-plan` / `implement-tech-design`.
+5. **Process-orchestration skills do not auto-chain to the next skill within the same turn (one allowed single-hop exception)**: After `f2s-req-clarify` / `f2s-req-tech` / `f2s-req-plan` / `f2s-doc-*` writes its deliverable to disk, **this turn** by default outputs only a one-line "document ready + next-step pointer" hint and stops; **the next skill must be explicitly triggered by the user in a new turn** and routed by this rule. **The only same-turn single-hop allowed**: after `f2s-req-clarify` writes the clarification document to disk, it auto-chains directly to `f2s-req-tech` (see the completion section of `skills/f2s-req-clarify/SKILL.md`); no further hop is allowed. After `f2s-req-tech` writes to disk it must not auto-chain to `f2s-req-plan` / `implement-tech-design`.
+6. If the user is only asking, comparing, evaluating, or requesting an explanation, do not invoke a Skill.
+7. For low-confidence intent or conflicting multiple intents, briefly state the candidate routes and ask a clarifying question; do not invoke a Skill.
 
 ## Intent -> Skill Mapping
 
@@ -83,5 +84,7 @@ This may be <Skill A> or <Skill B>; the current request is missing <key informat
 
 - Automatically invoking any Skill when `intentRecognition` has not been read or is `false`
 - Misclassifying question-style input as operational intent
-- Automatically jumping to feat/fix/plan before requirement clarification is complete
+- Automatically jumping to feat/fix/plan/tech before requirement clarification is complete
+- Automatically jumping to `f2s-req-plan` / `implement-tech-design` before the technical design has been written to disk
+- Auto-chaining to the next `f2s-*` skill within the **same turn** that a process-orchestration skill (`f2s-req-clarify` / `f2s-req-tech` / `f2s-req-plan` / `f2s-doc-*`) writes its deliverable (**only exception**: `f2s-req-clarify` → `f2s-req-tech` single hop; `f2s-req-tech` must not auto-chain further)
 - Automatically switching to another Skill before the current flow is complete
