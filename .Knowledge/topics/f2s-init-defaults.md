@@ -63,13 +63,18 @@
 
 ### 跑 `f2s-kb-upgrade` 时怎么让全局 flow2spec 保持最新
 
-`f2s-kb-upgrade` SKILL 在「步骤 -1」（先于一切）会让主 agent **派一个独立子 agent 后台执行** `npm i -g @double-codeing/flow2spec@latest`，**不等待**其完成，主流程立即继续。
+`f2s-kb-upgrade` SKILL 的「步骤 -1」（先于一切）**先做前台探测再决定是否升级**：主 agent 顺序跑 `flow2spec --version` + `npm view @double-codeing/flow2spec version` + `command -v npx`，按 3 分支处理：
+
+- **A. 已装且是 latest** → **完全跳过**升级；步骤 2 命令首选 `flow2spec init <agents...>`。
+- **B. 已装但落后** → 派**独立子 agent** 后台跑 `npm i -g @double-codeing/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；步骤 2 命令用 `npx @double-codeing/flow2spec@latest init <agents...>` 保证本次拿到 latest 模板。
+- **C. 未装 / latest 未知** → 同 B 处理；探测全部失败时可放弃步骤 -1，由 cli.js 兜底。
 
 口径：
 
-- 该步骤强制派子 agent，**不受** `flow2spec.config.json.subAgent` 字段约束；
-- 因为不等待，结果不进入 SKILL 结论摘要——失败也只是"下次再升一次"，本次 `init` 仍按步骤 2 的 `npx @latest` 命令自取 latest 模板；
-- 与 `cli.js` 内 `maybeAutoUpdateGlobalInstall()` 不冲突：前者是 SKILL 入口后台异步派工，后者是 `init` 收尾兜底；两次都成功就是 no-op。
+- **仅** B/C 时才派子 agent；派子**不受** `flow2spec.config.json.subAgent` 字段约束（全局 npm 装包不属业务拆分范畴）；
+- 派子是 fire-and-forget，结果不进入 SKILL 结论摘要——失败也只是"下次再升一次"；
+- 与 `cli.js` 内 `maybeAutoUpdateGlobalInstall()` 不冲突：前者是 SKILL 入口按需异步派工，后者是 `init` 收尾兜底；两次都成功就是 no-op。
+- 用户自查用 `flow2spec --version`（当前全局版本）和 `flow2spec update`（CLI 内置自更新）。
 
 ## init 不动哪些目录
 

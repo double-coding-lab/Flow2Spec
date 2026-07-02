@@ -92,26 +92,39 @@ This skill executes **`flow2spec init`** in **step 2**. `init` syncs the current
 
 ## Mandatory Flow
 
-### Step -1: Upgrade Global flow2spec Package to Latest (Required, Before Everything, Run by Background Sub-agent)
+### Step -1: Global flow2spec Version Preflight (Required, Before Everything, Foreground Probe by Main Agent)
 
-**Purpose**: keep the user's local global `flow2spec` command on npm latest. **Do not wait** for it — this upgrade is for the next session. The current session's `init` still uses the step 2 command list to fetch the latest template on its own.
+**Purpose**: prefer using the **already-installed global `flow2spec`** whenever possible. Only trigger a global upgrade when it is **missing** or **out of date**; when it is already at latest, **completely skip** any upgrade action. This also decides the **default form** of the step 2 command (whether to use `flow2spec init` or `npx @latest init`).
 
-**Action**: before entering step 0, the main agent **dispatches an independent sub-agent** (fire-and-forget, **does not wait for completion**) to run:
+**Action**: before entering step 0, the main agent **sequentially runs 3 probes in the foreground** (all read-only, no side effects, seconds to return — no sub-agent needed):
 
 ```bash
-npm i -g @double-codeing/flow2spec@latest
+# 1. Probe whether flow2spec is installed globally on this machine
+flow2spec --version 2>/dev/null || echo __F2S_NOT_INSTALLED__
+# 2. Query the latest version on npm (may fail on restricted networks — allowed)
+npm view @double-codeing/flow2spec version 2>/dev/null || echo __F2S_NPM_UNREACHABLE__
+# 3. (Backup) if step 1 returned __F2S_NOT_INSTALLED__, confirm npx is available
+command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 ```
+
+**Three-way decision** (pick one branch based on the results; record it in this-turn context and use it to drive step 2 & step 5 summary):
+
+| Case | Condition | Action | Default step 2 command |
+| --- | --- | --- | --- |
+| **A. Installed & on latest** | Step 1 returned version `V`, step 2 returned version `L`, and `V === L` | **Skip upgrade entirely** — no sub-agent, no `npm i -g` this turn | **`flow2spec init <agents...>`** (use global CLI) |
+| **B. Installed but behind** | Step 1 returned `V`, step 2 returned `L`, and `V !== L` (`V < L` or semver-unequal) | **Dispatch an independent sub-agent (fire-and-forget)** to run `npm i -g @double-codeing/flow2spec@latest` in the background — no wait, no block. Current turn's step 2 still uses `npx @latest` to guarantee this session gets the latest template | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
+| **C. Not installed or latest unknown** | Step 1 hit `__F2S_NOT_INSTALLED__`, OR step 2 hit `__F2S_NPM_UNREACHABLE__` and step 1 also didn't return a version | If A doesn't hold and **not installed**: same as B — dispatch a sub-agent to `npm i -g ...@latest`. If step 2 failed but step 1 shows some installed version: treat as B without a way to compare to latest — **do not** dispatch an upgrade, just note "latest unknown, use npx conservatively" | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
 
 **Orchestration (required)**:
 
-- **Sub-agent is mandatory**: this step **forcibly** runs in a sub-agent, **not subject to** `flow2spec.config.json.subAgent`. (`subAgent=false` still dispatches; that field governs "may we split f2s business sub-tasks", and a one-off global npm install is not a business split.)
-- **Do not wait**: after dispatching, the main agent immediately proceeds to step 0 → 1 → 2 → …. **Do not** block the main flow waiting for `npm i -g` to finish; whether the sub-agent finishes or succeeds does not enter any subsequent step's decision.
-- **Result does not enter the SKILL summary**: because we don't wait, the main agent's step 5 summary **only writes** "step -1 dispatched a sub-agent to run `npm i -g ...@latest` (in background, not awaited)" and **does not** report success/failure. The user can retry next session if needed.
+- **Branch A**: main agent skips all upgrade actions and **does not** dispatch a sub-agent; step 2's default is `flow2spec init`.
+- **Branch B / C**: only when an upgrade is actually needed (missing or behind), dispatch an **independent sub-agent** fire-and-forget to run `npm i -g @double-codeing/flow2spec@latest`; **do not wait**, **do not block** the main flow. Success/failure does not enter the SKILL summary conclusion. This sub-agent dispatch is **mandatory** and **not subject to** `flow2spec.config.json.subAgent` (a one-off global npm install is not a business split).
 - **Write permission**: the sub-agent only runs that shell command and **does not** touch any project file (`.Knowledge`, `manifest-routing.json`, `index.md`, etc.). Write-permission constraints remain unchanged.
+- **Probe failure fallback**: if all 3 probes fail (no shell permission, extremely restricted env), treat as branch C and use `npx @latest`; alternatively, skip step -1 entirely and rely on `cli.js`'s `maybeAutoUpdateGlobalInstall()` tail fallback.
 
 **Relation to cli.js**:
 
-- `maybeAutoUpdateGlobalInstall()` inside cli.js is the `init` tail fallback. **No conflict with this step**: this step dispatches asynchronously before the foreground init; cli's fallback runs once more at init's tail. If both succeed it's a no-op; if the first fails the second still has a chance to fix it.
+- `maybeAutoUpdateGlobalInstall()` inside cli.js is the `init` tail fallback. **No conflict with this step**: this step probes/dispatches before the foreground init; cli's fallback runs once more at init's tail. If both succeed it's a no-op; if the first fails the second still has a chance to fix it.
 
 ### Step 0: Version Judgment and Branching (Required, Before init)
 
@@ -145,18 +158,21 @@ Both conditions are met:
 
 **Before step 2 starts**: read the project-side **`.Knowledge/manifest-routing.json`** `projectRev` field (**record as `null` if missing**), store it as **`projectRev`**. `projectRev` means **"the package-template revision this project has been baselined to"** (written by this skill's full-flow tail after steps 3 / 3a / 3b; on first init the `init` command writes the template value as the baseline). **`init` no longer overwrites this field when manifest already exists**, so `projectRev` reflects the version this project most recently completed full-flow alignment to — not "what the last init carried over". `projectRev` will be compared with `pkgRev` in step 2c.
 
-Run one of the following in the target project root (**decoupled from step -1**: step -1's global upgrade runs in the background and is not awaited; **this step** uses the command list below to ensure the current init fetches the latest template, independent of whether step -1 has completed or succeeded):
+Run one of the following in the target project root (**choose the default form based on the step -1 branch conclusion**):
 
-1. Fetch npm latest and run (**recommended, default**):
-   - `npx @double-codeing/flow2spec@latest init <agents...>`
-2. Use globally installed flow2spec (only when the user explicitly states "global is already latest" or restricted network blocks npx):
+1. **Step -1 returned A (installed & on latest)**: use the global CLI directly (**preferred**):
    - `flow2spec init <agents...>`
+2. **Step -1 returned B/C (missing / behind / latest unknown)**: fetch npm latest (**guarantees this session gets the latest template**):
+   - `npx @double-codeing/flow2spec@latest init <agents...>`
 3. For overwrite reset:
    - Append `--reset-knowledge` to the above command.
 4. If the user explicitly requests a template-language switch:
    - Append `--locale <zh-CN|en-US>` to the above command.
+5. **Manual override**: if the user explicitly says "use global" or "use npx", follow the user's choice and skip the step -1 branch-driven auto-selection.
 
 > `<agents...>` example: `cursor claude codex`.
+
+> **Helper commands (user self-inspection)**: `flow2spec --version` shows the current global version; `flow2spec update` triggers the CLI's built-in self-update. These do **not** replace this SKILL's full flow — they only keep the global CLI fresh; topic-layer alignment still requires step 2 and beyond.
 
 **After step 2 completes**: immediately execute the above **"init and skill self-update"** loop: re-read **`skills/f2s-kb-upgrade/SKILL.md`**. If updated, **rerun from step 2c per the new literal text** (**do not run `init` a second time**; avoid using the old SKILL for subsequent verification).
 
@@ -278,7 +294,7 @@ Verify at least:
 
 Output:
 
-- **Step -1 global upgrade**: `Dispatched sub-agent to run npm i -g @double-codeing/flow2spec@latest (in background, not awaited)`
+- **Step -1 global version preflight**: branch (`A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to upgrade) / C Missing or latest unknown (dispatched / advised)`) + current global version + npm latest (if obtained)
 - Executed command (including agents and whether reset was used)
 - Whether it succeeded
 - **`projectRev` judgment**: project `X` vs package `Y` -> fast path / full flow / field-missing fallback (step 2c)
@@ -297,8 +313,8 @@ Output:
 ```markdown
 ## f2s-kb-upgrade Execution Result
 
-- **Step -1 global upgrade**: `Dispatched sub-agent to run npm i -g @double-codeing/flow2spec@latest in background (not awaited)`
-- Command run inside this skill: `<actual flow2spec init ...>`
+- **Step -1 global version preflight**: `A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to run npm i -g in background) / C Missing or latest unknown (dispatched / conservative npx)`; current version=`<V>`, latest=`<L or unknown>`
+- Command run inside this skill: `<actual flow2spec init ... or npx @latest init ...>`
 - init mode: `incremental` / `overwrite reset (--reset-knowledge)`
 - Result: `success` / `failure`
 - **Topic-layer judgment**: `projectRev=<X>` vs `pkgRev=<Y>` -> `fast path (skipped 3/3a/3b)` / `full flow` / `field-missing fallback`
@@ -328,7 +344,7 @@ Output:
 
 ## Completion Self-Check
 
-1. **Step -1** was performed: before entering step 0, an **independent sub-agent** was dispatched to run `npm i -g @double-codeing/flow2spec@latest` and was **not awaited**; the summary says "dispatched sub-agent in background, not awaited" and does not report success/failure.
+1. **Step -1** was performed: before entering step 0, **3 foreground probes** were run sequentially (`flow2spec --version` / `npm view ... version` / `npx` availability) and one of the A/B/C branches was determined. Only under B/C did an **independent sub-agent** get dispatched to run `npm i -g @double-codeing/flow2spec@latest` in the background (fire-and-forget); under A **no upgrade action** was dispatched. Step 2's default command form was chosen accordingly (A → `flow2spec init`, B/C → `npx @latest init`); the summary clearly states the branch and version comparison.
 2. **Step 0** was performed: V1 did not skip migrate, and **current repositories (V2+)** did not incorrectly run migrate.
 3. **Before step 2** recorded the project-side `projectRev` (`projectRev`), and **after step 2 `init`** re-read `pkgRev` and executed **step 2c** judgment.
 4. After **step 2 `init`**, **`f2s-kb-upgrade/SKILL.md`** was re-read: on full flow, a change must trigger **a rerun from step 2c per the new literal text** (**no second `init`**); on fast path, the loop can be skipped (see "init and skill self-update" / "fast-path exception").
