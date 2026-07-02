@@ -47,11 +47,26 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 2. 能力清单（用户指定 / Agent 推断 / 合并结果）
 3. 信息来源
 4. 拟改文件清单（精确到路径）
-5. 主题同步计划：说明每个能力是“更新已有主题”还是“创建新主题”，并列出 topicId、topic 文件、index 行、manifest/matcher 变更；如涉及 `topicMetadata`，列出 `primary` / `tags` / `confidence` 候选和证据；无明确证据时写“不分类 / 暂不写入”
-6. 不改动范围
-7. 等待用户确认提示
+5. 主题同步计划：说明每个能力是"更新已有主题"还是"创建新主题"，并列出 topicId、topic 文件、index 行、manifest/matcher 变更；如涉及 `topicMetadata`，列出 `primary` / `tags` / `confidence` 候选和证据；无明确证据时写"不分类 / 暂不写入"
+6. **终稿沉淀计划（硬约束）**：对每一个"新建 / 更新"的 topic，判断其「长文背景 / 详细资料」引用槽位是否已有对应 `.Knowledge/stock-docs/*_终稿.md`：
+   - **已有** → 直接引用；
+   - **没有但本次同步的能力已经代码落地** → 大纲**必须列出**"待生成 `stock-docs/<能力名>_终稿.md`"，并注明沉淀来源（对应 `req-docs/*_技术方案.md` + 已实现代码 + 澄清文档），由本 SKILL 步骤 3 之前先触发 `f2s-doc-final` 沉淀（或由用户确认后手写），**再**让 topic 指向终稿；
+   - **能力仍在 req-docs 待实现阶段、尚无代码** → topic「长文背景」小节暂写占位说明「待代码落地后由 `f2s-doc-final` 生成 stock-doc 终稿」，**禁止**在此槽位直接列 `req-docs/*`。
+   - 依据见 `rules/f2s-topic-authoring.*`「长文背景引用的目录边界（硬约束）」。
+7. 不改动范围
+8. 等待用户确认提示
 
 > 未确认前禁止落盘修改。
+
+### 步骤 2.5：终稿沉淀（若步骤 2 列出待生成终稿）
+
+用户确认大纲后、`.Knowledge/topics/` 落盘前，先按大纲第 6 项**逐个沉淀 `stock-docs/*_终稿.md`**：
+
+- 优先调用 **`f2s-doc-final`**（在同一会话内直接进入，不需要用户重新触发）；
+- 或按 `.Knowledge/template/`（若有终稿模版）手写并落盘；
+- 沉淀完成、终稿路径确定后，再进入步骤 3 让 topic 的「长文背景」小节指向该终稿。
+
+**禁止**：跳过本步直接落 topic，把 `req-docs/*` 挂进 topic 的「长文背景 / 相关资料」整节槽位。
 
 ### 步骤 3：确认后写入
 
@@ -110,8 +125,9 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 ## 完成后自检
 
 1. 是否存在未确认即写入（必须为否）。
-2. topic 文件与 index 行是否一一对应，且“关联文档（摘要）”已同步更新。
+2. topic 文件与 index 行是否一一对应，且"关联文档（摘要）"已同步更新。
 3. manifest 中 `topics` / `taskToTopicRules` / `topicDependencies` 是否仍引用有效路径。
 4. 若写入 `topicMetadata`：key 是否均存在于 `topicPaths`；`primary` / `tags` / `confidence` 是否合法；是否避免类型前缀命名。
 5. 是否误改配置根 `rules/skills`（必须为否）。
 6. 步骤 2 大纲 + 用户确认未下放子 agent；步骤 3 子落盘前已加载近邻 2–3 主题摘要；manifest / index 由主单点落盘。
+7. **每个新建 / 更新的 topic**，其「长文背景 / 详细资料 / 相关资料 / 长文来源 / 参考文档」整节引用槽位**是否仅指向 `.Knowledge/stock-docs/*_终稿.md`**（或已定型的 stock-doc）；**不得**直接列 `.Knowledge/req-docs/*` 作为长文事实源。若代码已落地但对应终稿尚缺，是否已在步骤 2.5 完成沉淀。

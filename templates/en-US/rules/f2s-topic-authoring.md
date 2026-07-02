@@ -28,13 +28,16 @@ This rule is touched when any of the following is true:
 
 **Topic positioning**: executable routing summary + key boundaries. A topic may contain necessary boundary notes, key flow steps, prohibited items, and configuration summaries. After reading it, the Agent should be able to execute or decide whether more drilling is needed. It **should not carry** complete implementation details, long-form background, or raw content that can be found in a stock-doc. Stock-docs carry full background and long-form details; topics point to them.
 
+**Directory boundary for long-form background references (hard rule)**: in a topic, reference slots that point at long-form sources — sections titled "Detailed background / Related materials / Long-form source / Reference documents" — **may only** point at `.Knowledge/stock-docs/*_终稿.md` or already-finalized `stock-docs/*`. **Do not** put `.Knowledge/req-docs/*` (clarifications / technical designs / SQL / PRDs) in these slots: `req-docs` are **temporary inputs** for a given delivery — they get archived or migrated once the delivery lands, so using them as a topic's long-form source of truth leaves a dangling reference. If the corresponding `.Knowledge/stock-docs/*_终稿.md` does not yet exist when syncing / creating a topic, **first trigger `f2s-doc-final`** to consolidate the stock-doc (or confirm with the user and hand-write it), and only then point the topic at that stock-doc; you may not skip stock-doc consolidation and mount the topic on `req-docs`. **Allowed**: the topic body may **briefly cite** a single sentence or a field name from a design document as evidence (e.g., "see `.Knowledge/req-docs/xxx_技术方案.md`" as an occasional inline pointer), but the **long-form background reference slot** (the whole "Detailed background / Related materials" section) still must point at a stock-doc.
+
 Every topic must include at least:
 
 1. **Title and one-sentence intent** (one line stating "what this topic solves");
 2. **Applicable scenarios / trigger words** (semantically consistent with the corresponding `matchers/<id>.json` `includeAny`);
 3. **Core rules / flow** (executable knowledge; steps must be reproducible by an Agent);
 4. **Dependency declaration** (if dependencies exist in `topicDependencies`, the body must explicitly state "before executing, read dependency topic `<dep>` first"; use the first paragraph of `topics/f2s-req-plan.md` as a reference);
-5. **Boundaries and prohibited items** (avoid expanding into neighboring topics).
+5. **Boundaries and prohibited items** (avoid expanding into neighboring topics);
+6. **Long-form background / detailed materials reference** (when the topic needs to carry business background): list only clickable Markdown links to `.Knowledge/stock-docs/*_终稿.md` (1–3 links); **do not** list `.Knowledge/req-docs/*` here. If no stock-doc has been consolidated yet, **generate the stock-doc first** and then fill this section.
 
 ## 3. topicMetadata Decision Criteria
 
@@ -122,3 +125,4 @@ Write-ownership constraints for `manifest-routing.json` / `.Knowledge/index.md` 
 - Forcing "important rules" into `taskToTopicRules` (see section 6).
 - Using `topicDependencies` to express "information is related" (use `index.md` semantic boundaries + matcher keyword recall instead of dependency edges).
 - Writing transitive redundant edges or cycles in `topicDependencies`.
+- **Listing `.Knowledge/req-docs/*` files (clarifications / technical designs / SQL / PRDs) in a topic's "Long-form background / Detailed materials / Related materials / Long-form source / Reference documents" reference slot.** These slots may only point at `.Knowledge/stock-docs/*_终稿.md`; when no stock-doc exists yet, consolidate it first and then fill the slot. Short-sentence / inline evidence pointers are not covered by this prohibition.
