@@ -4,12 +4,21 @@
     "双仓同步",
     "双仓",
     "内仓",
+    "外仓",
     "@ctrip",
     "@double-codeing",
     "不要改配置根",
     "只改templates",
+    "只改 templates",
     "自己init",
+    "自己跑 init",
     "flow2spec init",
-    "配置根写权"
+    "sync:agents",
+    "配置根写权",
+    "写盘边界",
+    "templates vs 配置根",
+    "模板 vs 落盘",
+    "分发命令",
+    "双仓漂移"
   ]
 }

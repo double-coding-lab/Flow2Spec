@@ -3,12 +3,13 @@
 # Project Milestones
 
 > **Scope**: whole project  
-> **Updated**: 2026-06-30
+> **Updated**: 2026-07-02
 
 ## Overview
 
 | Stage | Time | Summary |
 | --- | --- | --- |
+| M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and f2s-dev-workflow-check self-check skill |
 | M23 · f2s-kb-distill auto tier judgment + f2s-kb-upgrade Step -1 | 2026-06-30 | Dropped --fast parameter; built-in "light tier / strict tier" 4-dimension auto judgment; f2s-kb-upgrade adds Step -1 background sub-agent upgrading global cli |
 | M22 · pkgRev top-level write + init auto-upgrade global cli | 2026-06-29 | manifest top-level pkgRev field overwritten on every init; init tail auto-upgrades global package when latest is higher |
 | M21 · f2s-kb-upgrade templateRevision fast path and self-update loop | 2026-06-29 | project vs package projectRev equal → skip steps 3/3a/3b; init-after SKILL changes rerun from step 2c without re-init; feedback-closing removed blanket KB-skill prohibition with summary requirement; inferred lands directly |
@@ -32,6 +33,19 @@
 | M3 · .Knowledge machine-readable routing | 2026-05-08 | Introduced .Knowledge, manifest-routing.json, topics and matchers; match→expand→verify→act chain; config preflight and KB preflight rules |
 | M2 · OpenSpec removal and f2s skills | 2026-04-23 | Removed OpenSpec/opsx; converted to f2s skill workflow; requirements clarification and technical proposal generation established |
 | M1 · CLI bootstrap and OpenSpec workflow | 2026-02 ~ 2026-04 | Flow2Spec started as an installable CLI; early AI collaboration organized around OpenSpec/opsx change flows |
+
+## M24 · Codex Rule Mirror Fix + Upgrade Step -1 Smart Preflight + Repo-local Dev Discipline
+
+- Fixed `writeCodexTopicMirrors` filter: the original `endsWith(".mdc")` skipped every `.md` rule file, leaving `.codex/topics/` empty after `flow2spec init codex`; extended to match both `.md` and `.mdc` and unify output to `.codex/topics/*.md`
+- f2s-kb-upgrade Step -1 rewritten from "unconditionally dispatch a sub-agent to run `npm i -g`" to **probe first, upgrade on demand**: the main agent runs `flow2spec --version` + `npm view ... version` + `command -v npx` in the foreground and branches A/B/C:
+  - A: installed and on latest → skip upgrade entirely; Step 2 defaults to `flow2spec init`
+  - B: installed but behind → dispatch an independent sub-agent to run `npm i -g ...@latest` in the background (fire-and-forget); Step 2 uses `npx @latest init`
+  - C: missing / latest unknown → same as B; if all probes fail, Step -1 can be skipped entirely
+- Step 2 command list default form is now driven by the Step -1 branch; added "manual override" clause and a "helper commands" note (`flow2spec --version` / `flow2spec update`)
+- Added **`f2s-dev-workflow-constraints`** rule long text (Cursor / Claude / Codex, three ends): writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
+- Added **`f2s-dev-workflow-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
+- `.Knowledge/topics/f2s-dev-workflow-constraints.md` thinned to a routing summary pointing to the config-root long text; matcher added new trigger words (`sync:agents`, `写盘边界`, `双仓漂移`); index.md topic table updated with related-doc column
+- Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-codeing` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
 
 ## M23 · f2s-kb-distill Auto Tier Judgment + f2s-kb-upgrade Step -1
 

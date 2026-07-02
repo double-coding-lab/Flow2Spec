@@ -1,38 +1,55 @@
 # f2s-dev-workflow-constraints（路由摘要）
 
+> **仅适用于 Flow2Spec 双仓自身**（`Flow2Spec-public` / `flow2spec`）。**不给下游使用**——本 topic 与对应 rules / skill 都**只**存在于本仓，**不进 `templates/`**。
+
 ## 作用
 
-定义 agent 在开发本项目时必须遵守的项目级约定：双仓同步约束与配置根写权约束。
+约束在 Flow2Spec 双仓内开发时的写盘边界与分发口径，避免「手改配置根被 init 覆盖」「双仓漂移」「未经用户同意主动跑 init」。
+
+## 长文位置（本仓配置根手写，不进 templates）
+
+- **Cursor**：`.cursor/rules/f2s-dev-workflow-constraints.mdc`
+- **Claude**：`.claude/rules/f2s-dev-workflow-constraints.md`
+- **Codex**：`.codex/topics/f2s-dev-workflow-constraints.md`
+
+三份为同源手写副本；执行时按当前 agent 打开对应端。
 
 ## 依赖声明
 
 执行前须先读依赖主题 `f2s-git-commit`（提交前确认双仓一致涉及提交流程）。
 
-## 核心规则
+## 核心约束（一句一条）
 
-### 1. 双仓同步约束
+1. **只改 `templates/`**：所有下游会用到的规则/技能/主题/matcher/manifest 模板改动，只落 `templates/zh-CN/` 与 `templates/en-US/`。
+2. **不改配置根（下游会用到的产物）**：`.claude/rules/` 等中在 `templates/` 有对应源的文件属 `init` 产物，手改会被覆盖。
+3. **本仓专属手写例外**：`f2s-dev-workflow-constraints`、`f2s-dev-workflow-check` 等**只**在本仓的规则/技能，直接落配置根，**不进** `templates/`。
+4. **用户驱动分发**：Agent **不主动**跑 `flow2spec init` / `npm run sync:agents`；由用户执行。
+5. **双仓一致**：`Flow2Spec-public`（`@double-codeing`）与 `flow2spec`（`@ctrip`）模板正文与本仓专属手写规则须字节级一致，只允许 npm 包名与个别 remote URL 差异。
 
-- 本项目为**双仓结构**：内仓 `@ctrip` 组织、外仓 `@double-codeing` 组织
-- **所有功能改动必须双仓同步**，禁止只改一个仓库
-- 两个仓库组织名不同，但功能、逻辑、结构必须一致
-- 提交前须确认双仓改动一致（组织名差异除外）
+## 分发命令（用户执行）
 
-### 2. 禁止改动配置根
+```bash
+npm run sync:agents
+# 或
+node ./cli.js init codex claude cursor
+# 或全局装了
+flow2spec init codex claude cursor
+```
 
-- **禁止**手动改动配置根：`.codex/topics/`、`.claude/rules/`、`.cursor/rules/`、根目录 `AGENTS.md` 等
-- 所有模板改动仅限 `templates/` 目录
-- 配置根由用户自己跑 `flow2spec init`（或 `npm run sync:agents`）一键分发
-- 避免手动改动导致模板与配置根产生漂移
+## 自查技能
+
+`f2s-dev-workflow-check` 用于本仓提交前自查写盘边界、双仓漂移、分发口径。触发词见该 SKILL。
 
 ## 适用场景 / 触发词
 
-- 用户提到"双仓同步""双仓""内仓""外仓"
-- 用户要求"只改模板别动配置根""自己 init 同步"
-- agent 在修改模板类文件时，须自动触发双仓同步检查
-- agent 在改动配置根目录下的文件时须中止并提示用户自行 init
+- 用户提到「双仓同步」「内仓」「外仓」「templates vs 配置根」「模板 vs 落盘」
+- 用户说「不要改配置根 / 只改 templates / 我来跑 init / 我会自己 sync:agents」
+- Agent 打算改配置根下与 `templates/` 有对应源的文件时须先读本 topic 与对应 rules 长文
+- 双仓漂移排查、分发口径澄清
 
 ## 边界与禁止项
 
-- 本规则是**项目级开发纪律**，不涉及业务代码功能
-- 与 `f2s-git-commit` 分工：本规则定义"提交前须确认双仓一致"，具体提交流程由 `f2s-git-commit` 负责
-- `LOCAL_CONTEXT.md` 与 `.claude/memory/dual-repo-sync.md` 为本地不提交的上下文文件，不视为项目正式配置根
+- **仅本仓适用**：下游项目不承担本 topic 约束，不 `Read` 也不生效。
+- **不写下游可见位置**：本 topic 与关联 rules/skill 一律不落 `templates/`；`f2s-kb-upgrade` 步骤 -1 / 步骤 2 的 init 分发**不带**这些文件到下游。
+- 与 `f2s-git-commit` 分工：本 topic 定义「提交前双仓一致」等原则；具体提交流程由 `f2s-git-commit` 负责。
+- `LOCAL_CONTEXT.md`、`.claude/memory/` 为本地不入库文件，不视为配置根。
