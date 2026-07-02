@@ -299,7 +299,7 @@ Flow2Spec 更关注：需求来了该读哪个主题、主题之间有什么依�
 
 ## 十二、几个常见问题
 
-<p><img src="./images/flow2spec-intro-12-faq.png" alt="常见问题" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-12-faq.jpg" alt="常见问题" style="max-width:720px;width:100%;" /></p>
 
 **Q：改动一个能力后，怎么保证对应主题都能更新？**
 

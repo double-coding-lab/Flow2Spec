@@ -299,7 +299,7 @@ This is why Flow2Spec includes `.Knowledge/`, `.task/`, `f2s-*` skills, Agent ru
 
 ## XII. Common Questions
 
-<p><img src="../images/flow2spec-intro-12-faq.png" alt="Common questions" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-12-faq.jpg" alt="Common questions" style="max-width:720px;width:100%;" /></p>
 
 **Q: After changing a capability, how do I make sure all related topics get updated?**
 
