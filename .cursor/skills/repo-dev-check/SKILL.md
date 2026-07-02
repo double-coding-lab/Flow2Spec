@@ -1,13 +1,13 @@
 ---
-name: f2s-dev-workflow-check
+name: repo-dev-check
 description: 在 Flow2Spec 双仓自身开发时自查「写盘边界 + 双仓一致 + 分发口径」：识别当前 pending 改动是否落错地方（应改 templates 却动了配置根、本仓专属却写进 templates、只改单侧仓库），并给出修复动作。触发词：dev-workflow 自查、写盘边界、双仓漂移、templates vs 配置根、分发检查。
 ---
 
-# f2s-dev-workflow-check（本仓开发纪律自查）
+# repo-dev-check（本仓开发纪律自查）
 
 > **适用**：仅在 Flow2Spec 双仓自身（`Flow2Spec-public` / `flow2spec`）里开发时启用。**下游项目不会拿到本 SKILL**——它只存在于本仓的 `.claude/skills/`、`.cursor/skills/`、`.codex/skills/`，从不进 `templates/`。
 >
-> **单一事实源**：本 SKILL 依据 **`f2s-dev-workflow-constraints`** 规则执行（Claude：`.claude/rules/f2s-dev-workflow-constraints.md`；Cursor：`.cursor/rules/f2s-dev-workflow-constraints.mdc`；Codex：`.codex/topics/f2s-dev-workflow-constraints.md`）。步骤 0 必须 Read 该规则全文。
+> **单一事实源**：本 SKILL 依据 **`f2s-dev-workflow-constraints`** 规则执行（Claude：`.claude/rules/repo-dev-workflow-constraints.md`；Cursor：`.cursor/rules/repo-dev-workflow-constraints.mdc`；Codex：`.codex/topics/repo-dev-workflow-constraints.md`）。步骤 0 必须 Read 该规则全文。
 
 ## 触发场景
 
@@ -20,7 +20,7 @@ description: 在 Flow2Spec 双仓自身开发时自查「写盘边界 + 双仓�
 
 ## 前置
 
-**步骤 0**：`Read` **`.claude/rules/f2s-dev-workflow-constraints.md`**（Cursor：`.cursor/rules/*.mdc`；Codex：`.codex/topics/*.md`）全文。**不 Read 直接开跑属违规**。
+**步骤 0**：`Read` **`.claude/rules/repo-dev-workflow-constraints.md`**（Cursor：`.cursor/rules/*.mdc`；Codex：`.codex/topics/*.md`）全文。**不 Read 直接开跑属违规**。
 
 ## 编排
 
@@ -45,12 +45,12 @@ description: 在 Flow2Spec 双仓自身开发时自查「写盘边界 + 双仓�
 | `templates/zh-CN/**` 或 `templates/en-US/**` | ✅ 合规 | 生产侧唯一入口 |
 | `docs/**` / `lib/**` / `cli.js` / `scripts/**` / `package.json` | ✅ 合规 | 包源码 |
 | `.Knowledge/**` | ✅ 合规 | 本仓自身知识库 |
-| `.claude/rules/f2s-dev-workflow-constraints.md` | ✅ 合规 | 本仓专属手写规则（templates 无对应源） |
-| `.claude/skills/f2s-dev-workflow-check/**` | ✅ 合规 | 本仓专属手写 skill（templates 无对应源） |
-| `.cursor/rules/f2s-dev-workflow-constraints.mdc` | ✅ 合规 | 同上（Cursor 端） |
-| `.cursor/skills/f2s-dev-workflow-check/**` | ✅ 合规 | 同上 |
-| `.codex/topics/f2s-dev-workflow-constraints.md` | ✅ 合规 | 同上（Codex 端） |
-| `.codex/skills/f2s-dev-workflow-check/**` | ✅ 合规 | 同上 |
+| `.claude/rules/repo-dev-workflow-constraints.md` | ✅ 合规 | 本仓专属手写规则（templates 无对应源） |
+| `.claude/skills/repo-dev-check/**` | ✅ 合规 | 本仓专属手写 skill（templates 无对应源） |
+| `.cursor/rules/repo-dev-workflow-constraints.mdc` | ✅ 合规 | 同上（Cursor 端） |
+| `.cursor/skills/repo-dev-check/**` | ✅ 合规 | 同上 |
+| `.codex/topics/repo-dev-workflow-constraints.md` | ✅ 合规 | 同上（Codex 端） |
+| `.codex/skills/repo-dev-check/**` | ✅ 合规 | 同上 |
 | `.claude/rules/<其它>.md` / `.cursor/rules/<其它>.mdc` / `.codex/topics/<其它>.md` | ❌ 违规 | 有 templates 对应源 → 应改 `templates/{zh-CN,en-US}/rules/<其它>.md` |
 | `.claude/skills/<其它>/**` / `.cursor/skills/<其它>/**` / `.codex/skills/<其它>/**` | ❌ 违规 | 有 templates 对应源 → 应改 `templates/{zh-CN,en-US}/skills/<其它>/SKILL.md` |
 | 根 `AGENTS.md` | ❌ 违规 | 由 `buildCodexAgentsMd(templatesDir, ...)` 从 templates 拼装 → 应改 `templates/{zh-CN,en-US}/AGENTS.md` |
@@ -80,7 +80,7 @@ description: 在 Flow2Spec 双仓自身开发时自查「写盘边界 + 双仓�
 按以下模板输出（都写完为止）：
 
 ```markdown
-## f2s-dev-workflow-check 结果
+## repo-dev-check 结果
 
 ### 当前仓
 - 仓库：Flow2Spec-public / flow2spec / 非双仓（退出）

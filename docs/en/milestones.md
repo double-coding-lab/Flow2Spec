@@ -9,7 +9,7 @@
 
 | Stage | Time | Summary |
 | --- | --- | --- |
-| M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and f2s-dev-workflow-check self-check skill |
+| M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
 | M23 · f2s-kb-distill auto tier judgment + f2s-kb-upgrade Step -1 | 2026-06-30 | Dropped --fast parameter; built-in "light tier / strict tier" 4-dimension auto judgment; f2s-kb-upgrade adds Step -1 background sub-agent upgrading global cli |
 | M22 · pkgRev top-level write + init auto-upgrade global cli | 2026-06-29 | manifest top-level pkgRev field overwritten on every init; init tail auto-upgrades global package when latest is higher |
 | M21 · f2s-kb-upgrade templateRevision fast path and self-update loop | 2026-06-29 | project vs package projectRev equal → skip steps 3/3a/3b; init-after SKILL changes rerun from step 2c without re-init; feedback-closing removed blanket KB-skill prohibition with summary requirement; inferred lands directly |
@@ -43,7 +43,7 @@
   - C: missing / latest unknown → same as B; if all probes fail, Step -1 can be skipped entirely
 - Step 2 command list default form is now driven by the Step -1 branch; added "manual override" clause and a "helper commands" note (`flow2spec --version` / `flow2spec update`)
 - Added **`f2s-dev-workflow-constraints`** rule long text (Cursor / Claude / Codex, three ends): writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
-- Added **`f2s-dev-workflow-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
+- Added **`repo-dev-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
 - `.Knowledge/topics/f2s-dev-workflow-constraints.md` thinned to a routing summary pointing to the config-root long text; matcher added new trigger words (`sync:agents`, `写盘边界`, `双仓漂移`); index.md topic table updated with related-doc column
 - Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-codeing` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
 

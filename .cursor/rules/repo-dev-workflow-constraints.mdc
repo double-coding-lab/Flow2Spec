@@ -1,3 +1,6 @@
+---
+description: Flow2Spec 项目开发纪律（仅本双仓适用）：修改本仓时只改 templates/，配置根由 flow2spec init / sync:agents 分发，禁止手改配置根；双仓改动须同步
+---
 
 # Flow2Spec 项目开发纪律（Dev Workflow Constraints）
 
@@ -6,10 +9,12 @@
 > **不给下游使用**：因此本规则 / 对应 skill / 对应 topic 摘要**只**存在于本仓的配置根（`.claude/` / `.cursor/` / `.codex/`）与本仓 `.Knowledge/topics/`，**不落 `templates/`**——`flow2spec init` 不会把本文件分发给下游项目。
 >
 > **单一事实源**：本文件为 **`f2s-dev-workflow-constraints`** 的完整约定。
-> - Claude：`.claude/rules/f2s-dev-workflow-constraints.md`
-> - Cursor：`.cursor/rules/f2s-dev-workflow-constraints.mdc`
-> - Codex：`.codex/topics/f2s-dev-workflow-constraints.md`
+> - Claude：`.claude/rules/repo-dev-workflow-constraints.md`
+> - Cursor：`.cursor/rules/repo-dev-workflow-constraints.mdc`
+> - Codex：`.codex/topics/repo-dev-workflow-constraints.md`
 > - 本仓路由摘要：`.Knowledge/topics/f2s-dev-workflow-constraints.md`
+>
+> **命名对齐**：**配置根文件名**统一用 **`repo-*`** 前缀（避开 `init` 的 `f2s-` 自清理触发面）；**topic id / 路由概念名**保留 **`f2s-dev-workflow-constraints`**（`manifest-routing.topicPaths` / `topicDependencies` / `topicMetadata` / matcher 已登记的稳定 id，改会连锁破坏路由并让历史里程碑失真）。两处字面不同，指向**同一条规则**。
 >
 > 三端配置根内容为同源手写副本；本仓内改动须**在两个仓库、三端**同步落盘。
 
@@ -59,7 +64,7 @@ Flow2Spec 有一个让人容易混乱的特点：**它自己就是自己的第�
 
 **本仓专属（不进 templates）**：
 - `.Knowledge/topics/*.md`、`.Knowledge/index.md`、`.Knowledge/manifest-routing.json`、`.Knowledge/matchers/*.json`、`.Knowledge/stock-docs/*.md`、`.Knowledge/req-docs/*.md`：本仓自身知识库
-- **本仓专属规则 / 技能**：`.claude/rules/f2s-dev-workflow-constraints.md`、`.cursor/rules/f2s-dev-workflow-constraints.mdc`、`.codex/topics/f2s-dev-workflow-constraints.md`、`.claude/skills/f2s-dev-workflow-check/`、`.cursor/skills/f2s-dev-workflow-check/`、`.codex/skills/f2s-dev-workflow-check/`——这些**从不进 `templates/`**，直接手写落三端配置根
+- **本仓专属规则 / 技能**：`.claude/rules/repo-dev-workflow-constraints.md`、`.cursor/rules/repo-dev-workflow-constraints.mdc`、`.codex/topics/repo-dev-workflow-constraints.md`、`.claude/skills/f2s-dev-workflow-check/`、`.cursor/skills/f2s-dev-workflow-check/`、`.codex/skills/f2s-dev-workflow-check/`——这些**从不进 `templates/`**，直接手写落三端配置根
 - `docs/*.md` / `docs/en/*.md`、`lib/*.js`、`cli.js`、`scripts/*`、`package.json`、`README*.md`
 
 ### ❌ Agent 禁止改（下游会用到的 init 产物）

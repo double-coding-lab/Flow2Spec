@@ -8,9 +8,9 @@
 
 ## 长文位置（本仓配置根手写，不进 templates）
 
-- **Cursor**：`.cursor/rules/f2s-dev-workflow-constraints.mdc`
-- **Claude**：`.claude/rules/f2s-dev-workflow-constraints.md`
-- **Codex**：`.codex/topics/f2s-dev-workflow-constraints.md`
+- **Cursor**：`.cursor/rules/repo-dev-workflow-constraints.mdc`
+- **Claude**：`.claude/rules/repo-dev-workflow-constraints.md`
+- **Codex**：`.codex/topics/repo-dev-workflow-constraints.md`
 
 三份为同源手写副本；执行时按当前 agent 打开对应端。
 
@@ -22,7 +22,7 @@
 
 1. **只改 `templates/`**：所有下游会用到的规则/技能/主题/matcher/manifest 模板改动，只落 `templates/zh-CN/` 与 `templates/en-US/`。
 2. **不改配置根（下游会用到的产物）**：`.claude/rules/` 等中在 `templates/` 有对应源的文件属 `init` 产物，手改会被覆盖。
-3. **本仓专属手写例外**：`f2s-dev-workflow-constraints`、`f2s-dev-workflow-check` 等**只**在本仓的规则/技能，直接落配置根，**不进** `templates/`。
+3. **本仓专属手写例外**：`f2s-dev-workflow-constraints`、`repo-dev-check` 等**只**在本仓的规则/技能，直接落配置根，**不进** `templates/`。
 4. **用户驱动分发**：Agent **不主动**跑 `flow2spec init` / `npm run sync:agents`；由用户执行。
 5. **双仓一致**：`Flow2Spec-public`（`@double-codeing`）与 `flow2spec`（`@ctrip`）模板正文与本仓专属手写规则须字节级一致，只允许 npm 包名与个别 remote URL 差异。
 
@@ -38,7 +38,7 @@ flow2spec init codex claude cursor
 
 ## 自查技能
 
-`f2s-dev-workflow-check` 用于本仓提交前自查写盘边界、双仓漂移、分发口径。触发词见该 SKILL。
+`repo-dev-check` 用于本仓提交前自查写盘边界、双仓漂移、分发口径。触发词见该 SKILL。
 
 ## 适用场景 / 触发词
 
