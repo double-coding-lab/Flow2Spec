@@ -3,6 +3,9 @@ name: f2s-kb-distill
 description: 从问答过程中提取可复用知识事实并自动入库；根据下钻深度与命中主题判断新增主题或补充既有主题；触发：f2s-kb-distill、问答知识提取、从对话中提取知识
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 > 执行口径：本技能只维护 `.Knowledge`，默认不改配置根 `rules/skills`。
 
 ## 编排（主 / 子 agent）

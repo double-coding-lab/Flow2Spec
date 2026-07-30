@@ -3,6 +3,9 @@ name: f2s-kb-feat
 description: 新增能力时补全实现与知识库；已实现则仅同步知识库；触发：f2s-kb-feat、新增能力
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 > 执行口径：`f2s-kb-feat` 默认同步 `.Knowledge`，无需用户额外提出"请同步知识库"。
 
 ## 编排（主 / 子 agent）

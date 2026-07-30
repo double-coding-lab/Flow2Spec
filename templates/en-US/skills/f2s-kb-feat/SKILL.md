@@ -3,6 +3,9 @@ name: f2s-kb-feat
 description: Complete implementation and knowledge-base sync when adding a capability; if already implemented, only sync the knowledge base; triggers: f2s-kb-feat、新增能力、add capability、new feature
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: `f2s-kb-feat` syncs `.Knowledge` by default; the user does not need to separately ask "please sync the knowledge base".
 
 ## Orchestration (main / sub-agent)

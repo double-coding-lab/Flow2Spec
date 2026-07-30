@@ -3,6 +3,9 @@ name: f2s-kb-fix
 description: Fix implementation or rule errors identified by the user, and sync the knowledge base by default; triggers: f2s-kb-fix、修正实现规则、fix implementation rules、fix kb rule
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: `f2s-kb-fix` defaults to "fix code + sync `.Knowledge`"; the user does not need to separately ask "please sync the knowledge base".
 
 ## Orchestration (main / sub-agent)

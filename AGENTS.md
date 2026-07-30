@@ -26,8 +26,11 @@
 | `changeTracking.feat` | `true` | `true` 时 `f2s-kb-feat` 步骤 0 必须创建/续作 `.task/active/` 变更追踪任务；`false` 时跳过。 |
 | `changeTracking.fix` | `false` | `true` 时 `f2s-kb-fix` 步骤 0 必须创建/续作 `.task/active/` 变更追踪任务；`false` 时跳过。 |
 | `changeTracking.implement` | `true` | `true` 时 `f2s-implement-tech-design` 写入任务清单并在满足归档门禁后归档；`false` 时跳过变更追踪部分。 |
+| `collaboration.enabled` | `true` | `true` 时按 developerId 隔离任务根 `.task/<id>/`；`false` 时始终 legacy 单根 `.task/`。 |
+| `collaboration.developerId` | `""` | 非空则作为进度目录名；空则 git user.email/name；仍无则 legacy `.task/`。顺序：config → git → legacy。 |
 
 - `subAgent=true` 时，主 agent 必须在技能前段**显式判断一次**本次是否拆子，并说明原因；即使判断不拆，也必须输出不拆原因。`subAgent=false` 时不得拆子 agent。
+- 变更追踪落盘路径以 **`rules/f2s-task` 的 `TASK_ROOT`** 为准（多人隔离）；禁止扫描其他 developer 的 todo。
 - `intentRecognition=false` 或字段缺失时，禁止自动进入任何 skill；只能按用户显式触发或当前规则允许的高置信分流进入。
 
 配置细表与补充规则见 **`./.codex/f2s-rules/f2s-config-check.md`**。

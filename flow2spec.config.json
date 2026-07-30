@@ -10,5 +10,9 @@
     "enabled": true
   },
   "intentRecognition": true,
-  "locale": "zh-CN"
+  "locale": "zh-CN",
+  "collaboration": {
+    "enabled": true,
+    "developerId": ""
+  }
 }
