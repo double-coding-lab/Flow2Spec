@@ -17,7 +17,7 @@
 执行 **`f2s-req-plan`**（或续作命中 `linkedSkill: "f2s-req-plan"`）时：
 
 - **不受** `changeTracking.feat` / `fix` / `implement` 限制，但 **必须** 按本规则「任务开始 / 执行中 / 中断与会话结束 / 任务完成 / 新会话续作」维护 `.task/`；
-- 技能 **步骤 0** 须 `Read` 本规则全文（**Cursor/Claude**：`rules/f2s-task.*`；**Codex**：`.codex/topics/f2s-task.md`）；
+- 技能 **步骤 0** 须 `Read` 本规则全文（**Cursor/Claude**：`rules/f2s-task.*`；**Codex**：`.codex/f2s-rules/f2s-task.md`）；
 - 落盘、打钩、归档、`user-todos.md` / `acceptance.md` 格式 **以本规则为准**；技能正文不得省略 `todo.json` / `user-todos.md` / `acceptance.md`，不得改写归档目录命名（`<YYYYMMDD>-<task-name>`）。
 
 ## 目录结构

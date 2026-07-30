@@ -7,7 +7,7 @@ description: 根据用户指出的实现或规则错误修正代码，并默认�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本处不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本处不复述。
 - 代码子包（bug 修复类实现代码）：`subAgent=true` 时可外包给子 agent 执行。
 - 文档子包（rules / skills / topics / stock-docs 等文风类改动）：默认不拆，由主 agent 直接编写，以保证「现行真值覆盖 / 篇幅上限 / 禁历史否定堆砌」等文风合规。
 - 若确需外包文档改动：子侧**只输出「原位替换 diff」**（before / after 小段），**不得整文件重写**；由主 agent 合并落盘。
@@ -39,7 +39,7 @@ description: 根据用户指出的实现或规则错误修正代码，并默认�
    - `.Knowledge/topics/`：修订对应主题规则/流程
    - `.Knowledge/index.md`：更新主题索引
    - 路由清单：若路由、依赖或 `topicMetadata` 受影响则最小更新
-   - **创作侧准则**：本步若新增 / 修改 topic、`topicMetadata` 或 `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再落盘。
+   - **创作侧准则**：本步若新增 / 修改 topic、`topicMetadata` 或 `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），再落盘。
 4. 输出摘要（代码改动 + 知识库改动）。
 
 ## 输出摘要格式（建议）

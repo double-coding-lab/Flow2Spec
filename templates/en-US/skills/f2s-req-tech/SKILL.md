@@ -6,7 +6,7 @@ description: Generate a technical design document from clarified requirements us
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not restate those semantics.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not restate those semantics.
 - **Precondition for splitting (hard constraint)**: when `subAgent=true`, the main agent **must first** extract a "project convention summary" as mandatory context for the sub agent. It must cover: external contract conventions, error and return conventions, async/integration conventions, data and storage conventions, engineering structure, and module boundaries, with a total length **< 80 lines**. If this precondition is not met, **do not split**: the acceptance rework cost is greater than the benefit of splitting.
 - **Sub-agent responsibility**: perform multi-source read-only analysis (`.Knowledge/topics`, `stock-docs`, clarified `req-docs`, and template), then write a `.Knowledge/req-docs` technical design draft according to `.Knowledge/template/technical-spec-template.md`.
 - **Main-agent responsibility**: finalize the contract, verify against the template and clarification document, and handle consistency of delivery units and flows.

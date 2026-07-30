@@ -7,7 +7,7 @@ description: Commit completed code to Git: by default check both changes and kno
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md`.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`.
 - This skill is performed entirely by the main agent (**pull confirmation** cannot be delegated to a sub agent; `git commit` does not require a separate user-confirmation round; see Steps 3-4).
 
 # f2s-git-commit (Commit Code)

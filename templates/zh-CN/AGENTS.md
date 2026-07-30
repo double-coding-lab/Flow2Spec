@@ -23,7 +23,7 @@
 - `subAgent=true` 时，主 agent 必须在技能前段**显式判断一次**本次是否拆子，并说明原因；即使判断不拆，也必须输出不拆原因。`subAgent=false` 时不得拆子 agent。
 - `intentRecognition=false` 或字段缺失时，禁止自动进入任何 skill；只能按用户显式触发或当前规则允许的高置信分流进入。
 
-配置细表与补充规则见 **`./.codex/topics/f2s-config-check.md`**。
+配置细表与补充规则见 **`./.codex/f2s-rules/f2s-config-check.md`**。
 
 ## KB 路由规则
 
@@ -34,8 +34,8 @@
 
 ## 普通问答收口门禁
 
-- 普通问答 / 排查 / 解释若需要下钻业务源码，先按 **`./.codex/topics/f2s-knowledge-preflight.md`** 执行首读与缺口说明。
-- 只要本轮读取过业务源码，且最终答案引用了源码事实，发出答案前必须按 **`./.codex/topics/f2s-kb-feedback-closing.md`** 四 case 收口；答案末尾必须显式输出 **`知识库补充建议`** 或 **`知识库已覆盖`**，不得静默省略。
+- 普通问答 / 排查 / 解释若需要下钻业务源码，先按 **`./.codex/f2s-rules/f2s-knowledge-preflight.md`** 执行首读与缺口说明。
+- 只要本轮读取过业务源码，且最终答案引用了源码事实，发出答案前必须按 **`./.codex/f2s-rules/f2s-kb-feedback-closing.md`** 四 case 收口；答案末尾必须显式输出 **`知识库补充建议`** 或 **`知识库已覆盖`**，不得静默省略。
 - 已进入 `f2s-*` 技能、`implement-tech-design`、`f2s-git-commit` 或其他已有后续流程时，不重复追加普通问答收口提示。
 
 ## 渐进式读取顺序
@@ -54,21 +54,21 @@
 
 - Flow2Spec 执行依据只认：
   - 仓库根 **`./AGENTS.md`**
-  - **`./.codex/topics/f2s-*.md`**
+  - **`./.codex/f2s-rules/f2s-*.md`**
   - **`./.codex/skills/`**
 - **`.codex/AGENTS.md`** 仅为目录指针，不能替代根 `AGENTS.md`。
 
 ## Codex 规则镜像（按需打开）
 
-这些文件由 `flow2spec init codex` 从规则模板镜像到 `.codex/topics/`。它们不会自动全文加载；当前任务需要细则时再打开。
+这些文件由 `flow2spec init codex` 从规则模板镜像到 `.codex/f2s-rules/`。它们不会自动全文加载；当前任务需要细则时再打开。
 
 | 规则 | 路径 | 什么时候读 |
 | --- | --- | --- |
-| 统一入口 | `./.codex/topics/f2s-flow2spec-unified-entry.md` | 执行 `f2s-*` 技能、判断 KB 路由 / 子 agent / 校验语义时 |
-| 配置前置 | `./.codex/topics/f2s-config-check.md` | 核对 `flow2spec.config.json`、`subAgent`、`changeTracking` 细则时 |
-| 普通问答首读门禁 | `./.codex/topics/f2s-knowledge-preflight.md` | 普通问答要下钻源码前 |
-| 普通问答收口 | `./.codex/topics/f2s-kb-feedback-closing.md` | 普通问答读取源码后判断是否建议补知识库 |
-| 意图识别 | `./.codex/topics/f2s-intent-routing.md` | 仅当 `intentRecognition=true`，需要判断是否自动进入 skill 时 |
+| 统一入口 | `./.codex/f2s-rules/f2s-flow2spec-unified-entry.md` | 执行 `f2s-*` 技能、判断 KB 路由 / 子 agent / 校验语义时 |
+| 配置前置 | `./.codex/f2s-rules/f2s-config-check.md` | 核对 `flow2spec.config.json`、`subAgent`、`changeTracking` 细则时 |
+| 普通问答首读门禁 | `./.codex/f2s-rules/f2s-knowledge-preflight.md` | 普通问答要下钻源码前 |
+| 普通问答收口 | `./.codex/f2s-rules/f2s-kb-feedback-closing.md` | 普通问答读取源码后判断是否建议补知识库 |
+| 意图识别 | `./.codex/f2s-rules/f2s-intent-routing.md` | 仅当 `intentRecognition=true`，需要判断是否自动进入 skill 时 |
 
 `implement-tech-design`、`f2s-doc-routing` 等长文按命中 topic 再打开，不必默认通读。
 

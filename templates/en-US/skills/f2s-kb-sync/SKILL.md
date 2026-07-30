@@ -7,7 +7,7 @@ description: Accept an explicit capability list or infer from zero input; first 
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
 - Step 1 (material collection): when `subAgent=true`, read-only collection may be split across sub-agents; they must not write files.
 - Step 2 (outline + user confirmation): must be completed by the main agent; confirmation authority must not be delegated.
 - Step 3 (write): when `subAgent=true`, writing may be split by confirmed outline item. Hard rule: before a sub-agent writes, it must load the opening summaries of 2-3 neighboring topics to align narrative style.
@@ -72,7 +72,7 @@ After the user confirms the outline and before any `.Knowledge/topics/` write, *
 
 > Hard rule: if sub-agent splitting is enabled, a sub-agent must read the opening summaries of 2-3 neighboring topics before writing to align narrative style; `manifest-routing.json` and `.Knowledge/index.md` are written at a single point by the main agent, and sub-agents have no write authority for them.
 >
-> **Authoring-side guideline**: if this step adds or modifies topics, `topicMetadata`, or `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before writing.
+> **Authoring-side guideline**: if this step adds or modifies topics, `topicMetadata`, or `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) before writing.
 
 Update according to the outline, item by item:
 

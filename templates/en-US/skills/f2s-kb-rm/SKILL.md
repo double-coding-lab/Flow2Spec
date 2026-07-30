@@ -7,7 +7,7 @@ description: Remove the knowledge topics and index mappings associated with a st
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). Do not repeat those definitions here.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). Do not repeat those definitions here.
 - By default, the main agent completes the full workflow (single-point deletion has low benefit from sub-agent splitting).
 - Split threshold: only when `subAgent=true` and **one batch deletes >= 5 topics** may deletion and reference cleanup be delegated to sub-agents.
 - Main agent must control scope confirmation and `fallbackTopic` reassignment.
@@ -29,7 +29,7 @@ description: Remove the knowledge topics and index mappings associated with a st
    - `.Knowledge/manifest-routing.json`: remove invalid `topicPaths`, `taskToTopicRules`, `topicDependencies`, and `topicMetadata` references.
    - The corresponding `matchers/<matcherId>.json`: remove invalid rules or `includeAny` terms aligned with the deleted `task` / `matcherId`.
    - If the deleted topic was `fallbackTopic`, a new fallback topic must be specified.
-   - **Authoring-side guideline**: this step adjusts `topicDependencies` (deleted depended-on topics or orphan edges), so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) and verify DAG and minimization constraints before writing.
+   - **Authoring-side guideline**: this step adjusts `topicDependencies` (deleted depended-on topics or orphan edges), so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) and verify DAG and minimization constraints before writing.
 
 ## Output Summary (Required)
 

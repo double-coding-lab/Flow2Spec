@@ -10,7 +10,7 @@
 
 - **Cursor**：`.cursor/rules/repo-dev-workflow-constraints.mdc`
 - **Claude**：`.claude/rules/repo-dev-workflow-constraints.md`
-- **Codex**：`.codex/topics/repo-dev-workflow-constraints.md`
+- **Codex**：`.codex/f2s-rules/repo-dev-workflow-constraints.md`
 
 三份为同源手写副本；执行时按当前 agent 打开对应端。
 

@@ -1,7 +1,7 @@
 # f2s-req-plan（路由摘要）
 
 > 长文见配置根 **`skills/f2s-req-plan/SKILL.md`**。  
-> **`.task/` 真值源**：配置根 **`rules/f2s-task.*`**（Codex：`.codex/topics/f2s-task.md`）。  
+> **`.task/` 真值源**：配置根 **`rules/f2s-task.*`**（Codex：`.codex/f2s-rules/f2s-task.md`）。  
 > 设计背景（可选）：[任务清单与变更追踪](../stock-docs/<任务清单说明>.md)。
 
 ## 依赖
@@ -24,4 +24,4 @@
 ## 下一步
 
 - 技能全文：`skills/f2s-req-plan/SKILL.md`
-- 任务规则：`rules/f2s-task.*` 或 `.codex/topics/f2s-task.md`
+- 任务规则：`rules/f2s-task.*` 或 `.codex/f2s-rules/f2s-task.md`

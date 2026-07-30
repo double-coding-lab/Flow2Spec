@@ -13,7 +13,7 @@ description: 旧版知识库一次性迁到 `.Knowledge`：以配置根 `docs-in
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
 - **子 agent 职责**（仅当 `subAgent=true`）：在主给定清单下做搬运工作、生成 `migration-report.md` 的**草案片段**；产出一律以 patch 形式提交，由主 agent 合并落盘。
 - **主必控**：
   - `.Knowledge/.migrate-state.json` **写权归主**（状态机事实源，主 / 子抢写会致队列错位）；
@@ -164,7 +164,7 @@ description: 旧版知识库一次性迁到 `.Knowledge`：以配置根 `docs-in
 2. 生成或更新 `.Knowledge/topics/<topic>.md`：
    - 正文表述统一为新架构口径（`.Knowledge` 分层、`manifest` 路由、`stock-docs`/`req-docs` 分工）。
    - 去除旧版独有路径/术语（如旧 `docs-index` 根路径、旧散落目录名），改为指向 `.Knowledge/...` 或相对 `.Knowledge` 的稳定路径。
-   - **创作侧准则**：本步生成 / 重写 topic 或调整 `topicMetadata` / `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再落盘。
+   - **创作侧准则**：本步生成 / 重写 topic 或调整 `topicMetadata` / `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），再落盘。
 3. 更新 `.Knowledge/index.md` 的主题索引行，并同步维护“关联文档（摘要）”列（每主题 1-3 条关键 `stock-docs/req-docs` **可点击 Markdown 链接**，格式：`[标题](相对路径)`）。
 4. 按需更新路由清单：
    - `.Knowledge/manifest-routing.json`：`topicPaths`、`taskToTopicRules[]`、`topicDependencies`、`topicMetadata`、`fallbackTopic`

@@ -9,7 +9,7 @@
 
 | Stage | Time | Summary |
 | --- | --- | --- |
-| M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
+| M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexRuleMirrors filter that missed .md files (kept .codex/f2s-rules empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
 | M23 · f2s-kb-distill auto tier judgment + f2s-kb-upgrade Step -1 | 2026-06-30 | Dropped --fast parameter; built-in "light tier / strict tier" 4-dimension auto judgment; f2s-kb-upgrade adds Step -1 background sub-agent upgrading global cli |
 | M22 · pkgRev top-level write + init auto-upgrade global cli | 2026-06-29 | manifest top-level pkgRev field overwritten on every init; init tail auto-upgrades global package when latest is higher |
 | M21 · f2s-kb-upgrade templateRevision fast path and self-update loop | 2026-06-29 | project vs package projectRev equal → skip steps 3/3a/3b; init-after SKILL changes rerun from step 2c without re-init; feedback-closing removed blanket KB-skill prohibition with summary requirement; inferred lands directly |
@@ -36,7 +36,7 @@
 
 ## M24 · Codex Rule Mirror Fix + Upgrade Step -1 Smart Preflight + Repo-local Dev Discipline
 
-- Fixed `writeCodexTopicMirrors` filter: the original `endsWith(".mdc")` skipped every `.md` rule file, leaving `.codex/topics/` empty after `flow2spec init codex`; extended to match both `.md` and `.mdc` and unify output to `.codex/topics/*.md`
+- Fixed `writeCodexRuleMirrors` filter: the original `endsWith(".mdc")` skipped every `.md` rule file, leaving `.codex/f2s-rules/` empty after `flow2spec init codex`; extended to match both `.md` and `.mdc` and unify output to `.codex/f2s-rules/*.md`
 - f2s-kb-upgrade Step -1 rewritten from "unconditionally dispatch a sub-agent to run `npm i -g`" to **probe first, upgrade on demand**: the main agent runs `flow2spec --version` + `npm view ... version` + `command -v npx` in the foreground and branches A/B/C:
   - A: installed and on latest → skip upgrade entirely; Step 2 defaults to `flow2spec init`
   - B: installed but behind → dispatch an independent sub-agent to run `npm i -g ...@latest` in the background (fire-and-forget); Step 2 uses `npx @latest init`

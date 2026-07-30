@@ -7,7 +7,7 @@
 ## 规则真值源（5 处镜像）
 
 - [ ] `.claude/rules/f2s-task.md`：新增「acceptance.md 格式与写盘义务」节；目录结构、归档门禁、续作展示、context.md 引用、禁止项均已更新（验收方式：打开文件搜索 `acceptance.md`，应有 12 处命中）
-- [ ] `.codex/topics/f2s-task.md`：body 与 `.claude` 同源；frontmatter 缺省（Codex 约定）（验收方式：`diff <(sed -n '/^# f2s-task/,$p' .claude/rules/f2s-task.md) .codex/topics/f2s-task.md` 应无差异）
+- [ ] `.codex/f2s-rules/f2s-task.md`：body 与 `.claude` 同源；frontmatter 缺省（Codex 约定）（验收方式：`diff <(sed -n '/^# f2s-task/,$p' .claude/rules/f2s-task.md) .codex/f2s-rules/f2s-task.md` 应无差异）
 - [ ] `.cursor/rules/f2s-task.mdc`：body 与 `.claude` 同源；保留 `alwaysApply: true` frontmatter（验收方式：`head -10` 查 frontmatter；正文搜 `acceptance.md` 应 12 处）
 - [ ] `templates/zh-CN/rules/f2s-task.md`：body 与 `.claude` 同源；保留 `alwaysApply: true` frontmatter（验收方式：同上）
 - [ ] `templates/en-US/rules/f2s-task.md`：英文版本同步更新（目录、归档门禁、续作、context.md、新增「Acceptance」一节、禁止项；验收方式：打开文件搜索 `acceptance.md`，应有 12 处命中）

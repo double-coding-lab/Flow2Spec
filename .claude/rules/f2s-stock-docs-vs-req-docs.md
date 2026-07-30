@@ -5,7 +5,7 @@ paths:
   - "**/.Knowledge/req-docs/**/*.md"
 ---
 
-> **唯一长文**：本文件为 **f2s-doc-routing** 的完整约定。`.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` 仅为路由摘要；**Codex** 读取 `.codex/topics/f2s-stock-docs-vs-req-docs.md`（由 `flow2spec init` 从本文件自动镜像）作为等效条令。
+> **唯一长文**：本文件为 **f2s-doc-routing** 的完整约定。`.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` 仅为路由摘要；**Codex** 读取 `.codex/f2s-rules/f2s-stock-docs-vs-req-docs.md`（由 `flow2spec init` 从本文件自动镜像）作为等效条令。
 
 # stock-docs 与 req-docs
 

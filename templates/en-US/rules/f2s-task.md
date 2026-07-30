@@ -26,7 +26,7 @@ If the corresponding subfield is `false` or missing, **the change-tracking steps
 When executing **`f2s-req-plan`** (or continuing a task matched by `linkedSkill: "f2s-req-plan"`):
 
 - It is **not constrained** by `changeTracking.feat` / `fix` / `implement`, but **must** maintain `.task/` according to this rule's "Task start / During execution / Interruption and session end / Task completion / New-session continuation" sections.
-- Skill **step 0** must `Read` this full rule (**Cursor/Claude**: `rules/f2s-task.*`; **Codex**: `.codex/topics/f2s-task.md`).
+- Skill **step 0** must `Read` this full rule (**Cursor/Claude**: `rules/f2s-task.*`; **Codex**: `.codex/f2s-rules/f2s-task.md`).
 - Disk writes, checkbox updates, archiving, and `user-todos.md` / `acceptance.md` format **are governed by this rule**. The skill body must not omit `todo.json` / `user-todos.md` / `acceptance.md`, and must not rewrite the archive directory naming (`<YYYYMMDD>-<task-name>`).
 
 ## Directory Structure

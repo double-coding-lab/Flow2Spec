@@ -108,7 +108,7 @@ flow2spec/
 5. 为每个指定 agent 写入配置根：
    - Cursor：`.cursor/rules/`（.mdc 原样）、`.cursor/skills/`
    - Claude：`.claude/rules/`（.mdc → .md 转换）、`.claude/skills/`
-   - Codex：`.codex/AGENTS.md`（动态生成，含技能摘要与项目配置）、`.codex/skills/`、`.codex/topics/*.md`（由 `templates/rules/*.mdc` 镜像，与 Cursor `rules` 条数对齐）
+   - Codex：`.codex/AGENTS.md`（动态生成，含技能摘要与项目配置）、`.codex/skills/`、`.codex/f2s-rules/*.md`（由 `templates/rules/*.mdc` 镜像，与 Cursor `rules` 条数对齐）
 
 ### 4.3 格式适配
 

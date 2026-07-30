@@ -7,7 +7,7 @@ description: Parse already implemented capabilities into the knowledge base duri
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
 - Do not split by default: the main session completes the full workflow; below the threshold, sub-agent benefit is lower than context-switching cost.
 - Split threshold (only when `subAgent=true` and any condition is met): (1) input paths >= 5; (2) a single source file > ~3000 lines; (3) total across paths > ~10000 lines.
 - **Split strategy (enabled only when the split threshold is reached and `subAgent=true`)**:
@@ -93,7 +93,7 @@ Based on the final draft, use the `f2s-kb-build` approach to update:
 - Routing manifest (when needed)
 - `manifest-routing.json.topicMetadata` (as needed): write `primary` / `tags` / `confidence` only for topicIds that already exist or are confirmed as created in this run; `tags` may be omitted and must not duplicate `primary`. Classification is only for governance, audit, and reading expectations; it does not participate in routing or execution requirements. If evidence is insufficient, do not write metadata and list it as pending confirmation in the summary. Do not create, rename, or split topics solely for classification.
 
-> **Authoring-side guideline**: this step triggers adding/modifying topics and `topicDependencies`, so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before invoking the `f2s-kb-build` approach to sync.
+> **Authoring-side guideline**: this step triggers adding/modifying topics and `topicDependencies`, so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) before invoking the `f2s-kb-build` approach to sync.
 
 ## Output Summary (Required)
 

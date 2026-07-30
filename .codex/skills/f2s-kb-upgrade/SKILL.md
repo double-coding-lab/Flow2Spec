@@ -41,7 +41,7 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
 - **子 agent 职责**（仅当 `subAgent=true`）：代跑 `flow2spec init` 等 shell 命令；仅承接命令执行，不承担知识库正文落盘。
 - **主必控**（主 agent 不可下放）：
   1. **版本分流**：**V1** 先走 `f2s-kb-migrate` 再进入本技能；**现行库（V2+）** 直接进入 `init` 流程（含 Flow2Spec **npm v3.x** 等，只要已满足步骤 0 中「现行库」条件，均走此支，**勿**因主版本为 3 再单独设一套流程）。

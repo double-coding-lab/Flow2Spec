@@ -11,7 +11,7 @@ alwaysApply: true
 
 业务仓库**项目根** `flow2spec.config.json`（`flow2spec init` 在文件缺失时补齐）含布尔字段 **`subAgent`**、**`switchAgentVerification`**（**切换 agent 校验**），默认 `false`。执行任意 **`f2s-*` 技能**或与 Flow2Spec 初始化相关的说明前，须读取该文件；技能或规则中凡写「仅当 `subAgent` / `switchAgentVerification` 为 true」的步骤，**必须按文件实际值决定是否执行**；缺失字段或文件不存在时均视为 `false`。
 
-> **`init` 与择路**：**`flow2spec init`** 会把统一入口写入当前仓库；**Cursor / Claude** 读取配置根 **`rules/f2s-flow2spec-unified-entry.*`**，**Codex** 读取 **`.codex/topics/f2s-flow2spec-unified-entry.md`**。两处正文同源，按当前工具读取对应入口即可；技能引「统一入口」时，在 **Codex** 以 **`.codex/topics/f2s-flow2spec-unified-entry.md`** 为准。
+> **`init` 与择路**：**`flow2spec init`** 会把统一入口写入当前仓库；**Cursor / Claude** 读取配置根 **`rules/f2s-flow2spec-unified-entry.*`**，**Codex** 读取 **`.codex/f2s-rules/f2s-flow2spec-unified-entry.md`**。两处正文同源，按当前工具读取对应入口即可；技能引「统一入口」时，在 **Codex** 以 **`.codex/f2s-rules/f2s-flow2spec-unified-entry.md`** 为准。
 
 ### 两字段语义（模板约定）
 
@@ -72,7 +72,7 @@ alwaysApply: true
 | **1a 库里有文档但未配路由** | 用 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 补 `taskToTopicRules`、`matcherPath` 分片、`topicPaths`；扩充 `includeAny` 覆盖用户常用说法。Agent 侧：走 `fallbackTopic` 分诊并提示「需补路由」，**不**靠全仓扫文件代替配置。 |
 | **1b 命中了但上下文不够** | 先 `expand`（`topicDependencies` + 次高候选），再 `verify` 点名缺哪份 `stock-docs`/`req-docs` 或哪段 topic；仍不足则 **向用户要文档或路径**，不要无门槛跨 matcher 全量补检索。**Agent 若需下钻源码**：须先对用户做**可见的缺口说明**（已读 KB、缺什么、拟读哪 1～2 个文件），见 **`f2s-knowledge-preflight`**「缺口闸门」；**禁止**无说明地连续 `Grep`/乱序探源。 |
 | **2 库里没有对应文档** | 一次读完 routing + 已命中 matcher + 相关 topic 后，在回复中 **明确承认知识库无覆盖**，再选：下钻业务代码 / 请用户补充 `req-docs` 或 PRD。**禁止**用反复读清单假装「再找一遍就会有」。**下钻源码前**同样须满足 **`f2s-knowledge-preflight`**「缺口闸门」的可见说明。 |
-| **2a 反复读清单耗 token** | **同一任务线内** `manifest-routing.json` 视为稳定快照：再次全文读取须说明理由（例如用户声明已通过 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 等更新路由或知识、或**手动编辑**了 manifest/matcher）。**勿将**仅执行 **`flow2spec init`** 等同于「业务知识库已更新」：`init` 以配置根落盘、目录补齐与包级路由结构对齐为主；**stock-docs / req-docs、topics 路由摘要、matchers 词条**由 **`f2s-*` 技能流程**维护；`init` 会把规则写入配置根 **`rules/*`**（或等价扩展名），并为 Codex 写入 **`.codex/topics/*.md`**。只读 **当前规则对应的单个** `matcherPath`；不要为枚举而遍历整个 `matchers/` 目录。`index.md` 仅在需核对主题语义时打开，禁止与 manifest 交替「刷清单」。 |
+| **2a 反复读清单耗 token** | **同一任务线内** `manifest-routing.json` 视为稳定快照：再次全文读取须说明理由（例如用户声明已通过 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 等更新路由或知识、或**手动编辑**了 manifest/matcher）。**勿将**仅执行 **`flow2spec init`** 等同于「业务知识库已更新」：`init` 以配置根落盘、目录补齐与包级路由结构对齐为主；**stock-docs / req-docs、topics 路由摘要、matchers 词条**由 **`f2s-*` 技能流程**维护；`init` 会把规则写入配置根 **`rules/*`**（或等价扩展名），并为 Codex 写入 **`.codex/f2s-rules/*.md`**。只读 **当前规则对应的单个** `matcherPath`；不要为枚举而遍历整个 `matchers/` 目录。`index.md` 仅在需核对主题语义时打开，禁止与 manifest 交替「刷清单」。 |
 
 ### 知识缺口的执行层要点（避免「表里有写、行为没做」）
 
@@ -105,7 +105,7 @@ alwaysApply: true
 
 ## 主题创作（Topic Authoring）指针
 
-新增或修改 `.Knowledge/topics/<topic>.md`、调整 `manifest-routing.topicDependencies`、删除 / 迁移 topic 时，**创作侧** 准则以 **`rules/f2s-topic-authoring.*`** 为单一事实源（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`）。本入口为**消费侧**（如何按已有 topic 路由 / 读取 / 兜底），与之并存；硬冲突时以本入口为准。`f2s-kb-build` / `f2s-kb-add` / `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-sync` / `f2s-kb-migrate` / `f2s-kb-rm` 在涉及 topic 落盘前须 Read 该条全文。
+新增或修改 `.Knowledge/topics/<topic>.md`、调整 `manifest-routing.topicDependencies`、删除 / 迁移 topic 时，**创作侧** 准则以 **`rules/f2s-topic-authoring.*`** 为单一事实源（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`）。本入口为**消费侧**（如何按已有 topic 路由 / 读取 / 兜底），与之并存；硬冲突时以本入口为准。`f2s-kb-build` / `f2s-kb-add` / `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-sync` / `f2s-kb-migrate` / `f2s-kb-rm` 在涉及 topic 落盘前须 Read 该条全文。
 
 ## 禁止项
 

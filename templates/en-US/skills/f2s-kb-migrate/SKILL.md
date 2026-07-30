@@ -13,7 +13,7 @@ description: Migrate a legacy knowledge base to `.Knowledge` in one pass: use th
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not repeat those definitions.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not repeat those definitions.
 - **Sub-agent responsibility** (only when `subAgent=true`): under the main agent's given inventory, perform moving work and generate **draft fragments** for `migration-report.md`; all outputs are submitted as patches and merged/written by the main agent.
 - **Main agent must control**:
   - `.Knowledge/.migrate-state.json` **write authority belongs to main** (state-machine source of truth; concurrent main/sub writes can misalign queues).
@@ -164,7 +164,7 @@ For each topic, execute in this order:
 2. Generate or update `.Knowledge/topics/<topic>.md`:
    - Body text uses the new architecture vocabulary (`.Knowledge` layering, `manifest` routing, `stock-docs`/`req-docs` responsibilities).
    - Remove legacy-only paths/terms (such as old `docs-index` root paths or scattered legacy directory names) and replace them with `.Knowledge/...` or stable paths relative to `.Knowledge`.
-   - **Authoring-side guideline**: if this step generates/rewrites a topic or adjusts `topicMetadata` / `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before writing.
+   - **Authoring-side guideline**: if this step generates/rewrites a topic or adjusts `topicMetadata` / `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) before writing.
 3. Update the topic index row in `.Knowledge/index.md`, and maintain the "Associated documents (summary)" column (1-3 key `stock-docs/req-docs` **clickable Markdown links** per topic, format: `[title](relative path)`).
 4. Update the routing manifest as needed:
    - `.Knowledge/manifest-routing.json`: `topicPaths`, `taskToTopicRules[]`, `topicDependencies`, `topicMetadata`, `fallbackTopic`

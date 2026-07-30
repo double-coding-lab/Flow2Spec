@@ -7,7 +7,7 @@ description: Extract reusable knowledge facts from Q&A and auto-commit to KB; de
 
 ## Orchestration (main / sub agent)
 
-- `subAgent` / `switchAgentVerification` semantics follow unified entry as single source of truth: **Cursor/Claude** read config root `rules/f2s-flow2spec-unified-entry.*`; **Codex** read `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
+- `subAgent` / `switchAgentVerification` semantics follow unified entry as single source of truth: **Cursor/Claude** read config root `rules/f2s-flow2spec-unified-entry.*`; **Codex** read `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).
 - This skill does not split sub by default: Q&A knowledge extraction is a single-round focused task, completed by main agent is more efficient.
 - Write permission constraint: `manifest-routing.json` and `.Knowledge/index.md` are always written by main agent only.
 - Verification: self-verify on the side that writes to disk.

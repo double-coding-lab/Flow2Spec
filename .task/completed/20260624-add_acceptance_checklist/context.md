@@ -5,7 +5,7 @@
 ### 真值源（规则）
 
 - `.claude/rules/f2s-task.md`
-- `.codex/topics/f2s-task.md`
+- `.codex/f2s-rules/f2s-task.md`
 - `.cursor/rules/f2s-task.mdc`
 - `templates/zh-CN/rules/f2s-task.md`
 - `templates/en-US/rules/f2s-task.md`

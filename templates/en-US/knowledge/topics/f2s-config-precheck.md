@@ -9,7 +9,7 @@
 
 | Side | Path |
 | --- | --- |
-| Codex | Repository-root `.codex/topics/f2s-config-check.md` (init mirror, same source as template); SessionStart: `.codex/hooks/f2s-config-session.js` |
+| Codex | Repository-root `.codex/f2s-rules/f2s-config-check.md` (init mirror, same source as template); SessionStart: `.codex/hooks/f2s-config-session.js` |
 | Cursor | Repository-root `.cursor/rules/f2s-config-check.mdc` (`flow2spec init cursor`) |
 | Claude | `.claude/rules/f2s-config-check.md`; SessionStart: `.claude/hooks/f2s-config-session.js`; PreToolUse guard: `.claude/hooks/f2s-config-inject.js` |
 
@@ -21,4 +21,4 @@
 
 ## Prohibitions
 
-- Do not enter **`f2s-*`** skill-body steps before reading **`flow2spec.config.json`** (same rule as `AGENTS` and `.codex/topics/f2s-config-check.md`). Claude/Codex SessionStart summaries and Claude's PreToolUse guard reminder do not replace this Read.
+- Do not enter **`f2s-*`** skill-body steps before reading **`flow2spec.config.json`** (same rule as `AGENTS` and `.codex/f2s-rules/f2s-config-check.md`). Claude/Codex SessionStart summaries and Claude's PreToolUse guard reminder do not replace this Read.

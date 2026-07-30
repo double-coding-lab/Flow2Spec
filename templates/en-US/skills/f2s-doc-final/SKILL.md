@@ -7,7 +7,7 @@ description: Convert a PDF or MD document into the `final-overview-template` sta
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not restate those semantics.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not restate those semantics.
 - **Do not split by default**: MD / PDF -> `final-overview-template` conversion is most coherent when the main session completes understanding, template mapping, and finalization in one pass.
 - **Optional split** (only when `subAgent=true` and the input is large / multi-file; threshold: PDF **> 50 pages** or **> ~5MB of text**): a sub agent may produce a **draft** for template mapping, formatting, and structural transfer; the main agent compares it against the `final-overview-template`, identifies gaps, asks the user follow-up questions, aligns with the user, and **finalizes / accepts** the document. **A sub agent must not claim the final document is compliant on its own**.
 - Do not split by default just because "format conversion can be isolated": final compliance depends on template semantics plus business wording, and the main-side acceptance cost usually remains.

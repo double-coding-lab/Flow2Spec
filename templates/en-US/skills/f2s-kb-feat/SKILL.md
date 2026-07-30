@@ -7,7 +7,7 @@ description: Complete implementation and knowledge-base sync when adding a capab
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` and `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). Do not repeat those definitions here.
+- The meaning of `subAgent` and `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). Do not repeat those definitions here.
 - **Code subpackage** (new / modified implementation code): when `subAgent=true`, it may be delegated to a sub-agent.
 - **Documentation subpackage** (style-sensitive changes to rules / skills / topics / stock-docs): by default, do not split; the main agent writes them to preserve writing constraints such as "current truth wins", length limits, and no stacked historical negation.
 - If documentation changes must be delegated: the sub-agent only outputs an "in-place replacement diff" (small before / after snippets) and must not rewrite whole files; the main agent merges and writes the result.
@@ -39,7 +39,7 @@ Before execution, read `flow2spec.config.json`. If `changeTracking.feat: true`:
    - `.Knowledge/topics/`: add or revise topic rules and workflows.
    - `.Knowledge/index.md`: topic index.
    - Routing manifest: minimally update it when routing, dependencies, or `topicMetadata` change.
-   - **Authoring-side guideline**: if this step adds or modifies topics, `topicMetadata`, or `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before writing.
+   - **Authoring-side guideline**: if this step adds or modifies topics, `topicMetadata`, or `topicDependencies`, first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) before writing.
 4. Output a summary (capability points, implementation, knowledge-base changes).
 
 ## Output Summary Format (Recommended)

@@ -5,7 +5,7 @@ globs:
 alwaysApply: false
 ---
 
-> **唯一长文**：本文件为 **implement-tech-design** 的完整执行条令。`.Knowledge/topics/f2s-implement-tech-design.md` 仅为路由摘要；**Codex** 读取 `.codex/topics/f2s-implement-tech-design.md`（由 `flow2spec init` 从本文件自动镜像）作为等效条令。
+> **唯一长文**：本文件为 **implement-tech-design** 的完整执行条令。`.Knowledge/topics/f2s-implement-tech-design.md` 仅为路由摘要；**Codex** 读取 `.codex/f2s-rules/f2s-implement-tech-design.md`（由 `flow2spec init` 从本文件自动镜像）作为等效条令。
 
 > 执行口径：统一知识库路径为 `/.Knowledge/`。下文所有路径均按 `.Knowledge` 约定解释。
 

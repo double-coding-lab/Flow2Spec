@@ -1,7 +1,7 @@
 # f2s-req-plan (routing summary)
 
 > For the long-form body, see configuration-root **`skills/f2s-req-plan/SKILL.md`**.  
-> **`.task/` source of truth**: configuration-root **`rules/f2s-task.*`** (Codex: `.codex/topics/f2s-task.md`).  
+> **`.task/` source of truth**: configuration-root **`rules/f2s-task.*`** (Codex: `.codex/f2s-rules/f2s-task.md`).  
 > Design background (optional): [task list and change tracking](../stock-docs/<task-list-notes>.md).
 
 ## Dependency
@@ -24,4 +24,4 @@ Does not depend on `changeTracking`, but **always** follows `f2s-task`.
 ## Next Step
 
 - Full skill text: `skills/f2s-req-plan/SKILL.md`
-- Task rules: `rules/f2s-task.*` or `.codex/topics/f2s-task.md`
+- Task rules: `rules/f2s-task.*` or `.codex/f2s-rules/f2s-task.md`

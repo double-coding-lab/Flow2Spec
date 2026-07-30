@@ -11,7 +11,7 @@ description: Flow2Spec 项目开发纪律（仅本双仓适用）：修改本仓
 > **单一事实源**：本文件为 **`f2s-dev-workflow-constraints`** 的完整约定。
 > - Claude：`.claude/rules/repo-dev-workflow-constraints.md`
 > - Cursor：`.cursor/rules/repo-dev-workflow-constraints.mdc`
-> - Codex：`.codex/topics/repo-dev-workflow-constraints.md`
+> - Codex：`.codex/f2s-rules/repo-dev-workflow-constraints.md`
 > - 本仓路由摘要：`.Knowledge/topics/f2s-dev-workflow-constraints.md`
 >
 > **命名对齐**：**配置根文件名**统一用 **`repo-*`** 前缀（避开 `init` 的 `f2s-` 自清理触发面）；**topic id / 路由概念名**保留 **`f2s-dev-workflow-constraints`**（`manifest-routing.topicPaths` / `topicDependencies` / `topicMetadata` / matcher 已登记的稳定 id，改会连锁破坏路由并让历史里程碑失真）。两处字面不同，指向**同一条规则**。
@@ -23,7 +23,7 @@ description: Flow2Spec 项目开发纪律（仅本双仓适用）：修改本仓
 | 约束 | 内容 |
 | --- | --- |
 | **1. 只改 `templates/` 与本仓知识库** | Flow2Spec 双仓下要给**下游用**的内容——规则 / 技能 / manifest / matchers / topics / knowledge 模板改动——**只落**在 `templates/zh-CN/` 与 `templates/en-US/` 下（含 `rules/`、`skills/`、`knowledge/`、`AGENTS.md`、`flow2spec.config.json` 模板）。**本仓自身**的 `.Knowledge/` 与配置根**下游用不到**的内容（如本规则、`f2s-dev-workflow-check` skill）**直接**落配置根 + 本仓 `.Knowledge/topics/`。 |
-| **2. 不改配置根（下游会用到的规则/技能）** | **禁止**直接编辑 `.claude/rules/` / `.claude/skills/` / `.cursor/rules/` / `.cursor/skills/` / `.codex/skills/` / `.codex/topics/` 中**由 `templates/` 派生**的文件、以及根目录 `AGENTS.md`——这些是 `flow2spec init` 的产物，手改会在下次 `init` / `sync:agents` 时被静默覆盖。**例外**：本规则、`f2s-dev-workflow-check` skill 之类**只存在于本仓配置根**、**从不写入 `templates/`** 的文件不受此约束（它们本来就是配置根的原生手写内容）。 |
+| **2. 不改配置根（下游会用到的规则/技能）** | **禁止**直接编辑 `.claude/rules/` / `.claude/skills/` / `.cursor/rules/` / `.cursor/skills/` / `.codex/skills/` / `.codex/f2s-rules/` 中**由 `templates/` 派生**的文件、以及根目录 `AGENTS.md`——这些是 `flow2spec init` 的产物，手改会在下次 `init` / `sync:agents` 时被静默覆盖。**例外**：本规则、`f2s-dev-workflow-check` skill 之类**只存在于本仓配置根**、**从不写入 `templates/`** 的文件不受此约束（它们本来就是配置根的原生手写内容）。 |
 | **3. 用户驱动分发** | 模板改完后，Agent **不主动**跑 `flow2spec init` / `sync:agents`。默认交给用户执行；如果用户明确说「帮我 init」/「跑 sync」，才代跑。 |
 | **4. 双仓一致** | 公开仓与内部包仓的模板正文（templates 全量）**必须字节级一致**，**只差** npm 包名（`@double-codeing/flow2spec` ↔ `@ctrip/flow2spec`）与个别 remote URL / GitLab 特有提示。本规则等「本仓专属」内容也须双仓同步（这样两个仓库的开发者都能读到同一份纪律）。 |
 
@@ -64,7 +64,7 @@ Flow2Spec 有一个让人容易混乱的特点：**它自己就是自己的第�
 
 **本仓专属（不进 templates）**：
 - `.Knowledge/topics/*.md`、`.Knowledge/index.md`、`.Knowledge/manifest-routing.json`、`.Knowledge/matchers/*.json`、`.Knowledge/stock-docs/*.md`、`.Knowledge/req-docs/*.md`：本仓自身知识库
-- **本仓专属规则 / 技能**：`.claude/rules/repo-dev-workflow-constraints.md`、`.cursor/rules/repo-dev-workflow-constraints.mdc`、`.codex/topics/repo-dev-workflow-constraints.md`、`.claude/skills/f2s-dev-workflow-check/`、`.cursor/skills/f2s-dev-workflow-check/`、`.codex/skills/f2s-dev-workflow-check/`——这些**从不进 `templates/`**，直接手写落三端配置根
+- **本仓专属规则 / 技能**：`.claude/rules/repo-dev-workflow-constraints.md`、`.cursor/rules/repo-dev-workflow-constraints.mdc`、`.codex/f2s-rules/repo-dev-workflow-constraints.md`、`.claude/skills/f2s-dev-workflow-check/`、`.cursor/skills/f2s-dev-workflow-check/`、`.codex/skills/f2s-dev-workflow-check/`——这些**从不进 `templates/`**，直接手写落三端配置根
 - `docs/*.md` / `docs/en/*.md`、`lib/*.js`、`cli.js`、`scripts/*`、`package.json`、`README*.md`
 
 ### ❌ Agent 禁止改（下游会用到的 init 产物）
@@ -73,7 +73,7 @@ Flow2Spec 有一个让人容易混乱的特点：**它自己就是自己的第�
 - `.claude/hooks/*.js`、`.claude/settings.json`（hook 段由 init 写）
 - `.cursor/rules/*.mdc`、`.cursor/skills/*/SKILL.md`（除本仓专属条目外）
 - `.cursor/hooks.json`、`.cursor/hooks/*.js`
-- `.codex/topics/` 中**由 `templates/rules/` 镜像**的文件、`.codex/skills/` 中**由 `templates/skills/` 派生**的文件
+- `.codex/f2s-rules/` 中**由 `templates/rules/` 镜像**的文件、`.codex/skills/` 中**由 `templates/skills/` 派生**的文件
 - `.codex/AGENTS.md`（指针文件）、`.codex/hooks.json`、`.codex/hooks/*.js`
 - 根目录 `AGENTS.md`（Codex 完整条令，由 `buildCodexAgentsMd` 从 templates 拼装）
 
@@ -136,7 +136,7 @@ flow2spec init codex claude cursor
 
 ## 禁止项
 
-- 禁止 Agent 用 `Edit` / `Write` 直接改**在 `templates/` 里有对应源**的配置根文件（`.claude/rules/*`、`.claude/skills/*`、`.cursor/rules/*`、`.cursor/skills/*`、`.codex/topics/*`、`.codex/skills/*`、根 `AGENTS.md`）——即便当前工具的配置根就是它们。
+- 禁止 Agent 用 `Edit` / `Write` 直接改**在 `templates/` 里有对应源**的配置根文件（`.claude/rules/*`、`.claude/skills/*`、`.cursor/rules/*`、`.cursor/skills/*`、`.codex/f2s-rules/*`、`.codex/skills/*`、根 `AGENTS.md`）——即便当前工具的配置根就是它们。
 - 禁止把**本仓专属**规则 / 技能 / 主题写入 `templates/`（下游用不到，会造成噪音）。
 - 禁止 Agent 主动跑 `flow2spec init` / `npm run sync:agents` 分发；须由用户明确得令。
 - 禁止只改单侧仓库；提交前须双仓字节级一致（除包名与个别 URL）。

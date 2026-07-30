@@ -6,7 +6,7 @@ description: 根据用户说明或文档（或扫描代码）生成项目架构�
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
+- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
 - 当 `subAgent=true` 时，从以下两种子策略择一：
   - **B 模式（默认，单轮并行）**：主先产出「inventory（入口 + 核心模块名，主手写）」+「扫描契约（可读路径 / 禁扫目录 / 统一产出字段）」→ 子 agent 并行只读扫表 → 主一轮合并去重 → 写 `stock-docs` 初稿 → 用户确认与验收在主 agent 内完成。
   - **C 模式（多轮纠偏）**：切换判据为以下任一 —— 多 workspace / monorepo、目录极深或源路径 > 20 条、首轮子表矛盾或空洞明显、多源叙述重合 / 矛盾严重。

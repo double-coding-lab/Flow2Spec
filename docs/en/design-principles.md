@@ -491,14 +491,14 @@ Session context itself is an information source  ·  no need for users to organi
 
 #### 5.1 How execution switches reach the Agent (multi-platform prompts)
 
-`flow2spec.config.json` determines **`subAgent` / `switchAgentVerification` / `changeTracking`**, but AI products **do not guarantee** that the file is automatically opened at session start. The design uses **multiple weak constraint layers** to reduce the probability of "running `f2s-*` without reading the config", while avoiding maintaining a verbose duplicate of `.codex/topics/f2s-config-check.md` in `.Knowledge`:
+`flow2spec.config.json` determines **`subAgent` / `switchAgentVerification` / `changeTracking`**, but AI products **do not guarantee** that the file is automatically opened at session start. The design uses **multiple weak constraint layers** to reduce the probability of "running `f2s-*` without reading the config", while avoiding maintaining a verbose duplicate of `.codex/f2s-rules/f2s-config-check.md` in `.Knowledge`:
 
 | Mechanism | Design Intent |
 | --- | --- |
 | **Cursor `f2s-config-check.mdc`** | Rule-layer enforcement: "Read before skill body"; Cursor hooks are used for update checks only, not automatic config reads. |
 | **Claude `f2s-config-session` SessionStart** | Injects one config summary when the conversation starts, reducing the chance that the setting is forgotten. |
 | **Claude `f2s-config-inject` PreToolUse** | Only guards **`f2s-*` Skill** calls by reminding the agent that the first skill-body action must be Read; it no longer repeatedly injects the full config. |
-| **Codex `AGENTS.md` / `.codex/topics/f2s-config-check.md` + `f2s-config-session`** | One `SessionStart` configuration summary plus text-layer enforcement: "Read before skill body"; there is still no Claude-style `PreToolUse Skill` guard. |
+| **Codex `AGENTS.md` / `.codex/f2s-rules/f2s-config-check.md` + `f2s-config-session`** | One `SessionStart` configuration summary plus text-layer enforcement: "Read before skill body"; there is still no Claude-style `PreToolUse Skill` guard. |
 | **Codex `AGENTS.md` + `renderProjectConfigBlock`** | Top-level **Read** hard constraint + field-semantics table; current values only come from disk Read and the SessionStart summary. |
 | **Knowledge base `config-precheck` topic** | When routing hits, provides only **summary** and a pointer to the Codex full text, **not** a substitute for Read JSON. |
 
@@ -514,7 +514,7 @@ Each SKILL.md's orchestration section reads:
   not restated here.
   ↓
   Cursor/Claude → rules/f2s-flow2spec-unified-entry.*
-  Codex         → .codex/topics/f2s-flow2spec-unified-entry.md
+  Codex         → .codex/f2s-rules/f2s-flow2spec-unified-entry.md
 
   15 skills, each only writes its own unique orchestration constraints
   Common rules are defined in one place; modifying one location affects all

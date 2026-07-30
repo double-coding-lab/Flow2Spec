@@ -7,7 +7,7 @@ description: 代码写完后提交 Git：默认检查变更与知识库覆盖；
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`。
+- `subAgent` / `switchAgentVerification` 语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`。
 - 本技能全程在主 agent 完成（**pull 的确认**不可下放子 agent；`git commit` 不要求单独一轮用户确认，见步骤 3–4）。
 
 # f2s-git-commit（提交代码）

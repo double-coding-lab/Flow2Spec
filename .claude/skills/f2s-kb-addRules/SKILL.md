@@ -15,7 +15,7 @@ description: 把用户口述的规则沉淀进知识库，自动判定「新建�
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 语义以统一入口为唯一事实源（**Cursor/Claude** 读 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`）。本 SKILL 不复述。
+- `subAgent` / `switchAgentVerification` 语义以统一入口为唯一事实源（**Cursor/Claude** 读 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`）。本 SKILL 不复述。
 - 默认主 agent 全流程执行——口述规则单条短文，拆子收益低于 context 切换成本。
 - **写权硬约束**：`.Knowledge/manifest-routing.json` / `.Knowledge/index.md` 恒由主 agent 落盘。
 - 落盘侧自验。
@@ -27,7 +27,7 @@ description: 把用户口述的规则沉淀进知识库，自动判定「新建�
 
 ## 强制前置：Read 创作侧准则
 
-执行任何步骤前，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），后续命名 / 骨架 / 依赖判定 / DAG 最小化 / 写盘权属均以该条为准。
+执行任何步骤前，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），后续命名 / 骨架 / 依赖判定 / DAG 最小化 / 写盘权属均以该条为准。
 
 ## 步骤 1：意图归一
 

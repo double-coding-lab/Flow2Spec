@@ -6,7 +6,7 @@ description: Generate a first draft of project architecture documentation from u
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not restate those semantics.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not restate those semantics.
 - When `subAgent=true`, choose one of the following sub-agent strategies:
   - **Mode B (default, single-round parallel)**: the main agent first produces an "inventory" (entry points + core module names, handwritten by the main agent) and a "scanning contract" (readable paths / directories forbidden to scan / unified output fields). Sub agents then perform parallel read-only scans and return tables. The main agent merges and deduplicates once, writes the `stock-docs` draft, and keeps user confirmation and acceptance in the main agent.
   - **Mode C (multi-round correction)**: switch to this mode when any of the following is true: multiple workspaces / monorepo; extremely deep directories or > 20 source paths; the first-round sub-agent tables are contradictory or obviously thin; multiple source narratives overlap or conflict heavily.

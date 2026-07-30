@@ -7,7 +7,7 @@ description: Convert a PDF technical design into Markdown and save it under req-
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This document does not restate those semantics.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This document does not restate those semantics.
 - **Do not split by default**: follow-up questions and disk writes must be completed in the main agent session. A sub agent cannot ask the user follow-up questions.
 - **Optional split**: enable only when `subAgent=true` and the PDF exceeds the threshold (**> 50 pages or > ~5MB of text**). The sub agent is responsible only for the first PDF-to-MD draft and writes `.Knowledge/req-docs/<name>.md`; it must **not ask follow-up questions and must not write the "Flow Description" section**. The main agent then handles follow-up questions and flow-description completion.
 - Verification is performed by the writing agent by default. This skill does not bind to cross-agent verification.

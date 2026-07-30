@@ -26,7 +26,7 @@
 3. **禁止改配置根落盘目录**（除非用户**明确**要求「只动某配置根、且与 templates 无关」）：
    - `.cursor/rules/`、`.cursor/skills/`
    - `.claude/rules/`、`.claude/skills/`、`.claude/settings.json` 等
-   - `.codex/skills/`、`.codex/topics/`、`.codex/AGENTS.md`
+   - `.codex/skills/`、`.codex/f2s-rules/`、`.codex/AGENTS.md`
 4. **需要 Cursor / Claude / Codex 本地立刻生效时**：在回复摘要中说明「请在本仓执行 `flow2spec init <agents…>`（或 `f2s-kb-upgrade`）」——由**人**触发 init，**禁止** Agent 用改配置根代替改 `templates/`。
 
 ---

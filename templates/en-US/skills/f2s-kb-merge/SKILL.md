@@ -5,7 +5,7 @@ description: Resolve editor-context conflicts after a Git merge; optionally acce
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not repeat those definitions.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not repeat those definitions.
 - **Sub-agent responsibility** (only when `subAgent=true`): perform only **conflict scanning + categorized comparison table**. Each entry contains five fields: `file` / `category` (document index / overview rule / module rule / skill / explanatory document / implementation / dependency metadata) / `ours_summary` / `theirs_summary` / `recommendation` (union / keep one side / merge mandatory items / needs user choice).
 - **Sub-agents do not produce finished merged drafts**, to avoid forcing the main agent to rewrite them again.
 - **Main-agent responsibility**: write files according to the strategy, make implementation-side decisions, and verify.

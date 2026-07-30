@@ -1,7 +1,7 @@
 # implement-tech-design (routing summary)
 
 > **Only long-form source**: Cursor / Claude use configuration-root **`rules/f2s-implement-tech-design.md(c)`** as authoritative.  
-> **Codex**: do not read `rules/`; execute the equivalent constraints in **`.codex/topics/f2s-implement-tech-design.md`** (automatically mirrored from template `rules` by `flow2spec init`).
+> **Codex**: do not read `rules/`; execute the equivalent constraints in **`.codex/f2s-rules/f2s-implement-tech-design.md`** (automatically mirrored from template `rules` by `flow2spec init`).
 
 ## Purpose
 
@@ -18,4 +18,4 @@
 | Environment | Next step |
 | --- | --- |
 | Cursor / Claude | Open or @ **`rules/f2s-implement-tech-design`**, then follow its steps. |
-| Codex | Read **`.codex/topics/f2s-implement-tech-design.md`**. |
+| Codex | Read **`.codex/f2s-rules/f2s-implement-tech-design.md`**. |

@@ -41,7 +41,7 @@ description: Knowledge-base template upgrade skill (this SKILL only): **V1 flow 
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not repeat those definitions.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not repeat those definitions.
 - **Sub-agent responsibility** (only when `subAgent=true`): run shell commands such as `flow2spec init`; only command execution is delegated, not knowledge-base body writing.
 - **Main agent must control** (must not delegate):
   1. **Version branching**: **V1** runs `f2s-kb-migrate` first, then enters this skill; **current repositories (V2+)** directly enter the `init` flow (including Flow2Spec **npm v3.x** etc.; as long as step 0 "current repository" conditions are met, use this branch. **Do not** create a separate flow just because the package major version is 3).

@@ -9,7 +9,7 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本 SKILL 不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本 SKILL 不复述。
 - **首选分支（小变更 → 主全流程）**：当本次改动 **≤ 2 个新 / 改主题**，**且 ≤ 1 个新 matcher**，**且无跨主题批量引用调整** 时，全流程在主 agent 完成，不拆子。
 - **中大变更分支**（`subAgent=true` 且超出上述阈值）：
   - 主 agent 在主会话中列出**文件级契约**：子 A 只写 `.Knowledge/topics/<foo>.md`，子 B 只写 `.Knowledge/matchers/<m-foo>.json`，路径互不重叠；
@@ -52,7 +52,7 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 - 任务触发词（写入对应 `matchers/<matcherId>.json` 的 `includeAny`）
 - 与现有主题的依赖关系（用于 `topicDependencies`）
 
-> **创作侧准则**：本步骤涉及新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再继续步骤 3 / 步骤 5。命名、骨架、依赖判定、DAG 最小化、判定时机均以该条为准，本 SKILL 不复述。
+> **创作侧准则**：本步骤涉及新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），再继续步骤 3 / 步骤 5。命名、骨架、依赖判定、DAG 最小化、判定时机均以该条为准，本 SKILL 不复述。
 
 > **拆分评估**：若输入 stock-doc 超过 **300–500 行**，或语义分析后发现覆盖 **3 个以上不相干职责域**，须在输出摘要中说明：建议拆成多份 focused stock-doc（各自对应一个独立 topic），用户确认后再分批执行；若用户选择继续生成单个大 topic，不阻断，但在摘要中记录"主题偏大，建议后续拆分"。大功能主 topic 写业务闭环/入口/子模块 stock-doc 导航链接；子模块 topic 各自独立命中，**不通过 `topicDependencies` 串联概述与详情**。
 

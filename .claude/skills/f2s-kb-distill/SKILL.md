@@ -7,7 +7,7 @@ description: 从问答过程中提取可复用知识事实并自动入库；根�
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
+- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
 - 本技能默认不拆子：问答知识提取是单轮聚焦任务，由主 agent 全流程完成效率更高。
 - 写权硬约束：`manifest-routing.json` 与 `.Knowledge/index.md` 恒由主 agent 单点落盘。
 - 校验：落盘侧自验。
@@ -65,8 +65,8 @@ description: 从问答过程中提取可复用知识事实并自动入库；根�
 ### 步骤 0：读取配置与规则
 
 1. 读取 `flow2spec.config.json`（获取 `subAgent` / `switchAgentVerification`）
-2. 读取 `.codex/topics/f2s-kb-feedback-closing.md`（获取"可复用知识事实"定义）
-3. 读取 `.codex/topics/f2s-topic-authoring.md`（获取 topic 创作准则）
+2. 读取 `.codex/f2s-rules/f2s-kb-feedback-closing.md`（获取"可复用知识事实"定义）
+3. 读取 `.codex/f2s-rules/f2s-topic-authoring.md`（获取 topic 创作准则）
 
 ### 步骤 1：提取问答上下文
 

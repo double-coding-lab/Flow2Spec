@@ -7,7 +7,7 @@ description: 将 PDF 技术方案转为 Markdown 并保存到 req-docs，可补�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本文不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本文不复述。
 - **默认不拆子**：追问-落盘必须在主 agent 内完成（子 agent 无法向用户追问）。
 - **可选拆子**：仅当 `subAgent=true` 且 PDF 规模超阈值（**> 50 页 或 > ~5MB 文本**）时启用；子 agent 仅负责 PDF→MD 首稿并落盘 `.Knowledge/req-docs/<名>.md`，**不向用户追问、不写「流程说明」章节**；主 agent 接手后续追问与流程图补写。
 - 校验默认由落盘侧 agent 自验；本 SKILL 不绑定交叉校验。

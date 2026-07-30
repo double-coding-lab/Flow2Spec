@@ -5,7 +5,7 @@ globs:
 alwaysApply: false
 ---
 
-> **Single long-form rule**: this file is the complete execution rule for **implement-tech-design**. `.Knowledge/topics/f2s-implement-tech-design.md` is only a routing summary; **Codex** reads `.codex/topics/f2s-implement-tech-design.md` (automatically mirrored from this file by `flow2spec init`) as the equivalent rule text.
+> **Single long-form rule**: this file is the complete execution rule for **implement-tech-design**. `.Knowledge/topics/f2s-implement-tech-design.md` is only a routing summary; **Codex** reads `.codex/f2s-rules/f2s-implement-tech-design.md` (automatically mirrored from this file by `flow2spec init`) as the equivalent rule text.
 
 > Execution scope: the unified knowledge-base path is `/.Knowledge/`. All paths below are interpreted according to the `.Knowledge` convention.
 

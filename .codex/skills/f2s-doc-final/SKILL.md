@@ -7,7 +7,7 @@ description: 将 PDF 或 MD 转为《终稿模版》规范格式，便于后续�
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
+- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
 - **默认不拆子**：MD / PDF → 终稿模版的连贯性最好，由主会话一气呵成完成理解、套模版与定稿。
 - **可选拆子**（仅当 `subAgent=true` 且大体量 / 多文件，阈值：PDF **> 50 页** 或 **> ~5MB 文本**）：子 agent 做「套模版、排版与结构搬运」**草稿**；主 agent 对照终稿模版、识别缺口并向用户追问、与用户对齐并**定稿 / 验收**；**子 agent 不得单独宣称终稿已合规**。
 - 不为「格式转换可独立」默认拆子：终稿合规依赖模版语义 + 业务表述，主侧验收成本通常仍在。

@@ -5,7 +5,7 @@ description: 解决 Git 合并后编辑器上下文冲突；可选传入冲突�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
 - **子 agent 职责**（仅当 `subAgent=true`）：只做**冲突扫描 + 按类别对照表**，每条包含五字段 —— `file` / `category`（文档索引 / 总览规则 / 模块规则 / 技能 / 说明文档 / 实现类 / 依赖元数据）/ `ours_summary` / `theirs_summary` / `recommendation`（并集 / 保留某侧 / 并入必须项 / 待用户选）。
 - **子 agent 不出成品合并稿**，避免主 agent 二次重写。
 - **主 agent 职责**：按策略落盘 + 实现类决策 + 验收。

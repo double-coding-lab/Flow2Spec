@@ -9,7 +9,7 @@
 
 | 侧 | 路径 |
 | --- | --- |
-| Codex | 仓库根 `.codex/topics/f2s-config-check.md`（init 镜像，与模板同源）；SessionStart：`.codex/hooks/f2s-config-session.js` |
+| Codex | 仓库根 `.codex/f2s-rules/f2s-config-check.md`（init 镜像，与模板同源）；SessionStart：`.codex/hooks/f2s-config-session.js` |
 | Cursor | 仓库根 `.cursor/rules/f2s-config-check.mdc`（`flow2spec init cursor`） |
 | Claude | `.claude/rules/f2s-config-check.md`；SessionStart：`.claude/hooks/f2s-config-session.js`；PreToolUse 守门：`.claude/hooks/f2s-config-inject.js` |
 
@@ -21,4 +21,4 @@
 
 ## 禁止项
 
-- 禁止在未读 **`flow2spec.config.json`** 的情况下进入 **`f2s-*`** 技能正文步骤（与 `AGENTS`、`.codex/topics/f2s-config-check.md` 一致）；Claude / Codex 的 SessionStart 摘要与 Claude 的 PreToolUse 守门提示都不替代本次 Read。
+- 禁止在未读 **`flow2spec.config.json`** 的情况下进入 **`f2s-*`** 技能正文步骤（与 `AGENTS`、`.codex/f2s-rules/f2s-config-check.md` 一致）；Claude / Codex 的 SessionStart 摘要与 Claude 的 PreToolUse 守门提示都不替代本次 Read。

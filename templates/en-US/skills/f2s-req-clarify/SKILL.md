@@ -5,7 +5,7 @@ description: Clarify a PRD or requirement through follow-up questions until it i
 
 ## Orchestration (main / sub agent)
 
-- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not restate those semantics.
+- The semantics of `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** read the config-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This skill does not restate those semantics.
 - This skill does **not** split work by default: regardless of the `subAgent` value, the clarification process stays entirely in the main conversation. Follow-up questions and alignment with the user strongly depend on continuous context; sub-agent splitting would break that context.
 - Verification is performed by the agent that writes the artifact. This skill does not bind to cross-agent verification.
 

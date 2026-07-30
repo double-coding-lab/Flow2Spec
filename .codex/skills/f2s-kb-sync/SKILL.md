@@ -7,7 +7,7 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
 - 步骤 1（素材汇总）：`subAgent=true` 时可拆子并行，仅只读汇总，不得落盘。
 - 步骤 2（大纲 + 用户确认）：必主 agent 完成，确认权不可下放子 agent。
 - 步骤 3（落盘）：`subAgent=true` 时可按已确认大纲拆子逐项落盘；硬约束：子落盘前必须前置加载近邻 2–3 个主题的开头摘要，做叙事风格对齐。
@@ -57,7 +57,7 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 > 硬约束：若启用拆子，子 agent 落盘前必须读取近邻 2–3 个主题的开头摘要，确保叙事风格一致；`manifest-routing.json` 与 `.Knowledge/index.md` 由主 agent 单点落盘，子 agent 无写权。
 >
-> **创作侧准则**：本步若新增 / 修改 topic、`topicMetadata` 或 `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再落盘。
+> **创作侧准则**：本步若新增 / 修改 topic、`topicMetadata` 或 `topicDependencies`，须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），再落盘。
 
 按大纲逐项更新：
 

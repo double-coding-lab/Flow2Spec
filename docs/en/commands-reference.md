@@ -625,7 +625,7 @@ The following are not skill commands but rules activated by trigger words to gui
 - **Rule Location**:
   - Cursor: `.cursor/rules/f2s-implement-tech-design.mdc`
   - Claude: `.claude/rules/f2s-implement-tech-design.md`
-  - Codex: `.codex/AGENTS.md` + `.codex/topics/f2s-implement-tech-design.md`
+  - Codex: `.codex/AGENTS.md` + `.codex/f2s-rules/f2s-implement-tech-design.md`
 
 **Execution Flow (mandatory by rules)**:
 1. Input normalization

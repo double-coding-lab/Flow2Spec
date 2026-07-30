@@ -23,7 +23,7 @@ The table below explains field semantics and the defaults written by `flow2spec 
 - When `subAgent=true`, the main agent must make **one explicit split/no-split decision** near the start of the skill body and state why; even when deciding not to split, it must output the no-split reason. When `subAgent=false`, do not split to sub-agents.
 - When `intentRecognition=false` or the field is missing, do not auto-enter any skill; enter only on explicit user trigger or high-confidence routing allowed by current rules.
 
-For the detailed config table and supplemental rules, see **`./.codex/topics/f2s-config-check.md`**.
+For the detailed config table and supplemental rules, see **`./.codex/f2s-rules/f2s-config-check.md`**.
 
 ## KB Routing Rules
 
@@ -34,8 +34,8 @@ For the detailed config table and supplemental rules, see **`./.codex/topics/f2s
 
 ## Ordinary-Q&A Closing Gate
 
-- If ordinary Q&A / troubleshooting / explanation needs to drill into business source code, first follow **`./.codex/topics/f2s-knowledge-preflight.md`** for the initial read and gap note.
-- If this turn read business source code and the final answer cites source-code facts, run the four-case closing in **`./.codex/topics/f2s-kb-feedback-closing.md`** before sending the answer; the answer must explicitly append either **`Knowledge-base follow-up suggestion`** or **`Knowledge base already covers this`**. Do not silently omit the closing marker.
+- If ordinary Q&A / troubleshooting / explanation needs to drill into business source code, first follow **`./.codex/f2s-rules/f2s-knowledge-preflight.md`** for the initial read and gap note.
+- If this turn read business source code and the final answer cites source-code facts, run the four-case closing in **`./.codex/f2s-rules/f2s-kb-feedback-closing.md`** before sending the answer; the answer must explicitly append either **`Knowledge-base follow-up suggestion`** or **`Knowledge base already covers this`**. Do not silently omit the closing marker.
 - If this turn already entered an `f2s-*` skill, `implement-tech-design`, `f2s-git-commit`, or another existing follow-up flow, do not append the ordinary-Q&A closing prompt again.
 
 ## Progressive Reading Order
@@ -55,22 +55,22 @@ Within the same task line, do not repeatedly reread the full manifest unless the
 Flow2Spec execution authority is limited to:
 
 - repository-root **`./AGENTS.md`**
-- **`./.codex/topics/f2s-*.md`**
+- **`./.codex/f2s-rules/f2s-*.md`**
 - **`./.codex/skills/`**
 
 **`.codex/AGENTS.md`** is only a pointer and cannot replace root `AGENTS.md`.
 
 ## Codex Rule Mirrors (open on demand)
 
-These files are mirrored by `flow2spec init codex` from rule templates into `.codex/topics/`. They are not automatically loaded in full; open them only when the current task needs the details.
+These files are mirrored by `flow2spec init codex` from rule templates into `.codex/f2s-rules/`. They are not automatically loaded in full; open them only when the current task needs the details.
 
 | Rule | Path | When to read |
 | --- | --- | --- |
-| Unified entry | `./.codex/topics/f2s-flow2spec-unified-entry.md` | When executing an `f2s-*` skill or deciding KB routing, sub-agent, or verification semantics |
-| Config preflight | `./.codex/topics/f2s-config-check.md` | When checking `flow2spec.config.json`, `subAgent`, or `changeTracking` details |
-| Ordinary-Q&A initial gate | `./.codex/topics/f2s-knowledge-preflight.md` | Before ordinary Q&A drills into source code |
-| Ordinary-Q&A closing | `./.codex/topics/f2s-kb-feedback-closing.md` | After ordinary Q&A reads source code and may need a KB follow-up suggestion |
-| Intent routing | `./.codex/topics/f2s-intent-routing.md` | Only when `intentRecognition=true` and deciding whether to auto-enter a skill |
+| Unified entry | `./.codex/f2s-rules/f2s-flow2spec-unified-entry.md` | When executing an `f2s-*` skill or deciding KB routing, sub-agent, or verification semantics |
+| Config preflight | `./.codex/f2s-rules/f2s-config-check.md` | When checking `flow2spec.config.json`, `subAgent`, or `changeTracking` details |
+| Ordinary-Q&A initial gate | `./.codex/f2s-rules/f2s-knowledge-preflight.md` | Before ordinary Q&A drills into source code |
+| Ordinary-Q&A closing | `./.codex/f2s-rules/f2s-kb-feedback-closing.md` | After ordinary Q&A reads source code and may need a KB follow-up suggestion |
+| Intent routing | `./.codex/f2s-rules/f2s-intent-routing.md` | Only when `intentRecognition=true` and deciding whether to auto-enter a skill |
 
 Open long-form topics such as `implement-tech-design` or `f2s-doc-routing` only when the matched topic requires them.
 

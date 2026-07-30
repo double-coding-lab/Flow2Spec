@@ -11,7 +11,7 @@ Start from a requirement or technical design and cover the full "plan -> impleme
 
 | Item | Description |
 | --- | --- |
-| **Source of truth** | Config-root **`rules/f2s-task.*`** (`alwaysApply: true`); Codex reads **`.codex/topics/f2s-task.md`** (init mirror, same source as rules) |
+| **Source of truth** | Config-root **`rules/f2s-task.*`** (`alwaysApply: true`); Codex reads **`.codex/f2s-rules/f2s-task.md`** (init mirror, same source as rules) |
 | **This skill's responsibility** | Planning draft, code implementation, and sub-agent orchestration; **must not** define a custom `.task/` structure or weaken checkbox/archive requirements |
 | **Relationship with changeTracking** | `f2s-req-plan` is **not constrained by** `changeTracking.feat/fix/implement`; it **always** uses task lists. See `f2s-task` "Activation Conditions" |
 
@@ -21,11 +21,11 @@ Start from a requirement or technical design and cover the full "plan -> impleme
 | --- | --- |
 | **Cursor** | Config-root `rules/f2s-task.mdc`; or initialized `.cursor/rules/f2s-task.mdc` |
 | **Claude Code** | `.claude/rules/f2s-task.md` |
-| **Codex** | `.codex/topics/f2s-task.md` |
+| **Codex** | `.codex/f2s-rules/f2s-task.md` |
 
 ## Orchestration (main / sub agent)
 
-- `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** -> `rules/f2s-flow2spec-unified-entry.*`; **Codex** -> `.codex/topics/f2s-flow2spec-unified-entry.md`.
+- `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** -> `rules/f2s-flow2spec-unified-entry.*`; **Codex** -> `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`.
 - **Step 1 (continuation triage + parsing)**: the main agent must perform `f2s-task` "Task Start" 1-2. Document parsing may be split to a sub agent (read-only).
 - **Step 2 (draft confirmation)**: must be handled by the main agent. Before confirmation, do not create `.task/` and do not write business code.
 - **Step 3 (write task files)**: follow `f2s-task` "Task Start" 3.a-3.f. `todo.json` is **main-agent only**. Drafts of `task.md` / `context.md` / `user-todos.md` may be created by a sub agent; additions to `user-todos.md` during execution are merged by the main agent.

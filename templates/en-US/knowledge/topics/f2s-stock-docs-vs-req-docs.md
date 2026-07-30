@@ -1,7 +1,7 @@
 # f2s-doc-routing (routing summary)
 
 > **Only long-form source**: Cursor / Claude use configuration-root **`rules/f2s-stock-docs-vs-req-docs.md(c)`** as authoritative.  
-> **Codex**: do not read `rules/`; execute the equivalent constraints in **`.codex/topics/f2s-stock-docs-vs-req-docs.md`** (automatically mirrored from template `rules` by `flow2spec init`).
+> **Codex**: do not read `rules/`; execute the equivalent constraints in **`.codex/f2s-rules/f2s-stock-docs-vs-req-docs.md`** (automatically mirrored from template `rules` by `flow2spec init`).
 
 ## Purpose
 
@@ -22,4 +22,4 @@
 | Environment | Next step |
 | --- | --- |
 | Cursor / Claude | Open or @ **`rules/f2s-stock-docs-vs-req-docs`**. |
-| Codex | Read **`.codex/topics/f2s-stock-docs-vs-req-docs.md`**. |
+| Codex | Read **`.codex/f2s-rules/f2s-stock-docs-vs-req-docs.md`**. |

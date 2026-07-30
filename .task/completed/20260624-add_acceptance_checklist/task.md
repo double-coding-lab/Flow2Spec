@@ -3,7 +3,7 @@
 ## 步骤
 
 - [x] 更新 `f2s-task` 规则（真值源）：`.claude/rules/f2s-task.md`，新增「acceptance.md 格式与写盘义务」节、目录结构、归档门禁、续作展示、禁止项、context.md 引用
-- [x] 同步 `f2s-task` 规则镜像：`.codex/topics/f2s-task.md`、`.cursor/rules/f2s-task.mdc`、`templates/zh-CN/rules/f2s-task.md`
+- [x] 同步 `f2s-task` 规则镜像：`.codex/f2s-rules/f2s-task.md`、`.cursor/rules/f2s-task.mdc`、`templates/zh-CN/rules/f2s-task.md`
 - [x] 同步 `f2s-task` 规则英文模板：`templates/en-US/rules/f2s-task.md`
 - [x] 更新 topic 摘要：`.Knowledge/topics/f2s-task.md` 目录结构 + 一句话指针；同步中英模板 topic
 - [x] 更新 stock-doc：`.Knowledge/stock-docs/Flow2Spec-任务清单与变更追踪.md` 第 3 节目录、新增「3.1 验收清单」最小段

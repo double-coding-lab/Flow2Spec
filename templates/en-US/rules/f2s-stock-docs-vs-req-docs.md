@@ -6,7 +6,7 @@ globs:
 alwaysApply: false
 ---
 
-> **Single long-form rule**: this file is the complete convention for **f2s-doc-routing**. `.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` is only a routing summary; **Codex** reads `.codex/topics/f2s-stock-docs-vs-req-docs.md` (automatically mirrored from this file by `flow2spec init`) as the equivalent rule text.
+> **Single long-form rule**: this file is the complete convention for **f2s-doc-routing**. `.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` is only a routing summary; **Codex** reads `.codex/f2s-rules/f2s-stock-docs-vs-req-docs.md` (automatically mirrored from this file by `flow2spec init`) as the equivalent rule text.
 
 # stock-docs and req-docs
 

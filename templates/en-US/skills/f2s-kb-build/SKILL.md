@@ -9,7 +9,7 @@ description: Generate knowledge-routing topics and indexes from `.Knowledge/stoc
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This SKILL does not repeat those definitions.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This SKILL does not repeat those definitions.
 - **Preferred branch (small change -> main-only workflow)**: when this change has **<= 2 new/modified topics**, **<= 1 new matcher**, and **no batch cross-topic reference adjustment**, the main agent completes the full workflow without splitting.
 - **Medium/large change branch** (`subAgent=true` and above threshold):
   - The main agent lists a **file-level contract** in the main session: sub-agent A only writes `.Knowledge/topics/<foo>.md`, sub-agent B only writes `.Knowledge/matchers/<m-foo>.json`, and paths do not overlap.
@@ -52,7 +52,7 @@ Extract from the document:
 - Task trigger terms (write to the corresponding `matchers/<matcherId>.json` `includeAny`)
 - Dependencies on existing topics (for `topicDependencies`)
 
-> **Authoring-side guideline**: this step involves adding/modifying topics and `topicDependencies`, so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before continuing to step 3 / step 5. Naming, skeleton, dependency judgment, DAG minimization, and judgment timing all follow that guideline; this SKILL does not repeat them.
+> **Authoring-side guideline**: this step involves adding/modifying topics and `topicDependencies`, so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`) before continuing to step 3 / step 5. Naming, skeleton, dependency judgment, DAG minimization, and judgment timing all follow that guideline; this SKILL does not repeat them.
 
 > **Split evaluation**: if the input stock-doc exceeds **300-500 lines**, or semantic analysis finds it covers **more than 3 unrelated responsibility domains**, state in the output summary that it is recommended to split it into multiple focused stock-docs (each corresponding to an independent topic) and execute in batches after user confirmation. If the user chooses to continue with one large topic, do not block, but record "topic is large; recommend later split" in the summary. A large feature's main topic should describe the business closure/entry/submodule stock-doc navigation links; submodule topics should match independently, and **overview/detail must not be chained via `topicDependencies`**.
 

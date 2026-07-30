@@ -7,7 +7,7 @@ description: 删除某 stock-docs 文档对应的知识主题与索引映射；�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。不在此复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。不在此复述。
 - 默认主 agent 全流程执行（单点删除拆子收益低）。
 - 拆子阈值：仅当 `subAgent=true` 且**批量删除一次 ≥ 5 主题**时，才拆子执行删除与清引用。
 - 主必控：范围确认、`fallbackTopic` 重指。
@@ -29,7 +29,7 @@ description: 删除某 stock-docs 文档对应的知识主题与索引映射；�
    - `.Knowledge/manifest-routing.json`：移除失效 `topicPaths`、`taskToTopicRules`、`topicDependencies`、`topicMetadata` 引用
    - 对应 `matchers/<matcherId>.json`：移除失效规则或 `includeAny` 词条（与已删 `task`/`matcherId` 对齐）
    - 若删除了 `fallbackTopic`，必须指定新的兜底主题
-   - **创作侧准则**：本步会调整 `topicDependencies`（删除被依赖主题或孤儿边），须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），核对 DAG 与最小化约束后再落盘。
+   - **创作侧准则**：本步会调整 `topicDependencies`（删除被依赖主题或孤儿边），须先 Read `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），核对 DAG 与最小化约束后再落盘。
 
 ## 输出摘要（必须）
 

@@ -15,7 +15,7 @@ description: Capture user-spoken rules into the knowledge base, automatically de
 
 ## Orchestration (main / sub-agent)
 
-- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth (**Cursor/Claude** read `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md`). This SKILL does not repeat it.
+- The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth (**Cursor/Claude** read `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`). This SKILL does not repeat it.
 - By default, the main agent performs the full workflow: a spoken rule is usually a short text, so sub-agent splitting has lower benefit than context-switching cost.
 - **Write-authority hard rule**: `.Knowledge/manifest-routing.json` / `.Knowledge/index.md` are always written by the main agent.
 - The writing side verifies its own work.
@@ -27,7 +27,7 @@ description: Capture user-spoken rules into the knowledge base, automatically de
 
 ## Mandatory Prerequisite: Read Authoring-Side Guideline
 
-Before executing any step, **Read** the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`). All later naming, skeleton, dependency judgment, DAG minimization, and write ownership follow that guideline.
+Before executing any step, **Read** the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/f2s-rules/f2s-topic-authoring.md`). All later naming, skeleton, dependency judgment, DAG minimization, and write ownership follow that guideline.
 
 ## Step 1: Normalize Intent
 

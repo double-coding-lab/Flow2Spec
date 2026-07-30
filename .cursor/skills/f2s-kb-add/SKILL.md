@@ -7,7 +7,7 @@ description: 工作中把已落地能力解析进知识库（多文件聚合）�
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
+- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
 - 默认不拆子：主会话全流程完成；低于阈值时拆子收益低于 context 切换成本。
 - 拆子阈值（仅当 `subAgent=true` 且任一满足）：① 输入路径 ≥ 5；② 单源文件 > ~3000 行；③ 多路径总量 > ~10000 行。
 - **拆子策略（仅在达到拆子阈值且 `subAgent=true` 时启用）**：
@@ -93,7 +93,7 @@ description: 工作中把已落地能力解析进知识库（多文件聚合）�
 - 路由清单（必要时）
 - `manifest-routing.json.topicMetadata`（按需）：仅给已存在或本次确认创建的 topicId 写入 `primary` / `tags` / `confidence`；`tags` 可省略，且不得与 `primary` 重复。分类只用于治理、审计和阅读预期，不参与路由或执行强制性；证据不足时不写 metadata，并在摘要列为待确认；不得为了分类单独创建、重命名或拆分 topic。
 
-> **创作侧准则**：本步骤会触发新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再调用 `f2s-kb-build` 口径同步。
+> **创作侧准则**：本步骤会触发新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/f2s-rules/f2s-topic-authoring.md`），再调用 `f2s-kb-build` 口径同步。
 
 ## 输出摘要（必须）
 

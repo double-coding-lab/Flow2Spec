@@ -5,7 +5,7 @@ description: 针对 PRD/需求反问直到清楚，再可用 f2s-req-tech 出技
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
+- `subAgent` / `switchAgentVerification` 两字段语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
 - 本技能默认**不拆子**：无论 `subAgent` 真值，澄清流程全程在主会话进行（追问与用户对齐强依赖连续同会话，拆子必断上下文）。
 - 校验口径为**落盘侧自验**，本技能不绑定交叉校验。
 

@@ -11,7 +11,7 @@ description: 根据技术方案/需求描述/变更描述规划并实现任务�
 
 | 项 | 说明 |
 | --- | --- |
-| **真值源** | 配置根 **`rules/f2s-task.*`**（`alwaysApply: true`）；Codex 读 **`.codex/topics/f2s-task.md`**（init 镜像，与 rules 同源） |
+| **真值源** | 配置根 **`rules/f2s-task.*`**（`alwaysApply: true`）；Codex 读 **`.codex/f2s-rules/f2s-task.md`**（init 镜像，与 rules 同源） |
 | **本技能职责** | 规划草稿、实现代码、子 agent 编排；**不得**自定 `.task/` 结构或弱化打钩/归档 |
 | **与 changeTracking** | `f2s-req-plan` **不受** `changeTracking.feat/fix/implement` 约束，**始终**走任务清单；见 `f2s-task`「生效条件」 |
 
@@ -21,11 +21,11 @@ description: 根据技术方案/需求描述/变更描述规划并实现任务�
 | --- | --- |
 | **Cursor** | 配置根 `rules/f2s-task.mdc`；或已 init 的 `.cursor/rules/f2s-task.mdc` |
 | **Claude Code** | `.claude/rules/f2s-task.md` |
-| **Codex** | `.codex/topics/f2s-task.md` |
+| **Codex** | `.codex/f2s-rules/f2s-task.md` |
 
 ## 编排（主 / 子 agent）
 
-- `subAgent` / `switchAgentVerification` 以统一入口为唯一事实源：**Cursor/Claude** → `rules/f2s-flow2spec-unified-entry.*`；**Codex** → `.codex/topics/f2s-flow2spec-unified-entry.md`。
+- `subAgent` / `switchAgentVerification` 以统一入口为唯一事实源：**Cursor/Claude** → `rules/f2s-flow2spec-unified-entry.*`；**Codex** → `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`。
 - **步骤 1（续作分诊 + 解析）**：主 agent 必做 `f2s-task`「任务开始」1–2；解析文档可拆子 agent（只读）。
 - **步骤 2（草稿确认）**：必须主 agent；未确认前禁止创建 `.task/` 或写业务代码。
 - **步骤 3（落盘）**：按 `f2s-task`「任务开始」3.a–3.f；`todo.json` **仅主 agent**；`task.md` / `context.md` / `user-todos.md` 初稿可子 agent，`user-todos.md` 执行中追加由主 agent 合并。

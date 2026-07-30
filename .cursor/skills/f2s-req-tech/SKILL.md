@@ -6,7 +6,7 @@ description: 根据澄清后的需求基于项目知识库/Skills/Rules 生成�
 
 ## 编排（主 / 子 agent）
 
-- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
+- 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/f2s-rules/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本技能不复述。
 - **拆子前提（硬约束）**：当 `subAgent=true` 时，主 agent **必须先**抽取一份「项目约定摘要」作为子 agent 的强制上下文，覆盖：对外契约规范、错误与返回约定、异步/集成规范、数据与存储约定、工程结构、模块边界，合计 **< 80 行**。若未做该前置，**不拆子**——验收返工成本 > 拆子收益，强行拆子得不偿失。
 - **子职责**：多源只读（`.Knowledge/topics`、`stock-docs`、澄清后的 `req-docs`、模版）+ 按 `.Knowledge/template/技术方案模版.md` 写 `req-docs` 方案初稿。
 - **主职责**：契约定稿、对照模版与澄清文档验收、处理交付单元/流程一致性。
