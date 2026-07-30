@@ -1,7 +1,7 @@
 # f2s-task（路由摘要）
 
 > 长文见配置根 **`rules/f2s-task.*`**。  
-> 体系化设计说明（两种模式、目录、`todo.json`）：[Flow2Spec 任务清单与变更追踪](../stock-docs/Flow2Spec-任务清单与变更追踪.md)。
+> 体系化设计说明（可选）：在 `stock-docs/` 自建任务清单说明后，于本主题或 `index.md` 中链接，例如 `../stock-docs/<任务清单说明>.md`。
 
 ## 作用
 
@@ -17,10 +17,16 @@
 
 `f2s-req-plan` 不受配置约束，始终创建任务清单。
 
+## 任务根 `TASK_ROOT`（多人）
+
+- 解析顺序：`collaboration.developerId`（config）→ git email/name → legacy `.task`
+- 非 legacy 时目录为 `.task/<developerId>/…`；只读写当前 `TASK_ROOT`，禁止扫其他人的 todo（防串戏）
+- `.Knowledge/` 仍全员共享
+
 ## 目录结构
 
 ```
-.task/
+TASK_ROOT/                       ← `.task` 或 `.task/<developerId>`
 ├── todo.json                    ← 活跃任务索引（仅主 agent 写）
 ├── active/<task-name>/
 │   ├── task.md                  ← checklist（执行步骤）
@@ -34,13 +40,13 @@
     └── acceptance.md
 ```
 
-用户代办**必须**落在与 `task.md` 同目录的 **`user-todos.md`**；归档前**必须**生成与 `task.md` 同目录的 **`acceptance.md`**（验收清单），二者职责分离：`user-todos.md` 管用户**代办**（Agent 做不了的事），`acceptance.md` 管用户**验收**（Agent 已做完的事是否真的可用）。细则见配置根 **`rules/f2s-task.*`**。
+用户代办**必须**落在与 `task.md` 同目录的 **`user-todos.md`**；归档前**必须**生成与 `task.md` 同目录的 **`acceptance.md`**（验收清单），二者职责分离。细则见配置根 **`rules/f2s-task.*`**。
 
 ## 跨会话续作
 
-新会话开始时若存在 `todo.json`，规则自动将用户首条消息与各条目 `keywords` 匹配：
-- 命中 → 展示剩余 checklist，**摘要 `user-todos.md` 中未完成项（若有）**，**提示 `acceptance.md` 当前形态**（占位 / 已成稿），加载 `linkedSkill` 对应技能文件作为执行上下文，提示是否继续
-- 无命中 → 不打扰，正常响应
+新会话先解析 `TASK_ROOT`；若存在该根下 `todo.json`，将用户首条消息与**仅该文件**内 `keywords` 匹配：
+- 命中 → 展示剩余 checklist，摘要 user-todos / acceptance，加载 `linkedSkill`，提示是否继续
+- 无命中 → 不打扰
 
 ## 下一步
 

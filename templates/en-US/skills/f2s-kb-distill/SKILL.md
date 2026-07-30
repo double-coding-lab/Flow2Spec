@@ -3,6 +3,9 @@ name: f2s-kb-distill
 description: Extract reusable knowledge facts from Q&A and auto-commit to KB; decide whether to create new topic or append to existing topic based on drill-down depth; trigger: f2s-kb-distill, extract knowledge from Q&A, distill knowledge from conversation
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: This skill only maintains `.Knowledge`, does not modify config root `rules/skills` by default.
 
 ## Orchestration (main / sub agent)

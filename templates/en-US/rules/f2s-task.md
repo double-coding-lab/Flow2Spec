@@ -21,34 +21,66 @@ If the corresponding subfield is `false` or missing, **the change-tracking steps
 
 > The `f2s-req-plan` command is not constrained by this condition and always runs (see `skills/f2s-req-plan/SKILL.md`).
 
+## Multi-developer collaboration and `TASK_ROOT` (resolve first)
+
+Before any read/write under `.task`, **must** `Read("flow2spec.config.json")` and resolve **`TASK_ROOT`** (fixed for the session; do not change id mid-session):
+
+| Condition | `TASK_ROOT` | `developerId` source |
+| --- | --- | --- |
+| `collaboration.enabled === false` | `.task` | legacy (force single-root) |
+| non-empty `collaboration.developerId` (after trim) | `.task/<sanitize(id)>` | **config** |
+| else `git config user.email` available | `.task/<sanitize(local-part)>` | **git-email** |
+| else `git config user.name` available | `.task/<sanitize(name)>` | **git-name** |
+| still none | `.task` | **legacy** (warn: set `collaboration.developerId`) |
+
+**sanitize**: lower-case; if `@` present take local part only; non `[a-z0-9]` → `-`; trim `-`; length 1–64 or treat as missing.
+
+**All paths use `TASK_ROOT`**:
+
+- index: `TASK_ROOT/todo.json`
+- active: `TASK_ROOT/active/<task-name>/`
+- completed: `TASK_ROOT/completed/<YYYYMMDD>-<task-name>/`
+
+**Anti cross-talk (hard)**:
+
+1. Read/write **only** this session's `TASK_ROOT`; **do not** scan `.task/*/todo.json` or other developer dirs for resume.
+2. Keyword match **only** entries in current `TASK_ROOT/todo.json`.
+3. New task `folder` must be under current `TASK_ROOT/active/<task-name>/`.
+4. Optionally echo: `[task] developerId=<id|legacy> TASK_ROOT=<path>`.
+5. **`.Knowledge/` stays shared**; this rule does not per-developer the knowledge base.
+
+> Implementation reference: package `lib/developerId.js` (`resolveDeveloperContext` / `taskRootFor`).
+
 ## Binding When f2s-req-plan Is Invoked
 
 When executing **`f2s-req-plan`** (or continuing a task matched by `linkedSkill: "f2s-req-plan"`):
 
-- It is **not constrained** by `changeTracking.feat` / `fix` / `implement`, but **must** maintain `.task/` according to this rule's "Task start / During execution / Interruption and session end / Task completion / New-session continuation" sections.
+- It is **not constrained** by `changeTracking.feat` / `fix` / `implement`, but **must** maintain the task tree under **`TASK_ROOT`** per this rule.
 - Skill **step 0** must `Read` this full rule (**Cursor/Claude**: `rules/f2s-task.*`; **Codex**: `.codex/topics/f2s-task.md`).
-- Disk writes, checkbox updates, archiving, and `user-todos.md` / `acceptance.md` format **are governed by this rule**. The skill body must not omit `todo.json` / `user-todos.md` / `acceptance.md`, and must not rewrite the archive directory naming (`<YYYYMMDD>-<task-name>`).
+- Disk writes, checkbox updates, archiving, and `user-todos.md` / `acceptance.md` format **are governed by this rule**.
 
 ## Directory Structure
 
 ```
-.task/
+TASK_ROOT/                             <- `.task` or `.task/<developerId>`
 ├── todo.json                          <- active task index, written only by the main agent
 ├── active/
 │   └── <task-name>/
-│       ├── task.md                    <- checklist (execution steps)
-│       ├── context.md                 <- involved file paths and related material links
-│       ├── user-todos.md              <- todos that the user must execute (database changes, environment config, etc.); see below
-│       └── acceptance.md              <- acceptance checklist: generated after every task.md item is [x] and before archiving; see below
+│       ├── task.md
+│       ├── context.md
+│       ├── user-todos.md
+│       └── acceptance.md
 └── completed/
     └── <YYYYMMDD>-<task-name>/
         ├── task.md
         ├── context.md
-        ├── user-todos.md              <- archived with the task so acceptance can clear items one by one
-        └── acceptance.md              <- archived with the task for the user's final cross-check
+        ├── user-todos.md
+        └── acceptance.md
 ```
 
-**Archive directory naming**: folder names under `completed/` are **`<YYYYMMDD>-<task-name>`** (**8-digit local calendar date first**, and `<task-name>` matches the `active/` name in snake_case for time sorting). **All new archives must use this format**. Existing legacy `<task-name>-<YYYYMMDD>` directories in the repository may remain and can be manually renamed when convenient.
+**Archive directory naming**: **`<YYYYMMDD>-<task-name>`** under `completed/`.
+
+**Migration from single-root**: if root `.task/active/` still exists while `TASK_ROOT=.task/<id>`, move only after user confirmation.
 
 ## todo.json Structure
 
@@ -56,10 +88,11 @@ When executing **`f2s-req-plan`** (or continuing a task matched by `linkedSkill:
 [
   {
     "name": "task name",
-    "folder": ".task/active/<task-name>/",
+    "folder": "TASK_ROOT/active/<task-name>/",
     "keywords": ["keyword1", "keyword2"],
     "linkedSkill": "f2s-kb-fix",
-    "createdAt": "YYYY-MM-DD"
+    "createdAt": "YYYY-MM-DD",
+    "assignee": "<developerId or legacy>"
   }
 ]
 ```
@@ -68,18 +101,19 @@ When executing **`f2s-req-plan`** (or continuing a task matched by `linkedSkill:
 
 ## Task Start (Before Code Changes)
 
-1. Check whether `.task/todo.json` contains active tasks.
-2. Match the user input against each entry's `keywords`:
-   - One match -> load the corresponding `task.md` and `context.md`; **if present**, also load `user-todos.md`, then show the remaining checklist and unresolved user todos.
-   - Multiple matches -> list candidates and ask the user to choose.
-   - No match -> confirm the task name and create a new task.
+0. Resolve and fix **`TASK_ROOT`** (and developerId / legacy) as above.
+1. Check whether `TASK_ROOT/todo.json` contains active tasks.
+2. Match user input against **that file's** `keywords` only (**do not** read other roots):
+   - One match -> load `task.md` / `context.md` / optional `user-todos.md`
+   - Multiple matches -> ask user to choose
+   - No match -> create a new task
 3. Create a new task (when there is no match):
-   a. Confirm the task name (snake_case, brief description of the change).
-   b. Create `.task/active/<task-name>/`.
-   c. Write this turn's work steps into `task.md`.
-   d. Write involved file paths and related material links into `context.md`.
-   e. **Create `user-todos.md`** (fixed filename, same directory as `task.md`): see "`user-todos.md` format and disk-write obligation" below. If there are no todos yet, write a placeholder note.
-   f. Add an entry to `todo.json` (main agent only).
+   a. Confirm snake_case task name
+   b. Create `TASK_ROOT/active/<task-name>/`
+   c. Write steps into `task.md`
+   d. Write paths into `context.md`
+   e. **Create `user-todos.md`**
+   f. Append entry to `TASK_ROOT/todo.json` (main agent only; `folder` points at this task dir)
 
 ## During Execution
 
@@ -105,13 +139,13 @@ When executing **`f2s-req-plan`** (or continuing a task matched by `linkedSkill:
 
 After the gate passes:
 
-1. Move `.task/active/<task-name>/` as a whole to `.task/completed/<YYYYMMDD>-<task-name>/`.
+1. Move `TASK_ROOT/active/<task-name>/` as a whole to `TASK_ROOT/completed/<YYYYMMDD>-<task-name>/`.
 2. Remove the entry from `todo.json`.
 3. If `todo.json` becomes an empty array, delete that file.
 
 ## New-Session Continuation
 
-At the start of a new session, if `.task/todo.json` exists:
+At the start of a new session, resolve **`TASK_ROOT` first**; if `TASK_ROOT/todo.json` exists:
 
 1. Read all active tasks.
 2. Match the user's first message against each entry's `keywords`.
@@ -119,7 +153,7 @@ At the start of a new session, if `.task/todo.json` exists:
 4. After the user confirms: **if `linkedSkill` is non-empty, first load the corresponding skill rule file (configuration-root `skills/<linkedSkill>/SKILL.md`) as execution context**, then continue according to the remaining steps in `task.md`. The skill's disk-write constraints, writing style rules, and self-check checklist all apply as they did on the first invocation.
 5. If there is no match, do not interrupt; respond normally.
 
-**Orphaned `active/` directories (`todo.json` missing or damaged)**: if `.task/active/<task-name>/` still exists on disk and its `task.md` contains unchecked steps, `Read` that `task.md` and ask the user whether to continue. Before continuing, it is recommended to restore or rewrite `todo.json` according to "Task start" (main agent only), so progress is not trapped in directories without an active index.
+**Orphaned `active/` directories (`todo.json` missing or damaged)**: if `TASK_ROOT/active/<task-name>/` still exists on disk and its `task.md` contains unchecked steps, `Read` that `task.md` and ask the user whether to continue. Before continuing, it is recommended to restore or rewrite `todo.json` according to "Task start" (main agent only), so progress is not trapped in directories without an active index.
 
 ## task.md Format
 
@@ -157,7 +191,7 @@ At the start of a new session, if `.task/todo.json` exists:
 
 ## `user-todos.md` Format and Disk-Write Obligation
 
-**Path**: `.task/active/<task-name>/user-todos.md` (after archiving: `.task/completed/<YYYYMMDD>-<task-name>/user-todos.md`). The filename **must be exactly** `user-todos.md` so hooks and scripts can reference it.
+**Path**: `TASK_ROOT/active/<task-name>/user-todos.md` (after archiving: `TASK_ROOT/completed/<YYYYMMDD>-<task-name>/user-todos.md`). The filename **must be exactly** `user-todos.md` so hooks and scripts can reference it.
 
 **Purpose**: collect items that **the Agent cannot do on behalf of the user** and that must be completed by the user (or a privileged operator on a platform), for example:
 
@@ -191,7 +225,7 @@ At the start of a new session, if `.task/todo.json` exists:
 
 ## `acceptance.md` Format and Disk-Write Obligation
 
-**Path**: `.task/active/<task-name>/acceptance.md` (after archiving: `.task/completed/<YYYYMMDD>-<task-name>/acceptance.md`). The filename **must be exactly** `acceptance.md`, kept in the same directory as `task.md` / `user-todos.md`.
+**Path**: `TASK_ROOT/active/<task-name>/acceptance.md` (after archiving: `TASK_ROOT/completed/<YYYYMMDD>-<task-name>/acceptance.md`). The filename **must be exactly** `acceptance.md`, kept in the same directory as `task.md` / `user-todos.md`.
 
 **Purpose**: after every `task.md` item is `[x]` and before archiving, the Agent distills the **acceptance checklist** based on what was actually delivered this round. The user can verify item by item that "this task is truly done." Responsibilities are **separated** from `user-todos.md`:
 
@@ -236,7 +270,7 @@ Group by delivery domain via second-level headings (e.g. `## Code`, `## Rules an
 
 ## Task list itself
 
-- [ ] `.task/completed/<YYYYMMDD>-<task-name>/` directory complete: `task.md` / `context.md` / `user-todos.md` / `acceptance.md`
+- [ ] `TASK_ROOT/completed/<YYYYMMDD>-<task-name>/` directory complete: `task.md` / `context.md` / `user-todos.md` / `acceptance.md`
 - [ ] The entry in `todo.json` has been removed (or the file has been deleted if the array became empty)
 ```
 
@@ -251,7 +285,7 @@ Add this to the project's `.claude/settings.json` to inject active tasks into co
       "matcher": "Edit|Write",
       "hooks": [{
         "type": "command",
-        "command": "node -e \"try{const f='.task/todo.json',fs=require('fs');if(fs.existsSync(f)){const t=JSON.parse(fs.readFileSync(f,'utf8'));if(t.length)console.log('[task] active tasks: '+t.map(x=>x.name).join(', '))}}catch(e){}\" 2>/dev/null || true"
+        "command": "node -e \"try{const f='TASK_ROOT/todo.json',fs=require('fs');if(fs.existsSync(f)){const t=JSON.parse(fs.readFileSync(f,'utf8'));if(t.length)console.log('[task] active tasks: '+t.map(x=>x.name).join(', '))}}catch(e){}\" 2>/dev/null || true"
       }]
     }]
   }
@@ -267,3 +301,5 @@ Add this to the project's `.claude/settings.json` to inject active tasks into co
 - In a task that already uses `.task/`, do not write "todos that the user must execute" **only** in the conversation or only in `task.md` without appending them to `user-todos.md` (when there are no todos, the file may keep a placeholder note).
 - Do not archive while `acceptance.md` is still a placeholder note or is missing; do not merge `user-todos.md` (user todos) and `acceptance.md` (user acceptance) into the same file.
 - Do not prewrite concrete acceptance items before implementation is finished (only a placeholder is allowed), to avoid drifting from the actual delivery.
+- **Do not** scan other developers' `.task/<otherId>/` or merge multiple todo.json files for resume.
+- **Do not** write to repo-root `.task/active/` without resolving `TASK_ROOT` first (unless resolved root is legacy `.task`).

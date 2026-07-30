@@ -60,9 +60,16 @@ Enable `changeTracking` per skill in `flow2spec.config.json` (each sub-field is 
 }
 ```
 
-When enabled, `f2s-kb-feat` / `f2s-kb-fix` / `f2s-implement-tech-design` automatically create a checklist under `.task/active/`, check off steps, and archive on completion. In later sessions, the `f2s-task` rule matches related wording and resumes the remaining steps — no need to re-explain context.
+When enabled, `f2s-kb-feat` / `f2s-kb-fix` / `f2s-implement-tech-design` automatically create a checklist under **`TASK_ROOT/active/`** (see multi-developer below), check off steps, and archive on completion. In later sessions, the `f2s-task` rule matches related wording and resumes the remaining steps — no need to re-explain context.
 
-If **`changeTracking` is off** but you still need a `.task/` checklist temporarily, call `f2s-req-plan` explicitly (always creates a checklist, ignores config) — a **fallback**, not the default path. See [Commands Reference § f2s-req-plan](./commands-reference.md).
+If **`changeTracking` is off** but you still need a task checklist temporarily, call `f2s-req-plan` explicitly (always creates a checklist, ignores config) — a **fallback**, not the default path. See [Commands Reference § f2s-req-plan](./commands-reference.md).
+
+### Multi-developer task isolation (P0)
+
+- **Shared**: `.Knowledge/` (team truth). **Isolated**: task progress under `TASK_ROOT`.
+- **developerId resolve** (only three steps): `collaboration.developerId` in config → git `user.email` / `user.name` (sanitized) → legacy single-root `.task/`.
+- **`collaboration.enabled: false`**: always legacy `.task/`.
+- **`TASK_ROOT`**: `.task/<developerId>` or `.task` (legacy). Resume must **not** scan other developers' todos (see `rules/f2s-task`). Helper: `lib/developerId.js`.
 
 ### New Feature Development
 

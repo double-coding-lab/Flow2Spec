@@ -3,6 +3,9 @@ name: f2s-doc-milestone
 description: Generate a milestone document (`project-milestone-template`) from req-docs, git log, `.task`, and knowledge-topic semantics; triggers: f2s-doc-milestone、生成项目里程碑、里程碑、project milestone、generate milestone. A semantic scope may be appended after the command. This skill always uses a sub agent for generation and the main agent for verification, regardless of flow2spec.config orchestration switches
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: read `.Knowledge/template/project-milestone-template.md`; write **only** `.Knowledge/stock-docs/<scope-name>-milestones.md` (no second path argument).
 
 ## Orchestration (Fixed, Not Affected by Project Config)

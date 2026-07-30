@@ -3,6 +3,9 @@ name: f2s-kb-addRules
 description: Capture user-spoken rules into the knowledge base, automatically decide "create new topic / merge into existing topic", and sync routing; does not write code or create `.task/`; triggers: f2s-kb-addRules、新增规则、口述规则、把这条记到知识库、add rule、capture spoken rule
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: this skill only maintains `.Knowledge` (`topics/index/manifest-routing/matchers` shards), does not modify the configuration-root `rules/skills`, does not touch business code, and does not create `.task/` (spoken rules are meta-configuration changes, not business change tracking).
 
 # f2s-kb-addRules: Put User-Spoken Rules into the Knowledge Base

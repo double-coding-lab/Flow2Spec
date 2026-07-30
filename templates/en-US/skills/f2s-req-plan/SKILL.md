@@ -3,6 +3,9 @@ name: f2s-req-plan
 description: Plan and implement tasks from a technical design, requirement description, or change description; always maintain `.task/` according to f2s-task; supports parallel sub-agent implementation. Triggers: f2s-req-plan、创建任务、任务规划、我需要任务清单、task planning、create task list
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 # Requirement Task Planning and Implementation (f2s-req-plan)
 
 Start from a requirement or technical design and cover the full "plan -> implement" chain. This skill **does not depend on** `changeTracking.*`, but the full `.task/` lifecycle **must use `f2s-task` as the only source of truth** (directory structure, format, continuation, checkbox updates, archiving, and user-todos). Knowledge-base sync is invoked later by the user as needed through `f2s-kb-feat` / `f2s-kb-sync`.
