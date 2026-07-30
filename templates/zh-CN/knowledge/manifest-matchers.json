@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "generatedFrom": ".Knowledge/manifest-routing.json",
+  "generatedFrom": ".flow-spec/manifest-routing.json",
   "matcherKey": "matcherId",
-  "sourceOfTruth": ".Knowledge/manifest-routing.json",
+  "sourceOfTruth": ".flow-spec/manifest-routing.json",
   "matchers": {
     "m-implement-from-spec": {
       "includeAny": [
@@ -19,15 +19,15 @@
         "目录约定"
       ]
     },
-    "m-f2s-config-precheck": {
+    "m-fs-config-precheck": {
       "includeAny": [
-        "flow2spec.config.json",
+        "flow-spec.config.json",
         "subAgent",
         "switchAgentVerification",
         "切换 agent 校验",
         "技能前置",
-        "f2s-config-check",
-        "f2s-config-inject",
+        "fs-config-check",
+        "fs-config-inject",
         "changeTracking"
       ]
     },
@@ -42,14 +42,14 @@
         "继续上次任务",
         "todo.json",
         "task.md",
-        "f2s-task",
+        "fs-task",
         "任务清单归档",
         "跨会话"
       ]
     },
     "m-req-plan": {
       "includeAny": [
-        "f2s-req-plan",
+        "fs-req-plan",
         "任务规划",
         "任务清单设计",
         "需求规划",

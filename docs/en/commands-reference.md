@@ -6,29 +6,29 @@
 
 | Command | Purpose | Category |
 |---|---|---|
-| `/f2s-doc-arch` | Scan project, generate architecture draft | Doc Curation |
-| `/f2s-doc-final` | Convert PDF / draft to standardized final-draft format | Doc Curation |
-| `/f2s-kb-build` | Sync final drafts into knowledge base routing (topics / matchers / manifest) | Doc Curation |
-| `/f2s-kb-add <path>` | Aggregate multi-file implemented capabilities into knowledge base | Doc Curation |
-| `/f2s-kb-rm` | Remove knowledge topic and index mapping for a stock-docs document | Doc Curation |
-| `/f2s-doc-pdf` | Convert PDF technical proposal to Markdown, save to req-docs | Doc Curation |
-| `/f2s-req-clarify` | Clarify requirements via multi-round Q&A | Requirements |
-| `/f2s-req-tech` | Generate technical proposal from clarified requirements | Requirements |
-| `/f2s-req-plan` | Break a technical proposal into a task checklist and implement (always creates tasks, regardless of `changeTracking.*` config) | Requirements |
-| `/f2s-git-commit` | Commit code; checks knowledge base coverage by default, skips that check in "quick commit" mode | Commit |
-| `/f2s-kb-feat` | Add new capability + sync knowledge base | KB Maintenance |
-| `/f2s-kb-fix` | Fix a bug + auto-sync knowledge base | KB Maintenance |
-| `/f2s-kb-distill` | Extract reusable knowledge facts from Q&A and auto-commit to knowledge base | KB Maintenance |
-| `/f2s-kb-sync` | Sink implemented capabilities from the conversation into the knowledge base | KB Maintenance |
-| `/f2s-kb-merge` | Resolve knowledge base conflicts after a Git merge | KB Maintenance |
-| `/f2s-kb-migrate` | One-time migration of a legacy knowledge base to `.Knowledge/` | KB Maintenance |
-| `/f2s-kb-upgrade` | Upgrade knowledge base template, align manifest + matchers shards | KB Maintenance |
+| `/fs-doc-arch` | Scan project, generate architecture draft | Doc Curation |
+| `/fs-doc-final` | Convert PDF / draft to standardized final-draft format | Doc Curation |
+| `/fs-kb-build` | Sync final drafts into knowledge base routing (topics / matchers / manifest) | Doc Curation |
+| `/fs-kb-add <path>` | Aggregate multi-file implemented capabilities into knowledge base | Doc Curation |
+| `/fs-kb-rm` | Remove knowledge topic and index mapping for a stock-docs document | Doc Curation |
+| `/fs-doc-pdf` | Convert PDF technical proposal to Markdown, save to req-docs | Doc Curation |
+| `/fs-req-clarify` | Clarify requirements via multi-round Q&A | Requirements |
+| `/fs-req-tech` | Generate technical proposal from clarified requirements | Requirements |
+| `/fs-req-plan` | Break a technical proposal into a task checklist and implement (always creates tasks, regardless of `changeTracking.*` config) | Requirements |
+| `/fs-git-commit` | Commit code; checks knowledge base coverage by default, skips that check in "quick commit" mode | Commit |
+| `/fs-kb-feat` | Add new capability + sync knowledge base | KB Maintenance |
+| `/fs-kb-fix` | Fix a bug + auto-sync knowledge base | KB Maintenance |
+| `/fs-kb-distill` | Extract reusable knowledge facts from Q&A and auto-commit to knowledge base | KB Maintenance |
+| `/fs-kb-sync` | Sink implemented capabilities from the conversation into the knowledge base | KB Maintenance |
+| `/fs-kb-merge` | Resolve knowledge base conflicts after a Git merge | KB Maintenance |
+| `/fs-kb-migrate` | One-time migration of a legacy knowledge base to `.flow-spec/` | KB Maintenance |
+| `/fs-kb-upgrade` | Upgrade knowledge base template, align manifest + matchers shards | KB Maintenance |
 
 ---
 
 ## 1) Document Curation (stock-docs Pipeline)
 
-### `f2s-doc-arch`
+### `fs-doc-arch`
 
 **Purpose**: Generates an architecture overview draft based on user descriptions or code scanning. No fixed format required; it should clearly describe the system structure, module relationships, and key decisions.
 
@@ -41,8 +41,8 @@
 
 **Relationships**:
 - **Prerequisite**: None
-- **Next Step**: `f2s-doc-final` (normalized final draft) → `f2s-kb-build` (**final draft input only**; do not run build on `_draft` / `_初稿` files)
-- **Output**: `.Knowledge/stock-docs/<Architecture Overview>_draft.md`
+- **Next Step**: `fs-doc-final` (normalized final draft) → `fs-kb-build` (**final draft input only**; do not run build on `_draft` / `_初稿` files)
+- **Output**: `.flow-spec/stock-docs/<Architecture Overview>_draft.md`
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent scans the code and generates the output
@@ -56,21 +56,21 @@
 
 ---
 
-### `f2s-doc-final`
+### `fs-doc-final`
 
 **Purpose**: Converts PDF technical proposals or draft documents into the standardized "Final Draft Template" format, unifying the document structure for subsequent knowledge base ingestion.
 
-**How It Works**: Unstructured or heterogeneous documents (PDF/drafts) are normalized against the built-in final-draft template: core concept tables, business rules, key flows, configuration, error handling, and other standard sections are extracted; missing section markers are filled in; the output is a consistently structured `_final.md`. The final draft is the standard input for `f2s-kb-build`, keeping knowledge-base entry structure uniform.
+**How It Works**: Unstructured or heterogeneous documents (PDF/drafts) are normalized against the built-in final-draft template: core concept tables, business rules, key flows, configuration, error handling, and other standard sections are extracted; missing section markers are filled in; the output is a consistently structured `_final.md`. The final draft is the standard input for `fs-kb-build`, keeping knowledge-base entry structure uniform.
 
 **Use Cases**:
 - PDF technical proposals need conversion to Markdown
 - Draft documents need normalization for long-term storage
-- External documents need to be incorporated into Flow2Spec management
+- External documents need to be incorporated into flow-spec management
 
 **Relationships**:
 - **Prerequisite**: PDF document or draft document
-- **Next Step**: `f2s-kb-build` (final draft imported into the knowledge base)
-- **Output**: `.Knowledge/stock-docs/<Document>_final.md`
+- **Next Step**: `fs-kb-build` (final draft imported into the knowledge base)
+- **Output**: `.flow-spec/stock-docs/<Document>_final.md`
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent completes the full workflow
@@ -84,7 +84,7 @@
 
 ---
 
-### `f2s-kb-build`
+### `fs-kb-build`
 
 **Purpose**: Synchronizes documents from `stock-docs/` (architecture, final drafts) into the knowledge base routing system, generating/updating topic files, the index, manifest-routing, and matchers.
 
@@ -96,14 +96,14 @@
 - Document content has been updated and the knowledge base index needs to be synced
 
 **Relationships**:
-- **Prerequisite**: `f2s-doc-arch`, `f2s-doc-final`, or a directly authored final draft
+- **Prerequisite**: `fs-doc-arch`, `fs-doc-final`, or a directly authored final draft
 - **Next Step**: None (ready for use once imported into the knowledge base)
-- **Input**: `.Knowledge/stock-docs/*.md`
+- **Input**: `.flow-spec/stock-docs/*.md`
 - **Output**:
-  - `.Knowledge/topics/<topic>.md`
-  - `.Knowledge/index.md`
-  - `.Knowledge/manifest-routing.json`
-  - `.Knowledge/matchers/*.json`
+  - `.flow-spec/topics/<topic>.md`
+  - `.flow-spec/index.md`
+  - `.flow-spec/manifest-routing.json`
+  - `.flow-spec/matchers/*.json`
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent processes each document sequentially
@@ -118,11 +118,11 @@
 
 ---
 
-### `f2s-kb-add`
+### `fs-kb-add`
 
 **Purpose**: Parses already-implemented capabilities (aggregated from multiple files) into the knowledge base. Suitable when code already exists but lacks documentation, or when multiple documents need to be imported into the knowledge base in a unified manner.
 
-**How It Works**: Aggregates capability descriptions from multiple scattered sources (code, config, loose docs) and runs the full "draft → final draft → topics/index/manifest" pipeline. Unlike `f2s-kb-build`, the input differs: `ctx-build` is driven from a single existing final draft; `doc-add` aggregates many scattered sources first, then follows the same pipeline. It closes the gap of "implementation exists but documentation does not."
+**How It Works**: Aggregates capability descriptions from multiple scattered sources (code, config, loose docs) and runs the full "draft → final draft → topics/index/manifest" pipeline. Unlike `fs-kb-build`, the input differs: `ctx-build` is driven from a single existing final draft; `doc-add` aggregates many scattered sources first, then follows the same pipeline. It closes the gap of "implementation exists but documentation does not."
 
 **Use Cases**:
 - Existing code needs knowledge base documentation
@@ -151,11 +151,11 @@
 
 ---
 
-### `f2s-kb-rm`
+### `fs-kb-rm`
 
 **Purpose**: Deletes corresponding knowledge topics and index mappings based on `stock-docs` documents. Only removes reference relationships in the knowledge base, not the source documents themselves.
 
-**How It Works**: The inverse of `f2s-kb-build` — given a `stock-docs` document path, locate its task→topic rules in `manifest-routing.json`, the corresponding `matchers/<id>.json` shard, `topics/<topic>.md`, and entries in `index.md`, and remove those references one by one. If a topic has no remaining task references after deletion, remove that topic file. Source documents are left in place; the user may delete them physically if desired.
+**How It Works**: The inverse of `fs-kb-build` — given a `stock-docs` document path, locate its task→topic rules in `manifest-routing.json`, the corresponding `matchers/<id>.json` shard, `topics/<topic>.md`, and entries in `index.md`, and remove those references one by one. If a topic has no remaining task references after deletion, remove that topic file. Source documents are left in place; the user may delete them physically if desired.
 
 **Use Cases**:
 - A document is deprecated and needs removal from the knowledge routing
@@ -173,21 +173,21 @@
 
 ---
 
-### `f2s-doc-pdf`
+### `fs-doc-pdf`
 
 **Purpose**: Converts PDF technical proposals to Markdown format, saves to `req-docs/`, and can supplement the process description.
 
-**How It Works**: Extracts structured content from the PDF (API definitions, data models, sequence flows, etc.) into Markdown under `req-docs/` for editing and follow-up with `f2s-req-clarify` / `f2s-req-tech`. Unlike `f2s-doc-final`, `doc-pdf` writes to `req-docs/`; `doc-final` writes to `stock-docs/` for `ctx-build`. **Not recommended** as a shortcut for "PDF straight to coding" without clarification and a technical proposal.
+**How It Works**: Extracts structured content from the PDF (API definitions, data models, sequence flows, etc.) into Markdown under `req-docs/` for editing and follow-up with `fs-req-clarify` / `fs-req-tech`. Unlike `fs-doc-final`, `doc-pdf` writes to `req-docs/`; `doc-final` writes to `stock-docs/` for `ctx-build`. **Not recommended** as a shortcut for "PDF straight to coding" without clarification and a technical proposal.
 
 **Use Cases**:
 - Cross-team deliverables are in PDF format and need conversion to editable Markdown
 - Historical PDF proposals need to live under `req-docs/`
-- Provide a readable draft before `f2s-req-clarify` / `f2s-req-tech`
+- Provide a readable draft before `fs-req-clarify` / `fs-req-tech`
 
 **Relationships**:
 - **Prerequisite**: PDF document
-- **Output**: `.Knowledge/req-docs/<Proposal>.md`
-- **Next Step** (recommended): `f2s-req-clarify` → `f2s-req-tech` → implement from the technical proposal MD via `implement-tech-design`; for knowledge base archival use `f2s-doc-final` → `f2s-kb-build`
+- **Output**: `.flow-spec/req-docs/<Proposal>.md`
+- **Next Step** (recommended): `fs-req-clarify` → `fs-req-tech` → implement from the technical proposal MD via `implement-tech-design`; for knowledge base archival use `fs-doc-final` → `fs-kb-build`
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent completes the full workflow
@@ -203,11 +203,11 @@
 
 ## 2) Requirements and Proposals
 
-### `f2s-req-clarify`
+### `fs-req-clarify`
 
 **Purpose**: Asks clarifying questions against PRDs/requirement documents, using multi-round Q&A to define requirement boundaries, non-goals, and key flows, until the requirements are clear enough for a technical proposal.
 
-**How It Works**: Uses a "structured questioning" strategy — decomposes the requirement document along six dimensions (roles, scenarios, flows, boundaries, exceptions, non-goals), checks each for vague wording, undefined concepts, or contradictions, and generates targeted questions for each gap. Dialogue continues until all dimensions are unambiguous, then outputs a clarification record as input for `f2s-req-tech`. It turns unstructured PRDs into structured, actionable requirement constraints.
+**How It Works**: Uses a "structured questioning" strategy — decomposes the requirement document along six dimensions (roles, scenarios, flows, boundaries, exceptions, non-goals), checks each for vague wording, undefined concepts, or contradictions, and generates targeted questions for each gap. Dialogue continues until all dimensions are unambiguous, then outputs a clarification record as input for `fs-req-tech`. It turns unstructured PRDs into structured, actionable requirement constraints.
 
 **Use Cases**:
 - First step after receiving a PRD, ensuring correct understanding
@@ -216,26 +216,26 @@
 
 **Relationships**:
 - **Prerequisite**: None (can be triggered directly)
-- **Next Step**: `f2s-req-tech` (generates a technical proposal after clarification)
-- **Output**: Requirement clarification record (optionally saved to `.Knowledge/req-docs/`)
+- **Next Step**: `fs-req-tech` (generates a technical proposal after clarification)
+- **Output**: Requirement clarification record (optionally saved to `.flow-spec/req-docs/`)
 
 **Sub-Agent Invocation**: None (clarification relies on continuous dialogue and immediate user feedback throughout; no sub-agent splitting)
 
 ---
 
-### `f2s-req-tech`
+### `fs-req-tech`
 
 **Purpose**: Based on clarified requirements and the project knowledge base, generates an implementation-ready technical proposal. The content is selected by scenario: APIs, pages/components, scripts/tools, data processing, configuration, events, or module changes.
 
 **How It Works**: Centered on "knowledge base constraints + template-guided" authoring — first pull a constraint summary for the current project from `topics/stock-docs` (architecture conventions, contract style, data and module boundaries, etc.), then choose only the relevant blocks from the technical proposal template. Do not force API, database, error-code, or message-queue sections just to fit the template. Output is persisted under `req-docs/` as the coding contract for `implement-tech-design`.
 
 **Use Cases**:
-- After `f2s-req-clarify` completes, output a proposal based on clarification results
+- After `fs-req-clarify` completes, output a proposal based on clarification results
 - When clear requirement documents already exist, directly generate a technical proposal
 
 **Relationships**:
-- **Prerequisite**: `f2s-req-clarify` (recommended) or a clear requirement document
-- **Output**: `.Knowledge/req-docs/<Technical Proposal>.md`
+- **Prerequisite**: `fs-req-clarify` (recommended) or a clear requirement document
+- **Output**: `.flow-spec/req-docs/<Technical Proposal>.md`
 - **Next Step**: Provide the technical proposal path with instructions "implement according to the technical proposal", driven by the `implement-tech-design` rule
 
 **Sub-Agent Invocation**:
@@ -254,11 +254,11 @@
 
 ---
 
-### `f2s-req-plan`
+### `fs-req-plan`
 
 **Purpose**: Starting from a technical proposal or requirement description, **always creates a task checklist**, then implements the code accordingly. Does not depend on the `changeTracking` configuration; represents the user's explicit need for traceable task management.
 
-> **About task checklists**: Task checklists are not exclusive to `/f2s-req-plan`. `/f2s-kb-feat`, `/f2s-kb-fix`, and `implement-tech-design` also create task checklists automatically when the corresponding `changeTracking.*` field is set to `true` in `flow2spec.config.json`. The distinction of `/f2s-req-plan` is that it **always creates a checklist regardless of any config** — suited for large features where the user explicitly wants to track progress across sessions.
+> **About task checklists**: Task checklists are not exclusive to `/fs-req-plan`. `/fs-kb-feat`, `/fs-kb-fix`, and `implement-tech-design` also create task checklists automatically when the corresponding `changeTracking.*` field is set to `true` in `flow-spec.config.json`. The distinction of `/fs-req-plan` is that it **always creates a checklist regardless of any config** — suited for large features where the user explicitly wants to track progress across sessions.
 
 **How It Works**: Runs a five-phase closed loop: parse → plan → confirm → implement → archive. (1) Parse the technical proposal for implementation points; (2) split into executable tasks at module/feature granularity and write to `.task/`; (3) show the draft to the user, lock the checklist after confirmation; (4) implement item by item, checking off `task.md` immediately when each item completes; (5) archive when all are done. Unlike the `implement-tech-design` rule, `req-plan` always carries task tracking and can parallelize implementation with sub-agents for large work; the rule path is lightweight, single-threaded coding.
 
@@ -268,9 +268,9 @@
 - The user wants to track implementation progress across sessions
 
 **Relationships**:
-- **Prerequisite**: Technical proposal document path (`.Knowledge/req-docs/*.md` or PDF) or requirement/change description
+- **Prerequisite**: Technical proposal document path (`.flow-spec/req-docs/*.md` or PDF) or requirement/change description
 - **Output**: `.task/active/<task-name>/task.md` + `context.md`; implementation code
-- **Next Step**: Optionally invoke `f2s-kb-sync` to supplement the knowledge base
+- **Next Step**: Optionally invoke `fs-kb-sync` to supplement the knowledge base
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent completes parsing, confirmation, and implementation in full
@@ -281,17 +281,17 @@
 |------|-----------------|
 | Main Agent | Outputs draft, gets user confirmation, writes `todo.json`, aggregates implementation summary |
 | Sub-Agent (parsing) | Read-only document parsing, outputs parsing result summary, does not persist |
-| Sub-Agent (implementation) | Implements code per module, does not touch `.task/` or `.Knowledge/` |
+| Sub-Agent (implementation) | Implements code per module, does not touch `.task/` or `.flow-spec/` |
 
 ---
 
 ## 3) Git Commit
 
-### `f2s-git-commit`
+### `fs-git-commit`
 
 **Purpose**: Executes a Git commit after code is written. By default it checks changed files and knowledge base coverage, prompting the user about capabilities not yet imported. If the user explicitly asks for a "quick commit", it skips the knowledge base coverage check. Before committing, it displays the commit message subject and then runs `git commit`.
 
-**How It Works**: Layers a "knowledge base coverage gate" on top of `git commit` — infer touched capability areas from `git diff`, cross-check against `.Knowledge/topics/` and `stock-docs/`, and decide whether changed capabilities are documented in the knowledge base. If not covered, block and offer three choices (document first / skip / cancel) to avoid silent drift where "code exists but the knowledge base does not know." Quick commit mode only skips this coverage gate; it does not skip conflict checks, message display, precise `git add`, or git hooks. Commit messages use emoji + Conventional Commits for consistent, machine-friendly `git log`.
+**How It Works**: Layers a "knowledge base coverage gate" on top of `git commit` — infer touched capability areas from `git diff`, cross-check against `.flow-spec/topics/` and `stock-docs/`, and decide whether changed capabilities are documented in the knowledge base. If not covered, block and offer three choices (document first / skip / cancel) to avoid silent drift where "code exists but the knowledge base does not know." Quick commit mode only skips this coverage gate; it does not skip conflict checks, message display, precise `git add`, or git hooks. Commit messages use emoji + Conventional Commits for consistent, machine-friendly `git log`.
 
 **Use Cases**:
 - Committing code after each feature implementation or bug fix
@@ -300,13 +300,13 @@
 - Needing AI help to generate meaningful commit messages
 
 **Relationships**:
-- **Prerequisite**: Code has been written (after `implement-tech-design`, `f2s-kb-fix`, `f2s-kb-feat`, etc.)
+- **Prerequisite**: Code has been written (after `implement-tech-design`, `fs-kb-fix`, `fs-kb-feat`, etc.)
 - **Next Step**: None (ends when commit completes; does not auto-push)
-- **Bridging**: If the knowledge base is not yet covered, you can first run `f2s-kb-sync` or `f2s-kb-feat` to supplement before committing
+- **Bridging**: If the knowledge base is not yet covered, you can first run `fs-kb-sync` or `fs-kb-feat` to supplement before committing
 
 **Execution Flow**:
 1. `git status --short` + `git diff HEAD` to classify files into staged / unstaged / untracked; immediately terminates if merge conflict markers are found
-2. By default, compare `.Knowledge/topics/` and `stock-docs/` to determine whether the changed capabilities have been imported; skips and notifies if `.Knowledge` does not exist; skips this step when the user asks for a quick commit
+2. By default, compare `.flow-spec/topics/` and `stock-docs/` to determine whether the changed capabilities have been imported; skips and notifies if `.flow-spec` does not exist; skips this step when the user asks for a quick commit
 3. If not covered, prompt the user to choose: A) Import first, then commit / B) Commit now, import later / C) Cancel
 4. Generate a commit message draft based on `git diff` content, wait for user confirmation or changes
 5. `git add <specific files>` + `git commit`; if a hook fails, prompt for fix, do not skip
@@ -324,7 +324,7 @@
 
 ## 4) Knowledge Base Maintenance
 
-### `f2s-kb-fix`
+### `fs-kb-fix`
 
 **Purpose**: Fixes code based on implementation or rule errors reported by the user, and **by default automatically syncs** the knowledge base documents and index.
 
@@ -335,7 +335,7 @@
 - Rule understanding errors need correction
 - Documentation needs to be synced after bug fixes
 
-**Change Tracking**: If `changeTracking.fix: true`, automatically checks `.task/todo.json` before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see `f2s-task` rules).
+**Change Tracking**: If `changeTracking.fix: true`, automatically checks `.task/todo.json` before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see `fs-task` rules).
 
 **Relationships**:
 - **Prerequisite**: Problem discovered (code implementation error or rule deviation)
@@ -360,17 +360,17 @@
 
 ---
 
-### `f2s-kb-feat`
+### `fs-kb-feat`
 
 **Purpose**: When adding a new capability, completes both the implementation and the knowledge base; if the capability is already implemented, only syncs the knowledge base.
 
-**How It Works**: Three phases: assess → implement → ingest. First assess whether the described capability is not implemented, partially implemented, or already implemented in code; if not or partial, complete the code first; then sync the knowledge base: write a capability description in `stock-docs`, generate or update `topics` summaries, register routing in `manifest-routing` and `matchers`. Unlike `f2s-kb-fix`, `kb-feat` targets **new** work; `kb-fix` targets **correcting existing** work.
+**How It Works**: Three phases: assess → implement → ingest. First assess whether the described capability is not implemented, partially implemented, or already implemented in code; if not or partial, complete the code first; then sync the knowledge base: write a capability description in `stock-docs`, generate or update `topics` summaries, register routing in `manifest-routing` and `matchers`. Unlike `fs-kb-fix`, `kb-feat` targets **new** work; `kb-fix` targets **correcting existing** work.
 
 **Use Cases**:
 - New feature development
 - Adding knowledge base documentation for an existing feature
 
-**Change Tracking**: If `changeTracking.feat: true`, automatically checks `.task/todo.json` before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see `f2s-task` rules).
+**Change Tracking**: If `changeTracking.feat: true`, automatically checks `.task/todo.json` before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see `fs-task` rules).
 
 **Relationships**:
 - **Prerequisite**: None (can be triggered directly)
@@ -394,11 +394,11 @@
 
 ---
 
-### `f2s-kb-distill`
+### `fs-kb-distill`
 
 **Purpose**: Extracts reusable knowledge facts from a Q&A session and automatically commits them to the knowledge base; decides whether to create a new topic or supplement an existing one based on drill-down depth and matched topics.
 
-**How It Works**: After the Agent answers a user question by drilling into source code, this skill analyzes the current conversation for reusable knowledge facts (core mechanisms, state transitions, return-value contracts, config-switch effects, failure fallback strategies, module boundaries, etc.) and determines whether they are already covered in the knowledge base. Uncovered facts are written to a new or extended topic; covered facts that lack detail get supplemented. Distinction from `f2s-kb-sync`: `sync` is for batch syncing multiple capabilities; `distill` focuses on incremental knowledge extraction driven by a single Q&A.
+**How It Works**: After the Agent answers a user question by drilling into source code, this skill analyzes the current conversation for reusable knowledge facts (core mechanisms, state transitions, return-value contracts, config-switch effects, failure fallback strategies, module boundaries, etc.) and determines whether they are already covered in the knowledge base. Uncovered facts are written to a new or extended topic; covered facts that lack detail get supplemented. Distinction from `fs-kb-sync`: `sync` is for batch syncing multiple capabilities; `distill` focuses on incremental knowledge extraction driven by a single Q&A.
 
 **Execution Tiers (agent auto-judges, no command parameter)**:
 
@@ -411,12 +411,12 @@
 
 | Dimension | Condition |
 | --- | --- |
-| Upstream `f2s-kb-feedback-closing` case | **case 2 or case 3** (case 1 / no closing block → strict tier) |
+| Upstream `fs-kb-feedback-closing` case | **case 2 or case 3** (case 1 / no closing block → strict tier) |
 | Business source files Read this turn | **≤ 3 files** |
 | Function / class names cited in this turn's reply | **≤ 5** |
 | Did the user reject the upstream conclusion in a follow-up? | **No** |
 
-**Business source defined**: a Read whose path is **not** under `.claude/` / `.cursor/` / `.codex/` / `.Knowledge/` / `.task/` counts.
+**Business source defined**: a Read whose path is **not** under `.claude/` / `.cursor/` / `.codex/` / `.flow-spec/` / `.task/` counts.
 
 **Why this design**:
 
@@ -428,19 +428,19 @@
 
 **Use Cases**:
 - After a Q&A drills into source code and the topic doesn't cover it or lacks detail
-- Automatically suggested by the `f2s-kb-feedback-closing` rule
+- Automatically suggested by the `fs-kb-feedback-closing` rule
 - User wants to persist the conclusions of a Q&A session into the knowledge base
 
 **Relationships**:
 - **Prerequisite**: A Q&A session that included source code drill-down (context auto-extracted from conversation history)
 - **Next Step**: None (ends when ingestion is complete)
-- **Feature**: Only maintains `.Knowledge/`; does not touch `rules/skills` config root
+- **Feature**: Only maintains `.flow-spec/`; does not touch `rules/skills` config root
 
 **Sub-Agent Invocation**: None (single-round focused task; completed by the main agent end-to-end)
 
 ---
 
-### `f2s-kb-sync`
+### `fs-kb-sync`
 
 **Purpose**: Sinks already-implemented capabilities from the conversation back into the knowledge base. Can accept an explicit capability description or infer with zero input.
 
@@ -453,7 +453,7 @@
 - **Prerequisite**: None (can be triggered directly, or with zero-input inference)
 - **Next Step**: None
 - **Feature**: First outputs a knowledge base update outline, then writes only after user confirmation
-- **Difference from `f2s-kb-build`**: `ctx-build` is driven from `stock-docs`; `kb-sync` infers from the conversation/code
+- **Difference from `fs-kb-build`**: `ctx-build` is driven from `stock-docs`; `kb-sync` infers from the conversation/code
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent completes inference and sync
@@ -472,7 +472,7 @@
 
 ---
 
-### `f2s-kb-merge`
+### `fs-kb-merge`
 
 **Purpose**: Resolves editor context conflicts after Git merges. An optional conflict file path can be provided.
 
@@ -500,24 +500,24 @@
 
 ---
 
-### `f2s-kb-migrate`
+### `fs-kb-migrate`
 
-**Purpose**: Migrates an old-format knowledge base (`docs-index.md` + `rules/` pattern) into the `.Knowledge/` structure organized by topic.
+**Purpose**: Migrates an old-format knowledge base (`docs-index.md` + `rules/` pattern) into the `.flow-spec/` structure organized by topic.
 
-**How It Works**: Uses the legacy `docs-index.md` and `rules/main.md(c)` as index clues, recursively finds all referenced business rules and skill files, and reorganizes by topic into `.Knowledge/` (`topics` / `stock-docs` / `req-docs`). After migration, persist `migration-report.md` (mapping table + proposed deletion paths), then clean up old files after user confirmation. A one-time structural merge of scattered rules/docs into one knowledge base.
+**How It Works**: Uses the legacy `docs-index.md` and `rules/main.md(c)` as index clues, recursively finds all referenced business rules and skill files, and reorganizes by topic into `.flow-spec/` (`topics` / `stock-docs` / `req-docs`). After migration, persist `migration-report.md` (mapping table + proposed deletion paths), then clean up old files after user confirmation. A one-time structural merge of scattered rules/docs into one knowledge base.
 
 **Use Cases**:
-- Upgrading an old project to the new Flow2Spec version
+- Upgrading an old project to the new flow-spec version
 - An existing knowledge base needs structured reorganization
 
 **Relationships**:
 - **Prerequisite**: Old-format knowledge base (`docs-index.md`, `rules/`, `skills/`)
-- **Next Step**: `f2s-kb-upgrade` (**Flow V1**: old knowledge base must migrate first, then upgrade; **Current V2+ knowledge base** (including npm v3.x): see the upgrade skill Step 0)
+- **Next Step**: `fs-kb-upgrade` (**Flow V1**: old knowledge base must migrate first, then upgrade; **Current V2+ knowledge base** (including npm v3.x): see the upgrade skill Step 0)
 - **Flow**:
   1. Use `docs-index.md` + `rules/main.md(c)` as the primary index
-  2. Process all business `rules/` and business `skills/` in full (excluding `f2s-*` package skills)
+  2. Process all business `rules/` and business `skills/` in full (excluding `fs-*` package skills)
   3. Migrate all `stock-docs`/`req-docs`
-  4. Persist `.Knowledge/migration-report.md`
+  4. Persist `.flow-spec/migration-report.md`
   5. Delete migrated old files after user confirmation
 
 **Sub-Agent Invocation**:
@@ -536,37 +536,37 @@
 
 ---
 
-### `f2s-kb-upgrade`
+### `fs-kb-upgrade`
 
 **Purpose**: Knowledge base template upgrade. Aligns manifest-routing and matchers shards.
 
-**How It Works**: Uses "version branching + delegated init" — detect whether the current knowledge base is V1 (legacy structure, migrate first) or V2+ (already has `.Knowledge`): V1 runs migrate then init; V2+ runs `flow2spec init` directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone `init`, `kb-upgrade` includes version routing and re-run logic; `init` alone is a one-shot structural fill-in.
+**How It Works**: Uses "version branching + delegated init" — detect whether the current knowledge base is V1 (legacy structure, migrate first) or V2+ (already has `.flow-spec`): V1 runs migrate then init; V2+ runs `flow-spec init` directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone `init`, `kb-upgrade` includes version routing and re-run logic; `init` alone is a one-shot structural fill-in.
 
 **Use Cases**:
-- After a `flow2spec` package version upgrade, upgrade the project knowledge base template
+- After a `flow-spec` package version upgrade, upgrade the project knowledge base template
 - Upgrade an old project to the latest structure
-- When interactive `flow2spec version` / `flow2spec init` detects a newer npm version, the CLI prompts you to run `flow2spec update`, then execute this skill in the Agent conversation
+- When interactive `flow-spec version` / `flow-spec init` detects a newer npm version, the CLI prompts you to run `flow-spec update`, then execute this skill in the Agent conversation
 - When Cursor detects an older knowledge-base version through `.cursor/hooks.json` on `sessionStart`, it prompts you to execute this skill
 - When Codex detects an older knowledge-base version through `.codex/hooks.json` on `SessionStart`, it prompts you to execute this skill (new or changed hooks must be trusted through `/hooks` first)
 
 **Relationships**:
-- **Prerequisite**: `f2s-kb-migrate` (V1 flow) or an existing `.Knowledge/`
-- **Includes**: Internally invokes `flow2spec init` for structural alignment
-- **Note**: A standalone `flow2spec init` is **not** an upgrade command
+- **Prerequisite**: `fs-kb-migrate` (V1 flow) or an existing `.flow-spec/`
+- **Includes**: Internally invokes `flow-spec init` for structural alignment
+- **Note**: A standalone `flow-spec init` is **not** an upgrade command
 
 **Flow Differences (in-skill routing codes, **not** equivalent to npm major versions)**:
-- **V1**: First `f2s-kb-migrate`, then runs `flow2spec init`
-- **Current Knowledge Base (V2+)**: When `.Knowledge` + `manifest-routing` are already stable, runs `flow2spec init` to align manifest-routing + matchers shards (**includes Flow2Spec npm v3.x, etc.**; see `skills/f2s-kb-upgrade/SKILL.md` Step 0 for details)
+- **V1**: First `fs-kb-migrate`, then runs `flow-spec init`
+- **Current Knowledge Base (V2+)**: When `.flow-spec` + `manifest-routing` are already stable, runs `flow-spec init` to align manifest-routing + matchers shards (**includes flow-spec npm v3.x, etc.**; see `skills/fs-kb-upgrade/SKILL.md` Step 0 for details)
 
 **Sub-Agent Invocation**:
 - `subAgent: false` (default): The main agent completes the upgrade
-- `subAgent: true`: Sub-agents only handle shell command execution (running `flow2spec init`), not knowledge base content persistence; the following steps must not be delegated by the main agent: version routing (V1 / Current V2+), re-reading SKILL.md after init and determining a full skill re-run, Step 3b index.md consolidation, verification summary output
+- `subAgent: true`: Sub-agents only handle shell command execution (running `flow-spec init`), not knowledge base content persistence; the following steps must not be delegated by the main agent: version routing (V1 / Current V2+), re-reading SKILL.md after init and determining a full skill re-run, Step 3b index.md consolidation, verification summary output
 
 **Responsibility Matrix**:
 | Role | Responsibilities |
 |------|-----------------|
 | Main Agent | Version routing, re-reading and determining re-run after init, Step 3b index.md consolidation, verification summary; persists `manifest-routing.json` and `index.md` |
-| Sub-Agent | Only runs shell commands like `flow2spec init`, does not persist knowledge base content |
+| Sub-Agent | Only runs shell commands like `flow-spec init`, does not persist knowledge base content |
 
 **Cross-Verification**: This skill is not bound to cross-verification; self-verification by the persisting side.
 
@@ -580,7 +580,7 @@ The following are not skill commands but rules activated by trigger words to gui
 ---
 ---
 
-### `f2s-task`
+### `fs-task`
 
 **Trigger Words**: changeTracking, change tracking, task tracking, continuation, continue last task
 
@@ -592,13 +592,13 @@ The following are not skill commands but rules activated by trigger words to gui
 
 | Config Item | Corresponding Skill |
 |-------------|-------------------|
-| `changeTracking.feat` | `f2s-kb-feat` |
-| `changeTracking.fix` | `f2s-kb-fix` |
-| `changeTracking.implement` | `f2s-implement-tech-design` |
+| `changeTracking.feat` | `fs-kb-feat` |
+| `changeTracking.fix` | `fs-kb-fix` |
+| `changeTracking.implement` | `fs-implement-tech-design` |
 
 **Cross-Session Continuation**: When a new session starts and `.task/todo.json` exists, automatically matches the user's first message against each task's `keywords`; on a match, loads the corresponding `task.md` and `linkedSkill` skill file, displays the remaining checklist, and asks whether to continue; if there is no match, proceeds without interruption.
 
-**Rule Location**: `Config Root/rules/f2s-task.*`
+**Rule Location**: `Config Root/rules/fs-task.*`
 
 ---
 
@@ -612,7 +612,7 @@ The following are not skill commands but rules activated by trigger words to gui
 
 **Purpose**: Implements runnable code based on technical proposal documents in `req-docs/`.
 
-**How It Works**: "Proposal as contract" — the agent treats the technical proposal in `req-docs/` as the sole coding contract and must follow the mandatory six-step pipeline: understand proposal → output task list → ask clarifying questions before coding → implement step by step → output remaining work and post-implementation reminders. The task list and pre-implementation Q&A are non-skippable gates so coding does not start on a misunderstood spec. Unlike `f2s-req-plan`, this rule is lightweight single-threaded coding and does not force `.task/` tracking unless `changeTracking.implement: true`.
+**How It Works**: "Proposal as contract" — the agent treats the technical proposal in `req-docs/` as the sole coding contract and must follow the mandatory six-step pipeline: understand proposal → output task list → ask clarifying questions before coding → implement step by step → output remaining work and post-implementation reminders. The task list and pre-implementation Q&A are non-skippable gates so coding does not start on a misunderstood spec. Unlike `fs-req-plan`, this rule is lightweight single-threaded coding and does not force `.task/` tracking unless `changeTracking.implement: true`.
 
 **Change Tracking**: If `changeTracking.implement: true`, after outputting the task list in Step 2.5, synchronously writes to `.task/active/<task-name>/task.md`; archives the task in Step 5 during wrap-up.
 
@@ -621,11 +621,11 @@ The following are not skill commands but rules activated by trigger words to gui
 - After a proposal change, code needs to be updated accordingly
 
 **Relationships**:
-- **Prerequisite**: `.Knowledge/req-docs/<Technical Proposal>.md` (via `f2s-req-tech` or manual placement)
+- **Prerequisite**: `.flow-spec/req-docs/<Technical Proposal>.md` (via `fs-req-tech` or manual placement)
 - **Rule Location**:
-  - Cursor: `.cursor/rules/f2s-implement-tech-design.mdc`
-  - Claude: `.claude/rules/f2s-implement-tech-design.md`
-  - Codex: `.codex/AGENTS.md` + `.codex/f2s-rules/f2s-implement-tech-design.md`
+  - Cursor: `.cursor/rules/fs-implement-tech-design.mdc`
+  - Claude: `.claude/rules/fs-implement-tech-design.md`
+  - Codex: `.codex/AGENTS.md` + `.codex/fs-rules/fs-implement-tech-design.md`
 
 **Execution Flow (mandatory by rules)**:
 1. Input normalization
@@ -641,17 +641,17 @@ The following are not skill commands but rules activated by trigger words to gui
 
 ## 6) Sub-Agent Configuration
 
-Controlled via `flow2spec.config.json` at the project root. Defaults: `subAgent=false`, `switchAgentVerification=false`, `changeTracking.feat=true`, `changeTracking.fix=false`, `changeTracking.implement=true`.
+Controlled via `flow-spec.config.json` at the project root. Defaults: `subAgent=false`, `switchAgentVerification=false`, `changeTracking.feat=true`, `changeTracking.fix=false`, `changeTracking.implement=true`.
 
 ### How Different Products "See" the Configuration (use with the field table below)
 
-`subAgent` and similar fields are written to the **on-disk JSON**; products do not guarantee automatic file opening. Therefore, multi-layered hints are provided via **Cursor rules / Claude SessionStart summary + PreToolUse guard / Codex SessionStart summary + AGENTS field-semantics table / knowledge base `config-precheck` summary**, but **the authoritative source remains `Read("flow2spec.config.json")`** (design rationale in [design-principles.md — Agent Orchestration § 5.1](./design-principles.md); talk / deck pacing in [intro deck HTML](../../presentations/flow2spec-intro-public-en/index.html) (internal); Chinese source in `flow2spec-intro-draft`, config section). **The full path and table are maintained in one place**: [usage-guide.md Sec. 1, `f2s-*` and `flow2spec.config.json`](./usage-guide.md).
+`subAgent` and similar fields are written to the **on-disk JSON**; products do not guarantee automatic file opening. Therefore, multi-layered hints are provided via **Cursor rules / Claude SessionStart summary + PreToolUse guard / Codex SessionStart summary + AGENTS field-semantics table / knowledge base `config-precheck` summary**, but **the authoritative source remains `Read("flow-spec.config.json")`** (design rationale in [design-principles.md — Agent Orchestration § 5.1](./design-principles.md); talk / deck pacing in [intro deck HTML](../../presentations/flow-spec-intro-public-en/index.html) (internal); Chinese source in `flow-spec-intro-draft`, config section). **The full path and table are maintained in one place**: [usage-guide.md Sec. 1, `fs-*` and `flow-spec.config.json`](./usage-guide.md).
 
 ### `subAgent` Field
 
 | Value | Behavior |
 |-------|----------|
-| `false` (default) | All `f2s-*` skills complete within the main agent |
+| `false` (default) | All `fs-*` skills complete within the main agent |
 | `true` | Certain skills may use sub-agents per their documentation (large-scale parallel processing scenarios) |
 
 ### `switchAgentVerification` Field
@@ -677,11 +677,11 @@ A nested object, with each skill independently controlled:
 
 | Sub-field | Corresponding Skill | Effect |
 |-----------|---------------------|--------|
-| `feat` | `f2s-kb-feat` | Creates a task checklist before execution, archives on completion, supports cross-session continuation |
-| `fix` | `f2s-kb-fix` | Same as above |
-| `implement` | `f2s-implement-tech-design` | Same as above |
+| `feat` | `fs-kb-feat` | Creates a task checklist before execution, archives on completion, supports cross-session continuation |
+| `fix` | `fs-kb-fix` | Same as above |
+| `implement` | `fs-implement-tech-design` | Same as above |
 
-> `f2s-req-plan` is not constrained by this configuration; it always creates a task checklist. Legacy boolean values (`"changeTracking": true/false`) are backward-compatible and automatically expand to all three sub-fields on/off.
+> `fs-req-plan` is not constrained by this configuration; it always creates a task checklist. Legacy boolean values (`"changeTracking": true/false`) are backward-compatible and automatically expand to all three sub-fields on/off.
 
 For full principles and design intent, see [architecture.md Sec. 4. Agent Execution Model](./architecture.md).
 
@@ -696,7 +696,7 @@ For a complete directory description, see [Directory Conventions](./directory-co
 ---
 
 Related Documents:
-- [Flow2Spec Introduction](./Flow2Spec-Introduction.md)
+- [flow-spec introduction](./flow-spec-introduction.md)
 - [Usage Guide](./usage-guide.md)
 - [Directory Conventions](./directory-conventions.md)
 - [Architecture](./architecture.md)

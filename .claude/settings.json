@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/f2s-config-inject.js"
+            "command": "node .claude/hooks/fs-config-inject.js"
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/f2s-config-session.js"
+            "command": "node .claude/hooks/fs-config-session.js"
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/f2s-update-check.js"
+            "command": "node .claude/hooks/fs-update-check.js"
           }
         ]
       }

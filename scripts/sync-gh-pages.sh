@@ -16,8 +16,8 @@
 set -euo pipefail
 
 TARGET_BRANCH="gh-pages"
-PUB_DIR="presentations/flow2spec-intro-public"
-PUB_DIR_EN="presentations/flow2spec-intro-public-en"
+PUB_DIR="presentations/flow-spec-intro-public"
+PUB_DIR_EN="presentations/flow-spec-intro-public-en"
 SKILL_ASSETS=".claude/skills/html-ppt/assets"
 
 err() { printf '\033[31m[x]\033[0m %s\n' "$*" >&2; exit 1; }
@@ -74,17 +74,17 @@ cp -r "$SNAP"/. .
 
 # 写/保留 README
 cat > README.md <<'MD'
-# Flow2Spec · Presentation
+# flow-spec · Presentation
 
-13-slide HTML PPT demonstrating how Flow2Spec keeps AI "always in context" across sessions.
+13-slide HTML PPT demonstrating how flow-spec keeps AI "always in context" across sessions.
 
-**Live (Chinese)**: https://lands-1203.github.io/Flow2Spec/
+**Live (Chinese)**: https://lands-1203.github.io/flow-spec/
 
-**Live (English)**: https://lands-1203.github.io/Flow2Spec/en/
+**Live (English)**: https://lands-1203.github.io/flow-spec/en/
 
 **Keyboard**: ← → navigate · `T` toggle theme · `S` speaker mode · `F` fullscreen · `O` overview
 
-Main repo: https://github.com/Lands-1203/Flow2Spec
+Main repo: https://github.com/Lands-1203/flow-spec
 MD
 
 git add -A
@@ -101,5 +101,5 @@ fi
 git checkout "$SOURCE_BRANCH"
 ok "已切回 $SOURCE_BRANCH"
 echo ""
-echo "📍 中文版: https://lands-1203.github.io/Flow2Spec/"
-echo "📍 英文版: https://lands-1203.github.io/Flow2Spec/en/"
+echo "📍 中文版: https://lands-1203.github.io/flow-spec/"
+echo "📍 英文版: https://lands-1203.github.io/flow-spec/en/"

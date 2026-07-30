@@ -12,7 +12,7 @@ set -euo pipefail
 # ─────────────────────────────────────────────────────────────────────────────
 
 PLUGIN_BRANCH="feat/cursor-directory-plugin"
-WORKTREE_DIR="/tmp/flow2spec-cursor-plugin-sync"
+WORKTREE_DIR="/tmp/flow-spec-cursor-plugin-sync"
 SOURCE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 DRY_RUN=false
 
@@ -54,7 +54,7 @@ git worktree add "$WORKTREE_DIR" "$PLUGIN_BRANCH" --quiet
 # templates/skills/         → skills/
 # templates/hooks/          → scripts/
 # templates/knowledge/      → knowledge/
-# templates/flow2spec.config.json → flow2spec.config.json
+# templates/flow-spec.config.json → flow-spec.config.json
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 SRC="$REPO_ROOT/templates"
@@ -88,9 +88,9 @@ fi
 # knowledge
 sync_dir "$SRC/knowledge" "$WORKTREE_DIR/knowledge"
 
-# flow2spec.config.json
-if [[ -f "$SRC/flow2spec.config.json" ]]; then
-  cp "$SRC/flow2spec.config.json" "$WORKTREE_DIR/flow2spec.config.json"
+# flow-spec.config.json
+if [[ -f "$SRC/flow-spec.config.json" ]]; then
+  cp "$SRC/flow-spec.config.json" "$WORKTREE_DIR/flow-spec.config.json"
 fi
 
 # 修复 skill frontmatter：确保所有 SKILL.md 有闭合的 ---

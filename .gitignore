@@ -1,4 +1,4 @@
 .agents/
 .DS_Store
 docs/*.json
-.Knowledge/update-check.json
+.flow-spec/update-check.json

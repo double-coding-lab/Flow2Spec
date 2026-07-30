@@ -1,13 +1,13 @@
 [中文](../设计说明.md) | [English](./design-principles.md)
 
-# Flow2Spec Design Principles
+# flow-spec Design Principles
 
 ## Problem Statement
 
 ```
-❌ Current State                      ✅ After Flow2Spec
+❌ Current State                      ✅ After flow-spec
 
-Architecture conventions  ──┐         .Knowledge/
+Architecture conventions  ──┐         .flow-spec/
 Technical designs       ──┼──►  scattered     ├── manifest-routing.json
 Module boundaries       ──┤    unstructured   ├── matchers/
 Team experience         ──┘    reinterpreted  ├── topics/
@@ -29,12 +29,12 @@ Four rings in the repo (rules ring and skills ring are separate—do not merge):
 
 | Ring | Location | Role |
 | --- | --- | --- |
-| Knowledge | `.Knowledge/` | Routing, topics, stock/req docs |
+| Knowledge | `.flow-spec/` | Routing, topics, stock/req docs |
 | Task | `.task/` | Cross-session continuation, user todos |
 | Rules | Tool `rules` / `AGENTS.md` | How to read and act |
-| Skills | `f2s-*` / `skills/` | Maintain KB, trigger workflows |
+| Skills | `fs-*` / `skills/` | Maintain KB, trigger workflows |
 
-Flow2Spec delivers the **Memory Coding persistence and maintenance loop**, not "another RAG knowledge base."
+flow-spec delivers the **Memory Coding persistence and maintenance loop**, not "another RAG knowledge base."
 
 ### 0.1 Knowledge Ring: Multi-Layer Memory
 
@@ -44,7 +44,7 @@ Inside the knowledge ring: **horizontal narrowing** (L0 manifest → L1 matchers
 
 ```mermaid
 graph LR
-    subgraph K[".Knowledge/  Knowledge Layer"]
+    subgraph K[".flow-spec/  Knowledge Layer"]
         K1[Architecture Docs]
         K2[Technical Designs]
         K3[Routing Index]
@@ -65,19 +65,19 @@ graph LR
 
 ### 1.1 Rule Scope and Priority
 
-Flow2Spec rules intentionally overlap in a few places: the global entry defines the overall path, while focused rules enforce one specific stage. This redundancy reduces missed mandatory steps, but agents must resolve overlap by scope priority instead of treating similar wording as conflict.
+flow-spec rules intentionally overlap in a few places: the global entry defines the overall path, while focused rules enforce one specific stage. This redundancy reduces missed mandatory steps, but agents must resolve overlap by scope priority instead of treating similar wording as conflict.
 
 | Scenario | Priority Rule | Role |
 | --- | --- | --- |
-| First read / first tool call for ordinary questions | `f2s-knowledge-preflight` | Decides whether current-repo questions must first read `.Knowledge/manifest-routing.json`, and governs the gap gate / source fallback rhythm. |
-| Source fallback closing for ordinary Q&A | `f2s-kb-feedback-closing` | After answering from source code, all four cases must take an explicit stance: cases 1–3 emit a `f2s-kb-distill` suggestion; case 4 emits an explicit "knowledge base already covers" marker. Silently skipping the entire closing step is forbidden. |
-| Global routing facts / progressive loading chain | `f2s-flow2spec-unified-entry` | Defines the source-of-truth relationship and read order for manifest, matcher, topic, stock-docs, and req-docs. |
-| Reading config before any `f2s-*` skill | `f2s-config-check` | Enforces `flow2spec.config.json` as the first step of every `f2s-*` skill. |
-| Implementing from a technical proposal | `f2s-implement-tech-design` | Full execution rule for implementation from a technical design. |
-| `stock-docs` / `req-docs` boundary | `f2s-stock-docs-vs-req-docs` | Defines the path responsibilities of persistent context vs requirement / technical proposal documents. |
-| Writing topics / metadata / dependencies | `f2s-topic-authoring` | Authoring-side rule for topic naming, granularity, classification, dependencies, and persistence. |
-| Task checklist maintenance | `f2s-task` | Governs `.task/` creation, continuation, and archival. |
-| General coding discipline | `f2s-karpathy-guidelines` | Supplemental coding discipline only; it must not override mandatory f2s workflows. |
+| First read / first tool call for ordinary questions | `fs-knowledge-preflight` | Decides whether current-repo questions must first read `.flow-spec/manifest-routing.json`, and governs the gap gate / source fallback rhythm. |
+| Source fallback closing for ordinary Q&A | `fs-kb-feedback-closing` | After answering from source code, all four cases must take an explicit stance: cases 1–3 emit a `fs-kb-distill` suggestion; case 4 emits an explicit "knowledge base already covers" marker. Silently skipping the entire closing step is forbidden. |
+| Global routing facts / progressive loading chain | `fs-flow-spec-unified-entry` | Defines the source-of-truth relationship and read order for manifest, matcher, topic, stock-docs, and req-docs. |
+| Reading config before any `fs-*` skill | `fs-config-check` | Enforces `flow-spec.config.json` as the first step of every `fs-*` skill. |
+| Implementing from a technical proposal | `fs-implement-tech-design` | Full execution rule for implementation from a technical design. |
+| `stock-docs` / `req-docs` boundary | `fs-stock-docs-vs-req-docs` | Defines the path responsibilities of persistent context vs requirement / technical proposal documents. |
+| Writing topics / metadata / dependencies | `fs-topic-authoring` | Authoring-side rule for topic naming, granularity, classification, dependencies, and persistence. |
+| Task checklist maintenance | `fs-task` | Governs `.task/` creation, continuation, and archival. |
+| General coding discipline | `fs-karpathy-guidelines` | Supplemental coding discipline only; it must not override mandatory fs workflows. |
 
 Core principle: **gate rules decide whether something must be read or whether an action is allowed; focused rules then define how to execute it**. If rules overlap, apply the scenario priority above.
 
@@ -107,30 +107,30 @@ graph LR
 
 ```mermaid
 graph LR
-    K[".Knowledge/"] --> AI["Next Session\nAI"]
+    K[".flow-spec/"] --> AI["Next Session\nAI"]
     AI --> C["Feature iteration"]
 
-    C -->|"Fix Bug"| FIX["f2s-kb-fix"] --> K
-    C -->|"New Capability"| FEAT["f2s-kb-feat"] --> K
-    C -->|"Session End"| SYNC["f2s-kb-sync"] --> K
-    C -->|"Commit Code"| CMT["f2s-git-commit\nGate Check"]
+    C -->|"Fix Bug"| FIX["fs-kb-fix"] --> K
+    C -->|"New Capability"| FEAT["fs-kb-feat"] --> K
+    C -->|"Session End"| SYNC["fs-kb-sync"] --> K
+    C -->|"Commit Code"| CMT["fs-git-commit\nGate Check"]
     CMT -->|"Not in KB, remind\n-> kb-sync/kb-feat"| K
 
-    D1["Architecture Docs"] -->|f2s-doc-arch| FIN["f2s-doc-final"]
-    D2["PDF/draft"] -->|f2s-doc-final| FIN
-    FIN --> CTX["f2s-kb-build"] --> K
+    D1["Architecture Docs"] -->|fs-doc-arch| FIN["fs-doc-final"]
+    D2["PDF/draft"] -->|fs-doc-final| FIN
+    FIN --> CTX["fs-kb-build"] --> K
 
-    OLD["Existing Code/Docs"] -->|f2s-kb-add| K
+    OLD["Existing Code/Docs"] -->|fs-kb-add| K
 
-    NR["New Requirement"] --> CL["f2s-req-clarify"] --> BE["f2s-req-tech"]
+    NR["New Requirement"] --> CL["fs-req-clarify"] --> BE["fs-req-tech"]
     BE --> IMPL["Implement xxx technical design"] -->|auto-trigger implement-tech-design rule| K
 
-    GIT["After Git Merge"] -->|f2s-kb-merge| K
+    GIT["After Git Merge"] -->|fs-kb-merge| K
 ```
 
 </details>
 
-Seven entry points  ·  `f2s-git-commit` is the knowledge discipline gate at commit time  ·  `.Knowledge/` is the single convergence point  ·  Knowledge drives AI, AI drives the next development cycle
+Seven entry points  ·  `fs-git-commit` is the knowledge discipline gate at commit time  ·  `.flow-spec/` is the single convergence point  ·  Knowledge drives AI, AI drives the next development cycle
 
 
 
@@ -138,8 +138,8 @@ Seven entry points  ·  `f2s-git-commit` is the knowledge discipline gate at com
 
 ```mermaid
 graph LR
-    SKILL["f2s-kb-feat / f2s-kb-fix\nimplement-tech-design"] -->|"changeTracking: true"| TJ[".task/active/\ntask.md · todo.json"]
-    RP["f2s-req-plan\n(always created)"] --> TJ
+    SKILL["fs-kb-feat / fs-kb-fix\nimplement-tech-design"] -->|"changeTracking: true"| TJ[".task/active/\ntask.md · todo.json"]
+    RP["fs-req-plan\n(always created)"] --> TJ
 
     TJ --> NS[First message of new session]
     NS -->|Keyword match| LD["Load remaining checklist\n+ linkedSkill context"]
@@ -184,13 +184,13 @@ Forgot when adding new task          automatically brings in prerequisite
 #### 3. topics store summaries, rules files store full text
 
 ```
-.Knowledge/topics/implement-tech-design.md     ← lightweight, loaded during routing
+.flow-spec/topics/implement-tech-design.md     ← lightweight, loaded during routing
 ┌──────────────────────────────────────────┐
 │ Topic id, path conventions, next pointer │
 │ ~100 lines                               │
 └──────────────────────────────────────────┘
              ↓ read only after hit
-.claude/rules/f2s-implement-tech-design.md     ← full text, loaded during execution
+.claude/rules/fs-implement-tech-design.md     ← full text, loaded during execution
 ┌──────────────────────────────────────────┐
 │ Complete execution constraints,           │
 │ mandatory steps, prohibitions,           │
@@ -220,10 +220,10 @@ Read order (mandatory)
 #### 5. Skill trigger words in the description field
 
 ```yaml
-name: f2s-kb-sync
+name: fs-kb-sync
 description: >
   Sync implemented capabilities to the knowledge base.
-  Triggers: f2s-kb-sync, full sync, knowledge base sync, implemented capabilities
+  Triggers: fs-kb-sync, full sync, knowledge base sync, implemented capabilities
 ```
 
 ```
@@ -255,7 +255,7 @@ Prevents: driving implementation with outdated reference docs → code diverging
 #### 2. init is idempotent
 
 ```
-flow2spec init   can be safely re-run
+flow-spec init   can be safely re-run
 
         ✅  Does                         ❌  Does NOT
 ┌─────────────────────┐      ┌─────────────────────┐
@@ -273,12 +273,12 @@ Structural operations  ≠  Business semantics    The two have no overlapping re
 #### 3. Knowledge versioning
 
 ```
-git log .Knowledge/
+git log .flow-spec/
 
-  a3f1c2  f2s-kb-feat: add refund state machine routing
-  b7e9d1  f2s-kb-fix: fix RestTemplate injection conventions
-  c2a8f0  f2s-kb-build: onboard order service architecture docs
-  d5b3e9  f2s-kb-sync: consolidate payment retry queue design
+  a3f1c2  fs-kb-feat: add refund state machine routing
+  b7e9d1  fs-kb-fix: fix RestTemplate injection conventions
+  c2a8f0  fs-kb-build: onboard order service architecture docs
+  d5b3e9  fs-kb-sync: consolidate payment retry queue design
 
   Code changes  +  Knowledge changes  →  same commit or adjacent commits
 ```
@@ -344,7 +344,7 @@ No match ≠ silent failure  ·  degradation itself has a clear procedure
 Sub-agents MAY write              Sub-agents MUST NOT touch
 ────────────────────             ────────────────────
 Code implementation files        manifest-routing.json  ← always written by main agent
-stock-docs content files         .Knowledge/index.md    ← always written by main agent
+stock-docs content files         .flow-spec/index.md    ← always written by main agent
 topics content files (diff mode)
 matchers/*.json (diff mode)
 ```
@@ -377,7 +377,7 @@ Keyword-based automatic continuation example
   Hit { name: "payment_callback_fix", keywords: ["payment", "callback"] }
       ↓
   Load task.md (show remaining steps)
-  linkedSkill = "f2s-kb-fix" → load SKILL.md
+  linkedSkill = "fs-kb-fix" → load SKILL.md
       ↓
   Skill's write rules / style requirements / self-check checklist are fully restored
   User doesn't need to re-describe context, can continue directly
@@ -447,7 +447,7 @@ User dialogue only flows through the main agent  ·  confirmation decisions cann
 #### 3. Skills can override global subAgent configuration
 
 ```
-flow2spec.config.json        f2s-req-clarify SKILL.md
+flow-spec.config.json        fs-req-clarify SKILL.md
 subAgent: true               This skill does not split by default:
                              regardless of subAgent value,
                              the clarification process stays
@@ -459,13 +459,13 @@ Rationale: requirement clarification depends heavily on continuous same-session 
 
 Global configuration is the upper bound for allowing splits  ·  each skill decides for itself whether splitting is appropriate  ·  config being true does not guarantee splitting
 
-#### 4. f2s-kb-sync: outline first, write after confirmation
+#### 4. fs-kb-sync: outline first, write after confirmation
 
 ```mermaid
 graph LR
-    T[Trigger f2s-kb-sync] --> O[Output update outline]
+    T[Trigger fs-kb-sync] --> O[Output update outline]
     O --> U{User confirms}
-    U -->|Confirm| W[Write to .Knowledge/]
+    U -->|Confirm| W[Write to .flow-spec/]
     U -->|Modify| O
     U -->|Cancel| STOP[No write]
 ```
@@ -477,11 +477,11 @@ Writing is a destructive operation  ·  the outline is the user's only chance to
 #### 5. Zero-input inference
 
 ```
-f2s-kb-sync three input modes
+fs-kb-sync three input modes
 
   Mode 1: User explicitly provides capability list   "Sync the refund state machine into the knowledge base"
   Mode 2: User provides supplementary materials      @src/refund/ @docs/proposal.md
-  Mode 3: Zero input                                "f2s-kb-sync" (just this one sentence)
+  Mode 3: Zero input                                "fs-kb-sync" (just this one sentence)
                                        ↓
                                   Agent infers based on session context
                                   what was implemented and what is worth consolidating
@@ -491,18 +491,18 @@ Session context itself is an information source  ·  no need for users to organi
 
 #### 5.1 How execution switches reach the Agent (multi-platform prompts)
 
-`flow2spec.config.json` determines **`subAgent` / `switchAgentVerification` / `changeTracking`**, but AI products **do not guarantee** that the file is automatically opened at session start. The design uses **multiple weak constraint layers** to reduce the probability of "running `f2s-*` without reading the config", while avoiding maintaining a verbose duplicate of `.codex/f2s-rules/f2s-config-check.md` in `.Knowledge`:
+`flow-spec.config.json` determines **`subAgent` / `switchAgentVerification` / `changeTracking`**, but AI products **do not guarantee** that the file is automatically opened at session start. The design uses **multiple weak constraint layers** to reduce the probability of "running `fs-*` without reading the config", while avoiding maintaining a verbose duplicate of `.codex/fs-rules/fs-config-check.md` in `.flow-spec`:
 
 | Mechanism | Design Intent |
 | --- | --- |
-| **Cursor `f2s-config-check.mdc`** | Rule-layer enforcement: "Read before skill body"; Cursor hooks are used for update checks only, not automatic config reads. |
-| **Claude `f2s-config-session` SessionStart** | Injects one config summary when the conversation starts, reducing the chance that the setting is forgotten. |
-| **Claude `f2s-config-inject` PreToolUse** | Only guards **`f2s-*` Skill** calls by reminding the agent that the first skill-body action must be Read; it no longer repeatedly injects the full config. |
-| **Codex `AGENTS.md` / `.codex/f2s-rules/f2s-config-check.md` + `f2s-config-session`** | One `SessionStart` configuration summary plus text-layer enforcement: "Read before skill body"; there is still no Claude-style `PreToolUse Skill` guard. |
+| **Cursor `fs-config-check.mdc`** | Rule-layer enforcement: "Read before skill body"; Cursor hooks are used for update checks only, not automatic config reads. |
+| **Claude `fs-config-session` SessionStart** | Injects one config summary when the conversation starts, reducing the chance that the setting is forgotten. |
+| **Claude `fs-config-inject` PreToolUse** | Only guards **`fs-*` Skill** calls by reminding the agent that the first skill-body action must be Read; it no longer repeatedly injects the full config. |
+| **Codex `AGENTS.md` / `.codex/fs-rules/fs-config-check.md` + `fs-config-session`** | One `SessionStart` configuration summary plus text-layer enforcement: "Read before skill body"; there is still no Claude-style `PreToolUse Skill` guard. |
 | **Codex `AGENTS.md` + `renderProjectConfigBlock`** | Top-level **Read** hard constraint + field-semantics table; current values only come from disk Read and the SessionStart summary. |
 | **Knowledge base `config-precheck` topic** | When routing hits, provides only **summary** and a pointer to the Codex full text, **not** a substitute for Read JSON. |
 
-**Authority remains** the **Read** result of the project-root JSON; each layer is a prompt, not a second source of truth. For the complete operational table and paths, see **[Usage Guide § 1. `f2s-*` and `flow2spec.config.json`](./usage-guide.md)**.
+**Authority remains** the **Read** result of the project-root JSON; each layer is a prompt, not a second source of truth. For the complete operational table and paths, see **[Usage Guide § 1. `fs-*` and `flow-spec.config.json`](./usage-guide.md)**.
 
 #### 6. Skills don't restate unified entry rules, only reference them
 
@@ -513,8 +513,8 @@ Each SKILL.md's orchestration section reads:
   are defined in the unified entry as the sole source of truth,
   not restated here.
   ↓
-  Cursor/Claude → rules/f2s-flow2spec-unified-entry.*
-  Codex         → .codex/f2s-rules/f2s-flow2spec-unified-entry.md
+  Cursor/Claude → rules/fs-flow-spec-unified-entry.*
+  Codex         → .codex/fs-rules/fs-flow-spec-unified-entry.md
 
   15 skills, each only writes its own unique orchestration constraints
   Common rules are defined in one place; modifying one location affects all
@@ -527,21 +527,21 @@ Each SKILL.md's orchestration section reads:
 #### 1. Tools are pluggable: one knowledge base, any tool combination
 
 ```
-flow2spec init cursor claude codex   ← all three tools installed
-flow2spec init claude                ← only Claude
-flow2spec init cursor codex          ← skip Claude
+flow-spec init cursor claude codex   ← all three tools installed
+flow-spec init claude                ← only Claude
+flow-spec init cursor codex          ← skip Claude
 
-.Knowledge/ stays the same, tools can be added or removed at any time
+.flow-spec/ stays the same, tools can be added or removed at any time
 ```
 
-The same `.Knowledge/` drives all tools  ·  adding/removing tools does not affect knowledge content  ·  new tools integrate with zero rebuild
+The same `.flow-spec/` drives all tools  ·  adding/removing tools does not affect knowledge content  ·  new tools integrate with zero rebuild
 
 #### 2. Knowledge topics are pluggable: add/remove without side effects
 
 ```
 Adding a topic                         Removing a topic
 ─────────────────────               ─────────────────────
-1. Write topics/xxx.md               f2s-kb-rm stock-docs/xxx.md
+1. Write topics/xxx.md               fs-kb-rm stock-docs/xxx.md
 2. Write matchers/m-xxx.json                  ↓
 3. Register in manifest-routing       Automatically cleans up topics/ + manifest
                                        + index references
@@ -554,10 +554,10 @@ New topics simply declare dependencies in `topicDependencies`  ·  if they don't
 #### 3. Skills are pluggable: self-contained units, project-level overrides package-level
 
 ```
-Package-level skills (shipped with flow2spec init)     Project-level skills (placed in config root/skills/)
+Package-level skills (shipped with flow-spec init)     Project-level skills (placed in config root/skills/)
 
-f2s-kb-sync/SKILL.md                  my-domain-skill/SKILL.md
-f2s-doc-arch/SKILL.md                 my-review-skill/SKILL.md
+fs-kb-sync/SKILL.md                  my-domain-skill/SKILL.md
+fs-doc-arch/SKILL.md                 my-review-skill/SKILL.md
 ...
 
 If names don't conflict they coexist  ·  same name → project-level overrides package-level  ·  they're unaware of each other
@@ -574,7 +574,7 @@ Vocabulary changes are localized  ·  merge conflicts are minimized  ·  new rou
 #### 5. Execution model is pluggable: config switches per project
 
 ```
-flow2spec.config.json
+flow-spec.config.json
 
   subAgent: false               → main agent throughout, low overhead, suitable for small projects
   subAgent: true                → allow sub-agent parallelization, suitable for large-scale changes
@@ -582,8 +582,8 @@ flow2spec.config.json
   switchAgentVerification: false → writer-side self-verify, daily use
   switchAgentVerification: true  → cross-verification, high-confidence critical scenarios
 
-  changeTracking.feat: true        → f2s-kb-feat creates a task checklist by default
-  changeTracking.fix: false        → f2s-kb-fix does not create a task checklist by default
+  changeTracking.feat: true        → fs-kb-feat creates a task checklist by default
+  changeTracking.fix: false        → fs-kb-fix does not create a task checklist by default
   changeTracking.implement: true   → implement-tech-design creates a task checklist by default
 
   Three orthogonal dimensions · each skill can further refine and override global config

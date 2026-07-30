@@ -6,8 +6,8 @@
 
 | Document | Description |
 | --- | --- |
-| [Flow2Spec Introduction](./Flow2Spec-Introduction.md) | **Recommended first read** — product narrative, diagrams, and flowcharts: why Flow2Spec, and how it differs from ordinary "project memory" |
-| [Live Demo PPT](https://lands-1203.github.io/Flow2Spec/en/) | 13-slide HTML deck for a quick overview |
+| [flow-spec introduction](./flow-spec-introduction.md) | **Recommended first read** — product narrative, diagrams, and flowcharts: why flow-spec, and how it differs from ordinary "project memory" |
+| [Live Demo PPT](https://lands-1203.github.io/flow-spec/en/) | 13-slide HTML deck for a quick overview |
 
 ## Guides and reference
 

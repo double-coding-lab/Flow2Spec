@@ -1,7 +1,7 @@
 {
   "id": "m-implement-from-spec",
   "version": "1.0.0",
-  "schema": "flow2spec.matcher.v1",
+  "schema": "flow-spec.matcher.v1",
   "includeAny": [
     "按技术方案实现",
     "实现接口",

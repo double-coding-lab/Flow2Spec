@@ -1,10 +1,10 @@
 [中文](../使用案例-模拟对话.md) | [English](./usage-scenarios.md)
 
-# Flow2Spec Usage Scenarios (Simulated Dialogues)
+# flow-spec Usage Scenarios (Simulated Dialogues)
 
 The following examples revolve around the same e-commerce project, covering the full pipeline from requirements clarification through post-launch maintenance.
 
-**Prerequisite**: The project has executed `flow2spec init`, and `flow2spec.config.json` uses the default configuration (`subAgent: false`; `changeTracking.feat/implement: true`, `changeTracking.fix: false`). `f2s-*` skills do not modify the configuration root `rules/` or `skills/` files.
+**Prerequisite**: The project has executed `flow-spec init`, and `flow-spec.config.json` uses the default configuration (`subAgent: false`; `changeTracking.feat/implement: true`, `changeTracking.fix: false`). `fs-*` skills do not modify the configuration root `rules/` or `skills/` files.
 
 ---
 
@@ -12,7 +12,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> /f2s-req-clarify The product team provided a refund requirement doc, but it does not specify whether partial refunds and full refunds go through the same API, or whether points should be reversed after a successful refund. The document is at `.Knowledge/req-docs/refund-requirements-v1.md`.
+> /fs-req-clarify The product team provided a refund requirement doc, but it does not specify whether partial refunds and full refunds go through the same API, or whether points should be reversed after a successful refund. The document is at `.flow-spec/req-docs/refund-requirements-v1.md`.
 
 **Agent**
 
@@ -29,21 +29,21 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **Agent**
 
-> Clarification complete. Run `/f2s-req-tech` to produce the technical design.
+> Clarification complete. Run `/fs-req-tech` to produce the technical design.
 
 **You**
 
-> /f2s-req-tech
+> /fs-req-tech
 
 **Agent**
 
-> Generated `.Knowledge/req-docs/refund-tech-design.md`, which includes:
+> Generated `.flow-spec/req-docs/refund-tech-design.md`, which includes:
 > - API design: `POST /refunds`, `amount` field distinguishes full / partial refunds
 > - State machine: `PENDING -> SUCCESS / FAILED`
 > - Points reversal: asynchronous queue, failures go to dead letter queue, alert for manual handling
 > - Error code list
 >
-> Next step: say "implement according to `.Knowledge/req-docs/refund-tech-design.md`" to trigger coding.
+> Next step: say "implement according to `.flow-spec/req-docs/refund-tech-design.md`" to trigger coding.
 
 ---
 
@@ -51,37 +51,37 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> /f2s-doc-arch Help me draft an order service architecture document, focusing on the creation flow, payment callback, idempotency, and message delivery. The code is in `src/order` and `src/payment`.
+> /fs-doc-arch Help me draft an order service architecture document, focusing on the creation flow, payment callback, idempotency, and message delivery. The code is in `src/order` and `src/payment`.
 
 **Agent**
 
-> Scanned the relevant directories. Generated `.Knowledge/stock-docs/order-service-architecture-draft.md`, which includes:
+> Scanned the relevant directories. Generated `.flow-spec/stock-docs/order-service-architecture-draft.md`, which includes:
 > - Module boundaries and dependencies
 > - Creation flow sequence diagram
 > - Payment callback idempotency mechanism (based on the `payment_callback_log` table)
 > - Message delivery retry strategy
 >
-> Confirm it looks good, then run `/f2s-doc-final` to normalize the format.
+> Confirm it looks good, then run `/fs-doc-final` to normalize the format.
 
 **You**
 
-> /f2s-doc-final .Knowledge/stock-docs/order-service-architecture-draft.md
+> /fs-doc-final .flow-spec/stock-docs/order-service-architecture-draft.md
 
 **Agent**
 
-> Generated `.Knowledge/stock-docs/order-service-architecture-final.md`, formatted according to the final-draft template, with placeholders for items still to be filled in.
+> Generated `.flow-spec/stock-docs/order-service-architecture-final.md`, formatted according to the final-draft template, with placeholders for items still to be filled in.
 
 **You**
 
-> f2s-kb-build .Knowledge/stock-docs/order-service-architecture-final.md
+> fs-kb-build .flow-spec/stock-docs/order-service-architecture-final.md
 
 **Agent**
 
 > Knowledge base sync complete:
-> - Added `.Knowledge/topics/order-service.md`
-> - Updated `.Knowledge/manifest-routing.json` (added routing rule)
-> - Generated `.Knowledge/matchers/order-service.json` (keywords: order creation, payment callback, idempotency, message delivery)
-> - Updated `.Knowledge/index.md`
+> - Added `.flow-spec/topics/order-service.md`
+> - Updated `.flow-spec/manifest-routing.json` (added routing rule)
+> - Generated `.flow-spec/matchers/order-service.json` (keywords: order creation, payment callback, idempotency, message delivery)
+> - Updated `.flow-spec/index.md`
 >
 > Future tasks related to the order service will automatically hit this topic.
 
@@ -91,7 +91,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> Implement according to `.Knowledge/req-docs/refund-tech-design.md`. Only modify `src/refund/`; do not touch the payment module.
+> Implement according to `.flow-spec/req-docs/refund-tech-design.md`. Only modify `src/refund/`; do not touch the payment module.
 
 **Agent**
 
@@ -119,7 +119,7 @@ The following examples revolve around the same e-commerce project, covering the 
 > - Consumer side for `point-rollback-events` (on the points service side)
 > - Dead letter monitoring and alerting rule configuration
 >
-> Recommend running `/f2s-kb-feat` to sync this new capability into the knowledge base.
+> Recommend running `/fs-kb-feat` to sync this new capability into the knowledge base.
 
 ---
 
@@ -127,7 +127,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> /f2s-kb-sync The refund feature has gone live. Help me record the payment failure retry queue naming, dead letter table fields, and monitoring alerting criteria into the knowledge base. Give me an outline first so I can confirm before you write.
+> /fs-kb-sync The refund feature has gone live. Help me record the payment failure retry queue naming, dead letter table fields, and monitoring alerting criteria into the knowledge base. Give me an outline first so I can confirm before you write.
 
 **Agent**
 
@@ -147,7 +147,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **Agent**
 
-> Updated `.Knowledge/topics/order-service.md`. `manifest-routing` unchanged (topic already exists).
+> Updated `.flow-spec/topics/order-service.md`. `manifest-routing` unchanged (topic already exists).
 
 ---
 
@@ -155,13 +155,13 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> /f2s-kb-fix `RefundService` directly calls `new RestTemplate()`, which violates the Spring Bean injection convention.
+> /fs-kb-fix `RefundService` directly calls `new RestTemplate()`, which violates the Spring Bean injection convention.
 
 **Agent**
 
 > Fixed: Line 34 of `RefundService.java` changed to constructor injection; `RefundConfig` supplemented with `@Bean` declaration.
 >
-> Knowledge base synced: the "HTTP Client Conventions" section in `.Knowledge/stock-docs/` has been updated, noting that `RestTemplate` must be injected as a Bean, and direct instantiation is prohibited.
+> Knowledge base synced: the "HTTP Client Conventions" section in `.flow-spec/stock-docs/` has been updated, noting that `RestTemplate` must be injected as a Bean, and direct instantiation is prohibited.
 
 ---
 
@@ -169,7 +169,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **You**
 
-> /f2s-kb-merge `.Knowledge/index.md` and `.Knowledge/stock-docs/order-service-architecture-final.md` have conflict markers after the merge. I have already resolved the conflicts in the business code manually.
+> /fs-kb-merge `.flow-spec/index.md` and `.flow-spec/stock-docs/order-service-architecture-final.md` have conflict markers after the merge. I have already resolved the conflicts in the business code manually.
 
 **Agent**
 

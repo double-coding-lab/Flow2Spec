@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/hooks/f2s-config-session.js"
+            "command": "node .codex/hooks/fs-config-session.js"
           }
         ]
       },
@@ -15,8 +15,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .codex/hooks/f2s-update-check.js",
-            "statusMessage": "Checking Flow2Spec knowledge version"
+            "command": "node .codex/hooks/fs-update-check.js",
+            "statusMessage": "Checking flow-spec knowledge version"
           }
         ]
       }

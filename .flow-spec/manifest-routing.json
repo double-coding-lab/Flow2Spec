@@ -1,0 +1,210 @@
+{
+  "version": "3.2.7",
+  "knowledgeRoot": ".flow-spec",
+  "matcherKey": "matcherId",
+  "sourceOfTruth": ".flow-spec/manifest-routing.json",
+  "fallbackTopic": "fallback-triage",
+  "topicDependencies": {
+    "implement-tech-design": [
+      "fs-doc-routing",
+      "stock-docs-vs-req-docs"
+    ],
+    "fs-req-plan": [
+      "fs-task"
+    ],
+    "fs-dev-workflow-constraints": [
+      "fs-git-commit"
+    ]
+  },
+  "topicPaths": {
+    "implement-tech-design": ".flow-spec/topics/fs-implement-tech-design.md",
+    "fs-doc-routing": ".flow-spec/topics/fs-stock-docs-vs-req-docs.md",
+    "fallback-triage": ".flow-spec/topics/fs-fallback-triage.md",
+    "config-precheck": ".flow-spec/topics/fs-config-precheck.md",
+    "fs-task": ".flow-spec/topics/fs-task.md",
+    "fs-req-plan": ".flow-spec/topics/fs-req-plan.md",
+    "fs-git-commit": ".flow-spec/topics/fs-git-commit.md",
+    "stock-docs-vs-req-docs": ".flow-spec/topics/fs-stock-docs-vs-req-docs.md",
+    "flow-spec-presentations": ".flow-spec/topics/fs-flow-spec-presentations.md",
+    "flow-spec-milestones": ".flow-spec/topics/fs-flow-spec-milestones.md",
+    "skill-authoring": ".flow-spec/topics/skill-authoring.md",
+    "fs-req-tech": ".flow-spec/topics/fs-req-tech.md",
+    "fs-dev-workflow-constraints": ".flow-spec/topics/fs-dev-workflow-constraints.md",
+    "fs-kb-distill": ".flow-spec/topics/fs-kb-distill.md",
+    "flow-spec-init-defaults": ".flow-spec/topics/fs-init-defaults.md"
+  },
+  "taskToTopicRules": [
+    {
+      "task": "fs-config-precheck",
+      "matcherId": "m-fs-config-precheck",
+      "matcherPath": ".flow-spec/matchers/m-fs-config-precheck.json",
+      "topics": [
+        "config-precheck"
+      ]
+    },
+    {
+      "task": "implement-from-spec",
+      "matcherId": "m-implement-from-spec",
+      "matcherPath": ".flow-spec/matchers/m-implement-from-spec.json",
+      "topics": [
+        "fs-doc-routing",
+        "implement-tech-design",
+        "stock-docs-vs-req-docs"
+      ]
+    },
+    {
+      "task": "doc-routing",
+      "matcherId": "m-doc-routing",
+      "matcherPath": ".flow-spec/matchers/m-doc-routing.json",
+      "topics": [
+        "fs-doc-routing",
+        "stock-docs-vs-req-docs"
+      ]
+    },
+    {
+      "task": "change-tracking",
+      "matcherId": "m-change-tracking",
+      "matcherPath": ".flow-spec/matchers/m-change-tracking.json",
+      "topics": [
+        "fs-task"
+      ]
+    },
+    {
+      "task": "req-plan",
+      "matcherId": "m-req-plan",
+      "matcherPath": ".flow-spec/matchers/m-req-plan.json",
+      "topics": [
+        "fs-req-plan"
+      ]
+    },
+    {
+      "task": "git-commit",
+      "matcherId": "m-fs-git-commit",
+      "matcherPath": ".flow-spec/matchers/m-fs-git-commit.json",
+      "topics": [
+        "fs-git-commit"
+      ]
+    },
+    {
+      "task": "flow-spec-presentations",
+      "matcherId": "m-flow-spec-presentations",
+      "matcherPath": ".flow-spec/matchers/m-flow-spec-presentations.json",
+      "topics": [
+        "flow-spec-presentations"
+      ]
+    },
+    {
+      "task": "flow-spec-milestones",
+      "matcherId": "m-flow-spec-milestones",
+      "matcherPath": ".flow-spec/matchers/m-flow-spec-milestones.json",
+      "topics": [
+        "flow-spec-milestones"
+      ]
+    },
+    {
+      "task": "skill-authoring",
+      "matcherId": "m-skill-authoring",
+      "matcherPath": ".flow-spec/matchers/m-skill-authoring.json",
+      "topics": [
+        "skill-authoring"
+      ]
+    },
+    {
+      "task": "req-tech",
+      "matcherId": "m-req-tech",
+      "matcherPath": ".flow-spec/matchers/m-req-tech.json",
+      "topics": [
+        "fs-req-tech"
+      ]
+    },
+    {
+      "task": "dev-workflow-constraints",
+      "matcherId": "m-fs-dev-workflow-constraints",
+      "matcherPath": ".flow-spec/matchers/m-fs-dev-workflow-constraints.json",
+      "topics": [
+        "fs-dev-workflow-constraints"
+      ]
+    },
+    {
+      "task": "kb-distill",
+      "matcherId": "m-fs-kb-distill",
+      "matcherPath": ".flow-spec/matchers/m-fs-kb-distill.json",
+      "topics": [
+        "fs-kb-distill"
+      ]
+    },
+    {
+      "task": "flow-spec-init-defaults",
+      "matcherId": "m-flow-spec-init-defaults",
+      "matcherPath": ".flow-spec/matchers/m-flow-spec-init-defaults.json",
+      "topics": [
+        "flow-spec-init-defaults"
+      ]
+    }
+  ],
+  "pkgRev": 1,
+  "topicMetadata": {
+    "implement-tech-design": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "fs-doc-routing": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "fallback-triage": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "config-precheck": {
+      "primary": "config",
+      "confidence": "manual",
+      "tags": [
+        "policy"
+      ]
+    },
+    "fs-task": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "fs-req-plan": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "fs-git-commit": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "flow-spec-presentations": {
+      "primary": "feature",
+      "confidence": "inferred"
+    },
+    "flow-spec-milestones": {
+      "primary": "feature",
+      "confidence": "inferred"
+    },
+    "skill-authoring": {
+      "primary": "policy",
+      "confidence": "inferred"
+    },
+    "fs-req-tech": {
+      "primary": "policy",
+      "confidence": "inferred"
+    },
+    "fs-dev-workflow-constraints": {
+      "primary": "policy",
+      "confidence": "inferred"
+    },
+    "fs-kb-distill": {
+      "primary": "policy",
+      "confidence": "manual"
+    },
+    "flow-spec-init-defaults": {
+      "primary": "config",
+      "confidence": "inferred",
+      "tags": [
+        "policy"
+      ]
+    }
+  }
+}

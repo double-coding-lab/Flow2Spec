@@ -4,32 +4,32 @@
 
 ### 真值源（规则）
 
-- `.claude/rules/f2s-task.md`
-- `.codex/f2s-rules/f2s-task.md`
-- `.cursor/rules/f2s-task.mdc`
-- `templates/zh-CN/rules/f2s-task.md`
-- `templates/en-US/rules/f2s-task.md`
+- `.claude/rules/fs-task.md`
+- `.codex/fs-rules/fs-task.md`
+- `.cursor/rules/fs-task.mdc`
+- `templates/zh-CN/rules/fs-task.md`
+- `templates/en-US/rules/fs-task.md`
 
 ### topic 摘要与模板
 
-- `.Knowledge/topics/f2s-task.md`
-- `templates/zh-CN/knowledge/topics/f2s-task.md`
-- `templates/en-US/knowledge/topics/f2s-task.md`
+- `.flow-spec/topics/fs-task.md`
+- `templates/zh-CN/knowledge/topics/fs-task.md`
+- `templates/en-US/knowledge/topics/fs-task.md`
 
 ### stock-doc
 
-- `.Knowledge/stock-docs/Flow2Spec-任务清单与变更追踪.md`
+- `.flow-spec/stock-docs/flow-spec-任务清单与变更追踪.md`
 
 ### matcher
 
-- `.Knowledge/matchers/m-change-tracking.json`
+- `.flow-spec/matchers/m-change-tracking.json`
 - `templates/zh-CN/knowledge/matchers/m-change-tracking.json`
 - `templates/en-US/knowledge/matchers/m-change-tracking.json`
 
 ## 相关资料
 
-- `.Knowledge/topics/f2s-task.md`（既有 topic 摘要）
-- `.Knowledge/stock-docs/Flow2Spec-任务清单与变更追踪.md`（既有 stock-doc）
+- `.flow-spec/topics/fs-task.md`（既有 topic 摘要）
+- `.flow-spec/stock-docs/flow-spec-任务清单与变更追踪.md`（既有 stock-doc）
 
 ## 用户代办清单
 

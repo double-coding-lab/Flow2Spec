@@ -1,16 +1,16 @@
 {
   "version": "3.1.5",
   "projectRev": 1,
-  "knowledgeRoot": ".Knowledge",
+  "knowledgeRoot": ".flow-spec",
   "matcherKey": "matcherId",
-  "sourceOfTruth": ".Knowledge/manifest-routing.json",
+  "sourceOfTruth": ".flow-spec/manifest-routing.json",
   "fallbackTopic": "fallback-triage",
   "topicDependencies": {
     "implement-tech-design": [
-      "f2s-doc-routing"
+      "fs-doc-routing"
     ],
-    "f2s-req-plan": [
-      "f2s-task"
+    "fs-req-plan": [
+      "fs-task"
     ]
   },
   "topicMetadata": {
@@ -18,7 +18,7 @@
       "primary": "policy",
       "confidence": "manual"
     },
-    "f2s-doc-routing": {
+    "fs-doc-routing": {
       "primary": "policy",
       "confidence": "manual"
     },
@@ -33,28 +33,28 @@
       ],
       "confidence": "manual"
     },
-    "f2s-task": {
+    "fs-task": {
       "primary": "policy",
       "confidence": "manual"
     },
-    "f2s-req-plan": {
+    "fs-req-plan": {
       "primary": "policy",
       "confidence": "manual"
     }
   },
   "topicPaths": {
-    "implement-tech-design": ".Knowledge/topics/f2s-implement-tech-design.md",
-    "f2s-doc-routing": ".Knowledge/topics/f2s-stock-docs-vs-req-docs.md",
-    "fallback-triage": ".Knowledge/topics/f2s-fallback-triage.md",
-    "config-precheck": ".Knowledge/topics/f2s-config-precheck.md",
-    "f2s-task": ".Knowledge/topics/f2s-task.md",
-    "f2s-req-plan": ".Knowledge/topics/f2s-req-plan.md"
+    "implement-tech-design": ".flow-spec/topics/fs-implement-tech-design.md",
+    "fs-doc-routing": ".flow-spec/topics/fs-stock-docs-vs-req-docs.md",
+    "fallback-triage": ".flow-spec/topics/fs-fallback-triage.md",
+    "config-precheck": ".flow-spec/topics/fs-config-precheck.md",
+    "fs-task": ".flow-spec/topics/fs-task.md",
+    "fs-req-plan": ".flow-spec/topics/fs-req-plan.md"
   },
   "taskToTopicRules": [
     {
-      "task": "f2s-config-precheck",
-      "matcherId": "m-f2s-config-precheck",
-      "matcherPath": ".Knowledge/matchers/m-f2s-config-precheck.json",
+      "task": "fs-config-precheck",
+      "matcherId": "m-fs-config-precheck",
+      "matcherPath": ".flow-spec/matchers/m-fs-config-precheck.json",
       "topics": [
         "config-precheck"
       ]
@@ -62,34 +62,34 @@
     {
       "task": "implement-from-spec",
       "matcherId": "m-implement-from-spec",
-      "matcherPath": ".Knowledge/matchers/m-implement-from-spec.json",
+      "matcherPath": ".flow-spec/matchers/m-implement-from-spec.json",
       "topics": [
-        "f2s-doc-routing",
+        "fs-doc-routing",
         "implement-tech-design"
       ]
     },
     {
       "task": "doc-routing",
       "matcherId": "m-doc-routing",
-      "matcherPath": ".Knowledge/matchers/m-doc-routing.json",
+      "matcherPath": ".flow-spec/matchers/m-doc-routing.json",
       "topics": [
-        "f2s-doc-routing"
+        "fs-doc-routing"
       ]
     },
     {
       "task": "change-tracking",
       "matcherId": "m-change-tracking",
-      "matcherPath": ".Knowledge/matchers/m-change-tracking.json",
+      "matcherPath": ".flow-spec/matchers/m-change-tracking.json",
       "topics": [
-        "f2s-task"
+        "fs-task"
       ]
     },
     {
       "task": "req-plan",
       "matcherId": "m-req-plan",
-      "matcherPath": ".Knowledge/matchers/m-req-plan.json",
+      "matcherPath": ".flow-spec/matchers/m-req-plan.json",
       "topics": [
-        "f2s-req-plan"
+        "fs-req-plan"
       ]
     }
   ]

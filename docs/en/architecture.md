@@ -2,14 +2,14 @@
 
 # Architecture & Principles
 
-Flow2Spec separates "business knowledge curation" from "Agent capability loading", and uses **Memory Coding** to persist "what must be remembered" as versioned Git assets.
+flow-spec separates "business knowledge curation" from "Agent capability loading", and uses **Memory Coding** to persist "what must be remembered" as versioned Git assets.
 
-- **Knowledge ring** (`.Knowledge/`): documents and machine-readable routing (multi-layer, see below)
+- **Knowledge ring** (`.flow-spec/`): documents and machine-readable routing (multi-layer, see below)
 - **Task ring** (`.task/`): cross-session task checklists
 - **Rules ring** (tool `rules` / `AGENTS.md`): how to **read** and **act**
-- **Skills ring** (`f2s-*`): maintain knowledge and trigger workflows
+- **Skills ring** (`fs-*`): maintain knowledge and trigger workflows
 
-> Flow2Spec is not "just a knowledge base." All four rings are Memory Coding; the two-layer table below is the **knowledge ring vs tool-side execution** lifecycle split.
+> flow-spec is not "just a knowledge base." All four rings are Memory Coding; the two-layer table below is the **knowledge ring vs tool-side execution** lifecycle split.
 
 ---
 
@@ -21,16 +21,16 @@ Four rings in the repo (do not collapse rules + skills into a single "third ring
 
 | Ring | Location | Stores |
 | --- | --- | --- |
-| **Knowledge** | `.Knowledge/` | Routing, topics, stock/req docs (§2 layers) |
+| **Knowledge** | `.flow-spec/` | Routing, topics, stock/req docs (§2 layers) |
 | **Task** | `.task/` | `todo.json`, checklists, user todos |
 | **Rules** | `.cursor/.claude/.codex` rules, `AGENTS.md` | Read order, gap gates, execution constraints |
-| **Skills** | config root `skills/*/SKILL.md` | `f2s-kb-feat/fix/sync`, etc. |
+| **Skills** | config root `skills/*/SKILL.md` | `fs-kb-feat/fix/sync`, etc. |
 
 ---
 
 ## 2. Multi-Layer Memory Inside the Knowledge Ring
 
-`.Knowledge/` is not a flat pile of Markdown. It combines **horizontal narrowing** (progressive routing) and **vertical chaining** (topic dependencies):
+`.flow-spec/` is not a flat pile of Markdown. It combines **horizontal narrowing** (progressive routing) and **vertical chaining** (topic dependencies):
 
 | Layer | Path / mechanism | Stores | Typical read |
 | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ The pipeline `match → expand → verify → act` operates on L0–L2 (and L3 w
 
 | Layer | Location | Role |
 | --- | --- | --- |
-| Knowledge layer (knowledge ring) | `.Knowledge/` | Business docs, index, routing (§2 layers) |
+| Knowledge layer (knowledge ring) | `.flow-spec/` | Business docs, index, routing (§2 layers) |
 | Execution layer (rules + skills rings) | `.cursor/.claude/.codex` | Rules and skill entry points |
 
 ---
@@ -59,27 +59,27 @@ The pipeline `match → expand → verify → act` operates on L0–L2 (and L3 w
 
 The recommended unified order:
 
-1. `.Knowledge/manifest-routing.json`
-2. `.Knowledge/matchers/<matcher>.json` (on demand: directly located by `manifest-routing.taskToTopicRules[].matcherPath`)
-3. `.Knowledge/index.md`
+1. `.flow-spec/manifest-routing.json`
+2. `.flow-spec/matchers/<matcher>.json` (on demand: directly located by `manifest-routing.taskToTopicRules[].matcherPath`)
+3. `.flow-spec/index.md`
 4. The matched `stock-docs` / `req-docs` documents
 5. Source code drill-down when necessary
 
 After reading, execute the four-step pipeline `match -> expand -> verify -> act`: expand dependency topics after hitting the primary candidate, perform gap analysis, execute only when confidence is sufficient; clarify first when confidence is low.
 
-Simultaneously, loading behavior is governed by the config root entry points (Flow2Spec package rules: `f2s-flow2spec-unified-entry.mdc` / `f2s-flow2spec-unified-entry.md`; legacy business repos commonly use `main.md(c)`; and `AGENTS.md`).
+Simultaneously, loading behavior is governed by the config root entry points (flow-spec package rules: `fs-flow-spec-unified-entry.mdc` / `fs-flow-spec-unified-entry.md`; legacy business repos commonly use `main.md(c)`; and `AGENTS.md`).
 Codex does not read the `rules/` directory; execution constraints are carried through `.codex/AGENTS.md` + `skills/`.
 
 ---
 
 ## 5. Key Chains
 
-- Documentation curation chain: `f2s-doc-arch` -> `f2s-doc-final` -> `f2s-kb-build`
-- Implementation chain: `.Knowledge/req-docs/*.md` -> `implement-tech-design` -> code
-- Maintenance chain: `f2s-kb-fix` / `f2s-kb-feat` / `f2s-kb-sync` / `f2s-kb-merge`
-- Requirements planning chain: `f2s-req-plan` (planning + implementation, always creates task checklist)
-- Change tracking chain: `changeTracking.*` config -> `f2s-task` rules (automatic) -> `.task/` task checklist -> cross-session continuation
-- Package template/routing shape alignment with config root: `f2s-kb-upgrade` (**do not** equate running `flow2spec init` alone with "knowledge base upgrade"); migrate legacy repo structure into `.Knowledge`: `f2s-kb-migrate`
+- Documentation curation chain: `fs-doc-arch` -> `fs-doc-final` -> `fs-kb-build`
+- Implementation chain: `.flow-spec/req-docs/*.md` -> `implement-tech-design` -> code
+- Maintenance chain: `fs-kb-fix` / `fs-kb-feat` / `fs-kb-sync` / `fs-kb-merge`
+- Requirements planning chain: `fs-req-plan` (planning + implementation, always creates task checklist)
+- Change tracking chain: `changeTracking.*` config -> `fs-task` rules (automatic) -> `.task/` task checklist -> cross-session continuation
+- Package template/routing shape alignment with config root: `fs-kb-upgrade` (**do not** equate running `flow-spec init` alone with "knowledge base upgrade"); migrate legacy repo structure into `.flow-spec`: `fs-kb-migrate`
 
 The documentation curation chain produces two document types:
 
@@ -94,13 +94,13 @@ The documentation curation chain produces two document types:
 
 ## 6. Agent Execution Model
 
-Flow2Spec controls execution behavior through two fields in the project root `flow2spec.config.json`: `subAgent` and `switchAgentVerification`.
+flow-spec controls execution behavior through two fields in the project root `flow-spec.config.json`: `subAgent` and `switchAgentVerification`.
 
 **How the Agent reads the above truth values**: multi-end prompts + **Read** as authority, see [usage-guide.md § 1 (the only detailed table)](./usage-guide.md); design summary see [design-principles.md § 4, 5.1](./design-principles.md).
 
 ### 6.1 Primary/Sub Agent Responsibility Division Principle
 
-**`subAgent: false` (default)**: All `f2s-*` skills execute sequentially within the primary agent, no parallel decomposition.
+**`subAgent: false` (default)**: All `fs-*` skills execute sequentially within the primary agent, no parallel decomposition.
 
 **`subAgent: true`**: When the scale threshold agreed upon in the skill body is reached, sub-agents may be spawned for parallel processing. Responsibility boundaries are as follows:
 
@@ -109,7 +109,7 @@ Flow2Spec controls execution behavior through two fields in the project root `fl
 | Primary agent | Overall planning, determining task granularity and allocation strategy, aggregating sub-agent output, verifying cross-unit consistency, final write-to-disk |
 | Sub agent | Processes the assigned unit (module/document/topic), outputs results in the agreed format, does not make cross-unit decisions |
 
-The decomposition boundaries for sub-agents are progressively defined by each `f2s-*` skill body (e.g., thresholds for module count, document count, code line count). **There is currently no unified stage table at the template layer**; the skill body takes precedence.
+The decomposition boundaries for sub-agents are progressively defined by each `fs-*` skill body (e.g., thresholds for module count, document count, code line count). **There is currently no unified stage table at the template layer**; the skill body takes precedence.
 
 ### 6.2 Verification Ownership Principle
 
@@ -118,7 +118,7 @@ The decomposition boundaries for sub-agents are progressively defined by each `f
 **Cross-verification (`switchAgentVerification: true`)**: The counterpart agent bears the verification responsibility, suitable for scenarios requiring higher confidence. The enabling conditions must be **satisfied simultaneously**:
 
 1. Configuration `switchAgentVerification: true`
-2. The currently executing `f2s-*` skill body **explicitly states** that the step depends on this field
+2. The currently executing `fs-*` skill body **explicitly states** that the step depends on this field
 
 Cross-verification rules:
 
@@ -145,8 +145,8 @@ Design intent: Cross-verification introduces an external perspective, reducing t
 
 - Each skill sub-item is independently controlled and does not affect each other
 - When enabled: automatically checks `.task/todo.json` before skill execution, creates or resumes tasks; automatically archives upon completion
-- Cross-session: when a new session describes related content, the `f2s-task` rule (`alwaysApply`) loads the remaining checklist and corresponding skill context after keyword matching
-- `f2s-req-plan` is not constrained by this configuration and always creates a task checklist
+- Cross-session: when a new session describes related content, the `fs-task` rule (`alwaysApply`) loads the remaining checklist and corresponding skill context after keyword matching
+- `fs-req-plan` is not constrained by this configuration and always creates a task checklist
 
 ---
 
@@ -162,7 +162,7 @@ Design intent: Cross-verification introduces an external perspective, reducing t
 
 ## 8. Related Documents
 
-- [Flow2Spec Introduction](./Flow2Spec-Introduction.md)
+- [flow-spec introduction](./flow-spec-introduction.md)
 - [Usage Guide](./usage-guide.md)
 - [Commands Reference](./commands-reference.md)
 - [Directory Conventions](./directory-conventions.md)

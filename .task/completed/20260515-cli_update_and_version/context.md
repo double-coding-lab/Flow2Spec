@@ -3,13 +3,13 @@
 ## 涉及文件
 - `cli.js`
 - `package.json`
-- `.Knowledge/stock-docs/`
-- `.Knowledge/topics/`
-- `.Knowledge/index.md`
-- `.Knowledge/manifest-routing.json`
+- `.flow-spec/stock-docs/`
+- `.flow-spec/topics/`
+- `.flow-spec/index.md`
+- `.flow-spec/manifest-routing.json`
 
 ## 相关资料
-- `.Knowledge/manifest-routing.json`
+- `.flow-spec/manifest-routing.json`
 
 ## 用户代办清单
 - 见同目录 `user-todos.md`

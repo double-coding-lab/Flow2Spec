@@ -1,10 +1,10 @@
-> **Primary convention**: the template is at `.Knowledge/template/project-milestone-template.md` (written by `flow2spec init`); generated outputs go to `.Knowledge/stock-docs/<scope-name>-milestones.md`.  
-> **When executing `f2s-doc-milestone`**: structure follows this template; content comes only from **req-docs, git log, .task**, and knowledge-base topics. Do not invent content.  
+> **Primary convention**: the template is at `.flow-spec/template/project-milestone-template.md` (written by `flow-spec init`); generated outputs go to `.flow-spec/stock-docs/<scope-name>-milestones.md`.
+> **When executing `fs-doc-milestone`**: structure follows this template; content comes only from **req-docs, git log, .task**, and knowledge-base topics. Do not invent content.
 > **Milestone phases**: Mx is **only** for feature/capability changes. Integration testing, testing, acceptance, or pure environment/operations work must **not** become standalone phases; engineering changes are merged into the corresponding feature phase.
 
 # (Scope Name) Milestones
 
-> **Scope**: (user-provided semantic scope; if unspecified, write "entire project")  
+> **Scope**: (user-provided semantic scope; if unspecified, write "entire project")
 > **Updated**: `YYYY-MM-DD`
 
 ## Overview

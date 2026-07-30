@@ -1,11 +1,11 @@
-> **Primary convention (unified knowledge base)**: final-draft templates and final documents are maintained in `.Knowledge/template/` and `.Knowledge/stock-docs/`.
+> **Primary convention (unified knowledge base)**: final-draft templates and final documents are maintained in `.flow-spec/template/` and `.flow-spec/stock-docs/`.
 
 # Final Overview Template
 
-> This template organizes documents such as "architecture notes" and "feature/technical specs" into a **final-draft** form so the **f2s-kb-build** skill can update `.Knowledge/topics`, `.Knowledge/index.md`, and, as needed, the routing manifest (`manifest-routing` + `matchers/*.json`).  
-> Applies to backend services, frontend/client, full-stack, product, design notes, and similar documents. Keep or omit sections as needed.  
-> **In Flow2Spec**: the primary template path is `.Knowledge/template/final-overview-template.md`; configuration roots no longer receive a duplicate `template/` copy.  
-> **When executing the f2s-doc-final skill**: this template is only a **structural reference and writing prompt**, not a mandatory form. Conversion should primarily follow the original content and logic, adopting section suggestions as needed.
+> This template organizes documents such as "architecture notes" and "feature/technical specs" into a **final-draft** form so the **fs-kb-build** skill can update `.flow-spec/topics`, `.flow-spec/index.md`, and, as needed, the routing manifest (`manifest-routing` + `matchers/*.json`).
+> Applies to backend services, frontend/client, full-stack, product, design notes, and similar documents. Keep or omit sections as needed.
+> **In flow-spec**: the primary template path is `.flow-spec/template/final-overview-template.md`; configuration roots no longer receive a duplicate `template/` copy.
+> **When executing the fs-doc-final skill**: this template is only a **structural reference and writing prompt**, not a mandatory form. Conversion should primarily follow the original content and logic, adopting section suggestions as needed.
 
 ---
 
@@ -99,4 +99,4 @@ Write the main flow from the "user side or system side" so AI can extract it int
 
 - Replace the placeholders in parentheses above with actual content; sections unrelated to the document type may be deleted entirely or marked "(not applicable)".
 - Keep at least the three H2 headings **Core Concepts, Business Rules, Key Flows**; add or remove the rest as needed.
-- After saving as `.Knowledge/stock-docs/<design-name>_final.md`, run the **f2s-kb-build** skill with that path as input to update `.Knowledge/topics`, `.Knowledge/index.md`, and the routing manifest when needed.
+- After saving as `.flow-spec/stock-docs/<design-name>_final.md`, run the **fs-kb-build** skill with that path as input to update `.flow-spec/topics`, `.flow-spec/index.md`, and the routing manifest when needed.

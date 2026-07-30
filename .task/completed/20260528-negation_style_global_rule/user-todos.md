@@ -4,4 +4,4 @@
 
 ## 2026-05-28
 
-- [ ] 执行 `flow2spec init` 将 templates 同步到配置根（.claude/rules 等）
+- [ ] 执行 `flow-spec init` 将 templates 同步到配置根（.claude/rules 等）

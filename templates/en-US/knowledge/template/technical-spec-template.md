@@ -1,8 +1,8 @@
-> **Primary convention (unified knowledge base)**: technical-spec templates and outputs are maintained in `/.Knowledge/template/` and `/.Knowledge/req-docs/`.
+> **Primary convention (unified knowledge base)**: technical-spec templates and outputs are maintained in `/.flow-spec/template/` and `/.flow-spec/req-docs/`.
 
 # Technical Spec Template
 
-> For use by the **f2s-req-tech** skill. The primary template path is `.Knowledge/template/technical-spec-template.md`; configuration roots no longer receive a duplicate `template/` copy. **Sections are optional building blocks**: omit entire sections that do not apply to the requirement, and add project-specific sections as needed. The section order below is recommended and may be adjusted. Do not force API, database, error-code, or message-queue sections merely to fit the template.
+> For use by the **fs-req-tech** skill. The primary template path is `.flow-spec/template/technical-spec-template.md`; configuration roots no longer receive a duplicate `template/` copy. **Sections are optional building blocks**: omit entire sections that do not apply to the requirement, and add project-specific sections as needed. The section order below is recommended and may be adjusted. Do not force API, database, error-code, or message-queue sections merely to fit the template.
 
 ---
 

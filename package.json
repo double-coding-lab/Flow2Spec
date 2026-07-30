@@ -1,18 +1,18 @@
 {
-  "name": "@double-codeing/flow2spec",
+  "name": "@double-codeing/flow-spec",
   "version": "3.2.7",
-  "description": "在业务仓库初始化「文档驱动、可写回知识库」的 AI 协作骨架：项目根 .Knowledge 承载 stock-docs/req-docs 与机读路由，.cursor/.claude/.codex 写入 f2s-* 规则与技能（含 Karpathy 式编码行为准则，init 同步 rules / Codex f2s-rules / skills）；init 只落结构与模板，业务内容由各 f2s-* 技能在对话中维护。",
-  "homepage": "https://github.com/Lands-1203/Flow2Spec#readme",
+  "description": "在业务仓库初始化「文档驱动、可写回知识库」的 AI 协作骨架：项目根 .flow-spec 承载 stock-docs/req-docs 与机读路由，.cursor/.claude/.codex 写入 fs-* 规则与技能（含 Karpathy 式编码行为准则，init 同步 rules / Codex fs-rules / skills）；init 只落结构与模板，业务内容由各 fs-* 技能在对话中维护。",
+  "homepage": "https://github.com/Lands-1203/flow-spec#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lands-1203/Flow2Spec.git"
+    "url": "git+https://github.com/Lands-1203/flow-spec.git"
   },
   "bugs": {
-    "url": "https://github.com/Lands-1203/Flow2Spec/issues"
+    "url": "https://github.com/Lands-1203/flow-spec/issues"
   },
   "main": "./cli.js",
   "bin": {
-    "flow2spec": "cli.js"
+    "flow-spec": "cli.js"
   },
   "files": [
     "cli.js",
@@ -32,7 +32,7 @@
     "tag:version": "node scripts/git-tag-version.js"
   },
   "keywords": [
-    "flow2spec",
+    "flow-spec",
     "cursor",
     "cursor-rules",
     "agent-skills",
@@ -47,7 +47,7 @@
     "stock-docs",
     "req-docs",
     "context-engineering",
-    "f2s"
+    "fs"
   ],
   "author": "兰大神 <550947002@qq.com>",
   "contributors": [

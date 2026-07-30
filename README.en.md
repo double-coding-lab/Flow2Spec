@@ -1,18 +1,18 @@
-# Flow2Spec — Let AI Always Know What You're Doing
+# flow-spec — Let AI Always Know What You're Doing
 
 > Cures the "amnesia" of Cursor / Claude Code — with one `init` command, AI
 > remembers project context across sessions. No more re-explaining every time.
 >
 > 🌐 **[中文](./README.zh-CN.md)** · EN / 中
 
-🎬 **[Live Demo](https://lands-1203.github.io/Flow2Spec/)** (13-slide HTML PPT, `←` `→` to navigate, `S` for presenter mode)
+🎬 **[Live Demo](https://lands-1203.github.io/flow-spec/)** (13-slide HTML PPT, `←` `→` to navigate, `S` for presenter mode)
 
-📖 **[Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md)** · **[基础介绍（中文）](./docs/Flow2Spec基础介绍.md)** — long-form article: why Flow2Spec, knowledge graph vs project memory, with diagrams
+📖 **[flow-spec introduction](./docs/en/flow-spec-introduction.md)** · **[基础介绍（中文）](./docs/flow-spec基础介绍.md)** — long-form article: why flow-spec, knowledge graph vs project memory, with diagrams
 
 🔧 **Quick start**:
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-codeing/flow-spec@latest init
 ```
 
 ---
@@ -25,7 +25,7 @@ The exact same request, two conversations:
 > Update the batch re-scoring of the review template library
 ```
 
-**Without Flow2Spec**:
+**Without flow-spec**:
 
 ```
 AI: Which module has this table?
@@ -37,7 +37,7 @@ AI: (Digging through 416 APIs, 796 files, 4.7 MB of source code…)
 
 Repeated introductions · Repeated code searches · Repeated mistakes
 
-**With Flow2Spec**:
+**With flow-spec**:
 
 ```
 [matcher hit] m-product-review-template-library
@@ -52,25 +52,25 @@ AI: Starting implementation, 3 files affected.
 
 ---
 
-## What Flow2Spec Does
+## What flow-spec Does
 
 **① Remembers project context across sessions**
-`.Knowledge/` structured knowledge base: routing manifest (`manifest-routing.json`) + keyword indices (matchers) + topic shards (topics). AI only loads what's relevant — 4.7 MB of source code compressed to ~300 lines of precise context.
+`.flow-spec/` structured knowledge base: routing manifest (`manifest-routing.json`) + keyword indices (matchers) + topic shards (topics). AI only loads what's relevant — 4.7 MB of source code compressed to ~300 lines of precise context.
 
 **② Routing manifest means AI doesn't dig through your repo**
 Each task hits 1–4 topics, ~300 lines. Business constraints — Redis lock keys, error codes, batch limits — are all in the topics. AI doesn't have to guess from source code.
 
-**③ f2s-* skills update knowledge as you code**
-`/f2s-kb-feat` writes topics while writing features, `/f2s-kb-fix` corrects topics while fixing bugs, `/f2s-git-commit` checks topic coverage before committing. Changing code == updating knowledge. No separate "documentation maintenance."
+**③ fs-* skills update knowledge as you code**
+`/fs-kb-feat` writes topics while writing features, `/fs-kb-fix` corrects topics while fixing bugs, `/fs-git-commit` checks topic coverage before committing. Changing code == updating knowledge. No separate "documentation maintenance."
 
 **④ Full pipeline from requirements to code**
-`/f2s-req-clarify` asks questions until requirements are unambiguous. `/f2s-req-tech` generates a ready-to-implement technical proposal into `req-docs/`. AI implements from the proposal — no relying on verbal agreements.
+`/fs-req-clarify` asks questions until requirements are unambiguous. `/fs-req-tech` generates a ready-to-implement technical proposal into `req-docs/`. AI implements from the proposal — no relying on verbal agreements.
 
 **⑤ Task checklists track progress across sessions**
-When `changeTracking` is enabled, skills like `f2s-kb-feat` / `f2s-kb-fix` automatically create a `task.md` with checkboxes. Each step is checked off immediately to disk. New sessions auto-load the remaining checklist — no relying on memory. User-side todos (run SQL, set env vars, click approvals) go into `user-todos.md`, separate from AI steps.
+When `changeTracking` is enabled, skills like `fs-kb-feat` / `fs-kb-fix` automatically create a `task.md` with checkboxes. Each step is checked off immediately to disk. New sessions auto-load the remaining checklist — no relying on memory. User-side todos (run SQL, set env vars, click approvals) go into `user-todos.md`, separate from AI steps.
 
 **⑥ Document-driven: PDF / MD straight into the knowledge base**
-`/f2s-kb-add` aggregates source files into draft → final → topics. `/f2s-doc-final` converts any PDF or MD into the canonical final-draft format. External docs and legacy proposals all become routable knowledge.
+`/fs-kb-add` aggregates source files into draft → final → topics. `/fs-doc-final` converts any PDF or MD into the canonical final-draft format. External docs and legacy proposals all become routable knowledge.
 
 ---
 
@@ -79,7 +79,7 @@ When `changeTracking` is enabled, skills like `f2s-kb-feat` / `f2s-kb-fix` autom
 **Minimum viable setup is an empty skeleton.**
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-codeing/flow-spec@latest init
 ```
 
 1 minute generates the directory structure + routing config. Empty, ready to use. **Next requirement hits whichever area → you document that area.** No upfront investment needed.
@@ -90,7 +90,7 @@ Real data from a production repo running for 3 months:
 |---|---|
 | Public APIs | 416 |
 | Source code | 796 files / 4.7 MB / ~100K lines |
-| Flow2Spec per-task load | **≈ 300 lines** (99% noise removed) |
+| flow-spec per-task load | **≈ 300 lines** (99% noise removed) |
 
 ---
 
@@ -99,22 +99,22 @@ Real data from a production repo running for 3 months:
 ### Step 1: Initialize (one-time)
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-codeing/flow-spec@latest init
 ```
 
-Follow the prompts to completion — generates the `.Knowledge/` directory structure and routing config skeleton.
+Follow the prompts to completion — generates the `.flow-spec/` directory structure and routing config skeleton.
 
 ---
 
-### Step 2: Build the Knowledge Base (one-time)
+### Step 2: Build the flow-spec Base (one-time)
 
 In your Agent tool (Cursor / Claude Code):
 
-1. `/f2s-doc-arch` — Scan your project architecture, generate an architecture draft, and follow the flow until topics are created
+1. `/fs-doc-arch` — Scan your project architecture, generate an architecture draft, and follow the flow until topics are created
 
 > This step is done once. You won't need to repeat it for daily development.
 
-2. `/f2s-kb-add <folder path>` — Import any feature modules that haven't been added yet
+2. `/fs-kb-add <folder path>` — Import any feature modules that haven't been added yet
 
 > Do this selectively before starting development when you notice a module's knowledge is missing from the knowledge base.
 
@@ -125,21 +125,21 @@ In your Agent tool (Cursor / Claude Code):
 **Large features:**
 
 ```
-/f2s-req-clarify  one-line description or paste PRD    ← clarify requirements
-/f2s-req-tech                                       ← generate technical proposal
+/fs-req-clarify  one-line description or paste PRD    ← clarify requirements
+/fs-req-tech                                       ← generate technical proposal
 natural language: implement the proposal above         ← AI starts coding (task checklist auto-created when changeTracking is on)
 (debug and verify)
-/f2s-kb-feat  add xxx capability                       ← if something's missing
-/f2s-kb-fix   fix xxx                                  ← if there's a bug
-/f2s-kb-sync                                           ← sync knowledge base
-/f2s-git-commit                                        ← check and commit
+/fs-kb-feat  add xxx capability                       ← if something's missing
+/fs-kb-fix   fix xxx                                  ← if there's a bug
+/fs-kb-sync                                           ← sync knowledge base
+/fs-git-commit                                        ← check and commit
 ```
 
 **Small changes / quick fixes:**
 
 ```
-/f2s-kb-feat  add xxx capability                       ← missing feature
-/f2s-kb-fix   fix xxx                                  ← bug fix
+/fs-kb-feat  add xxx capability                       ← missing feature
+/fs-kb-fix   fix xxx                                  ← bug fix
 ```
 
 ---
@@ -148,13 +148,13 @@ natural language: implement the proposal above         ← AI starts coding (tas
 
 | Command | Purpose |
 |---|---|
-| `/f2s-req-clarify` | Clarify requirements |
-| `/f2s-req-tech` | Generate technical proposal |
-| `/f2s-kb-feat` | Add a new capability |
-| `/f2s-kb-fix` | Fix a bug |
-| `/f2s-kb-sync` | Sync knowledge base |
-| `/f2s-git-commit` | Commit code; "quick commit" skips KB coverage check |
-| `/f2s-kb-add <path>` | Import API module into knowledge base |
+| `/fs-req-clarify` | Clarify requirements |
+| `/fs-req-tech` | Generate technical proposal |
+| `/fs-kb-feat` | Add a new capability |
+| `/fs-kb-fix` | Fix a bug |
+| `/fs-kb-sync` | Sync knowledge base |
+| `/fs-git-commit` | Commit code; "quick commit" skips KB coverage check |
+| `/fs-kb-add <path>` | Import API module into knowledge base |
 
 For the full command list, see [Usage Guide](./docs/en/usage-guide.md) · [Commands Reference](./docs/en/commands-reference.md)
 
@@ -164,7 +164,7 @@ For the full command list, see [Usage Guide](./docs/en/usage-guide.md) · [Comma
 
 - **One-off scripts** — throwaway code is faster with a few Markdown files for AI context
 - **Solo small projects** — a single CLAUDE.md is enough; routing overhead > benefits
-- **Team won't maintain .Knowledge/** — tools can't replace discipline
+- **Team won't maintain .flow-spec/** — tools can't replace discipline
 
 ---
 
@@ -172,14 +172,14 @@ For the full command list, see [Usage Guide](./docs/en/usage-guide.md) · [Comma
 
 **Start here** — product narrative and diagrams:
 
-- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) (EN)
-- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) (中文)
+- [flow-spec introduction](./docs/en/flow-spec-introduction.md) (EN)
+- [flow-spec 基础介绍](./docs/flow-spec基础介绍.md) (中文)
 
 **Hands-on guides**
 
 ### English
 - [Usage Guide](./docs/en/usage-guide.md) — skill chains, config details
-- [Commands Reference](./docs/en/commands-reference.md) — all f2s-* command reference
+- [Commands Reference](./docs/en/commands-reference.md) — all fs-* command reference
 - [Directory Conventions](./docs/en/directory-conventions.md)
 - [Architecture & Principles](./docs/en/architecture.md)
 - [Usage Scenarios](./docs/en/usage-scenarios.md)

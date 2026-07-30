@@ -1,0 +1,20 @@
+{
+  "includeAny": [
+    "changeTracking",
+    "变更追踪",
+    "任务追踪",
+    "任务清单",
+    ".task",
+    "续作",
+    "继续上次任务",
+    "todo.json",
+    "task.md",
+    "fs-task",
+    "任务清单归档",
+    "跨会话",
+    "验收清单",
+    "acceptance.md",
+    "归档前验收"
+  ],
+  "id": "m-change-tracking"
+}

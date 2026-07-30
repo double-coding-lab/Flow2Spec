@@ -1,7 +1,7 @@
 {
   "id": "m-req-plan",
   "includeAny": [
-    "f2s-req-plan",
+    "fs-req-plan",
     "任务规划",
     "任务清单设计",
     "需求规划",

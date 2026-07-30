@@ -1,4 +1,4 @@
-/* flow2spec-intro：滚动页 UI — 视口 fixed 提示 + 暗角/扫描线铺满 scrollHeight */
+/* flow-spec-intro：滚动页 UI — 视口 fixed 提示 + 暗角/扫描线铺满 scrollHeight */
 (function () {
   'use strict';
 

@@ -1,7 +1,7 @@
 {
   "id": "m-doc-routing",
   "version": "1.0.0",
-  "schema": "flow2spec.matcher.v1",
+  "schema": "flow-spec.matcher.v1",
   "includeAny": [
     "文档放哪",
     "stock-docs",
