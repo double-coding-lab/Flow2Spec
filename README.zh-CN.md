@@ -1,198 +1,148 @@
-# Flow2Spec — 让 AI 一直知道你在做什么
+# Flow2Spec
 
-> 解决 Cursor / Claude Code 的「失忆症」——用一个命令初始化，让 AI
-> 跨会话记住项目上下文，不用每轮重新交代。
->
-> 🌐 **[English](./README.md)** · 中 / EN
+<p align="center">
+  <img src="./assets/readme/hero-zh.svg" width="100%" alt="Flow2Spec 将自然语言编码需求路由到紧凑项目事实后再修改代码">
+</p>
 
-🎬 **[在线演示](https://lands-1203.github.io/Flow2Spec/)**（13 页 HTML PPT，`←` `→` 翻页，`S` 演讲者模式）
+<p align="center">
+  <strong>让 Cursor、Claude Code、Codex 在动手改代码前，先读到正确的项目事实。</strong>
+</p>
 
-📖 **[Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md)** · **[Introduction (EN)](./docs/en/Flow2Spec-Introduction.md)** — 长文：为什么做 Flow2Spec、知识图谱 vs 项目记忆，含配图与流程图
+<p align="center">
+  <a href="./README.md">English</a> ·
+  <a href="https://double-coding-lab.github.io/Flow2Spec">在线演示</a> ·
+  <a href="./docs/Flow2Spec基础介绍.md">基础介绍</a> ·
+  <a href="./docs/使用说明.md">使用说明</a> ·
+  <a href="./docs/命令说明.md">命令说明</a>
+</p>
 
-🔧 **快速体验**：
+<p align="center">
+  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-codeing/flow2spec?label=latest">
+  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-codeing/flow2spec/beta?label=beta">
+  <img alt="node version" src="https://img.shields.io/node/v/@double-codeing/flow2spec">
+  <img alt="license" src="https://img.shields.io/npm/l/@double-codeing/flow2spec">
+</p>
 
-```bash
-npx @double-codeing/flow2spec@latest init
-```
-
----
-
-## Before / After
-
-同样一句话，两段对话：
-
-```
-> 改一下评价模板文案库的批量重评分
-```
-
-**没有 Flow2Spec**：
-
-```
-AI: 这个模块的表在哪？
-AI: batchReScore 是同步还是异步？
-AI: 有没有锁？幂等键是什么？
-AI: 返回格式是什么？错误码是多少？
-AI: （翻遍 416 个接口、796 份文件、4.7 MB 源码…）
-```
-反复介绍 · 反复翻代码 · 反复踩坑
-
-**有 Flow2Spec**：
-
-```
-[matcher 命中] m-product-review-template-library
-[加载依赖] 4 个 topic · 约 300 行
-AI: 已知 — fire-and-forget
-     Redis 锁 smp:product-review:template-library:batch-rescore:lock（TTL 10 分钟）
-     单次最多 100 条 · 错误码 101
-AI: 开始改，预计 3 处文件。
-```
-4.7 MB → 300 行 · 秒级定位到硬约束
-
----
-
-## Flow2Spec 做这些事
-
-**① 跨会话记住项目上下文**
-`.Knowledge/` 结构化知识库：路由清单（manifest-routing.json）+ 关键词索引（matchers）+ 主题分片（topics）。AI 启动时只读该读的，4.7 MB 源码压到 300 行精准上下文。
-
-**② 路由清单让 AI 不翻仓库，只拿该拿的**
-每次需求命中 1~4 个 topic，约 300 行。业务的硬约束——锁的 key、错误码、上限——都在 topic 里，AI 不用从源码猜。
-
-**③ f2s-* 技能改代码顺手更新知识**
-`/f2s-kb-feat` 写功能时同步写 topic，`/f2s-kb-fix` 修 bug 时更正 topic，`/f2s-git-commit` 提交前检查 topic 覆盖。改代码就是记知识，没有"单独维护文档"这件事。
-
-**④ 需求到实现全链路：澄清 → 技术方案 → 代码**
-`/f2s-req-clarify` 反问到无歧义，`/f2s-req-tech` 生成可直接实现的技术方案文档落到 `req-docs/`，AI 按方案实现，不靠口头约定。
-
-**⑤ 任务清单跨会话追踪进度**
-开启 `changeTracking` 配置后，`f2s-kb-feat` / `f2s-kb-fix` 等技能执行时自动创建带 checkbox 的 `task.md`，每步完成立即打钩落盘。新会话续作时自动加载剩余清单，不靠记忆、不靠口头，任务进度永远在磁盘上。用户侧的代办（执行 SQL、配环境变量、点审批）单独写入 `user-todos.md`，不混在 AI 步骤里。
-
-**⑥ 文档驱动：PDF / MD 一键入知识库**
-`/f2s-kb-add` 把已落地能力的源码聚合成初稿 → 终稿 → topics，`/f2s-doc-final` 把 PDF 或任意 MD 转成规范终稿格式。外部文档、历史方案都能变成可路由的知识。
-
----
-
-## 上手成本
-
-**最小可用集是一个空骨架。**
+Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在项目里建立小而可路由的 `.Knowledge/` 知识库，安装面向 agent 的 `f2s-*` 技能，并把可选的本地任务状态和产品知识分开保存。新的会话可以按需求加载相关事实，而不是重新翻完整个仓库。
 
 ```bash
 npx @double-codeing/flow2spec@latest init
 ```
 
-1 分钟生成目录结构 + 路由配置，空的，直接跑。**下次需求命中哪块，写哪块**，不提前建设。
-
-真实仓库跑了三个月的数据：
-
-| 指标 | 数值 |
-|---|---|
-| 对外接口数 | 416 |
-| 源码体积 | 796 文件 / 4.7 MB / ~10 万行 |
-| Flow2Spec 每次加载 | **≈ 300 行**（噪声切掉 99%） |
-
----
-
-## 使用流程
-
-### 第一步：初始化（一次性）
+尝试当前 beta：
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-codeing/flow2spec@beta init
 ```
 
-跟着提示走完，生成 `.Knowledge/` 目录结构和路由配置骨架。
+## 为什么需要它
 
----
+如果项目记忆不能维护、不能路由，agent 每次处理需求都要重新确认同一批约束。Flow2Spec 把这些事实整理成紧凑的 topic 分片，再把需求路由到需要读取的主题。
 
-### 第二步：建知识库（一次性）
+| 没有 Flow2Spec | 有 Flow2Spec |
+| --- | --- |
+| “这个模块的表在哪？” | `[matcher 命中] m-product-review-template-library` |
+| “batchReScore 是同步还是异步？” | `[加载依赖] 4 个 topic · 约 300 行` |
+| “有没有锁？幂等键是什么？” | `Redis lock ... TTL 10 min` |
+| Agent 在修改前搜索 416 个接口、796 份文件、4.7 MB 源码。 | Agent 先读取已验证约束，再打开相关文件。 |
 
-在 Agent 工具（Cursor / Claude Code）中执行：
+Flow2Spec 不是为了增加文档数量。它把项目事实保存在一层小而准的机读知识里，并让同一套技能在事实变化后同步更新它。
 
-1. `/f2s-doc-arch` — 扫描项目架构，生成架构说明初稿，跟着流程走直到生成主题（topics）
+## 它提供什么
 
-> 这一步只做一次，之后日常开发不需要重复。
+| 层 | 作用 | 文件 |
+| --- | --- | --- |
+| 知识路由 | 把一次需求映射到 agent 需要读取的少量 topics。 | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
+| 主题分片 | 保存 API、上限、锁、数据规则、业务流程等项目事实。 | `.Knowledge/topics/*.md` |
+| Agent 入口 | 为 Cursor、Claude Code、Codex 安装规则和技能。 | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
+| 技能工作流 | 澄清需求、编写方案、实现、修复、同步知识、提交。 | `f2s-*` skills |
+| 本地任务状态 | 单独保存 AI 步骤和用户侧待办，不混入产品知识。 | `.task/` |
 
-2. `/f2s-kb-add <文件夹路径>` — 把还没入库的功能模块路径补进来
+## 开发流程
 
-> 这一步在进入开发前，发现没有某个模块能力的知识的时候选择性的去做
+大多数工作从自然语言开始。已安装的 agent 规则可以按意图选择 matcher、topics 和对应的 `f2s-*` 技能。需要自己指定流程时，再显式输入某个技能入口。
 
----
-
-### 第三步：日常开发（每次需求）
-
-**大需求：**
-
-```
-/f2s-req-clarify  一句话需求或粘贴 PRD    ← 需求澄清
-/f2s-req-tech                          ← 生成技术方案
-自然语言：实现上面的技术方案              ← AI 开始实现（开启 changeTracking 时自动建任务清单）
-（调试验证）
-/f2s-kb-feat  新增 xxx 能力               ← 功能缺失时补能力
-/f2s-kb-fix   修复 xxx                    ← 有 BUG 时修复
-/f2s-kb-sync                              ← 同步知识库
-/f2s-git-commit                           ← 检查并提交
-```
-
-**小需求 / 日常改动：**
-
-```
-/f2s-kb-feat  新增 xxx 能力               ← 功能缺失
-/f2s-kb-fix   修复 xxx                    ← 改 BUG
+```text
+需求
+  → 命中 topics
+  → 展开依赖
+  → 校验缺口
+  → 实现 / 修复
+  → 把已验证事实写回 .Knowledge
+  → 提交前做覆盖检查
 ```
 
----
+较大的变更通常这样推进：
 
-## 常用命令速查
+```text
+用自然语言说明需求
+  → 补齐缺失信息
+  → 生成或复核技术方案
+  → 实现 / 修复
+  → 把已验证事实同步进 .Knowledge
+  → 提交前检查覆盖情况
+```
+
+需要显式指定入口时：
+
+```text
+/f2s-kb-feat  新增能力并同步项目知识
+/f2s-kb-fix   修复行为并更新对应知识
+```
+
+## 渐进式建设知识库
+
+Flow2Spec 不要求一开始做庞大的文档工程。
+
+1. 先运行 `init`，生成基础骨架。
+2. 需要架构初稿时，可以让 agent 整理；`/f2s-doc-arch` 是显式入口。
+3. 某个模块第一次进入开发时，可以用 `/f2s-kb-add <path>` 导入已有上下文，也可以走正常的 feature/fix 工作流。
+4. 提交前检查会提醒你：代码已经变化，知识是否也需要同步。
+
+知识模型刻意分层：
+
+- `stock-docs/` — 稳定项目背景和导入材料。
+- `req-docs/` — 面向具体变更的技术方案和实现计划。
+- `topics/` — agent 真正会加载的紧凑事实。
+- `matchers/` — 把用户需求路由到 topics 的关键词分片。
+
+## 显式技能入口
+
+开启意图识别后，自然语言需求可以自动选择这些工作流。下面的入口适合在你想明确指定流程时使用。
 
 | 命令 | 用途 |
-|---|---|
-| `/f2s-req-clarify` | 需求澄清 |
-| `/f2s-req-tech` | 生成技术方案 |
-| `/f2s-kb-feat` | 新增小功能 |
-| `/f2s-kb-fix` | 改 BUG |
-| `/f2s-kb-sync` | 同步知识库 |
-| `/f2s-git-commit` | 提交代码；“快捷提交”跳过知识库覆盖检查 |
-| `/f2s-kb-add <路径>` | 接口模块入知识库 |
+| --- | --- |
+| `/f2s-req-clarify` | 补齐缺失信息，直到变更目标没有明显歧义。 |
+| `/f2s-req-tech` | 把已确认的需求整理成可实现的技术方案。 |
+| `/f2s-kb-feat` | 新增能力，并同步项目知识。 |
+| `/f2s-kb-fix` | 修复行为，并更正对应知识。 |
+| `/f2s-kb-sync` | 把已实现事实同步进 `.Knowledge/`。 |
+| `/f2s-kb-add <path>` | 导入已有模块或文档集。 |
+| `/f2s-git-commit` | 提交前检查变更文件和知识覆盖情况。 |
 
-更多命令详见 [使用说明](./docs/使用说明.md) · [命令说明](./docs/命令说明.md)
+完整参考：
 
----
-
-## 什么时候别用
-
-- **一次性脚本** — 写完就删的东西，直接丢几个 Markdown 给 AI 更快
-- **单人小项目** — 一份 CLAUDE.md 就够，路由和分片的开销大于收益
-- **团队不愿同步 .Knowledge/** — 工具不能替代纪律
-
----
-
-## 详细文档
-
-**从这里开始** — 产品叙事与配图：
-
-- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md)（中文）
-- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md)（EN）
-
-**上手与参考**
-
-### 中文
-- [使用说明](./docs/使用说明.md) — 技能链、配置详解
-- [命令说明](./docs/命令说明.md) — 所有 f2s-* 命令速查
+- [使用说明](./docs/使用说明.md)
+- [命令说明](./docs/命令说明.md)
 - [目录与路径约定](./docs/目录与路径约定.md)
 - [体系与原理](./docs/体系与原理.md)
-- [使用案例·模拟对话](./docs/使用案例-模拟对话.md)
 - [设计说明](./docs/设计说明.md)
 - [项目里程碑](./docs/项目里程碑.md)
 
-### English
-- [Usage Guide](./docs/en/usage-guide.md)
-- [Commands Reference](./docs/en/commands-reference.md)
-- [Directory Conventions](./docs/en/directory-conventions.md)
-- [Architecture & Principles](./docs/en/architecture.md)
-- [Usage Scenarios](./docs/en/usage-scenarios.md)
-- [Design Principles](./docs/en/design-principles.md)
-- [Project Milestones](./docs/en/milestones.md)
+## 什么时候不适合
+
+Flow2Spec 适合上下文漂移成本较高的项目。下面这些场景可能不需要它：
+
+- 写完就删的一次性脚本；
+- 很小的个人项目，一份 `CLAUDE.md` 已经够用；
+- 团队不愿意让 `.Knowledge/` 和代码保持同步。
+
+## 继续了解
+
+- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — 产品叙事、配图、与普通项目记忆的区别。
+- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — 英文长文介绍。
+- [在线演示](https://double-coding-lab.github.io/Flow2Spec) — 13 页 HTML PPT。
 
 ## 协议
 
-MIT. Copyright © 2026 兰涛
+[MIT](./LICENSE)

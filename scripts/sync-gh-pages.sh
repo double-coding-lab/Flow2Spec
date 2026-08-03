@@ -78,13 +78,13 @@ cat > README.md <<'MD'
 
 13-slide HTML PPT demonstrating how Flow2Spec keeps AI "always in context" across sessions.
 
-**Live (Chinese)**: https://lands-1203.github.io/Flow2Spec/
+**Live (Chinese)**: https://double-coding-lab.github.io/Flow2Spec
 
-**Live (English)**: https://lands-1203.github.io/Flow2Spec/en/
+**Live (English)**: https://double-coding-lab.github.io/Flow2Spec
 
 **Keyboard**: ← → navigate · `T` toggle theme · `S` speaker mode · `F` fullscreen · `O` overview
 
-Main repo: https://github.com/Lands-1203/Flow2Spec
+Main repo: https://github.com/double-coding-lab/Flow2Spec
 MD
 
 git add -A
@@ -101,5 +101,5 @@ fi
 git checkout "$SOURCE_BRANCH"
 ok "已切回 $SOURCE_BRANCH"
 echo ""
-echo "📍 中文版: https://lands-1203.github.io/Flow2Spec/"
-echo "📍 英文版: https://lands-1203.github.io/Flow2Spec/en/"
+echo "📍 中文版: https://double-coding-lab.github.io/Flow2Spec"
+echo "📍 英文版: https://double-coding-lab.github.io/Flow2Spec"

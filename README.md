@@ -1,200 +1,148 @@
-# Flow2Spec — Let AI Always Know What You're Doing
+# Flow2Spec
 
-> Cures the "amnesia" of Cursor / Claude Code — with one `init` command, AI
-> remembers project context across sessions. No more re-explaining every time.
->
-> 🌐 **[中文](./README.zh-CN.md)** · EN / 中
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Flow2Spec routes a natural language coding request into compact project facts before code edits">
+</p>
 
-🎬 **[Live Demo](https://lands-1203.github.io/Flow2Spec/)** (13-slide HTML PPT, `←` `→` to navigate, `S` for presenter mode)
+<p align="center">
+  <strong>Give Cursor, Claude Code, and Codex the project facts they need before editing.</strong>
+</p>
 
-📖 **[Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md)** · **[基础介绍（中文）](./docs/Flow2Spec基础介绍.md)** — long-form article: why Flow2Spec, knowledge graph vs project memory, with diagrams
+<p align="center">
+  <a href="./README.zh-CN.md">中文</a> ·
+  <a href="https://double-coding-lab.github.io/Flow2Spec">Live demo</a> ·
+  <a href="./docs/en/Flow2Spec-Introduction.md">Introduction</a> ·
+  <a href="./docs/en/usage-guide.md">Usage guide</a> ·
+  <a href="./docs/en/commands-reference.md">Commands</a>
+</p>
 
-🔧 **Quick start**:
+<p align="center">
+  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-codeing/flow2spec?label=latest">
+  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-codeing/flow2spec/beta?label=beta">
+  <img alt="node version" src="https://img.shields.io/node/v/@double-codeing/flow2spec">
+  <img alt="license" src="https://img.shields.io/npm/l/@double-codeing/flow2spec">
+</p>
 
-```bash
-npx @double-codeing/flow2spec@latest init
-```
-
----
-
-## Before / After
-
-The exact same request, two conversations:
-
-```
-> Update the batch re-scoring of the review template library
-```
-
-**Without Flow2Spec**:
-
-```
-AI: Which module has this table?
-AI: Is batchReScore sync or async?
-AI: Is there a lock? What's the idempotency key?
-AI: What's the response format? What's the error code?
-AI: (Digging through 416 APIs, 796 files, 4.7 MB of source code…)
-```
-
-Repeated introductions · Repeated code searches · Repeated mistakes
-
-**With Flow2Spec**:
-
-```
-[matcher hit] m-product-review-template-library
-[loading deps] 4 topics · ~300 lines
-AI: Known — fire-and-forget
-     Redis lock smp:product-review:template-library:batch-rescore:lock (TTL 10 min)
-     Max 100 items per batch · error code 101
-AI: Starting implementation, 3 files affected.
-```
-
-4.7 MB → 300 lines · Pinpoint accuracy in seconds
-
----
-
-## What Flow2Spec Does
-
-**① Remembers project context across sessions**
-`.Knowledge/` structured knowledge base: routing manifest (`manifest-routing.json`) + keyword indices (matchers) + topic shards (topics). AI only loads what's relevant — 4.7 MB of source code compressed to ~300 lines of precise context.
-
-**② Routing manifest means AI doesn't dig through your repo**
-Each task hits 1–4 topics, ~300 lines. Business constraints — Redis lock keys, error codes, batch limits — are all in the topics. AI doesn't have to guess from source code.
-
-**③ f2s-* skills update knowledge as you code**
-`/f2s-kb-feat` writes topics while writing features, `/f2s-kb-fix` corrects topics while fixing bugs, `/f2s-git-commit` checks topic coverage before committing. Changing code == updating knowledge. No separate "documentation maintenance."
-
-**④ Full pipeline from requirements to code**
-`/f2s-req-clarify` asks questions until requirements are unambiguous. `/f2s-req-tech` generates a ready-to-implement technical proposal into `req-docs/`. AI implements from the proposal — no relying on verbal agreements.
-
-**⑤ Task checklists track progress across sessions**
-When `changeTracking` is enabled, skills like `f2s-kb-feat` / `f2s-kb-fix` automatically create a `task.md` with checkboxes. Each step is checked off immediately to disk. New sessions auto-load the remaining checklist — no relying on memory. User-side todos (run SQL, set env vars, click approvals) go into `user-todos.md`, separate from AI steps.
-
-**⑥ Document-driven: PDF / MD straight into the knowledge base**
-`/f2s-kb-add` aggregates source files into draft → final → topics. `/f2s-doc-final` converts any PDF or MD into the canonical final-draft format. External docs and legacy proposals all become routable knowledge.
-
----
-
-## Getting Started
-
-**Minimum viable setup is an empty skeleton.**
+Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a small, routable `.Knowledge/` knowledge base, installs agent-specific `f2s-*` skills, and keeps optional local task state separate from product knowledge. A new session can load the facts relevant to a request instead of rediscovering the repository.
 
 ```bash
 npx @double-codeing/flow2spec@latest init
 ```
 
-1 minute generates the directory structure + routing config. Empty, ready to use. **Next requirement hits whichever area → you document that area.** No upfront investment needed.
-
-Real data from a production repo running for 3 months:
-
-| Metric | Value |
-|---|---|
-| Public APIs | 416 |
-| Source code | 796 files / 4.7 MB / ~100K lines |
-| Flow2Spec per-task load | **≈ 300 lines** (99% noise removed) |
-
----
-
-## Usage Flow
-
-### Step 1: Initialize (one-time)
+Try the current beta:
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-codeing/flow2spec@beta init
 ```
 
-Follow the prompts to completion — generates the `.Knowledge/` directory structure and routing config skeleton.
+## Why it exists
 
----
+Without a maintained, routable project memory, an agent has to rediscover the same constraints on every request. Flow2Spec keeps those facts in compact topic shards and routes each request to the topics it needs.
 
-### Step 2: Build the Knowledge Base (one-time)
+| Without Flow2Spec | With Flow2Spec |
+| --- | --- |
+| “Which module owns this table?” | `[matcher hit] m-product-review-template-library` |
+| “Is batchReScore sync or async?” | `[loading deps] 4 topics · ~300 lines` |
+| “Is there a lock? What is the idempotency key?” | `Redis lock ... TTL 10 min` |
+| Agent searches 416 APIs, 796 files, and 4.7 MB of source before editing. | Agent reads the verified constraints first and opens the relevant files. |
 
-In your Agent tool (Cursor / Claude Code):
+Flow2Spec does not add documentation for its own sake. It keeps a small, machine-readable knowledge layer alongside the code, and lets the same skills update it when verified facts change.
 
-1. `/f2s-doc-arch` — Scan your project architecture, generate an architecture draft, and follow the flow until topics are created
+## What you get
 
-> This step is done once. You won't need to repeat it for daily development.
+| Layer | What it does | Files |
+| --- | --- | --- |
+| Knowledge routing | Maps a request to the few topics the agent needs to read. | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
+| Topic shards | Stores project facts such as APIs, limits, locks, data rules, and workflows. | `.Knowledge/topics/*.md` |
+| Agent entrypoints | Installs rules and skills for Cursor, Claude Code, and Codex. | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
+| Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
+| Local task state | Keeps AI steps and user-side todos separate from product knowledge. | `.task/` |
 
-2. `/f2s-kb-add <folder path>` — Import any feature modules that haven't been added yet
+## The development loop
 
-> Do this selectively before starting development when you notice a module's knowledge is missing from the knowledge base.
+Most work starts in natural language. The installed agent rules can route the request to the relevant matcher, topics, and `f2s-*` skill. Invoke a skill explicitly when you need to choose the workflow yourself.
 
----
-
-### Step 3: Daily Development (every feature or fix)
-
-**Large features:**
-
-```
-/f2s-req-clarify  one-line description or paste PRD    ← clarify requirements
-/f2s-req-tech                                       ← generate technical proposal
-natural language: implement the proposal above         ← AI starts coding (task checklist auto-created when changeTracking is on)
-(debug and verify)
-/f2s-kb-feat  add xxx capability                       ← if something's missing
-/f2s-kb-fix   fix xxx                                  ← if there's a bug
-/f2s-kb-sync                                           ← sync knowledge base
-/f2s-git-commit                                        ← check and commit
-```
-
-**Small changes / quick fixes:**
-
-```
-/f2s-kb-feat  add xxx capability                       ← missing feature
-/f2s-kb-fix   fix xxx                                  ← bug fix
+```text
+request
+  → match topics
+  → expand dependencies
+  → verify missing context
+  → implement / fix
+  → sync verified facts back to .Knowledge
+  → commit with coverage checks
 ```
 
----
+For a larger change, the usual path is:
 
-## Quick Command Reference
+```text
+describe the requirement in natural language
+  → clarify missing details
+  → generate or review the technical spec
+  → implement / fix
+  → sync verified facts into .Knowledge
+  → check coverage before commit
+```
+
+When you need an explicit entrypoint:
+
+```text
+/f2s-kb-feat  add a capability and update project knowledge
+/f2s-kb-fix   fix behavior and update the matching knowledge
+```
+
+## Build the knowledge base gradually
+
+Flow2Spec does not require a large upfront documentation project.
+
+1. Run `init` to create the skeleton.
+2. Ask for an architecture draft when you need one; `/f2s-doc-arch` is the explicit entrypoint.
+3. When a module first matters, ask the agent to import its existing context with `/f2s-kb-add <path>` or use the normal feature/fix workflow.
+4. At commit time, checks remind you when code changed but knowledge did not.
+
+The knowledge model stays intentionally split:
+
+- `stock-docs/` — stable project background and imported source material.
+- `req-docs/` — technical specs and implementation plans for concrete changes.
+- `topics/` — compact, routable facts the agent should actually load.
+- `matchers/` — keyword shards that route a user request to the right topics.
+
+## Explicit skill entrypoints
+
+Natural-language requests can select these workflows automatically when intent recognition is enabled. Use the entrypoints below when you want to choose one directly.
 
 | Command | Purpose |
-|---|---|
-| `/f2s-req-clarify` | Clarify requirements |
-| `/f2s-req-tech` | Generate technical proposal |
-| `/f2s-kb-feat` | Add a new capability |
-| `/f2s-kb-fix` | Fix a bug |
-| `/f2s-kb-sync` | Sync knowledge base |
-| `/f2s-git-commit` | Commit code; "quick commit" skips KB coverage check |
-| `/f2s-kb-add <path>` | Import API module into knowledge base |
+| --- | --- |
+| `/f2s-req-clarify` | Clarify missing requirements until the change is unambiguous. |
+| `/f2s-req-tech` | Turn confirmed requirements into an implementation-ready technical proposal. |
+| `/f2s-kb-feat` | Add a capability and update project knowledge. |
+| `/f2s-kb-fix` | Fix behavior and correct the matching knowledge. |
+| `/f2s-kb-sync` | Sync already implemented facts into `.Knowledge/`. |
+| `/f2s-kb-add <path>` | Import an existing module or document set. |
+| `/f2s-git-commit` | Check changed files and knowledge coverage before committing. |
 
-For the full command list, see [Usage Guide](./docs/en/usage-guide.md) · [Commands Reference](./docs/en/commands-reference.md)
+Full references:
 
----
+- [Usage guide](./docs/en/usage-guide.md)
+- [Commands reference](./docs/en/commands-reference.md)
+- [Directory conventions](./docs/en/directory-conventions.md)
+- [Architecture and principles](./docs/en/architecture.md)
+- [Design principles](./docs/en/design-principles.md)
+- [Project milestones](./docs/en/milestones.md)
 
-## When NOT to Use
+## When not to use it
 
-- **One-off scripts** — throwaway code is faster with a few Markdown files for AI context
-- **Solo small projects** — a single CLAUDE.md is enough; routing overhead > benefits
-- **Team won't maintain .Knowledge/** — tools can't replace discipline
+Flow2Spec is useful when context drift is expensive. It may be unnecessary for:
 
----
+- throwaway one-off scripts;
+- tiny solo projects where one `CLAUDE.md` is enough;
+- teams that will not keep `.Knowledge/` aligned with the code.
 
-## Documentation
+## Learn more
 
-**Start here** — product narrative and diagrams:
-
-- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) (EN)
-- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) (中文)
-
-**Hands-on guides**
-
-### English
-- [Usage Guide](./docs/en/usage-guide.md) — skill chains, config details
-- [Commands Reference](./docs/en/commands-reference.md) — all f2s-* command reference
-- [Directory Conventions](./docs/en/directory-conventions.md)
-- [Architecture & Principles](./docs/en/architecture.md)
-- [Usage Scenarios](./docs/en/usage-scenarios.md)
-- [Design Principles](./docs/en/design-principles.md)
-- [Project Milestones](./docs/en/milestones.md)
-
-### 中文
-- [使用说明](./docs/使用说明.md)
-- [命令说明](./docs/命令说明.md)
-- [目录与路径约定](./docs/目录与路径约定.md)
-- [体系与原理](./docs/体系与原理.md)
-- [使用案例·模拟对话](./docs/使用案例-模拟对话.md)
-- [设计说明](./docs/设计说明.md)
-- [项目里程碑](./docs/项目里程碑.md)
+- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — product narrative, diagrams, and comparison with ordinary project memory.
+- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — Chinese long-form introduction.
+- [Live demo](https://double-coding-lab.github.io/Flow2Spec) — 13-slide HTML presentation.
 
 ## License
 
-MIT. Copyright © 2026 兰涛
+[MIT](./LICENSE)
