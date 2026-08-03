@@ -445,6 +445,20 @@
                 Topic match ≠ read every doc · docs ≠ skip code. AI judges if context is <strong>enough for this step</strong>; <span class="hl">expand one precise layer</span> on gap — minimal load, not open everything.
               </p>
               </div>
+              <div class="fx-taxonomy">
+                <div class="title">topicMetadata · topic classes</div>
+                <div class="types">
+                  <span><b>feature</b>capability</span>
+                  <span><b>module</b>engineering module</span>
+                  <span><b>config</b>switches</span>
+                  <span><b>policy</b>process/rules/gates</span>
+                </div>
+                <p>
+                  Metadata has <b>primary</b>, optional <b>tags</b>, and
+                  <b>confidence</b>; it supports inventory, audits, and reading
+                  expectations, not execution force.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -517,6 +531,7 @@
           <li><strong>Memory Coding</strong>: durable, reviewable memory in git</li>
           <li>Four rings: knowledge <code>.Knowledge/</code> · task <code>.task/</code> · rules ring · skills ring (<strong>separate</strong> rules vs skills)</li>
           <li>Layered memory: <strong>progressive · stop when enough</strong>; match ≠ read all docs; expand one layer on gap</li>
+          <li>Topic classes: <strong>feature / module / config / policy</strong>; type guides reading expectations, while execution force comes from the topic body</li>
           <li>Rules &amp; skills: <strong>side-by-side boxes</strong>, divider in the middle; no ↑↓ arrows</li>
           <li>Horizontal + vertical read on slide 7</li>
           <li>Flow2Spec ≠ RAG-only product</li>
@@ -945,7 +960,7 @@
             <div class="dom">
               <span class="id">② Requirements</span>
               <span class="k">clarify → tech spec</span>
-              <span class="cmds">f2s-req-clarify · f2s-req-backend</span>
+              <span class="cmds">f2s-req-clarify · f2s-req-tech</span>
               <span class="v">PRD Q&A and tech docs</span>
             </div>
             <div class="dom">
@@ -1342,7 +1357,7 @@
             <div class="n">2</div>
             <div class="body">
               <div class="cmd">
-                <span class="op">/f2s-req-backend</span>
+                <span class="op">/f2s-req-tech</span>
                 <span class="ar"
                   >matcher hit m-product-review-template-library</span
                 >
@@ -1721,7 +1736,7 @@
           <ul>
           <li>Case: review template library → 17 APIs / ~4 days (scroll; pick highlights)</li>
           <li>① <code>f2s-req-clarify</code>: batch Q → answers → gap check → second round</li>
-          <li>② <code>f2s-req-backend</code>: four-layer deps + tech doc + 5 DDL files</li>
+          <li>② <code>f2s-req-tech</code>: four-layer deps + tech doc + 5 DDL files</li>
           <li>③ Implement: “continue” → implement-tech-design + 8-step checklist</li>
           <li>④ <code>f2s-kb-feat</code> / ⑤ <code>f2s-kb-fix</code>: code + topics stay aligned</li>
           <li>⑥ <code>f2s-git-commit</code>: three checks; no auto push</li>
@@ -1812,7 +1827,7 @@
             ><span class="fx-cursor"></span>
           </h1>
           <div class="kv" data-anim="fade-up" style="animation-delay: 0.35s">
-            <div>repo<span>·</span>github.com/Lands-1203/Flow2Spec</div>
+            <div>repo<span>·</span>github.com/double-coding-lab/Flow2Spec</div>
             <div>
               install<span>·</span>npx @double-codeing/flow2spec@latest init
             </div>
@@ -1830,7 +1845,7 @@
         <div class="notes">
           <ul>
           <li>Close: context, not a smarter model</li>
-          <li>github.com/Lands-1203/Flow2Spec · <code>npx @double-codeing/flow2spec@latest init</code></li>
+          <li>github.com/double-coding-lab/Flow2Spec · <code>npx @double-codeing/flow2spec@latest init</code></li>
           <li>Existing projects: <code>f2s-kb-upgrade</code> for template alignment — init is not upgrade</li>
           <li>Try it · issues · chat after the talk</li>
           </ul>

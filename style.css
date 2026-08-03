@@ -236,6 +236,13 @@
 .tpl-flow2spec-intro .fx-kb-layers .sep{font-family:'JetBrains Mono',monospace;color:var(--fx-cyan);opacity:.75;font-size:11px}
 .tpl-flow2spec-intro .fx-kb-layers .hint{display:block;margin-top:7px;font-size:10.5px;color:var(--fx-ink2);font-family:'Inter','PingFang SC',sans-serif;line-height:1.45}
 .tpl-flow2spec-intro .fx-kb-layers .hint .hl{color:var(--fx-purple);font-weight:600}
+.tpl-flow2spec-intro .fx-taxonomy{margin-top:8px;padding:10px 12px;border:1px solid rgba(255,217,143,.25);border-radius:8px;background:rgba(255,217,143,.045)}
+.tpl-flow2spec-intro .fx-taxonomy .title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--fx-amber);margin-bottom:8px;text-transform:uppercase;line-height:1.4}
+.tpl-flow2spec-intro .fx-taxonomy .types{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tpl-flow2spec-intro .fx-taxonomy .types span{font-family:'Inter','PingFang SC',sans-serif;font-size:10px;line-height:1.35;color:var(--fx-ink2);border:1px solid rgba(150,170,255,.18);border-radius:5px;padding:5px 7px;background:rgba(130,150,255,.04)}
+.tpl-flow2spec-intro .fx-taxonomy .types b{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--fx-ink);font-weight:700;margin-bottom:2px}
+.tpl-flow2spec-intro .fx-taxonomy p{margin:7px 0 0;font-size:10.5px;color:var(--fx-ink2);font-family:'Inter','PingFang SC',sans-serif;line-height:1.45}
+.tpl-flow2spec-intro .fx-taxonomy p b{color:var(--fx-amber);font-weight:600}
 
 /* === 第 5 页：上下布局；仅间距/溢出，不改字号 === */
 .tpl-flow2spec-intro .slide.is-arch-slide .fx-h1{font-size:48px;margin:4px 0 8px;line-height:1.08}
