@@ -58,53 +58,56 @@ Flow2Spec does not add documentation for its own sake. It keeps a small, machine
 | Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
 | Local task state | Keeps AI steps and user-side todos separate from product knowledge. | `.task/` |
 
-## The development loop
+## First use
 
-Most work starts in natural language. The installed agent rules can route the request to the relevant matcher, topics, and `f2s-*` skill. Invoke a skill explicitly when you need to choose the workflow yourself.
+After initialization, you do not need to document the whole project upfront. Start with the change you actually need. The agent reads the relevant code and existing docs while it works, then saves confirmed project facts back into the knowledge base.
+
+For an existing project, you can ask the agent to draft the project structure first:
 
 ```text
-request
-  → match topics
-  → expand dependencies
-  → verify missing context
-  → implement / fix
-  → sync verified facts back to .Knowledge
-  → commit with coverage checks
+/f2s-doc-arch
 ```
 
-For a larger change, the usual path is:
+This helps the agent understand the main directories, module boundaries, and existing conventions. It is optional. For a small change, you can start directly from the request.
+
+## Daily development
+
+Most of the time, describe the task in natural language:
 
 ```text
-describe the requirement in natural language
-  → clarify missing details
+Add batch recalculation. It should retry failed items and avoid running the same batch twice.
+```
+
+The agent should look for relevant project knowledge first. If something is missing, it should explain the gap, then read the necessary code or ask you a follow-up question. Confirmed facts such as APIs, limits, locks, data rules, and workflows can be synced back into `.Knowledge`.
+
+A larger change usually follows this path:
+
+```text
+describe the requirement
+  → agent fills in missing details
   → generate or review the technical spec
   → implement / fix
-  → sync verified facts into .Knowledge
-  → check coverage before commit
+  → sync verified project facts
+  → check knowledge coverage before commit
 ```
 
-When you need an explicit entrypoint:
+If you already know which workflow you want, use one of the explicit entrypoints below.
 
-```text
-/f2s-kb-feat  add a capability and update project knowledge
-/f2s-kb-fix   fix behavior and update the matching knowledge
-```
+## How the knowledge base grows
 
-## Build the knowledge base gradually
+Flow2Spec's knowledge base is not meant to be finished in one pass. It grows with development:
 
-Flow2Spec does not require a large upfront documentation project.
+1. `init` creates the base skeleton.
+2. The first time a module matters, the agent reads the relevant code and docs.
+3. Confirmed facts from the development process become routable topics.
+4. Later similar requests can hit those topics directly instead of searching the whole repository again.
 
-1. Run `init` to create the skeleton.
-2. Ask for an architecture draft when you need one; `/f2s-doc-arch` is the explicit entrypoint.
-3. When a module first matters, ask the agent to import its existing context with `/f2s-kb-add <path>` or use the normal feature/fix workflow.
-4. At commit time, checks remind you when code changed but knowledge did not.
+The directories can be read this way:
 
-The knowledge model stays intentionally split:
-
-- `stock-docs/` — stable project background and imported source material.
-- `req-docs/` — technical specs and implementation plans for concrete changes.
-- `topics/` — compact, routable facts the agent should actually load.
-- `matchers/` — keyword shards that route a user request to the right topics.
+- `req-docs/`: technical specs and implementation plans for concrete changes.
+- `stock-docs/`: stable project background, architecture notes, and imported source material.
+- `topics/`: compact facts the agent should actually load.
+- `matchers/`: rules that route a user request to the right topics.
 
 ## Explicit skill entrypoints
 
