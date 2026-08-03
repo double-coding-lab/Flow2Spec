@@ -1,3 +1,11 @@
+---
+id: f2s-req-plan
+revision: 0
+summary: "f2s-req-plan (routing summary)"
+dependsOn: [f2s-task]
+primary: policy
+confidence: manual
+---
 # f2s-req-plan (routing summary)
 
 > For the long-form body, see configuration-root **`skills/f2s-req-plan/SKILL.md`**.  

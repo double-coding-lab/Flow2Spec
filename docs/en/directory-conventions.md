@@ -41,6 +41,7 @@ See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 2. `f2s-kb-build` reads from `.Knowledge/stock-docs` and updates `.Knowledge/topics`, `.Knowledge/index.md`, `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json`.
 3. Implementation tasks uniformly read from `.Knowledge/req-docs/*.md`.
 4. `manifest-routing.json` and `matchers/*.json` are maintained by `f2s-*` skill workflows; `.Knowledge/manifest-matchers.json` is no longer used (`flow2spec init` will delete legacy files).
+5. `.task/` and `.Knowledge/update-check.json` are local runtime state and should not be committed by default; `flow2spec init` non-destructively adds the corresponding `.gitignore` entries.
 
 ---
 

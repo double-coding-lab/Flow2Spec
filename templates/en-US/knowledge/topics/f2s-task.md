@@ -1,3 +1,10 @@
+---
+id: f2s-task
+revision: 0
+summary: "f2s-task (routing summary)"
+primary: policy
+confidence: manual
+---
 # f2s-task (routing summary)
 
 > For the long-form body, see configuration-root **`rules/f2s-task.*`**.  

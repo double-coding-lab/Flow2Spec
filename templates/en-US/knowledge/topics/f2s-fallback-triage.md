@@ -1,3 +1,10 @@
+---
+id: fallback-triage
+revision: 0
+summary: fallback-triage
+primary: policy
+confidence: manual
+---
 # fallback-triage
 
 ## Triggers

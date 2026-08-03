@@ -1,3 +1,11 @@
+---
+id: config-precheck
+revision: 0
+summary: "config-precheck (routing summary)"
+primary: config
+confidence: manual
+tags: [policy]
+---
 # config-precheck (routing summary)
 
 ## Purpose

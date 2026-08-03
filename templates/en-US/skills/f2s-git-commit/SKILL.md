@@ -59,6 +59,17 @@ If in **quick commit mode**, skip this step and mention in the Step 5 closing no
 
 **When it exists, perform the coverage check:**
 
+**First perform the KB auto-merge preflight (required; do not ask the user to run commands manually):**
+
+1. The agent runs `flow2spec kb check --json` and `flow2spec kb status --json` inside this step, or uses an equivalent built-in KB engine capability. Do not turn these commands into manual pre-commit chores for the user.
+2. If `check` reports knowledge-structure errors, missing matchers, routing drift, or other health issues: stop this commit, report the concrete issues and suggested fix actions, and do not commit a broken knowledge base.
+3. If `status.tasks` contains `kb-delta.json` under the current developer task root:
+   - If the current task line can be uniquely identified and `mergeable=true`: automatically run `plan -> apply -> build -> check` (via CLI or equivalent built-in capability), and include the written `.Knowledge/**` files in the commit file list.
+   - If `mergeable=false`, delta parsing failed, or multiple active deltas exist and the agent cannot determine which one belongs to this commit: stop the automatic write, list `topic / reason / deltaPath`, and tell the user that semantic merge or task-line selection is required. Do not guess the merge.
+4. Only when there is no active `kb-delta.json` for the current task line, continue to the coarse coverage check below.
+
+**When there is no auto-applicable delta, perform the coarse coverage check:**
+
 1. Infer the **functional modules** touched by this change from `git diff HEAD` and untracked file paths (use actual repository directories/package names; do not invent business names that do not appear).
 2. Read the directory lists of `.Knowledge/topics/` and `.Knowledge/stock-docs/`.
 3. Compare the functional modules inferred in Step 1 and determine whether corresponding docs are registered in the knowledge base.
@@ -195,7 +206,7 @@ git commit -m "<final full commit message from Step 3>"
 1. Did Step 1 check merge conflicts? Must be yes.
 2. Were staged / unstaged / untracked files distinguished? Must be yes.
 3. Was `git add -A` / `git add .` used? Must be no.
-4. Was the knowledge-base check performed or skipped with an explicit reason (quick commit / `.Knowledge` missing)? Must be yes.
+4. Was the knowledge-base check performed or skipped with an explicit reason (quick commit / `.Knowledge` missing)? Must be yes. If an active `kb-delta.json` exists, was it automatically planned/applied/built/checked or was a conflict explicitly reported? Must be yes.
 5. Was the Step 3 commit message generated from actual `git diff` content? Must be yes, not only `--stat`.
 6. Was the proposed first line **shown in the same reply** before executing commit? Must be yes; do **not** require the user to separately "confirm commit".
 7. Does the commit-message **first line** match `<emoji> <type>[(scope)]: <summary>`, with emoji and type consistent with the table? Exceptions such as merge revert must be explained when shown.

@@ -238,6 +238,7 @@ After this skill's step 2 `flow2spec init` succeeds, first perform "old file cle
    - `includeAny` has more than **12 terms**.
    - The topic body contains second-level headings covering more than **3 unrelated responsibility domains**.
    - The topic is frequently matched by multiple unrelated task types (can be judged from `taskToTopicRules` and matcher term breadth).
+7. **Automatic old-topic frontmatter repair**: in the full flow, the agent must run `flow2spec kb build --fix-topics` (or the equivalent internal capability) to add `id`, `revision`, and `summary` to existing topics that lack frontmatter / `revision`, and to fill `dependsOn` / `primary` / `confidence` / `tags` from `manifest-routing.json`. Then run `flow2spec kb check --strict`; if strict validation fails, stop and list the concrete topic / reason in the summary. Do not ask the user to manually add topic headers one by one.
 
 ### Step 3b: `index.md` Merge and `template/index.template.md` (Required)
 
@@ -324,6 +325,7 @@ Output:
 - Reference fixes: `updated` / `already consistent` / `not executed on fast path`
 - **index (snapshot + merge)**: `snapshot copied` / `index.md merged` / `not executed on fast path` / `pending (see notes)`
 - **topicMetadata (existing audit)**: `filled` / `pending user confirmation` / `not executed on fast path`; list added / fixed / deleted topicIds
+- **topic frontmatter**: `auto-filled N topics` / `already complete` / `strict validation failed` / `not executed on fast path`
 - **f2s-kb-upgrade SKILL**: `unchanged after init` / `reran N rounds from step 2c per new SKILL (no second init)` / `loop skipped on fast path` / `pending confirmation`
 - **`projectRev` write-back**: `written to project manifest (value=pkgRev)` / `not executed on fast path` / `pkgRev=null, field untouched`
 - manifest-routing / matcher shards: `aligned with template` / `already latest` / `reset overwrite`
@@ -352,9 +354,10 @@ Output:
 6. Incremental or reset mode was clearly labeled.
 7. **On full flow**: old topic-file cleanup and `index/manifest` reference fixes were handled (step 3).
 8. **On full flow**: **Step 3a** was executed: `topicMetadata` audited, with no orphan keys / illegal primary / illegal confidence; missing old topics were filled with `inferred` based on evidence or listed as pending confirmation.
-9. **On full flow**: **Step 3b** was executed: `index.md` was **merged** (from **`Topic Overview`** section through before "Match and Execute" is project-maintained; the rest matches the package version), and `topicPaths` were checked; **at the end of full flow**, the project-side `projectRev` was **written back** to `pkgRev` (if `pkgRev=null`, the field was left unchanged).
-10. **On fast path**: steps 3 / 3a / 3b were actually skipped (no unrelated scans), and the summary explicitly labels "not executed on fast path".
-11. Manifest and key-path verification results were output.
-12. If failed, a concrete next command suggestion was provided.
-13. Step 3b `index.md` merge was completed and written by the main agent, with no unauthorized sub-agent write (applies only on full flow).
-14. After successful upgrade, `.Knowledge/update-check.json` was deleted to avoid stale upgrade hints in new sessions that day.
+9. **On full flow**: `flow2spec kb build --fix-topics` or an equivalent internal capability was executed, followed by `flow2spec kb check --strict`, ensuring existing topics have `revision`.
+10. **On full flow**: **Step 3b** was executed: `index.md` was **merged** (from **`Topic Overview`** section through before "Match and Execute" is project-maintained; the rest matches the package version), and `topicPaths` were checked; **at the end of full flow**, the project-side `projectRev` was **written back** to `pkgRev` (if `pkgRev=null`, the field was left unchanged).
+11. **On fast path**: steps 3 / 3a / 3b were actually skipped (no unrelated scans), and the summary explicitly labels "not executed on fast path".
+12. Manifest and key-path verification results were output.
+13. If failed, a concrete next command suggestion was provided.
+14. Step 3b `index.md` merge was completed and written by the main agent, with no unauthorized sub-agent write (applies only on full flow).
+15. After successful upgrade, `.Knowledge/update-check.json` was deleted to avoid stale upgrade hints in new sessions that day.

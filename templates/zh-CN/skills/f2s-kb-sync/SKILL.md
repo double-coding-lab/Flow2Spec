@@ -5,6 +5,15 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 > 执行口径：本技能只维护 `.Knowledge`，默认不改配置根 `rules/skills`。
 
+## KB 自动合并协议（必须）
+
+本技能不得把“人工执行命令”作为用户流程。用户确认同步大纲后，由 agent 自己完成知识候选生成、合并、构建与校验：
+
+1. 将已确认的大纲转换为一个或多个 `kb-delta` 草稿，记录 `taskId`、`developerId`、`baseRevisions`、`changes` 与证据摘要；没有显式任务目录时可在内存中形成等价对象，不强制为了本技能创建 `.task`。`changes` 可使用 `appendBody` / `replaceBody` / `updateFrontmatter`；确需新主题时使用 `createTopic`，并可携带 `taskRule` 与 `matcher` 让路由一并接入。
+2. 写入 `.Knowledge` 前，必须用 `flow2spec kb plan <delta>` 或等价内部能力预演；若 topic revision 不一致，停止自动写入，转入语义合并说明。
+3. 可自动合并时，由 agent 调用 `flow2spec kb apply <delta>` 或等价内部能力写入 topic，并随后执行 `flow2spec kb build` 与 `flow2spec kb check`。
+4. 用户只看到“知识库已同步 / 有语义冲突需确认 / 已跳过入库及原因”，不要求用户手动执行 `kb plan/apply/build/check`。
+
 ## 编排（主 / 子 agent）
 
 - 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
