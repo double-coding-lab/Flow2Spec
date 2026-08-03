@@ -432,28 +432,22 @@ Currently supports initialization for Cursor, Claude Code, and Codex, with both 
 
 ## Closing
 
-<p><img src="../images/flow2spec-intro-14-conclusion.png" alt="Closing" style="max-width:720px;width:100%;" /></p>
+AI coding is not only about generating code. In long-lived projects, the harder part is helping the agent read the right context and sync newly confirmed facts back into the project knowledge base.
 
-The end goal of AI coding isn't "writing more code." The truly hard part is: **letting AI continuously understand context in long-lived projects, and accumulating the new knowledge produced by each development cycle.**
+Flow2Spec organizes project knowledge into routable, dependency-aware, verifiable topics and matchers. The agent reads the relevant facts before handling a request; when those facts change, the matching skills update the knowledge base.
 
-Flow2Spec turns project knowledge from static documents into a routable, dependency-aware, verifiable, feedback-capable knowledge graph. It makes Agents not just consumers of context, but participants in maintaining it.
+If your project already has these problems, try it in one repository first:
 
-If your project already has these problems — explaining the same business rules every time, AI missing prerequisite constraints, docs and code drifting apart — give it a try:
+- the same business rules need to be explained to the agent again and again;
+- the agent often misses prerequisite constraints;
+- documentation and code have started to drift apart.
 
 ```Plain Text
 npx @double-codeing/flow2spec@latest init
 ```
 
-Repository: `https://github.com/Lands-1203/Flow2Spec`
+Repository: `https://github.com/double-coding-lab/Flow2Spec`
 
-Live demo: `https://lands-1203.github.io/Flow2Spec/`
-
----
-
-<p><img src="../images/flow2spec-intro-15-star.png" alt="GitHub Star" style="max-width:720px;width:100%;" /></p>
-
-If Flow2Spec has been helpful, consider giving it a Star on GitHub — your support keeps the project going!
-
-👉 **https://github\.com/Lands\-1203/Flow2Spec**
+Live demo: `https://double-coding-lab.github.io/Flow2Spec`
 
 ---

@@ -196,9 +196,9 @@ Flow2Spec 里有 `intentRecognition` 开关，开启后 Agent 会按意图识别
 
 ---
 
-## 九、一个更真实的开发闭环
+## 九、一个更真实的开发流程
 
-<p><img src="./images/flow2spec-intro-09-dev-loop.png" alt="开发闭环" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-09-dev-loop.png" alt="开发流程" style="max-width:720px;width:100%;" /></p>
 
 使用 Flow2Spec 后，一个需求可能是这样流动的：
 
@@ -244,9 +244,9 @@ flowchart TD
 
 ---
 
-## 十、它不只管知识，也管开发闭环
+## 十、它不只管知识，也管开发过程
 
-<p><img src="./images/flow2spec-intro-10-dev-closure.png" alt="开发闭环管理" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-10-dev-closure.png" alt="开发过程管理" style="max-width:720px;width:100%;" /></p>
 
 **任务进度落盘**：开启 `changeTracking` 后，Agent 执行功能开发或方案实现时，会把任务 checklist 写到 `.task/`。新会话继续做时，不需要重新问"上次做到哪"，直接从磁盘任务接上。
 
@@ -293,7 +293,7 @@ flowchart LR
 
 Flow2Spec 更关注：需求来了该读哪个主题、主题之间有什么依赖、当前知识是否足够执行、源码兜底后是否要反哺、用户意图是否应该触发流程、改代码后知识是否一起更新、提交前是否检查过知识覆盖。
 
-这也是为什么 Flow2Spec 会同时包含 `.Knowledge/`、`.task/`、`f2s-*` skills、Agent rules 和 `flow2spec.config.json`——它们不是散件，而是一套围绕开发闭环组织起来的协议。
+这也是为什么 Flow2Spec 会同时包含 `.Knowledge/`、`.task/`、`f2s-*` skills、Agent rules 和 `flow2spec.config.json`——它们不是散件，而是一套围绕开发流程组织起来的协议。
 
 ---
 
@@ -432,28 +432,22 @@ npx @double-codeing/flow2spec@latest init
 
 ## 结语
 
-<p><img src="./images/flow2spec-intro-14-conclusion.png" alt="结语" style="max-width:720px;width:100%;" /></p>
+AI 编程不只是让模型生成代码。长期项目里更难的是让 AI 持续读取正确上下文，并把开发过程中确认的新事实同步回项目知识库。
 
-AI 编程的终点不是"写更多代码"。真正难的是：**让 AI 在长期项目里持续理解上下文，并且把每次开发产生的新知识沉淀下来。**
+Flow2Spec 做的事，是把项目知识整理成可路由、可依赖、可验证的主题和匹配规则。Agent 处理需求时先读取相关事实；事实变化后，再通过对应技能更新知识库。
 
-Flow2Spec 把项目知识从静态文档变成可路由、可依赖、可验证、可反哺的知识图谱。它让 Agent 不只是消费上下文，也参与维护上下文。
+如果项目里已经出现这些情况，可以先在一个仓库里试用：
 
-如果你的项目已经出现"每次都要给 AI 解释同一套业务规则"、"AI 经常漏读前置约束"、"文档和代码越来越不同步"这类问题，可以试一下：
+- 每次都要向 AI 解释同一套业务规则；
+- AI 容易漏掉前置约束；
+- 文档和代码开始不同步。
 
 ```Plain Text
 npx @double-codeing/flow2spec@latest init
 ```
 
-开源地址：`https://github.com/Lands-1203/Flow2Spec`
+开源地址：`https://github.com/double-coding-lab/Flow2Spec`
 
-PPT演示：`https://lands-1203.github.io/Flow2Spec/`
-
----
-
-<p><img src="./images/flow2spec-intro-15-star.png" alt="GitHub Star" style="max-width:720px;width:100%;" /></p>
-
-觉得 Flow2Spec 对你有帮助的话，欢迎去 GitHub 点个 Star，你的支持是持续开发的动力！
-
-👉 **https://github\.com/Lands\-1203/Flow2Spec**
+PPT 演示：`https://double-coding-lab.github.io/Flow2Spec`
 
 ---

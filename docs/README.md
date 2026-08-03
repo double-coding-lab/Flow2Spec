@@ -7,7 +7,7 @@
 | 文档 | 说明 |
 | --- | --- |
 | [Flow2Spec 基础介绍](./Flow2Spec基础介绍.md) | **推荐首读**：产品叙事、配图与流程图——为什么做 Flow2Spec、与普通「项目记忆」有何不同 |
-| [在线演示 PPT](https://lands-1203.github.io/Flow2Spec/) | 13 页 HTML 幻灯片，快速浏览核心卖点 |
+| [在线演示 PPT](https://double-coding-lab.github.io/Flow2Spec) | 13 页 HTML 幻灯片，快速浏览核心卖点 |
 
 ## 上手与参考
 
