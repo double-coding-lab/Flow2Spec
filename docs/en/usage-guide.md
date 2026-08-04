@@ -64,12 +64,28 @@ When enabled, `f2s-kb-feat` / `f2s-kb-fix` / `f2s-implement-tech-design` automat
 
 If **`changeTracking` is off** but you still need a task checklist temporarily, call `f2s-req-plan` explicitly (always creates a checklist, ignores config) — a **fallback**, not the default path. See [Commands Reference § f2s-req-plan](./commands-reference.md).
 
-### Multi-developer task isolation (P0)
+### Team Collaboration
 
-- **Shared**: `.Knowledge/` (team truth). **Isolated**: task progress under `TASK_ROOT`.
-- **developerId resolve** (only three steps): `collaboration.developerId` in config → git `user.email` / `user.name` (sanitized) → legacy single-root `.task/`.
-- **`collaboration.enabled: false`**: always legacy `.task/`.
-- **`TASK_ROOT`**: `.task/<developerId>` or `.task` (legacy). Resume must **not** scan other developers' todos (see `rules/f2s-task`). Helper: `lib/developerId.js`.
+Flow2Spec separates personal execution state from team knowledge:
+
+- `.task/` is local and ignored by Git. With collaboration enabled it is partitioned into `.task/<developerId>/`; continuation logic reads only the current `TASK_ROOT`.
+- `.Knowledge/` is shared through Git. Knowledge skills produce a structured `kb-delta.json`, and the CLI checks topic revisions before merging it.
+
+developerId resolution follows explicit `collaboration.developerId` -> Git email prefix -> Git user name -> legacy `.task/`. Invalid explicit ids fail instead of silently changing identity. Non-ASCII Git identities use a stable `dev-xxxxxxxx` hash fallback with a warning. Setting `collaboration.enabled: false` always selects the legacy root.
+
+The knowledge merge commands are:
+
+```bash
+flow2spec kb status
+flow2spec kb check --strict
+flow2spec kb plan  .task/<id>/active/<task>/kb-delta.json
+flow2spec kb apply .task/<id>/active/<task>/kb-delta.json
+flow2spec kb build
+```
+
+In normal work, `f2s-git-commit` runs the relevant `check -> status -> plan -> apply -> build -> check` sequence. The shell commands are useful for diagnosis and CI. When `baseRevisions` no longer matches disk, pull the latest topic, reread its meaning, and rewrite the delta; changing only the number is not a semantic merge.
+
+Existing topics without revisions require a one-time migration with `flow2spec kb build --fix-topics`, followed by review and `flow2spec kb check --strict`. The full model, same-topic conflict handling, and manager visibility are covered in [Team Collaboration](./team-collaboration.md).
 
 ### New Feature Development
 
@@ -171,4 +187,5 @@ Skills are triggered by matching `name` and `description`. Files are located und
 - [Directory Conventions](./directory-conventions.md)
 - [Architecture](./architecture.md)
 - [Usage Scenarios](./usage-scenarios.md)
+- [Team Collaboration](./team-collaboration.md)
 - [Project Milestones](./milestones.md)

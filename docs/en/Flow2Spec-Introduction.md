@@ -260,13 +260,45 @@ Every step in this chain leaves a trackable asset: requirements in `req-docs/`, 
 
 ---
 
-## XI. The Biggest Difference from Ordinary Knowledge Bases
+## XI. Two Developers, One Knowledge Base
+
+In team use, Flow2Spec does not merge every piece of Alice's and Bob's state. Each keeps a local task workspace; only confirmed knowledge enters the shared repository.
+
+```mermaid
+flowchart LR
+  subgraph A["Alice local"]
+    AT[".task/alice/<br/>personal task progress"]
+    AD["kb-delta.json<br/>knowledge change intent"]
+    AT --> AD
+  end
+
+  subgraph B["Bob local"]
+    BT[".task/bob/<br/>personal task progress"]
+    BD["kb-delta.json<br/>knowledge change intent"]
+    BT --> BD
+  end
+
+  AD --> P["plan / apply<br/>revision preflight"]
+  BD --> P
+  P --> K[".Knowledge/<br/>shared team knowledge"]
+  K --> G["Git / PR<br/>review and history"]
+```
+
+Figure 3: Tasks stay separate; knowledge converges
+
+`.task/` is ignored by Git by default and split into developer-specific `TASK_ROOT` directories. `.Knowledge/` is shared. Skills express changes as structured deltas with the topic revisions they read; `flow2spec kb plan` checks those revisions before disk writes. Different topics can advance independently. When two people change the same topic, the second person pulls, rereads the latest meaning, and rewrites the delta.
+
+This is not automatic text concatenation. It isolates state that should remain personal, keeps shared facts in Git, and stops where a semantic decision is needed. See [Team Collaboration](./team-collaboration.md).
+
+---
+
+## XII. The Biggest Difference from Ordinary Knowledge Bases
 
 <p><img src="../images/flow2spec-intro-11-vs-ordinary-kb.png" alt="vs ordinary knowledge bases" style="max-width:720px;width:100%;" /></p>
 
 In one sentence: **an ordinary knowledge base is something Agents query; Flow2Spec's knowledge base is something Agents help maintain.**
 
-Figure 3: Ordinary Memory Files vs Flow2Spec Knowledge Graph
+Figure 4: Ordinary Memory Files vs Flow2Spec Knowledge Graph
 
 ```mermaid
 flowchart LR
@@ -297,7 +329,7 @@ This is why Flow2Spec includes `.Knowledge/`, `.task/`, `f2s-*` skills, Agent ru
 
 ---
 
-## XII. Common Questions
+## XIII. Common Questions
 
 <p><img src="../images/flow2spec-intro-12-faq.jpg" alt="Common questions" style="max-width:720px;width:100%;" /></p>
 
@@ -395,7 +427,7 @@ In short: **single Q&A → distill (auto), new module bulk import → add, perio
 
 ---
 
-## XIII. What Projects Is This For + Quick Start
+## XIV. What Projects Is This For + Quick Start
 
 <p><img src="../images/flow2spec-intro-13-quick-start.png" alt="What projects and quick start" style="max-width:720px;width:100%;" /></p>
 

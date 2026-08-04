@@ -31,6 +31,7 @@
 | f2s-git-commit | `.Knowledge/topics/f2s-git-commit.md` | 提交代码；默认检查知识库覆盖，快捷提交跳过覆盖检查 | 技能：`skills/f2s-git-commit/SKILL.md`；模板：[f2s-git-commit](../templates/skills/f2s-git-commit/SKILL.md) |
 | flow2spec-presentations | `.Knowledge/topics/f2s-flow2spec-presentations.md` | 本仓对外介绍 HTML 演示稿路径与维护约定 | stock：[对外介绍演示](stock-docs/Flow2Spec-对外介绍演示.md) |
 | flow2spec-milestones | `.Knowledge/topics/f2s-flow2spec-milestones.md` | 版本演进；含内部仓 vs 开源仓、双语 PPT、Cursor 插件 | stock：[项目里程碑](stock-docs/项目里程碑.md) |
+| flow2spec-collaboration | `.Knowledge/topics/flow2spec-collaboration.md` | 多人任务隔离、知识 delta 合入、topic revision 冲突与团队进度观察面 | 完整说明：[团队协作](../docs/团队协作.md)；英文：[Team Collaboration](../docs/en/team-collaboration.md) |
 | skill-authoring | `.Knowledge/topics/skill-authoring.md` | 新增 / 重构 `f2s-*` SKILL 时的骨架与命名约定（仅本仓，不下发） | 参考实现：`templates/skills/f2s-kb-addRules/SKILL.md` |
 | f2s-req-tech | `.Knowledge/topics/f2s-req-tech.md` | 生成技术方案文档（全端通用，含后端/前端/全栈等） | 模板：[技术方案模版](template/技术方案模版.md)；技能：`skills/f2s-req-tech/SKILL.md` |
 | f2s-dev-workflow-constraints | `.Knowledge/topics/f2s-dev-workflow-constraints.md` | 开发工作流约束（仅 Flow2Spec 双仓自身，不给下游）：只改 templates / 不改配置根 / 用户驱动分发 / 双仓一致 | 长文：`rules/repo-dev-workflow-constraints.*`；自查技能：`skills/repo-dev-check/SKILL.md` |

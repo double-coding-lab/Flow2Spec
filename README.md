@@ -56,7 +56,15 @@ Flow2Spec does not add documentation for its own sake. It keeps a small, machine
 | Topic shards | Stores project facts such as APIs, limits, locks, data rules, and workflows. | `.Knowledge/topics/*.md` |
 | Agent entrypoints | Installs rules and skills for Cursor, Claude Code, and Codex. | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
 | Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
-| Local task state | Keeps AI steps and user-side todos separate from product knowledge. | `.task/` |
+| Team collaboration | Keeps each developer's task state local while merging reviewed knowledge through structured deltas and topic revisions. | `.task/<developerId>/`, `.Knowledge/` |
+
+## Built for shared repositories
+
+Flow2Spec separates collaboration state by ownership. Checklists, session context, and user todos stay under each developer's local `TASK_ROOT` and do not enter Git. Confirmed project knowledge remains shared in `.Knowledge/`.
+
+Knowledge-producing skills write a structured `kb-delta.json` instead of editing topic files directly. Before apply, the CLI compares the delta's `baseRevisions` with the topic revisions on disk. Different topics can merge independently; concurrent changes to the same topic stop for a semantic review after the latest branch state is pulled.
+
+Read the full model in [Team Collaboration](./docs/en/team-collaboration.md).
 
 ## First use
 
@@ -129,6 +137,7 @@ Full references:
 - [Commands reference](./docs/en/commands-reference.md)
 - [Directory conventions](./docs/en/directory-conventions.md)
 - [Architecture and principles](./docs/en/architecture.md)
+- [Team collaboration](./docs/en/team-collaboration.md)
 - [Design principles](./docs/en/design-principles.md)
 - [Project milestones](./docs/en/milestones.md)
 

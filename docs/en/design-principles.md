@@ -148,6 +148,35 @@ graph LR
 
 Tasks do not get lost when a session ends  ·  Keywords enable automatic continuation without re-explaining context  ·  Skill constraints are fully restored
 
+### 5. Ownership of Collaboration State
+
+Early versions committed `.task/` like ordinary project files. Team use exposed its real ownership: `todo.json` and `active/` describe one developer's Agent session, not project truth.
+
+```text
+Old
+  .task/ -> Git -> everyone shares one todo.json
+
+Current
+  .task/alice/ -> Alice resumes locally
+  .task/bob/   -> Bob resumes locally
+  .Knowledge/  -> Git -> shared team facts
+```
+
+The current developer's `TASK_ROOT` owns progress. Code, formal documents, and `.Knowledge/` own the delivered capability. `developerId` remains useful on shared machines and as an Agent read boundary; it is not a remote identity or authorization system.
+
+### 6. Why Knowledge Merges Use Optimistic Locks
+
+`.Knowledge/` cannot be split by developer. Flow2Spec uses topic revisions as optimistic disk locks rather than introducing file locks or a remote lock service.
+
+A remote lock would require every writer to share an online service and would add leases, disconnect recovery, stale locks, and CI identities to a local-first Git workflow. A delta instead records the topic revision it read, and `plan` compares that value with the current file:
+
+```text
+baseRevision == diskRevision  -> apply and increment revision
+baseRevision != diskRevision  -> stop, reread, and merge semantics
+```
+
+The trade-off is explicit: the lock covers a whole topic, and plan cannot see remote work that has not been pulled. Flow2Spec accepts those limits in exchange for an offline, service-free, reviewable merge path. Frequent conflicts usually indicate that a topic has too many responsibilities.
+
 ---
 
 ## Design Highlights
@@ -636,5 +665,6 @@ Best suited when: has scale · long-term iteration · multi-tool or multi-person
 - [Usage Guide](./usage-guide.md)
 - [Commands Reference](./commands-reference.md)
 - [Architecture](./architecture.md)
+- [Team Collaboration](./team-collaboration.md)
 - [Usage Scenarios](./usage-scenarios.md)
 - [Project Milestones](./milestones.md)

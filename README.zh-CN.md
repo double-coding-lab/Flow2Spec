@@ -56,7 +56,15 @@ Flow2Spec 不是为了增加文档数量。它把项目事实保存在一层小�
 | 主题分片 | 保存 API、上限、锁、数据规则、业务流程等项目事实。 | `.Knowledge/topics/*.md` |
 | Agent 入口 | 为 Cursor、Claude Code、Codex 安装规则和技能。 | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
 | 技能工作流 | 澄清需求、编写方案、实现、修复、同步知识、提交。 | `f2s-*` skills |
-| 本地任务状态 | 单独保存 AI 步骤和用户侧待办，不混入产品知识。 | `.task/` |
+| 团队协作 | 每个人的任务现场留在本地，确认后的知识通过结构化 delta 与 topic revision 合入共享仓库。 | `.task/<developerId>/`, `.Knowledge/` |
+
+## 多人共用一份知识库
+
+Flow2Spec 按所有权拆分协作状态。checklist、会话上下文和用户代办保存在每名开发者自己的 `TASK_ROOT`，默认不进 Git；已经确认的项目知识统一进入 `.Knowledge/`。
+
+知识类技能先生成结构化 `kb-delta.json`，不直接改 topic。真正 apply 前，CLI 会比较 delta 的 `baseRevisions` 与磁盘上的 topic revision。修改不同 topic 可以分别合入；两个人同时修改同一 topic 时，后合入的一方需要先拉取最新版本、重读语义，再改写 delta。
+
+完整流程见 [团队协作](./docs/团队协作.md)。
 
 ## 第一次怎么用
 
@@ -129,6 +137,7 @@ Flow2Spec 的知识库不是一次性整理完的。它会随着开发逐步变�
 - [命令说明](./docs/命令说明.md)
 - [目录与路径约定](./docs/目录与路径约定.md)
 - [体系与原理](./docs/体系与原理.md)
+- [团队协作](./docs/团队协作.md)
 - [设计说明](./docs/设计说明.md)
 - [项目里程碑](./docs/项目里程碑.md)
 

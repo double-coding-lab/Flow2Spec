@@ -14,6 +14,9 @@
     ],
     "f2s-dev-workflow-constraints": [
       "f2s-git-commit"
+    ],
+    "flow2spec-collaboration": [
+      "f2s-task"
     ]
   },
   "topicPaths": {
@@ -31,7 +34,8 @@
     "f2s-req-tech": ".Knowledge/topics/f2s-req-tech.md",
     "f2s-dev-workflow-constraints": ".Knowledge/topics/f2s-dev-workflow-constraints.md",
     "f2s-kb-distill": ".Knowledge/topics/f2s-kb-distill.md",
-    "flow2spec-init-defaults": ".Knowledge/topics/f2s-init-defaults.md"
+    "flow2spec-init-defaults": ".Knowledge/topics/f2s-init-defaults.md",
+    "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md"
   },
   "taskToTopicRules": [
     {
@@ -140,6 +144,14 @@
       "topics": [
         "flow2spec-init-defaults"
       ]
+    },
+    {
+      "task": "flow2spec-collaboration",
+      "matcherId": "m-flow2spec-collaboration",
+      "matcherPath": ".Knowledge/matchers/m-flow2spec-collaboration.json",
+      "topics": [
+        "flow2spec-collaboration"
+      ]
     }
   ],
   "pkgRev": 1,
@@ -202,6 +214,13 @@
     "flow2spec-init-defaults": {
       "primary": "config",
       "confidence": "inferred",
+      "tags": [
+        "policy"
+      ]
+    },
+    "flow2spec-collaboration": {
+      "primary": "feature",
+      "confidence": "manual",
       "tags": [
         "policy"
       ]
