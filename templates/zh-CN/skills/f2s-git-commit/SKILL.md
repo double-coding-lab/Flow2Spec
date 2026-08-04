@@ -59,6 +59,17 @@ git diff HEAD
 
 **存在时执行覆盖检查：**
 
+**先执行 KB 自动合并预检（必须，不让用户手动跑命令）：**
+
+1. Agent 在本步骤内部执行 `flow2spec kb check --json` 与 `flow2spec kb status --json`，或使用等价的内置 KB 引擎能力；不得把这些命令变成用户要手动执行的提交前置工作。
+2. 若 `check` 返回知识库结构错误、matcher 缺失、routing drift 等健康问题：终止本次 commit，报告具体问题与建议修复动作；不要把损坏的知识库一起提交。
+3. 若 `status.tasks` 中存在当前 developer 任务根下的 `kb-delta.json`：
+   - 能唯一定位当前任务线且 `mergeable=true`：自动执行 `plan → apply → build → check`（CLI 或等价内置能力均可），并把被写入的 `.Knowledge/**` 文件纳入本次提交文件列表。
+   - `mergeable=false`、delta 解析失败，或存在多个 active delta 且无法判断哪个属于本次提交：停止自动写入，列出 `topic / reason / deltaPath`，提示用户需要语义合并或选择任务线；不得猜测合并。
+4. 若没有当前任务线的 active `kb-delta.json`，才进入下面的粗粒度覆盖判断。
+
+**没有可自动应用的 delta 时，执行粗粒度覆盖检查：**
+
 1. 从 `git diff HEAD` 及 untracked 文件路径推断本次变更涉及的**功能模块**（以仓库内目录/包名为准，勿臆测未出现的业务名）。
 2. 读取 `.Knowledge/topics/` 目录列表与 `.Knowledge/stock-docs/` 目录列表。
 3. 对比步骤 1 推断出的功能模块，判断对应文档是否已在知识库中登记。
@@ -195,7 +206,7 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 1. 步骤 1 是否检查了 merge conflict（必须为是）。
 2. 是否区分了 staged / unstaged / untracked 三类文件（必须为是）。
 3. 是否用了 `git add -A` / `git add .`（必须为否）。
-4. 知识库检查是否执行或有明确跳过理由（快捷提交 / `.Knowledge` 不存在）（必须为是）。
+4. 知识库检查是否执行或有明确跳过理由（快捷提交 / `.Knowledge` 不存在）（必须为是）；若存在 active `kb-delta.json`，是否已自动 plan/apply/build/check 或明确报告冲突（必须为是）。
 5. 步骤 3 是否基于 `git diff` 实际内容生成提交信息（必须为是，而非仅 `--stat`）。
 6. 执行 commit 前是否在当条回复中**展示了拟提交首行**（必须为是）；**不得**要求用户单独「确认 commit」才执行（与策略一致）。
 7. 提交信息**首行**是否为 `<emoji> <type>[(scope)]: <简述>` 且 emoji 与 type 与上表一致（合并 revert 等例外须在展示中说明）。

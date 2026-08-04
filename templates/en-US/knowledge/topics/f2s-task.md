@@ -1,11 +1,18 @@
+---
+id: f2s-task
+revision: 0
+summary: "f2s-task (routing summary)"
+primary: policy
+confidence: manual
+---
 # f2s-task (routing summary)
 
 > For the long-form body, see configuration-root **`rules/f2s-task.*`**.  
-> Systematic design notes (optional): after creating your own task-list notes in `stock-docs/`, link them from this topic or `index.md`, for example `../stock-docs/<task-list-notes>.md`.
+> Codex: **`.codex/f2s-rules/f2s-task.md`**.
 
 ## Purpose
 
-Change-tracking rules (`alwaysApply: true`). When the corresponding skill's `changeTracking.*` is `true`, automatically create, incrementally update, and finally archive task lists under `.task/` before and after skill execution. Supports resuming across sessions.
+Change-tracking rules (`alwaysApply: true`). When the corresponding skill's `changeTracking.*` is `true`, automatically create, update, and archive task lists under **`TASK_ROOT`** (see multi-developer section). Supports cross-session resume.
 
 ## Effective Scope
 
@@ -15,33 +22,32 @@ Change-tracking rules (`alwaysApply: true`). When the corresponding skill's `cha
 | `changeTracking.fix` | `f2s-kb-fix` |
 | `changeTracking.implement` | `f2s-implement-tech-design` |
 
-`f2s-req-plan` is not constrained by this configuration and always creates a task list.
+`f2s-req-plan` always maintains a task list (not gated by `changeTracking`).
+
+## Task root `TASK_ROOT` (multi-developer)
+
+- Resolve: `collaboration.developerId` (config) → git email/name → legacy `.task`
+- Non-legacy: `.task/<developerId>/…`; **only** current `TASK_ROOT` (no cross-developer todo scan)
+- `.Knowledge/` remains shared for the whole team
 
 ## Directory Structure
 
 ```
-.task/
-├── todo.json                    ← active task index (main agent writes only)
+TASK_ROOT/                       ← `.task` or `.task/<developerId>`
+├── todo.json
 ├── active/<task-name>/
-│   ├── task.md                  ← checklist (execution steps)
-│   ├── context.md               ← related files and document links
-│   ├── user-todos.md            ← todos the user must perform (database changes, environment setup, etc.)
-│   └── acceptance.md            ← acceptance checklist: generated after every task.md item is [x] and before archiving
+│   ├── task.md
+│   ├── context.md
+│   ├── user-todos.md
+│   └── acceptance.md
 └── completed/<YYYYMMDD>-<task-name>/
-    ├── task.md
-    ├── context.md
-    ├── user-todos.md
-    └── acceptance.md
+    └── …
 ```
 
-User-side todos **must** be written to **`user-todos.md`** in the same directory as `task.md`; before archiving, **`acceptance.md`** in the same directory **must** be produced (the acceptance checklist). Their responsibilities are separated: `user-todos.md` tracks user-side **todos** (things the Agent cannot do), while `acceptance.md` tracks user-side **acceptance** (whether the Agent's deliverables actually work). See configuration-root **`rules/f2s-task.*`** for details.
+## Cross-session continuation
 
-## Cross-Session Resume
+Resolve `TASK_ROOT` first; match keywords **only** in that root's `todo.json`. On hit, show remaining checklist and optional user-todos/acceptance; load `linkedSkill` if set.
 
-If `todo.json` exists when a new session starts, the rule automatically matches the user's first message against each entry's `keywords`:
-- Hit -> show the remaining checklist, **summarize incomplete items in `user-todos.md` if any**, **report the current state of `acceptance.md`** (placeholder / final), load the skill file corresponding to `linkedSkill` as execution context, and ask whether to continue
-- No hit -> do not interrupt; respond normally
+## Next step
 
-## Next Step
-
-Read configuration-root `rules/f2s-task.*` for complete rules (directory structure, todo.json format, task lifecycle, Hook configuration).
+Read configuration-root `rules/f2s-task.*` for full rules.

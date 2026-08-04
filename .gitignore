@@ -1,4 +1,5 @@
 .agents/
+.task/
 .DS_Store
 docs/*.json
 .Knowledge/update-check.json

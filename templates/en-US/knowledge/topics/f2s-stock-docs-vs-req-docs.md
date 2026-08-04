@@ -1,3 +1,10 @@
+---
+id: f2s-doc-routing
+revision: 0
+summary: "f2s-doc-routing (routing summary)"
+primary: policy
+confidence: manual
+---
 # f2s-doc-routing (routing summary)
 
 > **Only long-form source**: Cursor / Claude use configuration-root **`rules/f2s-stock-docs-vs-req-docs.md(c)`** as authoritative.  

@@ -3,7 +3,19 @@ name: f2s-kb-distill
 description: Extract reusable knowledge facts from Q&A and auto-commit to KB; decide whether to create new topic or append to existing topic based on drill-down depth; trigger: f2s-kb-distill, extract knowledge from Q&A, distill knowledge from conversation
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: This skill only maintains `.Knowledge`, does not modify config root `rules/skills` by default.
+
+## KB Auto-Merge Protocol (Required)
+
+This skill must not make manual command execution part of the user flow. After the user triggers this skill, the agent performs knowledge candidate generation, merge planning, build, and validation by itself:
+
+1. If reusable knowledge should be recorded, first form a `kb-delta` draft in the current task context with `taskId`, `developerId`, `baseRevisions`, `changes`, and evidence summary. If there is no explicit task directory, an equivalent in-memory object is acceptable; do not create `.task` only for this skill. `changes` may use `appendBody` / `replaceBody` / `updateFrontmatter`; when a new topic is needed, use `createTopic` and optionally include `taskRule` plus `matcher` so routing is connected in the same merge.
+2. Before writing `.Knowledge`, run `flow2spec kb plan <delta>` or the equivalent internal capability. If a topic revision differs, stop automatic writing and switch to semantic-merge reporting.
+3. When the change is auto-mergeable, run `flow2spec kb apply <delta>` or the equivalent internal capability, then run `flow2spec kb build` and `flow2spec kb check`.
+4. The user should only see "knowledge base synced / semantic conflict needs confirmation / skipped with reason"; do not ask the user to manually run `kb plan/apply/build/check`.
 
 ## Orchestration (main / sub agent)
 

@@ -3,6 +3,9 @@ description: Before running any f2s-* skill, force-read flow2spec.config.json to
 alwaysApply: true
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 # Mandatory Preflight for f2s Skills
 
 **The first action before running any `f2s-*` skill must be to read the project-root `flow2spec.config.json` with the Read tool**, obtain the actual `subAgent` and `switchAgentVerification` values, and then decide the orchestration approach.

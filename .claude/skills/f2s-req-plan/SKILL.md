@@ -3,6 +3,9 @@ name: f2s-req-plan
 description: 根据技术方案/需求描述/变更描述规划并实现任务；始终按 f2s-task 维护 .task/；支持子 agent 并行实现；触发：f2s-req-plan、创建任务、任务规划、我需要任务清单
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 # 需求任务规划与实现（f2s-req-plan）
 
 从需求/技术方案出发，完整覆盖「规划 → 实现」链路。**不依赖** `changeTracking.*`，但 **`.task/` 全生命周期必须以 `f2s-task` 为唯一真值源**（目录、格式、续作、打钩、归档、user-todos）。知识库同步由用户后续按需调用 `f2s-kb-feat` / `f2s-kb-sync`。

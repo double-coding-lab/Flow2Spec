@@ -3,7 +3,19 @@ name: f2s-kb-feat
 description: 新增能力时补全实现与知识库；已实现则仅同步知识库；触发：f2s-kb-feat、新增能力
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 > 执行口径：`f2s-kb-feat` 默认同步 `.Knowledge`，无需用户额外提出"请同步知识库"。
+
+## KB 自动合并协议（必须）
+
+本技能不得把“人工执行命令”作为用户流程。代码实现完成或确认已有实现后，由 agent 自己完成知识候选生成、合并、构建与校验：
+
+1. 将本次能力变更转换为 `kb-delta` 草稿，记录 `taskId`、`developerId`、`baseRevisions`、`changes` 与实现证据；若 `changeTracking.feat=true` 且已有任务目录，可把 delta 落在当前 `TASK_ROOT/active/<task-name>/kb-delta.json`，否则可在内存中形成等价对象。`changes` 可使用 `appendBody` / `replaceBody` / `updateFrontmatter`；确需新主题时使用 `createTopic`，并可携带 `taskRule` 与 `matcher` 让路由一并接入。
+2. 写入 `.Knowledge` 前，必须用 `flow2spec kb plan <delta>` 或等价内部能力预演；若 topic revision 不一致，停止自动写入，转入语义合并说明。
+3. 可自动合并时，由 agent 调用 `flow2spec kb apply <delta>` 或等价内部能力写入 topic，并随后执行 `flow2spec kb build` 与 `flow2spec kb check`。
+4. 用户只看到“能力与知识库已同步 / 有语义冲突需确认 / 已跳过入库及原因”，不要求用户手动执行 `kb plan/apply/build/check`。
 
 ## 编排（主 / 子 agent）
 

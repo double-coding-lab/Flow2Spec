@@ -3,6 +3,9 @@ name: f2s-kb-fix
 description: 根据用户指出的实现或规则错误修正代码，并默认同步知识库；触发：f2s-kb-fix、修正实现规则
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 > 执行口径：`f2s-kb-fix` 默认"修代码 + 同步 `.Knowledge`"，无需用户额外要求"请同步知识库"。
 
 ## 编排（主 / 子 agent）

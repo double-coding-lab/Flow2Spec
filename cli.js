@@ -14,6 +14,7 @@ const {
   SUPPORTED_LOCALES,
   normalizeLocale,
 } = require("./lib/flow2specConfig");
+const knowledgeEngine = require("./lib/knowledgeEngine");
 
 const { execFileSync } = require("child_process");
 
@@ -200,12 +201,40 @@ function maybePrintUpdateNotice() {
   }
 }
 
+function printJson(data) {
+  console.log(`${JSON.stringify(data, null, 2)}\n`);
+}
+
+function printKnowledgeHelp() {
+  console.log(`
+Flow2Spec KB - knowledge collaboration engine
+
+用法:
+  flow2spec kb status [--json]
+  flow2spec kb check [--strict] [--json]
+  flow2spec kb plan <delta-file> [--json]
+  flow2spec kb apply <delta-file> [--dry-run] [--json]
+  flow2spec kb build [--fix-topics] [--json]
+
+说明:
+  status  - 汇总当前知识图、active task delta 与潜在漂移
+  check   - 校验 manifest/topic/frontmatter/revision
+  plan    - 预演一个 kb-delta 是否可自动合并
+  apply   - 应用 kb-delta 并同步 topic frontmatter / routing
+  build   - 基于 topic frontmatter 归一化 routing 元数据；--fix-topics 可为旧 topic 补 frontmatter/revision
+
+delta changes:
+  appendBody / replaceBody / updateFrontmatter / createTopic
+`);
+}
+
 const help = `
 Flow2Spec - 统一知识库工作流（AI 配置入口）  v${pkg.version}
 
 用法:
   flow2spec init [agent ...] [--reset-knowledge] [--yes] [--locale zh-CN|en-US]    在当前项目初始化：写入 .Knowledge 与所选 agent 入口
   flow2spec config              打印项目根 ${CONFIG_FILENAME} 的解析结果（缺省值合并后）
+  flow2spec kb                  知识库协作引擎：status / check / plan / apply / build
   flow2spec version             显示当前 flow2spec 版本
   flow2spec update              更新 flow2spec 到最新版本；更新后提示执行 f2s-kb-upgrade
   flow2spec --help              显示本说明
@@ -236,7 +265,8 @@ init 会:
      Codex：仓库根 AGENTS.md（完整条令）；.codex/AGENTS.md 为指针；
      并写入 .codex/hooks.json，在 SessionStart 注入配置摘要并检测知识库版本。
   5. 每次 init 将当前 locale 包模板 knowledge/index.md 复制到 .Knowledge/template/index.template.md，供 f2s-kb-upgrade 技能与 .Knowledge/index.md 对照；不自动改写 index.md。（「知识库升级」指 f2s-kb-upgrade 技能，init 本身不是升级命令。）
-  6. 规则与技能在各 agent 配置根加载；其他模版类文件在 .Knowledge/template/ 等目录。
+  6. 非破坏式补充 .gitignore：忽略 .task/ 与 .Knowledge/update-check.json 这类本地运行态。
+  7. 规则与技能在各 agent 配置根加载；其他模版类文件在 .Knowledge/template/ 等目录。
 
 更多说明见 README.md 或 docs/使用说明.md
 `;
@@ -293,6 +323,169 @@ if (sub === "config") {
     process.exit(1);
   }
   process.exit(0);
+}
+
+if (sub === "kb") {
+  const kbSub = args[1];
+  const kbFlags = new Set(args.slice(2).filter((arg) => String(arg || "").startsWith("--")));
+  const kbPositionals = args.slice(2).filter((arg) => !String(arg || "").startsWith("--"));
+  const cwd = process.cwd();
+  const jsonOut = kbFlags.has("--json");
+
+  try {
+    if (!kbSub || kbSub === "--help" || kbSub === "-h") {
+      printKnowledgeHelp();
+      process.exit(0);
+    }
+
+    if (kbSub === "status") {
+      const report = knowledgeEngine.summarizeKnowledgeState(cwd);
+      if (jsonOut) {
+        printJson(report);
+      } else {
+        console.log(`knowledge topics: ${report.topicCount}`);
+        console.log(`routing drift: ${report.routingDrift ? "yes" : "no"}`);
+        console.log(`validation: ${report.validation.ok ? "ok" : "has issues"}`);
+        if (report.validation.warnings.length) {
+          console.log(`warnings: ${report.validation.warnings.length}`);
+        }
+        if (report.tasks.length) {
+          console.log("active kb deltas:");
+          for (const task of report.tasks) {
+            if (task.error) {
+              console.log(`- ${task.taskName}: ${task.error}`);
+              continue;
+            }
+            console.log(
+              `- ${task.taskName}: ${task.mergeable ? "mergeable" : "conflict"} (${task.plan.length} changes, ${task.conflicts.length} conflicts)`,
+            );
+          }
+        }
+      }
+      process.exit(report.validation.ok ? 0 : 1);
+    }
+
+    if (kbSub === "check") {
+      const strict = kbFlags.has("--strict");
+      const graph = knowledgeEngine.loadKnowledgeGraph(cwd);
+      const validation = knowledgeEngine.validateKnowledgeGraph(graph, {
+        strictRevision: strict,
+      });
+      const normalized = knowledgeEngine.normalizeRoutingWithGraph(
+        graph,
+      );
+      const routingDrift =
+        knowledgeEngine.stableStringify(normalized.routing) !==
+        knowledgeEngine.stableStringify(graph.routing);
+      const report = knowledgeEngine.summarizeKnowledgeState(cwd);
+      const ok =
+        validation.issues.length === 0 &&
+        !routingDrift &&
+        (!strict || validation.warnings.length === 0);
+      const result = {
+        ok,
+        strict,
+        topicCount: report.topicCount,
+        issues: validation.issues,
+        warnings: validation.warnings,
+        routingDrift,
+        activeDeltas: report.tasks,
+      };
+      if (jsonOut) {
+        printJson(result);
+      } else {
+        console.log(`knowledge check: ${result.ok ? "ok" : "failed"}`);
+        console.log(`topics: ${result.topicCount}`);
+        console.log(`routing drift: ${routingDrift ? "yes" : "no"}`);
+        if (result.issues.length) {
+          console.log(`issues: ${result.issues.length}`);
+          for (const issue of result.issues.slice(0, 10)) {
+            console.log(`- ${issue}`);
+          }
+        }
+        if (result.warnings.length) {
+          console.log(`warnings: ${result.warnings.length}`);
+        }
+      }
+      process.exit(result.ok ? 0 : 1);
+    }
+
+    if (kbSub === "plan" || kbSub === "apply") {
+      const deltaArg = kbPositionals[0];
+      if (!deltaArg) {
+        console.error(`kb ${kbSub} 需要 delta 文件路径`);
+        process.exit(1);
+      }
+      const deltaPath = path.resolve(cwd, deltaArg);
+      const dryRun = kbFlags.has("--dry-run") || kbSub === "plan";
+      const graph = knowledgeEngine.loadKnowledgeGraph(cwd);
+      const delta = knowledgeEngine.parseKnowledgeDelta(deltaPath);
+      const plan = knowledgeEngine.planKnowledgeDelta(graph, delta);
+      if (kbSub === "plan") {
+        const result = {
+          ok: plan.mergeable,
+          deltaPath,
+          plan: plan.plan,
+          conflicts: plan.conflicts,
+        };
+        if (jsonOut) {
+          printJson(result);
+        } else {
+          console.log(`kb plan: ${result.ok ? "mergeable" : "conflict"}`);
+          for (const item of result.plan) {
+            console.log(
+              `- ${item.topicId}: ${item.type} ${item.beforeRevision} -> ${item.afterRevision}`,
+            );
+          }
+          for (const conflict of result.conflicts) {
+            console.log(`! ${conflict.topicId}: ${conflict.reason}`);
+          }
+        }
+        process.exit(result.ok ? 0 : 1);
+      }
+      const result = knowledgeEngine.applyKnowledgeDelta(cwd, deltaPath, {
+        dryRun,
+      });
+      if (jsonOut) {
+        printJson(result);
+      } else {
+        console.log(`kb apply: ${dryRun ? "dry-run" : "applied"}`);
+        for (const file of result.changedFiles) {
+          console.log(`- ${file}`);
+        }
+      }
+      process.exit(0);
+    }
+
+    if (kbSub === "build") {
+      const result = knowledgeEngine.buildKnowledgeGraph(cwd, {
+        writeTopicFrontmatter: kbFlags.has("--fix-topics"),
+      });
+      if (jsonOut) {
+        printJson(result);
+      } else {
+        console.log(`kb build: ${result.changed ? "updated" : "up-to-date"}`);
+        console.log(`routing: ${path.relative(cwd, result.routingPath)}`);
+        if (result.topicFrontmatterChanged?.length) {
+          console.log(`topic frontmatter: ${result.topicFrontmatterChanged.length} updated`);
+          for (const file of result.topicFrontmatterChanged.slice(0, 10)) {
+            console.log(`- ${file}`);
+          }
+        }
+        console.log(
+          `validation: ${result.validation.ok ? "ok" : "has issues"}`,
+        );
+      }
+      process.exit(result.validation.ok ? 0 : 1);
+    }
+
+    console.error(`unknown kb subcommand: ${kbSub}`);
+    printKnowledgeHelp();
+    process.exit(1);
+  } catch (e) {
+    console.error(e.message || e);
+    process.exit(1);
+  }
 }
 
 if (sub === "init") {
@@ -569,7 +762,7 @@ if (sub === "init") {
     .then(({ configValues, chosenAgents }) =>
       runInit(cwd, chosenAgents, { overwriteKnowledge, configValues, locale: cliLocale }),
     )
-    .then(({ ids, knowledgeResult, routingUpgrade, indexSnapshot, projectConfig, locale, claudeHooksResult }) => {
+    .then(({ ids, knowledgeResult, routingUpgrade, indexSnapshot, gitignoreResult, projectConfig, locale, claudeHooksResult }) => {
       const lines = ids.map((id) => {
         const { root, label } = AGENTS[id];
         if (id === "codex")
@@ -596,11 +789,15 @@ if (sub === "init") {
           : `  - .Knowledge/template/index.template.md：已从包内 templates/${locale}/knowledge/index.md 复制（与 .Knowledge/index.md 对照见 f2s-kb-upgrade 技能）`;
       const pc = projectConfig || {};
       const configLine = `  - ${CONFIG_FILENAME}：locale=${pc.locale || locale}, subAgent=${Boolean(pc.subAgent)}, switchAgentVerification=${Boolean(pc.switchAgentVerification)}`;
+      const gitignoreLine = gitignoreResult?.changed
+        ? `  - .gitignore：已补充 ${gitignoreResult.added.join(", ")}`
+        : "  - .gitignore：Flow2Spec 本地态忽略项已存在";
       console.log(`
 ✓ Flow2Spec init 完成
 ${knowledgeLine}
 ${routingLine}
 ${indexLine}
+${gitignoreLine}
 ${configLine}
 ${lines.join("\n")}
 

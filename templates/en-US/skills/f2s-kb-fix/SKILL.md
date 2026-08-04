@@ -3,7 +3,19 @@ name: f2s-kb-fix
 description: Fix implementation or rule errors identified by the user, and sync the knowledge base by default; triggers: f2s-kb-fix、修正实现规则、fix implementation rules、fix kb rule
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > Execution scope: `f2s-kb-fix` defaults to "fix code + sync `.Knowledge`"; the user does not need to separately ask "please sync the knowledge base".
+
+## KB Auto-Merge Protocol (Required)
+
+This skill must not make manual command execution part of the user flow. After the fix is completed, the agent performs knowledge candidate generation, merge planning, build, and validation by itself:
+
+1. Convert the corrected rule or implementation boundary into a `kb-delta` draft with `taskId`, `developerId`, `baseRevisions`, `changes`, and fix evidence. If `changeTracking.fix=true` and a task directory already exists, the delta may be written to `TASK_ROOT/active/<task-name>/kb-delta.json`; otherwise an equivalent in-memory object is acceptable. `changes` may use `appendBody` / `replaceBody` / `updateFrontmatter`; when a new topic is needed, use `createTopic` and optionally include `taskRule` plus `matcher` so routing is connected in the same merge.
+2. Before writing `.Knowledge`, run `flow2spec kb plan <delta>` or the equivalent internal capability. If a topic revision differs, stop automatic writing and switch to semantic-merge reporting.
+3. When the change is auto-mergeable, run `flow2spec kb apply <delta>` or the equivalent internal capability, then run `flow2spec kb build` and `flow2spec kb check`.
+4. The user should only see "fix and knowledge base synced / semantic conflict needs confirmation / skipped with reason"; do not ask the user to manually run `kb plan/apply/build/check`.
 
 ## Orchestration (main / sub-agent)
 

@@ -5,6 +5,15 @@ description: Accept an explicit capability list or infer from zero input; first 
 
 > Execution scope: this skill only maintains `.Knowledge`; by default it does not modify the configuration-root `rules/skills`.
 
+## KB Auto-Merge Protocol (Required)
+
+This skill must not make manual command execution part of the user flow. After the user confirms the sync outline, the agent performs knowledge candidate generation, merge planning, build, and validation by itself:
+
+1. Convert the confirmed outline into one or more `kb-delta` drafts with `taskId`, `developerId`, `baseRevisions`, `changes`, and evidence summary. If there is no explicit task directory, an equivalent in-memory object is acceptable; do not create `.task` only for this skill. `changes` may use `appendBody` / `replaceBody` / `updateFrontmatter`; when a new topic is needed, use `createTopic` and optionally include `taskRule` plus `matcher` so routing is connected in the same merge.
+2. Before writing `.Knowledge`, run `flow2spec kb plan <delta>` or the equivalent internal capability. If a topic revision differs, stop automatic writing and switch to semantic-merge reporting.
+3. When the change is auto-mergeable, run `flow2spec kb apply <delta>` or the equivalent internal capability, then run `flow2spec kb build` and `flow2spec kb check`.
+4. The user should only see "knowledge base synced / semantic conflict needs confirmation / skipped with reason"; do not ask the user to manually run `kb plan/apply/build/check`.
+
 ## Orchestration (main / sub-agent)
 
 - The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`).

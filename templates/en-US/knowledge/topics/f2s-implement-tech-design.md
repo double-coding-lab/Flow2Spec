@@ -1,3 +1,11 @@
+---
+id: implement-tech-design
+revision: 0
+summary: "implement-tech-design (routing summary)"
+dependsOn: [f2s-doc-routing]
+primary: policy
+confidence: manual
+---
 # implement-tech-design (routing summary)
 
 > **Only long-form source**: Cursor / Claude use configuration-root **`rules/f2s-implement-tech-design.md(c)`** as authoritative.  

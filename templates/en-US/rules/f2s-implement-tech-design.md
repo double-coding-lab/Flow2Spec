@@ -5,6 +5,9 @@ globs:
 alwaysApply: false
 ---
 
+> **Task paths**: all `.task/` reads/writes must use **`TASK_ROOT` from `rules/f2s-task`** (` .task` or `.task/<developerId>`; config → git → legacy). Bare `.task/todo.json` / `.task/active/` below mean **`TASK_ROOT/...`**.
+
+
 > **Single long-form rule**: this file is the complete execution rule for **implement-tech-design**. `.Knowledge/topics/f2s-implement-tech-design.md` is only a routing summary; **Codex** reads `.codex/topics/f2s-implement-tech-design.md` (automatically mirrored from this file by `flow2spec init`) as the equivalent rule text.
 
 > Execution scope: the unified knowledge-base path is `/.Knowledge/`. All paths below are interpreted according to the `.Knowledge` convention.
