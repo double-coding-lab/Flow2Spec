@@ -1,0 +1,88 @@
+.Knowledge/matchers/m-f2s-dev-workflow-constraints.json
+  h_4b6eab238eaf87 9
+.codex/hooks/f2s-update-check.js
+  h_4b6eab238eaf87 19,119
+.Knowledge/stock-docs/项目里程碑.md
+  h_4b6eab238eaf87 66,174
+docs/en/milestones.md
+  h_4b6eab238eaf87 68,175
+package.json
+  h_4b6eab238eaf87 2
+.codex/topics/repo-dev-workflow-constraints.md
+  h_4b6eab238eaf87 7,28,94,120,126
+templates/en-US/skills/f2s-kb-upgrade/SKILL.md
+  h_4b6eab238eaf87 105,115-116,121,166,349
+assets/readme/hero.svg
+  h_4b6eab238eaf87 49
+.cursor/skills/repo-dev-check/SKILL.md
+  h_4b6eab238eaf87 67
+.claude/skills/repo-dev-check/SKILL.md
+  h_4b6eab238eaf87 67
+.cursor/rules/repo-dev-workflow-constraints.mdc
+  h_4b6eab238eaf87 7,28,94,120,126
+lib/init.js
+  h_4b6eab238eaf87 176
+.Knowledge/topics/f2s-dev-workflow-constraints.md
+  h_4b6eab238eaf87 27
+.Knowledge/topics/f2s-flow2spec-architecture.md
+  h_4b6eab238eaf87 27
+templates/zh-CN/skills/f2s-kb-upgrade/SKILL.md
+  h_4b6eab238eaf87 105,115-116,121,166,349
+docs/项目里程碑.md
+  h_4b6eab238eaf87 68,176
+presentations/flow2spec-intro-public-en/index.html
+  h_4b6eab238eaf87 1056,1832,1848
+.Knowledge/topics/f2s-init-defaults.md
+  h_4b6eab238eaf87 66,69
+README.md
+  h_4b6eab238eaf87 20-23,29,35
+.codex/skills/repo-dev-check/SKILL.md
+  h_4b6eab238eaf87 67
+presentations/flow2spec-intro-public/演讲稿.md
+  h_4b6eab238eaf87 198
+README.en.md
+  h_4b6eab238eaf87 20-23,29,35
+.Knowledge/stock-docs/flow2spec架构说明_初稿.md
+  h_4b6eab238eaf87 9
+assets/readme/hero-zh.svg
+  h_4b6eab238eaf87 49
+lib/claudeSettingsAdapter.js
+  h_4b6eab238eaf87 173
+templates/zh-CN/hooks/f2s-update-check.js
+  h_4b6eab238eaf87 119
+presentations/flow2spec-intro-public/index.html
+  h_4b6eab238eaf87 1180,1963,1982
+docs/Flow2Spec基础介绍.md
+  h_4b6eab238eaf87 425,462
+docs/en/Flow2Spec-Introduction.md
+  h_4b6eab238eaf87 441,478
+.codex/skills/f2s-kb-upgrade/SKILL.md
+  h_4b6eab238eaf87 105,115-116,121,166,347
+.claude/skills/f2s-kb-upgrade/SKILL.md
+  h_4b6eab238eaf87 105,115-116,121,166,347
+.cursor/skills/f2s-kb-upgrade/SKILL.md
+  h_4b6eab238eaf87 105,115-116,121,166,347
+README.zh-CN.md
+  h_4b6eab238eaf87 20-23,29,35
+.claude/hooks/f2s-update-check.js
+  h_4b6eab238eaf87 19,119
+.cursor/hooks/f2s-update-check.js
+  h_4b6eab238eaf87 19,119
+templates/en-US/hooks/f2s-update-check.js
+  h_4b6eab238eaf87 119
+.claude/rules/repo-dev-workflow-constraints.md
+  h_4b6eab238eaf87 7,28,94,120,126
+.Knowledge/stock-docs/flow2spec架构说明_终稿.md
+  h_4b6eab238eaf87 12,50,52,90,106,146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "04648e6d7ec47f6e8a50dfedc2623f38fa38fa6f",
+  "prompts": {},
+  "humans": {
+    "h_4b6eab238eaf87": {
+      "author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
