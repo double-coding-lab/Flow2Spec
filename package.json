@@ -25,7 +25,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "node cli.js --help && node cli.js kb check && node scripts/test-knowledge-engine.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js",
+    "test": "node cli.js --help && node cli.js kb check && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js",
     "sync:agents": "node cli.js init cursor claude codex",
     "prepublishOnly": "node cli.js --help",
     "pack:check": "npm pack --dry-run",

@@ -333,6 +333,170 @@ try {
     fs.rmSync(legacyRoot, { recursive: true, force: true });
   }
 
+  // ---------- H2: parse-time validation for empty content ----------
+  assert.throws(
+    () =>
+      engine.parseKnowledgeDelta({
+        taskId: "task-empty-append",
+        developerId: "alice",
+        changes: [
+          {
+            type: "appendBody",
+            targetTopic: "topic-a",
+            content: "",
+          },
+        ],
+      }),
+    /appendBody 缺少 content/,
+    "appendBody 空 content 必须在 parse 阶段就报错",
+  );
+
+  assert.throws(
+    () =>
+      engine.parseKnowledgeDelta({
+        taskId: "task-empty-replace",
+        developerId: "alice",
+        changes: [
+          {
+            type: "replaceBody",
+            targetTopic: "topic-a",
+            content: "   \n\n   ",
+          },
+        ],
+      }),
+    /replaceBody 缺少 content/,
+    "replaceBody 纯空白 content 也必须在 parse 阶段报错",
+  );
+
+  // 验证 kb status 面对损坏 delta 时不会崩溃，而是把错误折叠到 task.error
+  const brokenDeltaPath = path.join(
+    tmpRoot,
+    ".task",
+    "alice",
+    "active",
+    "task-broken",
+    "kb-delta.json",
+  );
+  writeJson(brokenDeltaPath, {
+    taskId: "task-broken",
+    developerId: "alice",
+    changes: [
+      {
+        type: "appendBody",
+        targetTopic: "topic-a",
+        content: "",
+      },
+    ],
+  });
+  const brokenState = engine.summarizeKnowledgeState(tmpRoot);
+  const brokenTask = brokenState.tasks.find((t) => t.taskName === "task-broken");
+  assert(brokenTask, "kb status 应该看到 task-broken");
+  assert.match(
+    brokenTask.error || "",
+    /appendBody 缺少 content/,
+    "kb status 应该以结构化 error 呈现，而不是抛异常",
+  );
+  // 清理，避免影响后续断言
+  fs.rmSync(path.dirname(brokenDeltaPath), { recursive: true, force: true });
+
+  // ---------- L3: routing drift detection ----------
+  const driftRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-kb-drift-"));
+  try {
+    writeJson(path.join(driftRoot, ".Knowledge", "manifest-routing.json"), {
+      version: "test",
+      knowledgeRoot: ".Knowledge",
+      matcherKey: "matcherId",
+      sourceOfTruth: ".Knowledge/manifest-routing.json",
+      fallbackTopic: "topic-x",
+      topicDependencies: {}, // 与下面 topic-x frontmatter 的 dependsOn 不一致
+      topicPaths: {
+        "topic-x": ".Knowledge/topics/topic-x.md",
+        "topic-y": ".Knowledge/topics/topic-y.md",
+      },
+      taskToTopicRules: [],
+      topicMetadata: {
+        "topic-x": { primary: "policy", confidence: "manual" },
+        "topic-y": { primary: "feature", confidence: "manual" },
+      },
+    });
+    writeJson(path.join(driftRoot, ".Knowledge", "manifest-matchers.json"), {
+      version: "1.0.0",
+      generatedFrom: ".Knowledge/manifest-routing.json",
+      matcherKey: "matcherId",
+      sourceOfTruth: ".Knowledge/manifest-routing.json",
+      matchers: {},
+    });
+    writeText(
+      path.join(driftRoot, ".Knowledge", "topics", "topic-x.md"),
+      [
+        "---",
+        "id: topic-x",
+        "revision: 0",
+        "primary: policy",
+        "confidence: manual",
+        "dependsOn: [topic-y]",
+        "---",
+        "# Topic X",
+        "",
+      ].join("\n"),
+    );
+    writeText(
+      path.join(driftRoot, ".Knowledge", "topics", "topic-y.md"),
+      [
+        "---",
+        "id: topic-y",
+        "revision: 0",
+        "primary: feature",
+        "confidence: manual",
+        "---",
+        "# Topic Y",
+        "",
+      ].join("\n"),
+    );
+
+    const driftState = engine.summarizeKnowledgeState(driftRoot);
+    assert.strictEqual(
+      driftState.routingDrift,
+      true,
+      "topic frontmatter 与 routing.topicDependencies 不一致时必须报 drift",
+    );
+
+    // dry-run 不写盘：文件内容维持 drift
+    engine.buildKnowledgeGraph(driftRoot, { dryRun: true });
+    const beforeWrite = JSON.parse(
+      fs.readFileSync(
+        path.join(driftRoot, ".Knowledge", "manifest-routing.json"),
+        "utf8",
+      ),
+    );
+    assert.deepStrictEqual(
+      beforeWrite.topicDependencies,
+      {},
+      "dry-run 不能写回 routing",
+    );
+
+    // 真正 build：应写回 dependsOn
+    const built = engine.buildKnowledgeGraph(driftRoot);
+    assert.strictEqual(built.changed, true, "buildKnowledgeGraph 应报告 changed");
+    const afterWrite = JSON.parse(
+      fs.readFileSync(
+        path.join(driftRoot, ".Knowledge", "manifest-routing.json"),
+        "utf8",
+      ),
+    );
+    assert.deepStrictEqual(
+      afterWrite.topicDependencies["topic-x"],
+      ["topic-y"],
+      "build 后 routing.topicDependencies 应对齐 topic frontmatter",
+    );
+
+    // 再次检查：drift 应消失
+    const driftStateAfter = engine.summarizeKnowledgeState(driftRoot);
+    assert.strictEqual(driftStateAfter.routingDrift, false);
+  } finally {
+    fs.rmSync(driftRoot, { recursive: true, force: true });
+  }
+
   console.log("knowledge engine tests passed");
 } finally {
   fs.rmSync(tmpRoot, { recursive: true, force: true });
