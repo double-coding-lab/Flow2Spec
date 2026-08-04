@@ -1,5 +1,26 @@
 # Flow2Spec
 
+> ## ⚠️ This package has moved
+>
+> **`@double-codeing/flow2spec` is deprecated** — the organization name had a typo.
+>
+> Future updates will be published on **`@double-coding/flow2spec`** (same code, correct org name).
+>
+> ```bash
+> npm uninstall -g @double-codeing/flow2spec
+> npm install -g @double-coding/flow2spec
+> ```
+>
+> Or one-shot via npx:
+>
+> ```bash
+> npx @double-coding/flow2spec@latest init
+> ```
+>
+> This is the last release under `@double-codeing`. All future work will happen at [`@double-coding/flow2spec`](https://www.npmjs.com/package/@double-coding/flow2spec).
+
+---
+
 <p align="center">
   <img src="./assets/readme/hero.svg" width="100%" alt="Flow2Spec routes a natural language coding request into compact project facts before code edits">
 </p>

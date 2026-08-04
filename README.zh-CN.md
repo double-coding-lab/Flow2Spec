@@ -1,5 +1,26 @@
 # Flow2Spec
 
+> ## ⚠️ 本 npm 包已迁移
+>
+> **`@double-codeing/flow2spec` 已弃用**——组织名有拼写错误（`codeing` → `coding`）。
+>
+> 后续版本将发布在 **`@double-coding/flow2spec`**（代码相同，组织名正确）。
+>
+> ```bash
+> npm uninstall -g @double-codeing/flow2spec
+> npm install -g @double-coding/flow2spec
+> ```
+>
+> 或直接 npx：
+>
+> ```bash
+> npx @double-coding/flow2spec@latest init
+> ```
+>
+> 这是 `@double-codeing` 组织下的最后一个版本；后续所有维护迁移到 [`@double-coding/flow2spec`](https://www.npmjs.com/package/@double-coding/flow2spec)。
+
+---
+
 <p align="center">
   <img src="./assets/readme/hero-zh.svg" width="100%" alt="Flow2Spec 将自然语言编码需求路由到紧凑项目事实后再修改代码">
 </p>

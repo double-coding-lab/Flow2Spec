@@ -27,6 +27,25 @@ const agentList = Object.entries(AGENTS)
 
 const pkg = require("./package.json");
 
+if (pkg.name === "@double-codeing/flow2spec" && !process.env.FLOW2SPEC_SUPPRESS_MIGRATION_NOTICE) {
+  const RED = "\x1b[31m";
+  const YELLOW = "\x1b[33m";
+  const BOLD = "\x1b[1m";
+  const RESET = "\x1b[0m";
+  console.warn(`${RED}${BOLD}
+╔══════════════════════════════════════════════════════════════════════╗
+║  ⚠️  @double-codeing/flow2spec is DEPRECATED (typo in org name)      ║
+║                                                                      ║
+║  Please migrate to @double-coding/flow2spec:                         ║
+║                                                                      ║
+║    ${YELLOW}npm uninstall -g @double-codeing/flow2spec${RED}                       ║
+║    ${YELLOW}npm install -g @double-coding/flow2spec${RED}                          ║
+║                                                                      ║
+║  All future updates will be published under the new organization.    ║
+╚══════════════════════════════════════════════════════════════════════╝${RESET}
+`);
+}
+
 const UPDATE_CHECK_TTL_MS = 24 * 60 * 60 * 1000;
 
 function parseVersion(version) {
