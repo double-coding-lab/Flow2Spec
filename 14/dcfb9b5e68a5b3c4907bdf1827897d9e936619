@@ -1,0 +1,31 @@
+templates/zh-CN/skills/f2s-git-commit/SKILL.md
+  s_dddf30867b7246::t_41976c54ac5f3c 52,60-87
+  s_dddf30867b7246::t_e2c69a755a3563 219-224
+  s_dddf30867b7246::t_ce0e58253cbb00 3
+templates/zh-CN/skills/f2s-kb-sync/SKILL.md
+  s_dddf30867b7246::t_9fde7d6747320b 98-115
+templates/en-US/skills/f2s-kb-sync/SKILL.md
+  s_dddf30867b7246::t_2710ce15302d36 98-115
+.gitignore
+  s_dddf30867b7246::t_2cf6c4b34a9ec7 6
+templates/en-US/skills/f2s-git-commit/SKILL.md
+  s_dddf30867b7246::t_16e0342b0eba0f 60-88
+  s_dddf30867b7246::t_8cb754b388f9cc 3
+  s_dddf30867b7246::t_6989b9fc5adc74 219-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "14dcfb9b5e68a5b3c4907bdf1827897d9e936619",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
