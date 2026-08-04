@@ -1,0 +1,27 @@
+README.zh-CN.md
+  s_dddf30867b7246::t_ce87ab3543db13 3-23
+package.json
+  s_dddf30867b7246::t_9dcffee6ec03b6 3
+README.md
+  s_dddf30867b7246::t_8ffb1fa33cdb7d 3-23
+README.en.md
+  s_dddf30867b7246::t_61540427d169a9 3-23
+cli.js
+  s_dddf30867b7246::t_7c4f33e4174822 30-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "4d31df335991bca3c4ca1c231fba6c935843621b",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
