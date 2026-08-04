@@ -1,6 +1,6 @@
 {
   "name": "@double-coding/flow2spec",
-  "version": "3.2.8",
+  "version": "3.2.11",
   "description": "在业务仓库初始化「文档驱动、可写回知识库」的 AI 协作骨架：项目根 .Knowledge 承载 stock-docs/req-docs 与机读路由，.cursor/.claude/.codex 写入 f2s-* 规则与技能（含 Karpathy 式编码行为准则，init 同步 rules / Codex topics / skills）；init 只落结构与模板，业务内容由各 f2s-* 技能在对话中维护。",
   "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
   "repository": {
