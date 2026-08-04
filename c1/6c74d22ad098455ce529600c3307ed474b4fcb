@@ -1,0 +1,41 @@
+.claude/rules/repo-dev-workflow-constraints.md
+  s_dddf30867b7246::t_42e6b172cb0d7c 2,7,19,25-26,36,48-49,66,84,89-90,93,112,124
+.codex/topics/repo-dev-workflow-constraints.md
+  s_dddf30867b7246::t_2faf3a3e87a336 2,7,19,25-26,36,48-49,66,84,89-90,93,112,124
+.Knowledge/index.md
+  s_dddf30867b7246::t_1bc2470d5caf8d 37
+.claude/skills/repo-dev-check/SKILL.md
+  s_dddf30867b7246::t_e74892eef25670 3,8,14-16,33,35,60,67,82,85,91-93,97
+.Knowledge/matchers/m-f2s-dev-workflow-constraints.json
+  s_dddf30867b7246::t_147da43451e67f 15
+.Knowledge/topics/f2s-dev-workflow-constraints.md
+  s_dddf30867b7246::t_7c8852d1a5204f 3,7,24,36,40,43,50
+.Knowledge/stock-docs/Flow2Spec-产品仓-Agent修包边界.md
+  s_dddf30867b7246::t_56ceadddba90be 3
+  s_dddf30867b7246::t_5654c9a64db501 24
+.codex/skills/repo-dev-check/SKILL.md
+  s_dddf30867b7246::t_6bc469cdc58333 3,8,14-16,33,35,60,67,82,85,91-93,97
+.cursor/skills/repo-dev-check/SKILL.md
+  s_dddf30867b7246::t_6bc469cdc58333 3,8,14-16,33,35,60,67,82,85,91-93,97
+.Knowledge/stock-docs/项目里程碑.md
+  s_dddf30867b7246::t_08657a6c2931db 26
+  s_dddf30867b7246::t_d81a6a5b8b240f 63-65
+.cursor/rules/repo-dev-workflow-constraints.mdc
+  s_dddf30867b7246::t_2faf3a3e87a336 2,7,19,25-26,36,48-49,66,84,89-90,93,112,124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "c16c74d22ad098455ce529600c3307ed474b4fcb",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
