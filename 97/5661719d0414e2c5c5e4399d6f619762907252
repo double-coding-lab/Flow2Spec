@@ -1,0 +1,27 @@
+templates/zh-CN/skills/f2s-kb-upgrade/SKILL.md
+  s_dddf30867b7246::t_b8d9a0c964d73d 173,356
+  s_dddf30867b7246::t_e2d5e9f648aa5b 305,324
+  s_dddf30867b7246::t_86331b70c41459 95,99-101,104,106-110,114,118-121,126-127,129
+templates/en-US/skills/f2s-kb-upgrade/SKILL.md
+  s_dddf30867b7246::t_9962c7c45c9bf4 304
+  s_dddf30867b7246::t_89f4c6a413f2f4 323
+  s_dddf30867b7246::t_04dce89e09e8bd 109
+  s_dddf30867b7246::t_6be437e79d8363 99-100,104,106-108,110,118-121,127
+  s_dddf30867b7246::t_9cbae55b3f1f9a 95,101,114,126,129,172,355
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "975661719d0414e2c5c5e4399d6f619762907252",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
