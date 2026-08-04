@@ -34,7 +34,7 @@
 | flow2spec-collaboration | `.Knowledge/topics/flow2spec-collaboration.md` | 多人任务隔离、知识 delta 合入、topic revision 冲突与团队进度观察面 | 完整说明：[团队协作](../docs/团队协作.md)；英文：[Team Collaboration](../docs/en/team-collaboration.md) |
 | skill-authoring | `.Knowledge/topics/skill-authoring.md` | 新增 / 重构 `f2s-*` SKILL 时的骨架与命名约定（仅本仓，不下发） | 参考实现：`templates/skills/f2s-kb-addRules/SKILL.md` |
 | f2s-req-tech | `.Knowledge/topics/f2s-req-tech.md` | 生成技术方案文档（全端通用，含后端/前端/全栈等） | 模板：[技术方案模版](template/技术方案模版.md)；技能：`skills/f2s-req-tech/SKILL.md` |
-| f2s-dev-workflow-constraints | `.Knowledge/topics/f2s-dev-workflow-constraints.md` | 开发工作流约束（仅 Flow2Spec 双仓自身，不给下游）：只改 templates / 不改配置根 / 用户驱动分发 / 双仓一致 | 长文：`rules/repo-dev-workflow-constraints.*`；自查技能：`skills/repo-dev-check/SKILL.md` |
+| f2s-dev-workflow-constraints | `.Knowledge/topics/f2s-dev-workflow-constraints.md` | 开发工作流约束（仅 Flow2Spec 本仓自身，不给下游）：只改 templates / 不改配置根 / 用户驱动分发 | 长文：`rules/repo-dev-workflow-constraints.*`；自查技能：`skills/repo-dev-check/SKILL.md` |
 | f2s-kb-distill | `.Knowledge/topics/f2s-kb-distill.md` | Q&A 驱动知识提取；自动判断创建新 topic 或追加现有 topic | 技能：skills/f2s-kb-distill/SKILL.mdc |
 | flow2spec-init-defaults | `.Knowledge/topics/f2s-init-defaults.md` | `flow2spec init` 字段默认值、四处落点一致性、老项目缺字段补写、`init` 不动 stock/req/topics/matchers、manifest 两个版本字段（`projectRev` / `pkgRev`）对照 | 包源码：`lib/flow2specConfig.js` `DEFAULTS` / `CONFIG_FIELDS`；模板：`templates/{locale}/flow2spec.config.json` |
 

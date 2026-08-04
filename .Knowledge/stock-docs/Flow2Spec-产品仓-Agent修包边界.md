@@ -1,6 +1,6 @@
 # Flow2Spec 产品仓：Agent 修包边界
 
-> **适用范围**：Flow2Spec **npm 包产品开发仓**（携程内网仓、开源 GitHub 仓）。  
+> **适用范围**：Flow2Spec **npm 包产品开发仓**。  
 > **性质**：给人与 Agent 读的**仓库内约定**，写在 `.Knowledge/stock-docs/`；**不**写入 `templates/skills` / `templates/rules`，**不**随 `flow2spec init` 下发到业务项目。
 
 ---
@@ -21,7 +21,7 @@
    - `docs/`（用户文档）
    - 本仓 `.Knowledge/`（产品说明、路由、stock-docs，与改包能力可并行）
 2. **`templates/` 可下发约束**（会经 `init` 克隆到任意业务仓）：
-   - 示例与说明须**中性**：勿写特定业务域（如具体交易/行业模块名）、勿写仅存在于本产品仓的 `docs/` 路径或双仓本地路径。
+   - 示例与说明须**中性**：勿写特定业务域（如具体交易/行业模块名）、勿写仅存在于本产品仓的 `docs/` 路径。
    - npm 安装示例用 `npx flow2spec` 或占位，勿写单一组织的 scoped 包名（各仓 `package.json` 的 `name` 由发布方维护）。
 3. **禁止改配置根落盘目录**（除非用户**明确**要求「只动某配置根、且与 templates 无关」）：
    - `.cursor/rules/`、`.cursor/skills/`
