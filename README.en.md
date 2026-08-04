@@ -1,9 +1,11 @@
 # Flow2Spec
 
-> ## ⚠️ This package has moved
+> ## ⚠️ 本包已迁移 / This package has moved
 >
+> **`@double-codeing/flow2spec` 已弃用**（组织名拼写错误：`codeing` → `coding`）。
 > **`@double-codeing/flow2spec` is deprecated** — the organization name had a typo.
 >
+> 后续所有更新将发布在 **`@double-coding/flow2spec`**（代码相同，组织名正确）。
 > Future updates will be published on **`@double-coding/flow2spec`** (same code, correct org name).
 >
 > ```bash
@@ -11,12 +13,13 @@
 > npm install -g @double-coding/flow2spec
 > ```
 >
-> Or one-shot via npx:
+> 或直接 npx / Or one-shot via npx:
 >
 > ```bash
 > npx @double-coding/flow2spec@latest init
 > ```
 >
+> 这是 `@double-codeing` 组织下的**最后一个版本**；后续所有维护迁移到 [`@double-coding/flow2spec`](https://www.npmjs.com/package/@double-coding/flow2spec)。
 > This is the last release under `@double-codeing`. All future work will happen at [`@double-coding/flow2spec`](https://www.npmjs.com/package/@double-coding/flow2spec).
 
 ---

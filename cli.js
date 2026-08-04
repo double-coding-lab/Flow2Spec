@@ -34,13 +34,15 @@ if (pkg.name === "@double-codeing/flow2spec" && !process.env.FLOW2SPEC_SUPPRESS_
   const RESET = "\x1b[0m";
   console.warn(`${RED}${BOLD}
 ╔══════════════════════════════════════════════════════════════════════╗
+║  ⚠️  @double-codeing/flow2spec 已弃用（组织名拼写错误 codeing→coding）  ║
 ║  ⚠️  @double-codeing/flow2spec is DEPRECATED (typo in org name)      ║
 ║                                                                      ║
-║  Please migrate to @double-coding/flow2spec:                         ║
+║  请迁移到 / Please migrate to @double-coding/flow2spec：             ║
 ║                                                                      ║
 ║    ${YELLOW}npm uninstall -g @double-codeing/flow2spec${RED}                       ║
 ║    ${YELLOW}npm install -g @double-coding/flow2spec${RED}                          ║
 ║                                                                      ║
+║  后续所有版本将发布在新组织下。                                        ║
 ║  All future updates will be published under the new organization.    ║
 ╚══════════════════════════════════════════════════════════════════════╝${RESET}
 `);
