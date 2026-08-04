@@ -92,35 +92,41 @@ This skill executes **`flow2spec init`** in **step 2**. `init` syncs the current
 
 ## Mandatory Flow
 
-### Step -1: Global flow2spec Version Preflight (Required, Before Everything, Foreground Probe by Main Agent)
+### Step -1: Global flow2spec Version Preflight + Org Rename Migration (Required, Before Everything, Foreground Probe by Main Agent)
 
 **Purpose**: prefer using the **already-installed global `flow2spec`** whenever possible. Only trigger a global upgrade when it is **missing** or **out of date**; when it is already at latest, **completely skip** any upgrade action. This also decides the **default form** of the step 2 command (whether to use `flow2spec init` or `npx @latest init`).
 
-**Action**: before entering step 0, the main agent **sequentially runs 3 probes in the foreground** (all read-only, no side effects, seconds to return — no sub-agent needed):
+> **📦 Org rename migration (auto-executed since 3.2.9)**: **The legacy `@double-codeing/flow2spec` is deprecated** (org name had a typo: `codeing` → `coding`). This step detects whether the local machine has the legacy-named global CLI installed and, if so, **automatically** runs `npm uninstall -g @double-codeing/flow2spec` + `npm install -g @double-coding/flow2spec@latest` to complete the migration — no user interaction required. **From here on all `npm view` / `npm i -g` / `npx` commands use the new package name `@double-coding/flow2spec`**.
+
+**Action**: before entering step 0, the main agent **sequentially runs 4 probes in the foreground** (all read-only, no side effects, seconds to return — no sub-agent needed):
 
 ```bash
-# 1. Probe whether flow2spec is installed globally on this machine
+# 1. Probe whether flow2spec is installed globally on this machine (either org name counts)
 flow2spec --version 2>/dev/null || echo __F2S_NOT_INSTALLED__
-# 2. Query the latest version on npm (may fail on restricted networks — allowed)
-npm view @double-codeing/flow2spec version 2>/dev/null || echo __F2S_NPM_UNREACHABLE__
-# 3. (Backup) if step 1 returned __F2S_NOT_INSTALLED__, confirm npx is available
+# 2. Determine whether the installed global uses the new or the legacy org name (drives migration)
+npm ls -g --depth=0 --json 2>/dev/null | grep -oE '@double-cod[a-z]+/flow2spec' | head -1 || echo __F2S_ORG_UNKNOWN__
+# 3. Query the latest version on npm (uses the **new** package name; may fail on restricted networks)
+npm view @double-coding/flow2spec version 2>/dev/null || echo __F2S_NPM_UNREACHABLE__
+# 4. (Backup) if step 1 returned __F2S_NOT_INSTALLED__, confirm npx is available
 command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 ```
 
-**Three-way decision** (pick one branch based on the results; record it in this-turn context and use it to drive step 2 & step 5 summary):
+**Four-way decision** (pick one branch based on the results; record it in this-turn context and use it to drive step 2 & step 5 summary):
 
 | Case | Condition | Action | Default step 2 command |
 | --- | --- | --- | --- |
-| **A. Installed & on latest** | Step 1 returned version `V`, step 2 returned version `L`, and `V === L` | **Skip upgrade entirely** — no sub-agent, no `npm i -g` this turn | **`flow2spec init <agents...>`** (use global CLI) |
-| **B. Installed but behind** | Step 1 returned `V`, step 2 returned `L`, and `V !== L` (`V < L` or semver-unequal) | **Dispatch an independent sub-agent (fire-and-forget)** to run `npm i -g @double-codeing/flow2spec@latest` in the background — no wait, no block. Current turn's step 2 still uses `npx @latest` to guarantee this session gets the latest template | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
-| **C. Not installed or latest unknown** | Step 1 hit `__F2S_NOT_INSTALLED__`, OR step 2 hit `__F2S_NPM_UNREACHABLE__` and step 1 also didn't return a version | If A doesn't hold and **not installed**: same as B — dispatch a sub-agent to `npm i -g ...@latest`. If step 2 failed but step 1 shows some installed version: treat as B without a way to compare to latest — **do not** dispatch an upgrade, just note "latest unknown, use npx conservatively" | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
+| **A. Installed new-org pkg & on latest** | Step 1 returned version `V`, step 2 returned `@double-coding/flow2spec`, step 3 returned version `L`, and `V === L` | **Skip upgrade entirely** — no sub-agent, no `npm i -g` this turn | **`flow2spec init <agents...>`** (use global CLI) |
+| **B. Installed new-org pkg but behind** | Step 1 returned `V`, step 2 returned `@double-coding/flow2spec`, step 3 returned `L`, and `V !== L` (`V < L` or semver-unequal) | **Dispatch an independent sub-agent (fire-and-forget)** to run `npm i -g @double-coding/flow2spec@latest` in the background — no wait, no block. Current turn's step 2 still uses `npx @latest` to guarantee this session gets the latest template | **`npx @double-coding/flow2spec@latest init <agents...>`** |
+| **C. Not installed or latest unknown** | Step 1 hit `__F2S_NOT_INSTALLED__`, OR step 3 hit `__F2S_NPM_UNREACHABLE__` and step 1 also didn't return a version | If "installed & on latest" doesn't hold and **not installed**: dispatch a sub-agent to `npm i -g @double-coding/flow2spec@latest`. If step 3 failed but step 1 shows some installed version: treat as B without a way to compare to latest — **do not** dispatch an upgrade, just note "latest unknown, use npx conservatively" | **`npx @double-coding/flow2spec@latest init <agents...>`** |
+| **D. Installed legacy `@double-codeing` pkg (org rename migration)** | Step 2 returned `@double-codeing/flow2spec` (legacy org, extra `e` in `codeing`) | **Must** dispatch an independent sub-agent to **silently, in order** run:<br>1. `npm uninstall -g @double-codeing/flow2spec`<br>2. `npm install -g @double-coding/flow2spec@latest`<br>fire-and-forget, does not block the main flow; no user re-confirmation. **Current turn's step 2** uses `npx @double-coding/flow2spec@latest` so this session immediately gets the new-org latest template | **`npx @double-coding/flow2spec@latest init <agents...>`** |
 
 **Orchestration (required)**:
 
 - **Branch A**: main agent skips all upgrade actions and **does not** dispatch a sub-agent; step 2's default is `flow2spec init`.
-- **Branch B / C**: only when an upgrade is actually needed (missing or behind), dispatch an **independent sub-agent** fire-and-forget to run `npm i -g @double-codeing/flow2spec@latest`; **do not wait**, **do not block** the main flow. Success/failure does not enter the SKILL summary conclusion. This sub-agent dispatch is **mandatory** and **not subject to** `flow2spec.config.json.subAgent` (a one-off global npm install is not a business split).
+- **Branch B / C**: only when an upgrade is actually needed (missing or behind), dispatch an **independent sub-agent** fire-and-forget to run `npm i -g @double-coding/flow2spec@latest`; **do not wait**, **do not block** the main flow. Success/failure does not enter the SKILL summary conclusion. This sub-agent dispatch is **mandatory** and **not subject to** `flow2spec.config.json.subAgent` (a one-off global npm install is not a business split).
+- **Branch D (org rename migration, since 3.2.9)**: **must** dispatch an independent sub-agent to silently run `uninstall` → `install` in order — do not give the user a re-confirmation prompt (avoid "let me think" blocking the migration). Only mention "org rename migration completed" in the summary after the fact. If either `uninstall` or `install` fails (restricted network, insufficient permission), **do not block** the main flow — the summary lists the failure reason plus the full manual commands the user can run. This sub-agent dispatch is **mandatory** and **not subject to** `flow2spec.config.json.subAgent`.
 - **Write permission**: the sub-agent only runs that shell command and **does not** touch any project file (`.Knowledge`, `manifest-routing.json`, `index.md`, etc.). Write-permission constraints remain unchanged.
-- **Probe failure fallback**: if all 3 probes fail (no shell permission, extremely restricted env), treat as branch C and use `npx @latest`; alternatively, skip step -1 entirely and rely on `cli.js`'s `maybeAutoUpdateGlobalInstall()` tail fallback.
+- **Probe failure fallback**: if all 4 probes fail (no shell permission, extremely restricted env), treat as branch C and use `npx @double-coding/flow2spec@latest`; alternatively, skip step -1 entirely and rely on `cli.js`'s `maybeAutoUpdateGlobalInstall()` tail fallback.
 
 **Relation to cli.js**:
 
@@ -163,7 +169,7 @@ Run one of the following in the target project root (**choose the default form b
 1. **Step -1 returned A (installed & on latest)**: use the global CLI directly (**preferred**):
    - `flow2spec init <agents...>`
 2. **Step -1 returned B/C (missing / behind / latest unknown)**: fetch npm latest (**guarantees this session gets the latest template**):
-   - `npx @double-codeing/flow2spec@latest init <agents...>`
+   - `npx @double-coding/flow2spec@latest init <agents...>`
 3. For overwrite reset:
    - Append `--reset-knowledge` to the above command.
 4. If the user explicitly requests a template-language switch:
@@ -295,7 +301,7 @@ Verify at least:
 
 Output:
 
-- **Step -1 global version preflight**: branch (`A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to upgrade) / C Missing or latest unknown (dispatched / advised)`) + current global version + npm latest (if obtained)
+- **Step -1 global version preflight**: branch (`A Installed new-org pkg & on latest (upgrade skipped) / B Installed new-org pkg but behind (sub-agent dispatched to upgrade) / C Missing or latest unknown (dispatched / advised) / D Installed old-org @double-codeing pkg (sub-agent silently uninstalled old + installed new — org rename migration done)`) + current global version + npm latest (if obtained)
 - Executed command (including agents and whether reset was used)
 - Whether it succeeded
 - **`projectRev` judgment**: project `X` vs package `Y` -> fast path / full flow / field-missing fallback (step 2c)
@@ -314,7 +320,7 @@ Output:
 ```markdown
 ## f2s-kb-upgrade Execution Result
 
-- **Step -1 global version preflight**: `A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to run npm i -g in background) / C Missing or latest unknown (dispatched / conservative npx)`; current version=`<V>`, latest=`<L or unknown>`
+- **Step -1 global version preflight**: `A Installed new-org pkg & on latest (upgrade skipped) / B Installed new-org pkg but behind (sub-agent dispatched to run npm i -g in background) / C Missing or latest unknown (dispatched / conservative npx) / D Installed old-org @double-codeing pkg (sub-agent uninstalled old + installed new)`; current version=`<V>`, latest=`<L or unknown>`
 - Command run inside this skill: `<actual flow2spec init ... or npx @latest init ...>`
 - init mode: `incremental` / `overwrite reset (--reset-knowledge)`
 - Result: `success` / `failure`
@@ -346,7 +352,7 @@ Output:
 
 ## Completion Self-Check
 
-1. **Step -1** was performed: before entering step 0, **3 foreground probes** were run sequentially (`flow2spec --version` / `npm view ... version` / `npx` availability) and one of the A/B/C branches was determined. Only under B/C did an **independent sub-agent** get dispatched to run `npm i -g @double-codeing/flow2spec@latest` in the background (fire-and-forget); under A **no upgrade action** was dispatched. Step 2's default command form was chosen accordingly (A → `flow2spec init`, B/C → `npx @latest init`); the summary clearly states the branch and version comparison.
+1. **Step -1** was performed: before entering step 0, **4 foreground probes** were run sequentially (`flow2spec --version` / `npm ls -g` for org / `npm view ... version` / `npx` availability) and one of the A/B/C/D branches was determined. Only under B/C did an **independent sub-agent** get dispatched to run `npm i -g @double-coding/flow2spec@latest` in the background (fire-and-forget); under A **no upgrade action** was dispatched. Step 2's default command form was chosen accordingly (A → `flow2spec init`, B/C → `npx @latest init`); the summary clearly states the branch and version comparison.
 2. **Step 0** was performed: V1 did not skip migrate, and **current repositories (V2+)** did not incorrectly run migrate.
 3. **Before step 2** recorded the project-side `projectRev` (`projectRev`), and **after step 2 `init`** re-read `pkgRev` and executed **step 2c** judgment.
 4. After **step 2 `init`**, **`f2s-kb-upgrade/SKILL.md`** was re-read: on full flow, a change must trigger **a rerun from step 2c per the new literal text** (**no second `init`**); on fast path, the loop can be skipped (see "init and skill self-update" / "fast-path exception").
