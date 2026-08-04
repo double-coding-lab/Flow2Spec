@@ -65,7 +65,7 @@
 - Added **`f2s-dev-workflow-constraints`** rule long text (Cursor / Claude / Codex, three ends): writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
 - Added **`repo-dev-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
 - `.Knowledge/topics/f2s-dev-workflow-constraints.md` thinned to a routing summary pointing to the config-root long text; matcher added new trigger words (`sync:agents`, `写盘边界`, `双仓漂移`); index.md topic table updated with related-doc column
-- Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-codeing` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
+- Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-coding` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
 
 ## M23 · f2s-kb-distill Auto Tier Judgment + f2s-kb-upgrade Step -1
 
@@ -172,7 +172,7 @@
 ## M10 · Documentation Capture Rules
 
 - f2s-doc-add (predecessor of f2s-kb-add) added multi-module detection to prevent merging unrelated modules into single output
-- Dual-repo milestone stock-doc added package naming rules (public @double-codeing/flow2spec vs internal path)
+- Dual-repo milestone stock-doc added package naming rules (public @double-coding/flow2spec vs internal path)
 - Global rules added negation-style constraint: use affirmative statements instead of "not X / non-X"
 
 ## M9 · README and Task Capability Exposure

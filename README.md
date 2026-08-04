@@ -17,22 +17,22 @@
 </p>
 
 <p align="center">
-  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-codeing/flow2spec?label=latest">
-  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-codeing/flow2spec/beta?label=beta">
-  <img alt="node version" src="https://img.shields.io/node/v/@double-codeing/flow2spec">
-  <img alt="license" src="https://img.shields.io/npm/l/@double-codeing/flow2spec">
+  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-coding/flow2spec?label=latest">
+  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-coding/flow2spec/beta?label=beta">
+  <img alt="node version" src="https://img.shields.io/node/v/@double-coding/flow2spec">
+  <img alt="license" src="https://img.shields.io/npm/l/@double-coding/flow2spec">
 </p>
 
 Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a small, routable `.Knowledge/` knowledge base, installs agent-specific `f2s-*` skills, and keeps optional local task state separate from product knowledge. A new session can load the facts relevant to a request instead of rediscovering the repository.
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-coding/flow2spec@latest init
 ```
 
 Try the current beta:
 
 ```bash
-npx @double-codeing/flow2spec@beta init
+npx @double-coding/flow2spec@beta init
 ```
 
 ## Why it exists

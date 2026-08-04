@@ -24,7 +24,7 @@
 2. **不改配置根（下游会用到的产物）**：`.claude/rules/` 等中在 `templates/` 有对应源的文件属 `init` 产物，手改会被覆盖。
 3. **本仓专属手写例外**：`f2s-dev-workflow-constraints`、`repo-dev-check` 等**只**在本仓的规则/技能，直接落配置根，**不进** `templates/`。
 4. **用户驱动分发**：Agent **不主动**跑 `flow2spec init` / `npm run sync:agents`；由用户执行。
-5. **双仓一致**：`Flow2Spec-public`（`@double-codeing`）与 `flow2spec`（`@ctrip`）模板正文与本仓专属手写规则须字节级一致，只允许 npm 包名与个别 remote URL 差异。
+5. **双仓一致**：`Flow2Spec-public`（`@double-coding`）与 `flow2spec`（`@ctrip`）模板正文与本仓专属手写规则须字节级一致，只允许 npm 包名与个别 remote URL 差异。
 
 ## 分发命令（用户执行）
 

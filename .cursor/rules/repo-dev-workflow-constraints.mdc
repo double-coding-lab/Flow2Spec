@@ -4,7 +4,7 @@ description: Flow2Spec 项目开发纪律（仅本双仓适用）：修改本仓
 
 # Flow2Spec 项目开发纪律（Dev Workflow Constraints）
 
-> **仅适用于 Flow2Spec 双仓自身的开发**：`Flow2Spec-public`（`@double-codeing/flow2spec`）与 `flow2spec`（`@ctrip/flow2spec`）。
+> **仅适用于 Flow2Spec 双仓自身的开发**：`Flow2Spec-public`（`@double-coding/flow2spec`）与 `flow2spec`（`@ctrip/flow2spec`）。
 >
 > **不给下游使用**：因此本规则 / 对应 skill / 对应 topic 摘要**只**存在于本仓的配置根（`.claude/` / `.cursor/` / `.codex/`）与本仓 `.Knowledge/topics/`，**不落 `templates/`**——`flow2spec init` 不会把本文件分发给下游项目。
 >
@@ -25,7 +25,7 @@ description: Flow2Spec 项目开发纪律（仅本双仓适用）：修改本仓
 | **1. 只改 `templates/` 与本仓知识库** | Flow2Spec 双仓下要给**下游用**的内容——规则 / 技能 / manifest / matchers / topics / knowledge 模板改动——**只落**在 `templates/zh-CN/` 与 `templates/en-US/` 下（含 `rules/`、`skills/`、`knowledge/`、`AGENTS.md`、`flow2spec.config.json` 模板）。**本仓自身**的 `.Knowledge/` 与配置根**下游用不到**的内容（如本规则、`f2s-dev-workflow-check` skill）**直接**落配置根 + 本仓 `.Knowledge/topics/`。 |
 | **2. 不改配置根（下游会用到的规则/技能）** | **禁止**直接编辑 `.claude/rules/` / `.claude/skills/` / `.cursor/rules/` / `.cursor/skills/` / `.codex/skills/` / `.codex/topics/` 中**由 `templates/` 派生**的文件、以及根目录 `AGENTS.md`——这些是 `flow2spec init` 的产物，手改会在下次 `init` / `sync:agents` 时被静默覆盖。**例外**：本规则、`f2s-dev-workflow-check` skill 之类**只存在于本仓配置根**、**从不写入 `templates/`** 的文件不受此约束（它们本来就是配置根的原生手写内容）。 |
 | **3. 用户驱动分发** | 模板改完后，Agent **不主动**跑 `flow2spec init` / `sync:agents`。默认交给用户执行；如果用户明确说「帮我 init」/「跑 sync」，才代跑。 |
-| **4. 双仓一致** | 公开仓与内部包仓的模板正文（templates 全量）**必须字节级一致**，**只差** npm 包名（`@double-codeing/flow2spec` ↔ `@ctrip/flow2spec`）与个别 remote URL / GitLab 特有提示。本规则等「本仓专属」内容也须双仓同步（这样两个仓库的开发者都能读到同一份纪律）。 |
+| **4. 双仓一致** | 公开仓与内部包仓的模板正文（templates 全量）**必须字节级一致**，**只差** npm 包名（`@double-coding/flow2spec` ↔ `@ctrip/flow2spec`）与个别 remote URL / GitLab 特有提示。本规则等「本仓专属」内容也须双仓同步（这样两个仓库的开发者都能读到同一份纪律）。 |
 
 ## 为什么这么分
 
@@ -91,7 +91,7 @@ Flow2Spec 有一个让人容易混乱的特点：**它自己就是自己的第�
    - 若是**本仓专属开发纪律 / 自查技能**（本文件、`f2s-dev-workflow-check` 等）——直接手写 `.claude/` + `.cursor/` + `.codex/` 三端配置根 + `.Knowledge/topics/` 摘要 + **双仓两份**。**不进 templates**。
 2. **用户指名要改 `.claude/rules/xxx.md`（且 xxx 在 templates 里有源）**：先澄清「这是 init 产物；改了会被覆盖；正确做法是改 `templates/{zh-CN,en-US}/rules/xxx.md`，然后跑 `npm run sync:agents` 或 `flow2spec init` 分发」。用户明确「就一次性临时改配置根 / 我知道会被覆盖」时才照办。
 3. **改完后**：**不主动**跑 `flow2spec init` / `sync:agents`。回复里点名「**已改 templates；请你执行 `npm run sync:agents` 或 `node ./cli.js init codex claude cursor` 分发到配置根**」。用户明确让代跑时才代跑。
-4. **提交前**：确认改动在**双仓两侧**都落了盘（`@double-codeing` ↔ `@ctrip` 包名差异除外）。缺一侧 → 双仓漂移，属硬约束违反。
+4. **提交前**：确认改动在**双仓两侧**都落了盘（`@double-coding` ↔ `@ctrip` 包名差异除外）。缺一侧 → 双仓漂移，属硬约束违反。
 5. **发现「配置根有改动、templates 没改」**：先判定是不是本仓专属手写内容——是的话正常；如果 templates 里有对应源，多半是漂移，把配置根改动**回填**到 `templates/*/` 对应位置再由 `init` 从模板重新分发。
 
 ## 分发命令
@@ -117,13 +117,13 @@ flow2spec init codex claude cursor
 
 | 仓库 | 组织 | 包名 | remote |
 | --- | --- | --- | --- |
-| 公开仓 `Flow2Spec-public` | `@double-codeing` | `@double-codeing/flow2spec` | GitHub `Lands-1203/Flow2Spec` |
+| 公开仓 `Flow2Spec-public` | `@double-coding` | `@double-coding/flow2spec` | GitHub `Lands-1203/Flow2Spec` |
 | 内部包仓 `flow2spec` | `@ctrip` | `@ctrip/flow2spec` | GitLab `trainH5/flow2spec` |
 
 **同步义务**：
 
 - `templates/`、`docs/`、`lib/`、`cli.js`、`scripts/`、`.Knowledge/`、`package.json`（版本号除外）、**本仓专属手写规则/技能**——**必须字节级一致**。只允许两处差异：
-  - npm 包名 `@double-codeing/flow2spec` ↔ `@ctrip/flow2spec`
+  - npm 包名 `@double-coding/flow2spec` ↔ `@ctrip/flow2spec`
   - 个别 remote URL / GitLab 特有横幅提示
 - 不允许「先改一侧，跑一段再补另一侧」——单侧改完立即同步到另一侧。
 - `git tag` 双仓都要打（公开仓 `V3.2.x` 大写、内部包仓 `v3.2.x` 小写，遵守既有惯例）。

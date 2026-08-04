@@ -46,7 +46,7 @@
     <g id="install-chip" transform="translate(0 236)">
       <rect width="408" height="52" rx="18" fill="#08111D" stroke="#26364C"/>
       <circle cx="26" cy="26" r="6" fill="#22D3EE"/>
-      <text x="46" y="32" fill="#D8E2EE" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">npx @double-codeing/flow2spec init</text>
+      <text x="46" y="32" fill="#D8E2EE" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">npx @double-coding/flow2spec init</text>
     </g>
   </g>
 

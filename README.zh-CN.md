@@ -17,22 +17,22 @@
 </p>
 
 <p align="center">
-  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-codeing/flow2spec?label=latest">
-  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-codeing/flow2spec/beta?label=beta">
-  <img alt="node version" src="https://img.shields.io/node/v/@double-codeing/flow2spec">
-  <img alt="license" src="https://img.shields.io/npm/l/@double-codeing/flow2spec">
+  <img alt="npm latest" src="https://img.shields.io/npm/v/@double-coding/flow2spec?label=latest">
+  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-coding/flow2spec/beta?label=beta">
+  <img alt="node version" src="https://img.shields.io/node/v/@double-coding/flow2spec">
+  <img alt="license" src="https://img.shields.io/npm/l/@double-coding/flow2spec">
 </p>
 
 Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在项目里建立小而可路由的 `.Knowledge/` 知识库，安装面向 agent 的 `f2s-*` 技能，并把可选的本地任务状态和产品知识分开保存。新的会话可以按需求加载相关事实，而不是重新翻完整个仓库。
 
 ```bash
-npx @double-codeing/flow2spec@latest init
+npx @double-coding/flow2spec@latest init
 ```
 
 尝试当前 beta：
 
 ```bash
-npx @double-codeing/flow2spec@beta init
+npx @double-coding/flow2spec@beta init
 ```
 
 ## 为什么需要它

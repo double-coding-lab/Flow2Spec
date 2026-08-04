@@ -64,7 +64,7 @@ description: 在 Flow2Spec 双仓自身开发时自查「写盘边界 + 双仓�
 **须双父目录都存在**才能做这步。对上一步判定「合规」的每份文件（不含本地态）：
 
 1. 计算对侧仓库对应路径（`Flow2Spec-public/foo/bar.md` ↔ `flow2spec/foo/bar.md`）。
-2. `Bash`：`diff <(sed 's/@double-codeing\/flow2spec/@ctrip\/flow2spec/g' 本侧) 对侧` 或反向。
+2. `Bash`：`diff <(sed 's/@double-coding\/flow2spec/@ctrip\/flow2spec/g' 本侧) 对侧` 或反向。
 3. **漂移标志**：diff 非空 → 提示「双仓漂移：<路径>」；建议动作：把改动同步到对侧同名路径。
 4. **例外**：`package.json` 的 `version` 字段、包名字段允许天然不等；`README*` 的 remote URL 段允许不等。
 
