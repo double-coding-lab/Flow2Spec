@@ -1,0 +1,28 @@
+docs/en/milestones.md
+  s_dddf30867b7246::t_13f78bcc383b70 40-51
+  s_dddf30867b7246::t_52e218a453d547 12
+.Knowledge/stock-docs/项目里程碑.md
+  s_dddf30867b7246::t_33d8af4f44f353 10
+  s_dddf30867b7246::t_b1ef47e2e95f54 38-49
+package.json
+  s_dddf30867b7246::t_13dc144ba9f48c 3
+docs/项目里程碑.md
+  s_dddf30867b7246::t_b9bc51f8681812 40-51
+  s_dddf30867b7246::t_624dd9eb70bc85 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "3f3e714d97bb466a233c1e27990d562efdbe31ab",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
