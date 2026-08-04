@@ -24,6 +24,8 @@
 | `/f2s-kb-migrate` | One-time migration of a legacy knowledge base to `.Knowledge/` | KB Maintenance |
 | `/f2s-kb-upgrade` | Upgrade knowledge base template, align manifest + matchers shards | KB Maintenance |
 
+The table above lists conversation-triggered `/f2s-*` skills. The repository also provides shell commands under `flow2spec kb status / check / plan / apply / build`; they merge a skill-produced `kb-delta.json` into the shared `.Knowledge/`. See [§ 7](#7-flow2spec-kb-cli-for-collaborative-merges).
+
 ---
 
 ## 1) Document Curation (stock-docs Pipeline)
@@ -683,11 +685,47 @@ A nested object, with each skill independently controlled:
 
 > `f2s-req-plan` is not constrained by this configuration; it always creates a task checklist. Legacy boolean values (`"changeTracking": true/false`) are backward-compatible and automatically expand to all three sub-fields on/off.
 
-For full principles and design intent, see [architecture.md Sec. 4. Agent Execution Model](./architecture.md).
+For full principles and design intent, see [architecture.md Sec. 7. Agent Execution Model](./architecture.md).
 
 ---
 
-## 7) Quick Reference
+## 7) `flow2spec kb` CLI for Collaborative Merges
+
+Unlike `/f2s-*` skills invoked in chat, `flow2spec kb *` runs in the shell. Skills describe the intended knowledge change in `.task/<id>/active/<task>/kb-delta.json`; the CLI validates and merges that change into `.Knowledge/`.
+
+| Command | Purpose | Writes files |
+| --- | --- | --- |
+| `flow2spec kb status` | Report routing drift, topic health, and deltas under the current `TASK_ROOT` | No |
+| `flow2spec kb check [--strict]` | Validate manifest, topics, frontmatter, and revisions; exit 1 on issues | No |
+| `flow2spec kb plan <delta.json>` | Dry-run a delta and report revision conflicts | No |
+| `flow2spec kb apply <delta.json>` | Re-plan, then write topics and routing when mergeable | Yes |
+| `flow2spec kb build [--fix-topics]` | Normalize routing metadata from topic frontmatter; optionally add revisions to legacy topics | Yes |
+
+All five support `--json`. `status` and `check` use exit codes `0` for healthy and `1` for issues, so they can run in CI.
+
+### `kb-delta.json`
+
+```json
+{
+  "taskId": "add-payment-rule",
+  "developerId": "alice",
+  "baseRevisions": { "topic-a": 3 },
+  "changes": [
+    { "targetTopic": "topic-a", "type": "appendBody", "content": "..." },
+    { "targetTopic": "topic-c", "type": "createTopic", "content": "...", "frontmatter": { "title": "Topic C" } }
+  ]
+}
+```
+
+`baseRevisions` records the topic versions read when the delta was written. A mismatch at plan/apply time blocks disk writes. Accepted change types are `appendBody`, `replaceBody`, `updateFrontmatter`, and `createTopic`; append/replace content must be non-blank. `apply` owns revision increments.
+
+Knowledge skills produce the delta; the CLI owns the merge boundary. `f2s-git-commit` can run the full sequence automatically when it finds one unambiguous, mergeable delta. A revision mismatch is resolved by pulling and rewriting the delta against the latest topic. `f2s-kb-merge` is for Git conflict markers such as `<<<<<<<`, not stale `baseRevisions`.
+
+See [Team Collaboration](./team-collaboration.md) for the operating model and [Architecture § 6](./architecture.md) for the design rationale.
+
+---
+
+## 8) Quick Reference
 
 For typical work scenarios and full workflows, see [Usage Guide § 3. Typical Workflows](./usage-guide.md).
 
@@ -701,4 +739,5 @@ Related Documents:
 - [Directory Conventions](./directory-conventions.md)
 - [Architecture](./architecture.md)
 - [Usage Scenarios](./usage-scenarios.md)
+- [Team Collaboration](./team-collaboration.md)
 - [Project Milestones](./milestones.md)

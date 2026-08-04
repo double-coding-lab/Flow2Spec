@@ -92,7 +92,42 @@ The documentation curation chain produces two document types:
 
 ---
 
-## 6. Agent Execution Model
+## 6. Two Isolation Boundaries for Collaboration
+
+Flow2Spec assumes that a team shares one knowledge base. It applies opposite policies to two loops: **task state is separated; knowledge is merged**.
+
+- **Task loop**: `.task/` stays out of Git and is partitioned by `<developerId>/` as personal working state.
+- **Knowledge loop**: `.Knowledge/` stays in Git. Topic-level integer `revision` values act as optimistic disk locks, while `kb-delta.json` carries structured changes into the shared knowledge base.
+
+Both policies follow the same rule: team facts belong in Git; personal execution state does not.
+
+### 6.1 Task loop: a local TASK_ROOT per developer
+
+With collaboration enabled, each developer gets `.task/<developerId>/`. The task rule creates, resumes, and archives tasks only under the current `TASK_ROOT`; it must not scan another developer's `todo.json`. If collaboration is disabled or no identity is available, Flow2Spec retains the legacy `.task/` root.
+
+Because `.task/` is local, team progress should be read from PRs, commits, `.Knowledge/` diffs, and milestones, not from another person's active checklist.
+
+### 6.2 Knowledge loop: structured deltas and optimistic locking
+
+Each topic carries `revision: N` in its frontmatter. A knowledge-producing skill writes a `kb-delta.json` that records the revisions it read and one of four allowed change types: `appendBody`, `replaceBody`, `updateFrontmatter`, or `createTopic`.
+
+The merge pipeline is:
+
+```text
+flow2spec kb check -> status -> plan -> apply -> build -> check
+```
+
+`plan` compares `baseRevisions` with the current files. A match is mergeable; `apply` writes the changes and increments the topic revision. A mismatch stops before disk writes and requires the developer to pull, reread the topic, and rewrite the delta against the latest semantics.
+
+This is a topic-level lock. Two unrelated edits to different sections of the same topic still conflict. Direct topic edits also bypass the revision preflight, so the `f2s-kb-*` workflows use deltas.
+
+### 6.3 Why the boundary is drawn here
+
+Sharing `.task/` would turn rapidly changing checklists and session context into repository noise. Splitting `.Knowledge/` by developer would create competing versions of project truth. Keeping the first local and the second reviewable gives each kind of state one owner and one lifecycle. See [Team Collaboration](./team-collaboration.md) for the complete workflow and conflict examples.
+
+---
+
+## 7. Agent Execution Model
 
 Flow2Spec controls execution behavior through two fields in the project root `flow2spec.config.json`: `subAgent` and `switchAgentVerification`.
 
@@ -150,7 +185,7 @@ Design intent: Cross-verification introduces an external perspective, reducing t
 
 ---
 
-## 7. Design Benefits
+## 8. Design Benefits
 
 1. Share the same business knowledge source across tools
 2. Does not break the rule loading conventions of Claude/Cursor/Codex
@@ -160,11 +195,12 @@ Design intent: Cross-verification introduces an external perspective, reducing t
 
 ---
 
-## 8. Related Documents
+## 9. Related Documents
 
 - [Flow2Spec Introduction](./Flow2Spec-Introduction.md)
 - [Usage Guide](./usage-guide.md)
 - [Commands Reference](./commands-reference.md)
 - [Directory Conventions](./directory-conventions.md)
 - [Usage Scenarios](./usage-scenarios.md)
+- [Team Collaboration](./team-collaboration.md)
 - [Project Milestones](./milestones.md)

@@ -3,12 +3,14 @@
 # Project Milestones
 
 > **Scope**: whole project  
-> **Updated**: 2026-07-02
+> **Updated**: `2026-08-04`
 
 ## Overview
 
 | Stage | Time | Summary |
 | --- | --- | --- |
+| M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8-beta.1 |
+| M25 · Per-developer task isolation | 2026-07 | Added collaboration settings and developerId resolution, isolating personal progress under separate task roots while retaining one shared knowledge base |
 | M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
 | M23 · f2s-kb-distill auto tier judgment + f2s-kb-upgrade Step -1 | 2026-06-30 | Dropped --fast parameter; built-in "light tier / strict tier" 4-dimension auto judgment; f2s-kb-upgrade adds Step -1 background sub-agent upgrading global cli |
 | M22 · pkgRev top-level write + init auto-upgrade global cli | 2026-06-29 | manifest top-level pkgRev field overwritten on every init; init tail auto-upgrades global package when latest is higher |
@@ -33,6 +35,24 @@
 | M3 · .Knowledge machine-readable routing | 2026-05-08 | Introduced .Knowledge, manifest-routing.json, topics and matchers; match→expand→verify→act chain; config preflight and KB preflight rules |
 | M2 · OpenSpec removal and f2s skills | 2026-04-23 | Removed OpenSpec/opsx; converted to f2s skill workflow; requirements clarification and technical proposal generation established |
 | M1 · CLI bootstrap and OpenSpec workflow | 2026-02 ~ 2026-04 | Flow2Spec started as an installable CLI; early AI collaboration organized around OpenSpec/opsx change flows |
+
+## M26 · Automated Knowledge Merge Engine and Collaboration Hardening
+
+- Added `flow2spec kb status / check / plan / apply / build` for health checks, merge previews, controlled writes, and routing normalization
+- Added the structured `kb-delta.json` protocol with four change types: append body, replace body, update frontmatter, and create topic
+- Added integer topic revisions as optimistic disk locks; stale `baseRevisions` block writes before apply
+- Knowledge-producing skills form deltas first; the commit skill can run check, plan, apply, build, and recheck when the current task and delta are unambiguous
+- Added `kb build --fix-topics` for migrating legacy topics without revisions
+- Invalid explicit developerIds now fail clearly; non-normalizable Git identities receive a stable hash id and warning instead of silently sharing the legacy root
+- Blank or missing append/replace content is rejected during parsing; damaged deltas appear as structured status errors
+- Project version reached `3.2.8-beta.1`
+
+## M25 · Per-Developer Task Isolation
+
+- Added `collaboration.enabled` and `collaboration.developerId`
+- Resolves developerId from explicit configuration, Git email, then Git name; retains the legacy root when no identity exists
+- Places each developer's `todo.json`, `active/`, and `completed/` under an independent task root and scopes continuation to that root
+- Keeps `.Knowledge/` as the shared team layer while personal task state remains local
 
 ## M24 · Codex Rule Mirror Fix + Upgrade Step -1 Smart Preflight + Repo-local Dev Discipline
 
@@ -216,5 +236,4 @@
 
 ## Pending
 
-- `.task/active/lazy_loading_rule_optimization/` in-flight task (created 2026-06-03, focused on rule slimming / lazy loading optimization) is not yet closed; steps incomplete; this round does not form a delivered milestone
-- No other gaps
+- None

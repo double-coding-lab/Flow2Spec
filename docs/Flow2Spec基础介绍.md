@@ -1,4 +1,4 @@
-[中文](../Flow2Spec基础介绍.md) | [English](./Flow2Spec-Introduction.md) · [项目首页](../../README.zh-CN.md) | [Project home](../../README.md)
+[中文](./Flow2Spec基础介绍.md) | [English](./en/Flow2Spec-Introduction.md) · [项目首页](../README.zh-CN.md) | [Project home](../README.md)
 
 # Flow2Spec：让项目在开发中自然长出知识图谱
 
@@ -260,13 +260,29 @@ flowchart TD
 
 ---
 
-## 十一、和普通知识库最大的区别
+## 十一、两个人用同一份知识库
+
+多人协作时，Flow2Spec 不会把两个人的所有状态都合在一起。Alice 和 Bob 各自保留本地任务现场，只有经过确认的知识才进入共享仓库。
+
+<p><img src="./images/flow2spec-intro-11-team-collaboration.png" alt="两个人用同一份知识库：任务分开，知识合流" style="max-width:720px;width:100%;" /></p>
+
+图 3：任务分开，知识合流
+
+`.task/` 默认不进 Git，并按 `developerId` 分成不同的 `TASK_ROOT`。Alice 的 Agent 不会为了找续作任务去扫描 Bob 的目录。这里保存的是 checklist、会话上下文和用户代办，它们属于执行者自己的工作现场。
+
+`.Knowledge/` 则必须全员共享。技能先把知识变更写成结构化 delta，里面带着读取时的 topic revision；真正写入前由 `flow2spec kb plan` 检查磁盘版本。两个人改不同 topic 可以各自推进，改到同一个 topic 时，后合入的一方必须拉取最新版本、重新理解语义，再更新 delta。
+
+所以这套协作不是“自动把所有文本拼起来”。它把无需共享的状态隔离掉，把必须共享的事实留在 Git，并在语义可能冲突的位置停下来。完整流程见 [团队协作](./团队协作.md)。
+
+---
+
+## 十二、和普通知识库最大的区别
 
 <p><img src="./images/flow2spec-intro-11-vs-ordinary-kb.png" alt="与普通知识库的区别" style="max-width:720px;width:100%;" /></p>
 
 如果只用一句话概括差异：**普通知识库是给 Agent 查的；Flow2Spec 的知识库是给 Agent 参与维护的。**
 
-图 3：普通记忆文件 vs Flow2Spec 知识图谱
+图 4：普通记忆文件 vs Flow2Spec 知识图谱
 
 ```mermaid
 flowchart LR
@@ -297,7 +313,7 @@ Flow2Spec 更关注：需求来了该读哪个主题、主题之间有什么依�
 
 ---
 
-## 十二、几个常见问题
+## 十三、几个常见问题
 
 <p><img src="./images/flow2spec-intro-12-faq.jpg" alt="常见问题" style="max-width:720px;width:100%;" /></p>
 
@@ -395,7 +411,7 @@ Flow2Spec 提供三个互补命令，按触发方式与粒度区分：
 
 ---
 
-## 十三、适合什么项目 \+ 快速体验
+## 十四、适合什么项目 \+ 快速体验
 
 <p><img src="./images/flow2spec-intro-13-quick-start.png" alt="适合什么项目与快速体验" style="max-width:720px;width:100%;" /></p>
 

@@ -147,7 +147,12 @@ The following examples revolve around the same e-commerce project, covering the 
 
 **Agent**
 
-> Updated `.Knowledge/topics/order-service.md`. `manifest-routing` unchanged (topic already exists).
+> Created the current task's `kb-delta.json`:
+> - Target topic: `order-service`
+> - Base version: `revision: 6`
+> - Change type: `appendBody`
+>
+> During commit, `f2s-git-commit` will run `plan -> apply -> build -> check`. If the disk revision changed, it will stop and report a conflict instead of overwriting a teammate's work.
 
 ---
 
@@ -161,7 +166,7 @@ The following examples revolve around the same e-commerce project, covering the 
 
 > Fixed: Line 34 of `RefundService.java` changed to constructor injection; `RefundConfig` supplemented with `@Bean` declaration.
 >
-> Knowledge base synced: the "HTTP Client Conventions" section in `.Knowledge/stock-docs/` has been updated, noting that `RestTemplate` must be injected as a Bean, and direct instantiation is prohibited.
+> The rule "`RestTemplate` must be injected as a Bean; direct instantiation is prohibited" has been prepared as a knowledge delta with the fix evidence. The corresponding topic will receive it only after revision preflight.
 
 ---
 
@@ -188,10 +193,53 @@ The following examples revolve around the same e-commerce project, covering the 
 
 ---
 
+## Scenario 7: Two Developers Change the Same Topic
+
+**Background**
+
+> Alice and Bob both started from `order-service revision: 6`. Alice adds the refund arrival time; Bob adds refund retry rules. Both changes target the same topic.
+
+**Alice**
+
+> Use f2s-kb-sync to add "return through the original payment method within three business days after approval" to the order-service knowledge. Generate the delta after I confirm the outline.
+
+**Agent (Alice)**
+
+> Created `.task/alice/active/refund_arrival/kb-delta.json` with `baseRevisions.order-service = 6`. Plan passed; after apply, `order-service` is revision 7.
+
+Alice commits and pushes the implementation and `.Knowledge/` change.
+
+**Bob**
+
+> I pulled Alice's latest commit. Continue checking my refund retry delta.
+
+**Agent (Bob)**
+
+> Plan failed:
+>
+> ```text
+> order-service: revision mismatch 6 -> 7
+> ```
+>
+> Alice added the arrival time; your delta adds failure retries. The rules do not conflict, but both edit one topic. Reread revision 7 and rewrite the change; changing only the base number is not enough.
+
+**Bob**
+
+> Keep Alice's timing rule. Put "retry at most three times, after 30s / 120s / 300s" under refund failure handling and try again.
+
+**Agent (Bob)**
+
+> Rewrote the delta against revision 7, preserving the timing rule and placing the retry policy under the current structure. The second plan passed; apply advanced the topic to revision 8, and build/check passed.
+
+This is a **revision conflict**: pull, reread the latest topic, and rewrite the delta. It becomes a Git conflict only when the file contains markers such as `<<<<<<<`, which belongs to the `f2s-kb-merge` path.
+
+---
+
 ## Related Documentation
 
 - [Usage Guide](./usage-guide.md)
 - [Commands Reference](./commands-reference.md)
 - [Directory Conventions](./directory-conventions.md)
 - [Architecture](./architecture.md)
+- [Team Collaboration](./team-collaboration.md)
 - [Project Milestones](./milestones.md)

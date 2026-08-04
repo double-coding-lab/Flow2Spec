@@ -13,6 +13,7 @@
 
 | Document | Chinese counterpart |
 | --- | --- |
+| [team-collaboration.md](./team-collaboration.md) | [团队协作.md](../团队协作.md) |
 | [usage-guide.md](./usage-guide.md) | [使用说明.md](../使用说明.md) |
 | [commands-reference.md](./commands-reference.md) | [命令说明.md](../命令说明.md) |
 | [directory-conventions.md](./directory-conventions.md) | [目录与路径约定.md](../目录与路径约定.md) |

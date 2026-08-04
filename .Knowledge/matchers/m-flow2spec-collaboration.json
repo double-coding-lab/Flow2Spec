@@ -1,0 +1,17 @@
+{
+  "id": "m-flow2spec-collaboration",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1",
+  "includeAny": [
+    "Flow2Spec 团队协作",
+    "多人共用知识库",
+    "developerId 隔离",
+    "TASK_ROOT",
+    "kb-delta",
+    "topic revision",
+    "revision 冲突",
+    "知识库自动合并",
+    "team collaboration",
+    "optimistic lock"
+  ]
+}
