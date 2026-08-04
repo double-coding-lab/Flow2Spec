@@ -9,7 +9,7 @@
 
 | Stage | Time | Summary |
 | --- | --- | --- |
-| M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8-beta.1 |
+| M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8 |
 | M25 · Per-developer task isolation | 2026-07 | Added collaboration settings and developerId resolution, isolating personal progress under separate task roots while retaining one shared knowledge base |
 | M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
 | M23 · f2s-kb-distill auto tier judgment + f2s-kb-upgrade Step -1 | 2026-06-30 | Dropped --fast parameter; built-in "light tier / strict tier" 4-dimension auto judgment; f2s-kb-upgrade adds Step -1 background sub-agent upgrading global cli |
@@ -45,7 +45,7 @@
 - Added `kb build --fix-topics` for migrating legacy topics without revisions
 - Invalid explicit developerIds now fail clearly; non-normalizable Git identities receive a stable hash id and warning instead of silently sharing the legacy root
 - Blank or missing append/replace content is rejected during parsing; damaged deltas appear as structured status errors
-- Project version reached `3.2.8-beta.1`
+- Project version reached `3.2.8`
 
 ## M25 · Per-Developer Task Isolation
 
