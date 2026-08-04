@@ -95,6 +95,24 @@ Update according to the outline, item by item:
 - List modified paths and purpose.
 - List skipped items and reasons.
 
+### Step 5: Write Sync Timestamp (Required; f2s-git-commit depends on it)
+
+After this skill successfully writes to disk (Step 3 actually modified files), the main agent writes `.Knowledge/.last-sync.json`:
+
+```json
+{
+  "syncedAt": "<ISO 8601 timestamp, e.g. 2026-08-04T10:30:00.000Z>",
+  "skill": "f2s-kb-sync",
+  "developerId": "<developerId per f2s-task rules; omit for legacy>"
+}
+```
+
+- `f2s-git-commit` reads this file before its **default coverage check**; if `syncedAt` is within 30 min, it skips coverage to avoid double-syncing what was just synced.
+- **When to write**: only when this turn actually wrote to disk (Step 3 modified topic / index / manifest / stock-docs). A pure "read the KB, nothing changed" pass **does not** write.
+- Overwrite, do not append history.
+- If writing fails (read-only disk, insufficient permission), do not block the main flow; add a warning line to the closing summary.
+- Peer knowledge-base-writing skills (`f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-add` / `f2s-kb-addRules` / `f2s-kb-distill`) follow the same convention on successful write, with `skill` set to their own id.
+
 ## Output Summary Format (Recommended)
 
 ```markdown

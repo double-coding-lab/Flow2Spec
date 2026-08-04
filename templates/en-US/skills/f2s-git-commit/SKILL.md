@@ -1,6 +1,6 @@
 ---
 name: f2s-git-commit
-description: Commit completed code to Git: by default check both changes and knowledge-base coverage; when the user explicitly asks for "快捷提交" / quick commit, skip only the knowledge coverage check; after generating a commit message with an emoji first line, commit directly (the first line must be shown in the same reply; no separate confirmation is required); git pull-like fetch/merge operations require user confirmation first. Triggers: f2s-git-commit、提交代码、快捷提交、git commit、帮我提交、quick commit、commit code
+description: Commit completed code to Git: by default check both changes and knowledge-base coverage; when the user explicitly asks for "快捷提交" / quick commit, skip only the knowledge coverage check; **when the pending changes are pure docs / knowledge-base itself**, or **f2s-kb-sync / kb-feat / kb-fix / kb-add / kb-addRules / kb-distill ran within the last 30 min**, auto-skip the coverage check; after generating a commit message with an emoji first line, commit directly (the first line must be shown in the same reply; no separate confirmation is required); git pull-like fetch/merge operations require user confirmation first. Triggers: f2s-git-commit、提交代码、快捷提交、git commit、帮我提交、quick commit、commit code
 ---
 
 > Execution scope: this skill performs Git operations for the user. Do not use `git add -A` / `git add .`, do not skip hooks (`--no-verify`), and do not push automatically. Before any `git pull` / `git fetch` operation that merges into local work, obtain explicit user confirmation for the "pull". `git commit` does not require a separate confirmation round (see Steps 3-4). When the user explicitly asks for "快捷提交", skip only Step 2, the knowledge-base coverage check; all other safety steps still apply.
@@ -56,6 +56,35 @@ If in **quick commit mode**, skip this step and mention in the Step 5 closing no
 **First check whether `.Knowledge/` exists:**
 
 - If `.Knowledge/manifest-routing.json` does not exist: skip this step, mention in Step 5 that "the project has not initialized the Flow2Spec knowledge base; consider running flow2spec init", and continue to Step 3.
+
+**Skip rule A: Changes are pure documentation / knowledge base itself** (evaluated before running the coverage check)
+
+If **every** pending file collected in Step 1 matches one of these patterns, skip this step directly (in Step 5, note "changes are pure docs; coverage check skipped"):
+
+- `.Knowledge/**` (you're editing the knowledge base itself; checking coverage against itself is meaningless)
+- `docs/**` / `docs/en/**`
+- `README*.md` / `LICENSE` / `CHANGELOG*`
+- `.claude/**` / `.cursor/**` / `.codex/**` (agent config roots; distributed by `flow2spec init` and unrelated to business capability coverage)
+- `presentations/**` / `assets/**` / other pure static resources
+
+**Any** file falling under `src/` / `lib/` / `cli.js` / `templates/` / business code directories disables this shortcut; continue to the coverage check.
+
+**Skip rule B: A recent knowledge-base sync exists**
+
+Read `.Knowledge/.last-sync.json` (if it does not exist, skip this rule):
+
+```json
+{
+  "syncedAt": "2026-08-04T10:30:00.000Z",
+  "skill": "f2s-kb-sync",
+  "developerId": "<optional>"
+}
+```
+
+- If `Date.now() - Date.parse(syncedAt) < 30 * 60 * 1000` (within 30 minutes) → skip this step directly, and note in Step 5 "skipped coverage check because <skill> ran within the last 30 min".
+- If the timestamp is stale or the file is corrupted → ignore and run the normal coverage check.
+- This file is written by **knowledge-base-writing skills** (`f2s-kb-sync` / `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-add` / `f2s-kb-addRules` / `f2s-kb-distill`) on successful completion. `f2s-git-commit` **reads only**, never writes.
+- If the user explicitly says "re-check coverage" / "don't skip coverage check", this rule is disabled and coverage runs regardless.
 
 **When it exists, perform the coverage check:**
 
@@ -187,6 +216,12 @@ git commit -m "<final full commit message from Step 3>"
 
 [If Step 2 was skipped by quick commit]
 ⚡ The knowledge-base coverage check was skipped according to quick commit mode.
+
+[If skip rule A matched: pure-doc changes]
+📄 Changes are pure docs / knowledge base itself; coverage check skipped.
+
+[If skip rule B matched: recent sync within 30 min]
+🔄 Skipped coverage check because <skill name> ran within the last 30 min (.Knowledge/.last-sync.json).
 ```
 
 ## Constraints

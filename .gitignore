@@ -3,3 +3,4 @@
 .DS_Store
 docs/*.json
 .Knowledge/update-check.json
+.Knowledge/.last-sync.json
