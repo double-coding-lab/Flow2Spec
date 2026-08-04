@@ -1,0 +1,23 @@
+cli.js
+  s_dddf30867b7246::t_0d1f121ad548c1 37,40,45
+README.md
+  s_dddf30867b7246::t_db288d42347609 3,5,8,16,22
+README.en.md
+  s_dddf30867b7246::t_c693452104f240 3,5,8,16,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.39-trip",
+  "base_commit_sha": "80e6ac9cfe913886b4843a8c34ded2a3084cf8f8",
+  "prompts": {},
+  "sessions": {
+    "s_dddf30867b7246": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb25388f-ef0c-41e1-bfbb-3c09fc057117",
+        "model": "arn:aws:bedrock:us-west-2:133197901387:application-inference-profile/ypvzpmevzxdl"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
