@@ -1,0 +1,108 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: 'zh-CN' | 'en';
+}
+
+const { title = 'Flow2Spec — 给 AI 一份可路由的项目事实', description = 'Flow2Spec 为 Cursor、Claude Code 与 Codex 建立文档驱动、可写回知识库的协作骨架。', lang = 'zh-CN' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://double-coding-lab.github.io');
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script>
+    <script>
+      const mermaidBlocks = [...document.querySelectorAll<HTMLElement>('.mermaid')];
+      document.querySelectorAll<HTMLElement>('pre[data-language="mermaid"]').forEach((pre) => {
+        const block = document.createElement('div');
+        block.className = 'mermaid';
+        block.textContent = pre.textContent?.trim() ?? '';
+        pre.replaceWith(block);
+        mermaidBlocks.push(block);
+      });
+      if (mermaidBlocks.length) {
+        import('mermaid').then(async ({ default: mermaid }) => {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: 'base',
+            themeVariables: {
+              background: '#fbefe3',
+              primaryColor: '#fffaf4',
+              primaryTextColor: '#241c15',
+              primaryBorderColor: '#241c15',
+              lineColor: '#ff4d74',
+              secondaryColor: '#bfe5c3',
+              tertiaryColor: '#ffe01b',
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: '14px'
+            }
+          });
+          for (const block of mermaidBlocks) {
+            try {
+              await mermaid.run({ nodes: [block] });
+            } catch (error) {
+              block.classList.add('mermaid-error');
+              console.error('Mermaid diagram failed to render.', error);
+            }
+          }
+        }).catch((error) => console.error('Mermaid failed to load.', error));
+      }
+    </script>
+  </body>
+</html>

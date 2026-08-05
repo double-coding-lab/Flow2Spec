@@ -1,0 +1,13 @@
+---
+interface Props { english?: boolean }
+const { english = false } = Astro.props;
+---
+<div class="flow-diagram" aria-label={english ? 'Flow2Spec request routing' : 'Flow2Spec 请求路由流程'}>
+  <div class="flow-node flow-input"><span class="node-kicker">01</span><strong>{english ? 'A request' : '一句需求'}</strong><small>{english ? 'Natural language' : '自然语言描述'}</small></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node flow-route"><span class="node-kicker">02</span><strong>{english ? 'Route' : '命中主题'}</strong><small>{english ? 'Matchers + dependencies' : '匹配器 + 依赖展开'}</small></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node flow-read"><span class="node-kicker">03</span><strong>{english ? 'Read facts' : '读取事实'}</strong><small>{english ? 'Only the useful context' : '只读真正相关的上下文'}</small></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-node flow-change"><span class="node-kicker">04</span><strong>{english ? 'Change + sync' : '实现并回写'}</strong><small>{english ? 'Code and knowledge stay aligned' : '代码与知识保持一致'}</small></div>
+</div>

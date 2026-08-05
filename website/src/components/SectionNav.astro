@@ -1,0 +1,10 @@
+---
+interface Item { href: string; label: string }
+interface Props { items: Item[]; label: string }
+const { items, label } = Astro.props;
+---
+<aside class="docs-sidebar section-nav" data-scroll-nav>
+  <nav class="sidebar-links" aria-label={label}>
+    {items.map((item, index) => <a href={item.href} class:list={{ 'is-active': index === 0 }}>{item.label}</a>)}
+  </nav>
+</aside>

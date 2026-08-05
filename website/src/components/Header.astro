@@ -1,0 +1,25 @@
+---
+import { docHref, headerDocs } from '../data/docs.mjs';
+interface Props { english?: boolean; currentDoc?: string }
+const { english = false, currentDoc } = Astro.props;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+const nav = headerDocs.map((doc) => ({ id: doc.id, href: docHref(doc, english, base), label: english ? doc.en.title : doc.zh.title }));
+---
+<header class="site-header">
+  <a class="brand" href={`${base}${english ? 'en/' : ''}`} aria-label="Flow2Spec home">
+    <img class="brand-mark" src={`${base}favicon.svg`} alt="" aria-hidden="true" />
+    <span>Flow2Spec</span>
+  </a>
+  <nav class="top-nav" aria-label={english ? 'Complete reference' : '完整参考'}>
+    {nav.map((item) => <a href={item.href} aria-current={currentDoc === item.id ? 'page' : undefined}>{item.label}</a>)}
+  </nav>
+  <div class="header-actions">
+    <a class="language-link" href={`${base}${english ? '' : 'en/'}`}>{english ? '中文' : 'EN'}</a>
+    <a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button>
+  </div>
+  <nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label={english ? 'Complete reference' : '完整参考'}>
+    {nav.map((item) => <a href={item.href} aria-current={currentDoc === item.id ? 'page' : undefined}>{item.label}</a>)}
+    <a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </nav>
+</header>
