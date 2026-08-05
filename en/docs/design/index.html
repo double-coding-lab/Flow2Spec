@@ -1,0 +1,594 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Design documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/design/"><title>Design — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/" aria-current="page">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/" aria-current="page">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#problem-statement" class="is-active">Problem Statement</a><a href="#core-design">Core Design</a><a href="#design-highlights">Design Highlights</a><a href="#strengths-and-limitations">Strengths and Limitations</a><a href="#who-is-it-for">Who Is It For</a><a href="#related-documents">Related Documents</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="flow2spec-design-principles">Flow2Spec Design Principles</h1>
+<h2 id="problem-statement">Problem Statement</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ Current State                      ✅ After Flow2Spec</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Architecture conventions  ──┐         .Knowledge/</span></span>
+<span class="line"><span>Technical designs       ──┼──►  scattered     ├── manifest-routing.json</span></span>
+<span class="line"><span>Module boundaries       ──┤    unstructured   ├── matchers/</span></span>
+<span class="line"><span>Team experience         ──┘    reinterpreted  ├── topics/</span></span>
+<span class="line"><span>                               every time      ├── stock-docs/</span></span>
+<span class="line"><span>                                               └── req-docs/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>                                               AI can read the project anytime</span></span></code></pre>
+<hr>
+<h2 id="core-design">Core Design</h2>
+<h3 id="0-memory-coding-and-four-rings">0. Memory Coding and Four Rings</h3>
+<p><strong>Memory Coding</strong>: encode durable context into the <strong>committed repository</strong> (PR-reviewable), not private model memory or chat-only context.</p>
+<p>Four rings in the repo (rules ring and skills ring are separate—do not merge):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Ring</th><th>Location</th><th>Role</th></tr></thead><tbody><tr><td>Knowledge</td><td><code>.Knowledge/</code></td><td>Routing, topics, stock/req docs</td></tr><tr><td>Task</td><td><code>.task/</code></td><td>Cross-session continuation, user todos</td></tr><tr><td>Rules</td><td>Tool <code>rules</code> / <code>AGENTS.md</code></td><td>How to read and act</td></tr><tr><td>Skills</td><td><code>f2s-*</code> / <code>skills/</code></td><td>Maintain KB, trigger workflows</td></tr></tbody></table>
+<p>Flow2Spec delivers the <strong>Memory Coding persistence and maintenance loop</strong>, not “another RAG knowledge base.”</p>
+<h3 id="01-knowledge-ring-multi-layer-memory">0.1 Knowledge Ring: Multi-Layer Memory</h3>
+<p>Inside the knowledge ring: <strong>horizontal narrowing</strong> (L0 manifest → L1 matchers → L2 topics → L3 long docs) plus <strong>vertical chaining</strong> (<code>topicDependencies</code>: common → subdomain → whitelist → domain). The <code>match → expand → verify → act</code> pipeline operates on these layers; see <a href="/Flow2Spec/en/docs/architecture/">architecture.md §4</a>.</p>
+<h3 id="1-separation-of-knowledge-and-rules">1. Separation of Knowledge and Rules</h3>
+<div class="mermaid">graph LR
+    subgraph K[".Knowledge/  Knowledge Layer"]
+        K1[Architecture Docs]
+        K2[Technical Designs]
+        K3[Routing Index]
+    end
+
+    subgraph R["Config Root  Execution Layer"]
+        R1[.cursor/rules/]
+        R2[.claude/rules/]
+        R3[.codex/AGENTS.md]
+    end
+
+    K -->|Knowledge Input| AI[AI Tools]
+    R -->|Rule Constraints| AI
+
+    note1["Knowledge evolves with the project"] -.-> K
+    note2["Rules evolve with tool upgrades"] -.-> R</div>
+<h3 id="11-rule-scope-and-priority">1.1 Rule Scope and Priority</h3>
+<p>Flow2Spec rules intentionally overlap in a few places: the global entry defines the overall path, while focused rules enforce one specific stage. This redundancy reduces missed mandatory steps, but agents must resolve overlap by scope priority instead of treating similar wording as conflict.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Scenario</th><th>Priority Rule</th><th>Role</th></tr></thead><tbody><tr><td>First read / first tool call for ordinary questions</td><td><code>f2s-knowledge-preflight</code></td><td>Decides whether current-repo questions must first read <code>.Knowledge/manifest-routing.json</code>, and governs the gap gate / source fallback rhythm.</td></tr><tr><td>Source fallback closing for ordinary Q&#x26;A</td><td><code>f2s-kb-feedback-closing</code></td><td>After answering from source code, all four cases must take an explicit stance: cases 1–3 emit a <code>f2s-kb-distill</code> suggestion; case 4 emits an explicit “knowledge base already covers” marker. Silently skipping the entire closing step is forbidden.</td></tr><tr><td>Global routing facts / progressive loading chain</td><td><code>f2s-flow2spec-unified-entry</code></td><td>Defines the source-of-truth relationship and read order for manifest, matcher, topic, stock-docs, and req-docs.</td></tr><tr><td>Reading config before any <code>f2s-*</code> skill</td><td><code>f2s-config-check</code></td><td>Enforces <code>flow2spec.config.json</code> as the first step of every <code>f2s-*</code> skill.</td></tr><tr><td>Implementing from a technical proposal</td><td><code>f2s-implement-tech-design</code></td><td>Full execution rule for implementation from a technical design.</td></tr><tr><td><code>stock-docs</code> / <code>req-docs</code> boundary</td><td><code>f2s-stock-docs-vs-req-docs</code></td><td>Defines the path responsibilities of persistent context vs requirement / technical proposal documents.</td></tr><tr><td>Writing topics / metadata / dependencies</td><td><code>f2s-topic-authoring</code></td><td>Authoring-side rule for topic naming, granularity, classification, dependencies, and persistence.</td></tr><tr><td>Task checklist maintenance</td><td><code>f2s-task</code></td><td>Governs <code>.task/</code> creation, continuation, and archival.</td></tr><tr><td>General coding discipline</td><td><code>f2s-karpathy-guidelines</code></td><td>Supplemental coding discipline only; it must not override mandatory f2s workflows.</td></tr></tbody></table>
+<p>Core principle: <strong>gate rules decide whether something must be read or whether an action is allowed; focused rules then define how to execute it</strong>. If rules overlap, apply the scenario priority above.</p>
+<h3 id="2-progressive-routing">2. Progressive Routing</h3>
+<div class="mermaid">graph LR
+    T[Task] --> M[manifest-routing\nRead routing table]
+    M -->|Keyword match| MT[matchers/xxx.json\nRead only this shard]
+    MT -->|Hit| TP[topics/xxx.md]
+    TP --> V{Gap Check}
+    V -->|Pass| ACT[Execute]
+    V -->|Insufficient| Q[Ask user for clarification]
+    M -->|No match| FB[fallback-triage\nStructured triage]</div>
+<h3 id="3-skill-maintenance-loop">3. Skill Maintenance Loop</h3>
+<p><img src="/Flow2Spec/docs-assets/process-1.png" alt="Skill maintenance loop" style="max-width:100%;"></p>
+<details>
+<summary>Mermaid source</summary>
+<div class="mermaid">graph LR
+    K[".Knowledge/"] --> AI["Next Session\nAI"]
+    AI --> C["Feature iteration"]
+
+    C -->|"Fix Bug"| FIX["f2s-kb-fix"] --> K
+    C -->|"New Capability"| FEAT["f2s-kb-feat"] --> K
+    C -->|"Session End"| SYNC["f2s-kb-sync"] --> K
+    C -->|"Commit Code"| CMT["f2s-git-commit\nGate Check"]
+    CMT -->|"Not in KB, remind\n-> kb-sync/kb-feat"| K
+
+    D1["Architecture Docs"] -->|f2s-doc-arch| FIN["f2s-doc-final"]
+    D2["PDF/draft"] -->|f2s-doc-final| FIN
+    FIN --> CTX["f2s-kb-build"] --> K
+
+    OLD["Existing Code/Docs"] -->|f2s-kb-add| K
+
+    NR["New Requirement"] --> CL["f2s-req-clarify"] --> BE["f2s-req-tech"]
+    BE --> IMPL["Implement xxx technical design"] -->|auto-trigger implement-tech-design rule| K
+
+    GIT["After Git Merge"] -->|f2s-kb-merge| K</div>
+</details>
+<p>Seven entry points  ·  <code>f2s-git-commit</code> is the knowledge discipline gate at commit time  ·  <code>.Knowledge/</code> is the single convergence point  ·  Knowledge drives AI, AI drives the next development cycle</p>
+<h3 id="4-task-checklist-and-cross-session-continuation">4. Task Checklist and Cross-Session Continuation</h3>
+<div class="mermaid">graph LR
+    SKILL["f2s-kb-feat / f2s-kb-fix\nimplement-tech-design"] -->|"changeTracking: true"| TJ[".task/active/\ntask.md · todo.json"]
+    RP["f2s-req-plan\n(always created)"] --> TJ
+
+    TJ --> NS[First message of new session]
+    NS -->|Keyword match| LD["Load remaining checklist\n+ linkedSkill context"]
+    LD --> RS[Continue per original skill constraints]</div>
+<p>Tasks do not get lost when a session ends  ·  Keywords enable automatic continuation without re-explaining context  ·  Skill constraints are fully restored</p>
+<h3 id="5-ownership-of-collaboration-state">5. Ownership of Collaboration State</h3>
+<p>Early versions committed <code>.task/</code> like ordinary project files. Team use exposed its real ownership: <code>todo.json</code> and <code>active/</code> describe one developer’s Agent session, not project truth.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Old</span></span>
+<span class="line"><span>  .task/ -> Git -> everyone shares one todo.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Current</span></span>
+<span class="line"><span>  .task/alice/ -> Alice resumes locally</span></span>
+<span class="line"><span>  .task/bob/   -> Bob resumes locally</span></span>
+<span class="line"><span>  .Knowledge/  -> Git -> shared team facts</span></span></code></pre>
+<p>The current developer’s <code>TASK_ROOT</code> owns progress. Code, formal documents, and <code>.Knowledge/</code> own the delivered capability. <code>developerId</code> remains useful on shared machines and as an Agent read boundary; it is not a remote identity or authorization system.</p>
+<h3 id="6-why-knowledge-merges-use-optimistic-locks">6. Why Knowledge Merges Use Optimistic Locks</h3>
+<p><code>.Knowledge/</code> cannot be split by developer. Flow2Spec uses topic revisions as optimistic disk locks rather than introducing file locks or a remote lock service.</p>
+<p>A remote lock would require every writer to share an online service and would add leases, disconnect recovery, stale locks, and CI identities to a local-first Git workflow. A delta instead records the topic revision it read, and <code>plan</code> compares that value with the current file:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>baseRevision == diskRevision  -> apply and increment revision</span></span>
+<span class="line"><span>baseRevision != diskRevision  -> stop, reread, and merge semantics</span></span></code></pre>
+<p>The trade-off is explicit: the lock covers a whole topic, and plan cannot see remote work that has not been pulled. Flow2Spec accepts those limits in exchange for an offline, service-free, reviewable merge path. Frequent conflicts usually indicate that a topic has too many responsibilities.</p>
+<hr>
+<h2 id="design-highlights">Design Highlights</h2>
+<h3 id="a-routing-and-context-loading">A. Routing and Context Loading</h3>
+<h4 id="1-matchers-sharded-not-embedded-in-manifest">1. matchers sharded, not embedded in manifest</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ Embedded in manifest              ✅ Independent shards</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>manifest.json (full read every time)   manifest-routing.json</span></span>
+<span class="line"><span>├── task1: keywords:[...]    →          ├── task1 → m-order.json ──► read only this one</span></span>
+<span class="line"><span>├── task2: keywords:[...]               ├── task2 → m-payment.json</span></span>
+<span class="line"><span>└── task3: keywords:[...]               └── task3 → m-refund.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>                                        Updating keywords doesn't touch routing structure</span></span>
+<span class="line"><span>                                        Per-routing token cost is fixed</span></span></code></pre>
+<h4 id="2-topicdependencies-dependencies-on-topics">2. topicDependencies: dependencies on topics</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ Attached at task level              ✅ Attached at topic level</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>taskA → [dep, main]               topicDependencies:</span></span>
+<span class="line"><span>taskB → [main]      ← forgot        main: [dep]</span></span>
+<span class="line"><span>taskC → [main]      ← forgot</span></span>
+<span class="line"><span>                                    Any path loading main</span></span>
+<span class="line"><span>Forgot when adding new task          automatically brings in prerequisite</span></span>
+<span class="line"><span>→ silent failure                     dependencies</span></span></code></pre>
+<h4 id="3-topics-store-summaries-rules-files-store-full-text">3. topics store summaries, rules files store full text</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>.Knowledge/topics/implement-tech-design.md     ← lightweight, loaded during routing</span></span>
+<span class="line"><span>┌──────────────────────────────────────────┐</span></span>
+<span class="line"><span>│ Topic id, path conventions, next pointer │</span></span>
+<span class="line"><span>│ ~100 lines                               │</span></span>
+<span class="line"><span>└──────────────────────────────────────────┘</span></span>
+<span class="line"><span>             ↓ read only after hit</span></span>
+<span class="line"><span>.claude/rules/f2s-implement-tech-design.md     ← full text, loaded during execution</span></span>
+<span class="line"><span>┌──────────────────────────────────────────┐</span></span>
+<span class="line"><span>│ Complete execution constraints,           │</span></span>
+<span class="line"><span>│ mandatory steps, prohibitions,           │</span></span>
+<span class="line"><span>│ boundary descriptions                     │</span></span>
+<span class="line"><span>│ ~500 lines                               │</span></span>
+<span class="line"><span>└──────────────────────────────────────────┘</span></span></code></pre>
+<p>Routing layer stays lightweight  ·  Execution details load on demand  ·  The two evolve independently</p>
+<h4 id="4-full-scan-prohibition-is-a-hard-constraint">4. Full-scan prohibition is a hard constraint</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Read order (mandatory)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  1. manifest-routing.json   ← read the routing table first</span></span>
+<span class="line"><span>  2. matchers/xxx.json       ← read only the matched shard</span></span>
+<span class="line"><span>  3. index.md                ← on demand, confirm semantics</span></span>
+<span class="line"><span>  4. stock-docs / req-docs   ← on demand, supplement context</span></span>
+<span class="line"><span>  5. Business source code    ← last resort</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  ❌ Before reading manifest, full-repo unbounded scan is prohibited</span></span>
+<span class="line"><span>  ❌ Within the same task line, manifest already read, do not re-read in full</span></span>
+<span class="line"><span>  ❌ index.md must not be alternated with manifest as a "checklist" to replace decisions</span></span></code></pre>
+<h4 id="5-skill-trigger-words-in-the-description-field">5. Skill trigger words in the description field</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">f2s-kb-sync</span></span>
+<span class="line"><span style="color:#85E89D">description</span><span style="color:#E1E4E8">: </span><span style="color:#F97583">></span></span>
+<span class="line"><span style="color:#9ECBFF">  Sync implemented capabilities to the knowledge base.</span></span>
+<span class="line"><span style="color:#9ECBFF">  Triggers: f2s-kb-sync, full sync, knowledge base sync, implemented capabilities</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>User input → Agent scans description for semantic match → triggers corresponding skill</span></span></code></pre>
+<p>Trigger words are in the <code>description</code> field  ·  not in the skill body  ·  higher hit rate  ·  bilingual coverage reduces missed triggers</p>
+<hr>
+<h3 id="b-knowledge-structure">B. Knowledge Structure</h3>
+<h4 id="1-stock-docs-vs-req-docs-semantic-prohibition">1. stock-docs vs req-docs semantic prohibition</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stock-docs/                        req-docs/</span></span>
+<span class="line"><span>Architecture docs / Final draft    Requirements / Technical designs</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     ↓ used for                           ↓ used for</span></span>
+<span class="line"><span>Knowledge routing / Background      Drive coding implementation</span></span>
+<span class="line"><span>reference</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     ✅ May be read                      ✅ May be read</span></span>
+<span class="line"><span>     ❌ Cannot be used as coding input    ✅ Input for implement-tech-design</span></span></code></pre>
+<p>Prevents: driving implementation with outdated reference docs → code diverging from the latest design</p>
+<h4 id="2-init-is-idempotent">2. init is idempotent</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec init   can be safely re-run</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        ✅  Does                         ❌  Does NOT</span></span>
+<span class="line"><span>┌─────────────────────┐      ┌─────────────────────┐</span></span>
+<span class="line"><span>│ Fill missing         │      │ Write business       │</span></span>
+<span class="line"><span>│ directories/templates│      │ document content     │</span></span>
+<span class="line"><span>│ Install rules/skills │      │ Update routing       │</span></span>
+<span class="line"><span>│                       │      │ keywords             │</span></span>
+<span class="line"><span>│ Align package-level   │      │ Overwrite existing   │</span></span>
+<span class="line"><span>│ structure             │      │ knowledge content    │</span></span>
+<span class="line"><span>└─────────────────────┘      └─────────────────────┘</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Structural operations  ≠  Business semantics    The two have no overlapping responsibilities</span></span></code></pre>
+<h4 id="3-knowledge-versioning">3. Knowledge versioning</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>git log .Knowledge/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  a3f1c2  f2s-kb-feat: add refund state machine routing</span></span>
+<span class="line"><span>  b7e9d1  f2s-kb-fix: fix RestTemplate injection conventions</span></span>
+<span class="line"><span>  c2a8f0  f2s-kb-build: onboard order service architecture docs</span></span>
+<span class="line"><span>  d5b3e9  f2s-kb-sync: consolidate payment retry queue design</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Code changes  +  Knowledge changes  →  same commit or adjacent commits</span></span></code></pre>
+<p>Knowledge has versions  ·  is reviewable  ·  is traceable  ·  is blameable</p>
+<h4 id="4-no-accumulation-of-historical-negation">4. No accumulation of historical negation</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ Wrong approach (knowledge base grows bloated)        ✅ Correct approach (only current truth)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  RestTemplate convention (updated 2026-05)              RestTemplate must be injected via Bean</span></span>
+<span class="line"><span>  ~~Previously incorrectly used new RestTemplate()~~     Direct new RestTemplate() is prohibited</span></span>
+<span class="line"><span>  → No longer related to direct instantiation</span></span>
+<span class="line"><span>  → Old approach deprecated, now uses Bean injection</span></span></code></pre>
+<p>Rewrite in place with each fix  ·  don’t layer history  ·  the knowledge base always describes only the present</p>
+<hr>
+<h3 id="c-execution-constraints">C. Execution Constraints</h3>
+<h4 id="1-mandatory-steps-are-constraints-not-suggestions">1. Mandatory steps are constraints, not suggestions</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>implement-tech-design execution flow</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Input normalization</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Read proposal and context</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  ★ Output implementation task list    ← cannot skip</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  ★ Confirm before implementing       ← cannot skip</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Implement per task list</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Output pending checklist and reminders  ← cannot skip</span></span></code></pre>
+<p>Suggestions → can be skipped  ·  Constraints → must be explicitly addressed before proceeding</p>
+<h4 id="2-fallback-is-itself-a-procedurally-defined-topic">2. fallback is itself a procedurally-defined topic</h4>
+<div class="mermaid">graph TD
+    F[Enter fallback-triage] --> S1{Route matched?}
+    S1 -->|Matched but insufficient context| EXP[Expand dependency topics\nfill gaps and continue]
+    S1 -->|Not matched| Q[Ask user:\nHas this domain been documented?]
+    Q -->|Yes| HINT[Routing entry missing\nsuggest adding routing]
+    Q -->|No| CHOICE[Drill into source code\nor add req-docs]
+    Q -->|Not sure| STOP[Stop execution\nwait for clear instructions]</div>
+<p>No match ≠ silent failure  ·  degradation itself has a clear procedure</p>
+<h4 id="3-manifest--index-write-authority-hard-constraint">3. manifest / index write authority hard constraint</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Sub-agents MAY write              Sub-agents MUST NOT touch</span></span>
+<span class="line"><span>────────────────────             ────────────────────</span></span>
+<span class="line"><span>Code implementation files        manifest-routing.json  ← always written by main agent</span></span>
+<span class="line"><span>stock-docs content files         .Knowledge/index.md    ← always written by main agent</span></span>
+<span class="line"><span>topics content files (diff mode)</span></span>
+<span class="line"><span>matchers/*.json (diff mode)</span></span></code></pre>
+<p>When multiple sub-agents run in parallel, shared state files are written single-point by the main agent to prevent concurrent conflicts</p>
+<h4 id="4-document-changes-vs-code-changes-different-splitting-strategies">4. Document changes vs code changes: different splitting strategies</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Code sub-packages                  Document sub-packages</span></span>
+<span class="line"><span>────────────────────             ────────────────────</span></span>
+<span class="line"><span>✅ Can delegate to sub-agents     ❌ Not split by default, main agent writes directly</span></span>
+<span class="line"><span>✅ Sub-agents write directly      If outsourcing is necessary →</span></span>
+<span class="line"><span>                                  Sub-side only outputs before/after diff snippets</span></span>
+<span class="line"><span>                                  Main agent reviews and merges</span></span>
+<span class="line"><span>                                  ❌ Full-file rewrite is strictly prohibited</span></span></code></pre>
+<p>Rationale: documents need to guarantee “current truth coverage / consistent style / no accumulation of historical negation”  ·  requires the writer to see the full context</p>
+<h4 id="5-task-checklist-and-cross-session-continuation">5. Task checklist and cross-session continuation</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Keyword-based automatic continuation example</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  First sentence of a new session: "There's still an issue with payment callback"</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Matches each entry's keywords in todo.json</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Hit { name: "payment_callback_fix", keywords: ["payment", "callback"] }</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Load task.md (show remaining steps)</span></span>
+<span class="line"><span>  linkedSkill = "f2s-kb-fix" → load SKILL.md</span></span>
+<span class="line"><span>      ↓</span></span>
+<span class="line"><span>  Skill's write rules / style requirements / self-check checklist are fully restored</span></span>
+<span class="line"><span>  User doesn't need to re-describe context, can continue directly</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  ✅ No need to say "continue the previous task"</span></span>
+<span class="line"><span>  ✅ Skill constraints are fully restored, consistent with the first invocation</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>todo.json write authority constraint</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Main agent ── read / write todo.json   ✅</span></span>
+<span class="line"><span>  Sub-agent  ── read todo.json           ✅</span></span>
+<span class="line"><span>  Sub-agent  ── write todo.json          ❌</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Rationale: when multiple sub-agents write concurrently,</span></span>
+<span class="line"><span>  concurrent writes cause entries to overwrite each other</span></span></code></pre>
+<p>Lifecycle is driven by skills  ·  keyword routing enables cross-session automatic continuation  ·  linkedSkill ensures full restoration of skill constraints</p>
+<hr>
+<h3 id="d-agent-orchestration">D. Agent Orchestration</h3>
+<h4 id="1-subagent--switchagentverification-are-orthogonal">1. subAgent × switchAgentVerification are orthogonal</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                    switchAgentVerification</span></span>
+<span class="line"><span>                   false            true</span></span>
+<span class="line"><span>     subAgent  ┌────────────┬─────────────────┐</span></span>
+<span class="line"><span>     true →    │ Parallel    │ Parallel         │</span></span>
+<span class="line"><span>               │ execution   │ execution         │</span></span>
+<span class="line"><span>               │ Writer-side │ Sub writes→Main   │</span></span>
+<span class="line"><span>               │ self-verify │ verifies          │</span></span>
+<span class="line"><span>               │             │ Main writes→Sub   │</span></span>
+<span class="line"><span>               │             │ verifies          │</span></span>
+<span class="line"><span>               ├────────────┼─────────────────┤</span></span>
+<span class="line"><span>     false →   │ Sequential │ Sequential         │</span></span>
+<span class="line"><span>               │ execution  │ execution          │</span></span>
+<span class="line"><span>               │ Main agent │ Main agent         │</span></span>
+<span class="line"><span>               │ self-      │ self-verifies      │</span></span>
+<span class="line"><span>               │ verifies   │ (no sub-side       │</span></span>
+<span class="line"><span>               │            │  for cross-check)   │</span></span>
+<span class="line"><span>               └────────────┴─────────────────┘</span></span></code></pre>
+<p>Two orthogonal dimensions  ·  independently configurable  ·  default is bottom-left</p>
+<h4 id="2-confirmation-authority-cannot-be-delegated-to-sub-agents">2. Confirmation authority cannot be delegated to sub-agents</h4>
+<div class="mermaid">graph LR
+    S1[Step 1: Gather materials] -->|subAgent=true may parallelize| SUB[Sub-agent]
+    SUB -->|Read-only, no writes| S2
+
+    S2[Step 2: Output outline\nUser confirms] -->|Must be main agent| USER[User]
+    USER -->|Confirm| S3
+
+    S3[Step 3: Write] -->|subAgent=true may parallelize| SUB2[Sub-agent]</div>
+<p>User dialogue only flows through the main agent  ·  confirmation decisions cannot bypass the user  ·  sub-agents only execute, never decide</p>
+<h4 id="3-skills-can-override-global-subagent-configuration">3. Skills can override global subAgent configuration</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec.config.json        f2s-req-clarify SKILL.md</span></span>
+<span class="line"><span>subAgent: true               This skill does not split by default:</span></span>
+<span class="line"><span>                             regardless of subAgent value,</span></span>
+<span class="line"><span>                             the clarification process stays</span></span>
+<span class="line"><span>                             entirely in the main session</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Rationale: requirement clarification depends heavily on continuous same-session follow-up</span></span>
+<span class="line"><span>           splitting would break context, degrading clarification quality</span></span></code></pre>
+<p>Global configuration is the upper bound for allowing splits  ·  each skill decides for itself whether splitting is appropriate  ·  config being true does not guarantee splitting</p>
+<h4 id="4-f2s-kb-sync-outline-first-write-after-confirmation">4. f2s-kb-sync: outline first, write after confirmation</h4>
+<div class="mermaid">graph LR
+    T[Trigger f2s-kb-sync] --> O[Output update outline]
+    O --> U{User confirms}
+    U -->|Confirm| W[Write to .Knowledge/]
+    U -->|Modify| O
+    U -->|Cancel| STOP[No write]</div>
+<p>Writing is a destructive operation  ·  the outline is the user’s only chance to correct  ·  nothing is written before confirmation</p>
+<h4 id="5-zero-input-inference">5. Zero-input inference</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-sync three input modes</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Mode 1: User explicitly provides capability list   "Sync the refund state machine into the knowledge base"</span></span>
+<span class="line"><span>  Mode 2: User provides supplementary materials      @src/refund/ @docs/proposal.md</span></span>
+<span class="line"><span>  Mode 3: Zero input                                "f2s-kb-sync" (just this one sentence)</span></span>
+<span class="line"><span>                                       ↓</span></span>
+<span class="line"><span>                                  Agent infers based on session context</span></span>
+<span class="line"><span>                                  what was implemented and what is worth consolidating</span></span></code></pre>
+<p>Session context itself is an information source  ·  no need for users to organize and re-input</p>
+<h4 id="51-how-execution-switches-reach-the-agent-multi-platform-prompts">5.1 How execution switches reach the Agent (multi-platform prompts)</h4>
+<p><code>flow2spec.config.json</code> determines <strong><code>subAgent</code> / <code>switchAgentVerification</code> / <code>changeTracking</code></strong>, but AI products <strong>do not guarantee</strong> that the file is automatically opened at session start. The design uses <strong>multiple weak constraint layers</strong> to reduce the probability of “running <code>f2s-*</code> without reading the config”, while avoiding maintaining a verbose duplicate of <code>.codex/topics/f2s-config-check.md</code> in <code>.Knowledge</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Mechanism</th><th>Design Intent</th></tr></thead><tbody><tr><td><strong>Cursor <code>f2s-config-check.mdc</code></strong></td><td>Rule-layer enforcement: “Read before skill body”; Cursor hooks are used for update checks only, not automatic config reads.</td></tr><tr><td><strong>Claude <code>f2s-config-session</code> SessionStart</strong></td><td>Injects one config summary when the conversation starts, reducing the chance that the setting is forgotten.</td></tr><tr><td><strong>Claude <code>f2s-config-inject</code> PreToolUse</strong></td><td>Only guards <strong><code>f2s-*</code> Skill</strong> calls by reminding the agent that the first skill-body action must be Read; it no longer repeatedly injects the full config.</td></tr><tr><td><strong>Codex <code>AGENTS.md</code> / <code>.codex/topics/f2s-config-check.md</code> + <code>f2s-config-session</code></strong></td><td>One <code>SessionStart</code> configuration summary plus text-layer enforcement: “Read before skill body”; there is still no Claude-style <code>PreToolUse Skill</code> guard.</td></tr><tr><td><strong>Codex <code>AGENTS.md</code> + <code>renderProjectConfigBlock</code></strong></td><td>Top-level <strong>Read</strong> hard constraint + field-semantics table; current values only come from disk Read and the SessionStart summary.</td></tr><tr><td><strong>Knowledge base <code>config-precheck</code> topic</strong></td><td>When routing hits, provides only <strong>summary</strong> and a pointer to the Codex full text, <strong>not</strong> a substitute for Read JSON.</td></tr></tbody></table>
+<p><strong>Authority remains</strong> the <strong>Read</strong> result of the project-root JSON; each layer is a prompt, not a second source of truth. For the complete operational table and paths, see <strong><a href="/Flow2Spec/en/docs/usage/">Usage Guide § 1. <code>f2s-*</code> and <code>flow2spec.config.json</code></a></strong>.</p>
+<h4 id="6-skills-dont-restate-unified-entry-rules-only-reference-them">6. Skills don’t restate unified entry rules, only reference them</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Each SKILL.md's orchestration section reads:</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  subAgent / switchAgentVerification semantics</span></span>
+<span class="line"><span>  are defined in the unified entry as the sole source of truth,</span></span>
+<span class="line"><span>  not restated here.</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>  Cursor/Claude → rules/f2s-flow2spec-unified-entry.*</span></span>
+<span class="line"><span>  Codex         → .codex/topics/f2s-flow2spec-unified-entry.md</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  15 skills, each only writes its own unique orchestration constraints</span></span>
+<span class="line"><span>  Common rules are defined in one place; modifying one location affects all</span></span></code></pre>
+<hr>
+<h3 id="e-pluggable-architecture">E. Pluggable Architecture</h3>
+<h4 id="1-tools-are-pluggable-one-knowledge-base-any-tool-combination">1. Tools are pluggable: one knowledge base, any tool combination</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec init cursor claude codex   ← all three tools installed</span></span>
+<span class="line"><span>flow2spec init claude                ← only Claude</span></span>
+<span class="line"><span>flow2spec init cursor codex          ← skip Claude</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>.Knowledge/ stays the same, tools can be added or removed at any time</span></span></code></pre>
+<p>The same <code>.Knowledge/</code> drives all tools  ·  adding/removing tools does not affect knowledge content  ·  new tools integrate with zero rebuild</p>
+<h4 id="2-knowledge-topics-are-pluggable-addremove-without-side-effects">2. Knowledge topics are pluggable: add/remove without side effects</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Adding a topic                         Removing a topic</span></span>
+<span class="line"><span>─────────────────────               ─────────────────────</span></span>
+<span class="line"><span>1. Write topics/xxx.md               f2s-kb-rm stock-docs/xxx.md</span></span>
+<span class="line"><span>2. Write matchers/m-xxx.json                  ↓</span></span>
+<span class="line"><span>3. Register in manifest-routing       Automatically cleans up topics/ + manifest</span></span>
+<span class="line"><span>                                       + index references</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Other topics remain completely unaffected</span></span></code></pre>
+<p>New topics simply declare dependencies in <code>topicDependencies</code>  ·  if they don’t, they’re independent  ·  removal has no side effects</p>
+<h4 id="3-skills-are-pluggable-self-contained-units-project-level-overrides-package-level">3. Skills are pluggable: self-contained units, project-level overrides package-level</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Package-level skills (shipped with flow2spec init)     Project-level skills (placed in config root/skills/)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>f2s-kb-sync/SKILL.md                  my-domain-skill/SKILL.md</span></span>
+<span class="line"><span>f2s-doc-arch/SKILL.md                 my-review-skill/SKILL.md</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>If names don't conflict they coexist  ·  same name → project-level overrides package-level  ·  they're unaware of each other</span></span></code></pre>
+<p>Skills describe their own trigger words via the <code>description</code> field  ·  no registry needed  ·  no global config changes needed  ·  effective upon deployment</p>
+<h4 id="4-routing-vocabulary-is-pluggable-shard-isolation-local-updates">4. Routing vocabulary is pluggable: shard isolation, local updates</h4>
+<p>Vocabulary changes only modify the corresponding <code>matchers/m-xxx.json</code>, with zero diff for other routes; see structure in “<a href="#1-matchers-sharded-not-embedded-in-manifest">A. Routing and Context Loading → matchers sharding</a>”.</p>
+<p>Vocabulary changes are localized  ·  merge conflicts are minimized  ·  new routes don’t affect existing ones</p>
+<h4 id="5-execution-model-is-pluggable-config-switches-per-project">5. Execution model is pluggable: config switches per project</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec.config.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  subAgent: false               → main agent throughout, low overhead, suitable for small projects</span></span>
+<span class="line"><span>  subAgent: true                → allow sub-agent parallelization, suitable for large-scale changes</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  switchAgentVerification: false → writer-side self-verify, daily use</span></span>
+<span class="line"><span>  switchAgentVerification: true  → cross-verification, high-confidence critical scenarios</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  changeTracking.feat: true        → f2s-kb-feat creates a task checklist by default</span></span>
+<span class="line"><span>  changeTracking.fix: false        → f2s-kb-fix does not create a task checklist by default</span></span>
+<span class="line"><span>  changeTracking.implement: true   → implement-tech-design creates a task checklist by default</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  Three orthogonal dimensions · each skill can further refine and override global config</span></span></code></pre>
+<p>Change one line of config to switch execution strategy  ·  no skill files need modification  ·  new projects work out of the box, existing projects upgrade on demand</p>
+<hr>
+<h2 id="strengths-and-limitations">Strengths and Limitations</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>✅ Strengths                         ⚠️  Limitations</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Precise context                      Upfront investment: knowledge must be built via skills</span></span>
+<span class="line"><span>└─ Routing loads only relevant docs  Scale threshold: overhead > benefit for small projects</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Cross-tool sharing                   Requires team discipline</span></span>
+<span class="line"><span>└─ Write knowledge once, use in all  └─ Skills reduce friction, don't eliminate it</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Tool-agnostic                        Learning curve</span></span>
+<span class="line"><span>└─ Switch tools without rebuilding   └─ stock/req boundary, routing structure aren't intuitive</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Sustainable</span></span>
+<span class="line"><span>└─ Maintenance tied to development actions</span></span></code></pre>
+<hr>
+<h2 id="who-is-it-for">Who Is It For</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                       Project Scale</span></span>
+<span class="line"><span>                 Small ◄──────────► Large</span></span>
+<span class="line"><span>         ┌──────────┬────────────┐</span></span>
+<span class="line"><span>    Short │  Not     │  Can use   │</span></span>
+<span class="line"><span>    Term  │  needed  │            │</span></span>
+<span class="line"><span>         ├──────────┼────────────┤</span></span>
+<span class="line"><span>    Long  │  Can use │ Highly     │</span></span>
+<span class="line"><span>    Term  │          │ recommended│</span></span>
+<span class="line"><span>         └──────────┴────────────┘</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Best suited when: has scale · long-term iteration · multi-tool or multi-person AI collaboration</span></span></code></pre>
+<hr>
+<h2 id="related-documents">Related Documents</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/scenarios/">Usage Scenarios</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

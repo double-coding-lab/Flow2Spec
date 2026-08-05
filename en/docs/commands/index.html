@@ -1,0 +1,1111 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Commands documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/commands/"><title>Commands — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/" aria-current="page">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/" aria-current="page">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#command-quick-reference" class="is-active">Command Quick Reference</a><a href="#1-document-curation-stock-docs-pipeline">1) Document Curation (stock-docs Pipeline)</a><a href="#2-requirements-and-proposals">2) Requirements and Proposals</a><a href="#3-git-commit">3) Git Commit</a><a href="#4-knowledge-base-maintenance">4) Knowledge Base Maintenance</a><a href="#5-rule-descriptions">5) Rule Descriptions</a><a href="#6-sub-agent-configuration">6) Sub-Agent Configuration</a><a href="#7-flow2spec-kb-cli-for-collaborative-merges">7) flow2spec kb CLI for Collaborative Merges</a><a href="#8-quick-reference">8) Quick Reference</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="workflow-and-skill-reference">Workflow and Skill Reference</h1>
+<h2 id="command-quick-reference">Command Quick Reference</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Command</th><th>Purpose</th><th>Category</th></tr></thead><tbody><tr><td><code>/f2s-doc-arch</code></td><td>Scan project, generate architecture draft</td><td>Doc Curation</td></tr><tr><td><code>/f2s-doc-final</code></td><td>Convert PDF / draft to standardized final-draft format</td><td>Doc Curation</td></tr><tr><td><code>/f2s-kb-build</code></td><td>Sync final drafts into knowledge base routing (topics / matchers / manifest)</td><td>Doc Curation</td></tr><tr><td><code>/f2s-kb-add &#x3C;path></code></td><td>Aggregate multi-file implemented capabilities into knowledge base</td><td>Doc Curation</td></tr><tr><td><code>/f2s-kb-rm</code></td><td>Remove knowledge topic and index mapping for a stock-docs document</td><td>Doc Curation</td></tr><tr><td><code>/f2s-doc-pdf</code></td><td>Convert PDF technical proposal to Markdown, save to req-docs</td><td>Doc Curation</td></tr><tr><td><code>/f2s-req-clarify</code></td><td>Clarify requirements via multi-round Q&#x26;A</td><td>Requirements</td></tr><tr><td><code>/f2s-req-tech</code></td><td>Generate technical proposal from clarified requirements</td><td>Requirements</td></tr><tr><td><code>/f2s-req-plan</code></td><td>Break a technical proposal into a task checklist and implement (always creates tasks, regardless of <code>changeTracking.*</code> config)</td><td>Requirements</td></tr><tr><td><code>/f2s-git-commit</code></td><td>Commit code; checks knowledge base coverage by default, skips that check in “quick commit” mode</td><td>Commit</td></tr><tr><td><code>/f2s-kb-feat</code></td><td>Add new capability + sync knowledge base</td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-fix</code></td><td>Fix a bug + auto-sync knowledge base</td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-distill</code></td><td>Extract reusable knowledge facts from Q&#x26;A and auto-commit to knowledge base</td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-sync</code></td><td>Sink implemented capabilities from the conversation into the knowledge base</td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-merge</code></td><td>Resolve knowledge base conflicts after a Git merge</td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-migrate</code></td><td>One-time migration of a legacy knowledge base to <code>.Knowledge/</code></td><td>KB Maintenance</td></tr><tr><td><code>/f2s-kb-upgrade</code></td><td>Upgrade knowledge base template, align manifest + matchers shards</td><td>KB Maintenance</td></tr></tbody></table>
+<p>The table above lists conversation-triggered <code>/f2s-*</code> skills. The repository also provides shell commands under <code>flow2spec kb status / check / plan / apply / build</code>; they merge a skill-produced <code>kb-delta.json</code> into the shared <code>.Knowledge/</code>. See <a href="#7-flow2spec-kb-cli-for-collaborative-merges">§ 7</a>.</p>
+<hr>
+<h2 id="1-document-curation-stock-docs-pipeline">1) Document Curation (stock-docs Pipeline)</h2>
+<h3 id="f2s-doc-arch"><code>f2s-doc-arch</code></h3>
+<p><strong>Purpose</strong>: Generates an architecture overview draft based on user descriptions or code scanning. No fixed format required; it should clearly describe the system structure, module relationships, and key decisions.</p>
+<p><strong>How It Works</strong>: Centered on inventory-driven scanning: the main agent first produces a module inventory and a scan contract (which entry points to read, which dimensions to focus on), then performs read-only code scanning according to that inventory, and finally aggregates the results into a human-readable architecture draft persisted under <code>stock-docs/</code>. The flow does not change code; it is one-way “code → document” extraction only.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>A new project needs architecture documentation</li>
+<li>An existing project needs architecture descriptions supplemented</li>
+<li>Architecture descriptions need updating after a system refactor</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: None</li>
+<li><strong>Next Step</strong>: <code>f2s-doc-final</code> (normalized final draft) → <code>f2s-kb-build</code> (<strong>final draft input only</strong>; do not run build on <code>_draft</code> / <code>_初稿</code> files)</li>
+<li><strong>Output</strong>: <code>.Knowledge/stock-docs/&#x3C;Architecture Overview>_draft.md</code></li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent scans the code and generates the output</li>
+<li><code>subAgent: true</code>: Defaults to <strong>B Mode</strong> (main agent produces inventory + scan contract, sub-agents do parallel read-only table scans, main agent merges and persists); upgraded to <strong>C Mode</strong> (multi-round correction) when any of the following conditions are met: multi-workspace / monorepo, more than 20 source paths, first-round sub-tables have conflicts or gaps, or multi-source narratives have severe contradictions</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Produces inventory (entry points + core module names) and scan contract, aggregates sub-agent deliverables, persists stock-docs draft</td></tr><tr><td>Sub-Agent (B/C Mode)</td><td>Performs parallel read-only scans per the main agent’s written inventory, delivers in a unified YAML schema (<code>source / scope / cross_refs / pending</code>), must not self-crop the scope</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-doc-final"><code>f2s-doc-final</code></h3>
+<p><strong>Purpose</strong>: Converts PDF technical proposals or draft documents into the standardized “Final Draft Template” format, unifying the document structure for subsequent knowledge base ingestion.</p>
+<p><strong>How It Works</strong>: Unstructured or heterogeneous documents (PDF/drafts) are normalized against the built-in final-draft template: core concept tables, business rules, key flows, configuration, error handling, and other standard sections are extracted; missing section markers are filled in; the output is a consistently structured <code>_final.md</code>. The final draft is the standard input for <code>f2s-kb-build</code>, keeping knowledge-base entry structure uniform.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>PDF technical proposals need conversion to Markdown</li>
+<li>Draft documents need normalization for long-term storage</li>
+<li>External documents need to be incorporated into Flow2Spec management</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: PDF document or draft document</li>
+<li><strong>Next Step</strong>: <code>f2s-kb-build</code> (final draft imported into the knowledge base)</li>
+<li><strong>Output</strong>: <code>.Knowledge/stock-docs/&#x3C;Document>_final.md</code></li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes the full workflow</li>
+<li><code>subAgent: true</code>: When the PDF exceeds 50 pages or 5MB, sub-agents may be used for template application and layout drafting; sub-agents must not ask the user questions, write process descriptions, or claim final-draft compliance; the main agent identifies format gaps and accepts the finalized draft</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Identifies format gaps, accepts the finalized draft against the template and clarification document</td></tr><tr><td>Sub-Agent</td><td>Applies templates and produces layout drafts; does not ask users questions or write process descriptions</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-build"><code>f2s-kb-build</code></h3>
+<p><strong>Purpose</strong>: Synchronizes documents from <code>stock-docs/</code> (architecture, final drafts) into the knowledge base routing system, generating/updating topic files, the index, manifest-routing, and matchers.</p>
+<p><strong>How It Works</strong>: Starting from a final-draft document, it runs a three-step “document → routing” mapping: (1) extract capability topics and keywords from the draft; (2) generate <code>topics/&#x3C;topic>.md</code> (routing summary with execution boundaries and next-step pointers) and <code>matchers/&#x3C;id>.json</code> (machine-readable <code>includeAny</code> terms); (3) register task→topic rules in <code>manifest-routing.json</code> and update the human-readable <code>index.md</code>. After that, the task routing engine can hit the topic via keywords.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>After a final draft is complete, the knowledge base needs to “know about” these documents</li>
+<li>A new business domain needs routing mappings established</li>
+<li>Document content has been updated and the knowledge base index needs to be synced</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: <code>f2s-doc-arch</code>, <code>f2s-doc-final</code>, or a directly authored final draft</li>
+<li><strong>Next Step</strong>: None (ready for use once imported into the knowledge base)</li>
+<li><strong>Input</strong>: <code>.Knowledge/stock-docs/*.md</code></li>
+<li><strong>Output</strong>:
+<ul>
+<li><code>.Knowledge/topics/&#x3C;topic>.md</code></li>
+<li><code>.Knowledge/index.md</code></li>
+<li><code>.Knowledge/manifest-routing.json</code></li>
+<li><code>.Knowledge/matchers/*.json</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent processes each document sequentially</li>
+<li><code>subAgent: true</code>: Enabled when changes exceed thresholds (more than 2 topics added/modified OR more than 1 matcher added OR cross-topic bulk reference adjustments); sub-agent A writes only to <code>topics/</code>, sub-agent B writes only to <code>matchers/</code>; the main agent handles single-point edits to <code>manifest-routing.json</code> and <code>index.md</code>; sub-agents must not cross boundaries</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Single-point persist of <code>manifest-routing.json</code> and <code>index.md</code>, overall acceptance</td></tr><tr><td>Sub-Agent (topics)</td><td>Writes only topic files under <code>topics/</code>, does not touch manifest or index</td></tr><tr><td>Sub-Agent (matchers)</td><td>Writes only shard files under <code>matchers/</code>, does not touch manifest or index</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-add"><code>f2s-kb-add</code></h3>
+<p><strong>Purpose</strong>: Parses already-implemented capabilities (aggregated from multiple files) into the knowledge base. Suitable when code already exists but lacks documentation, or when multiple documents need to be imported into the knowledge base in a unified manner.</p>
+<p><strong>How It Works</strong>: Aggregates capability descriptions from multiple scattered sources (code, config, loose docs) and runs the full “draft → final draft → topics/index/manifest” pipeline. Unlike <code>f2s-kb-build</code>, the input differs: <code>ctx-build</code> is driven from a single existing final draft; <code>doc-add</code> aggregates many scattered sources first, then follows the same pipeline. It closes the gap of “implementation exists but documentation does not.”</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Existing code needs knowledge base documentation</li>
+<li>Multiple related documents need aggregated import</li>
+<li>Bulk import of third-party documents</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: None (can be triggered directly)</li>
+<li><strong>Next Step</strong>: None (ends once imported into the knowledge base)</li>
+<li><strong>Flow</strong>: Draft -> Final Draft -> topics/index/manifest</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent processes sequentially</li>
+<li><code>subAgent: true</code>: Enabled when any of the following thresholds are met; defaults to <strong>B Mode</strong> (main agent produces inventory, sub-agents do parallel read-only schema-based table fills, main agent merges and persists); upgraded to <strong>C Mode</strong> (multi-round correction) for multi-workspace / monorepo, first-round sub-table conflicts or gaps, or severe multi-source contradictions
+<ul>
+<li>Thresholds: 5 or more input paths OR single source exceeds 3000 lines OR total across multiple paths exceeds 10000 lines</li>
+</ul>
+</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Produces inventory and scan contract, aggregates sub-tables, persists topics/index/manifest</td></tr><tr><td>Sub-Agent (B/C Mode)</td><td>Performs read-only scans per the main agent’s written inventory, delivers tables in schema format (<code>source / scope / capabilities / cross_refs / pending</code>); must not self-crop the scope, write manifest or index, or claim “already in the knowledge base”</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Topic files persisted by sub-agents -> Main agent verifies routing mapping completeness and keyword coverage</li>
+<li>Only effective when <code>subAgent: true</code> and sub-tasks are actually dispatched; otherwise all verification happens within the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-rm"><code>f2s-kb-rm</code></h3>
+<p><strong>Purpose</strong>: Deletes corresponding knowledge topics and index mappings based on <code>stock-docs</code> documents. Only removes reference relationships in the knowledge base, not the source documents themselves.</p>
+<p><strong>How It Works</strong>: The inverse of <code>f2s-kb-build</code> — given a <code>stock-docs</code> document path, locate its task→topic rules in <code>manifest-routing.json</code>, the corresponding <code>matchers/&#x3C;id>.json</code> shard, <code>topics/&#x3C;topic>.md</code>, and entries in <code>index.md</code>, and remove those references one by one. If a topic has no remaining task references after deletion, remove that topic file. Source documents are left in place; the user may delete them physically if desired.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>A document is deprecated and needs removal from the knowledge routing</li>
+<li>A document was imported by mistake and its routing mapping needs revocation</li>
+<li>Cleaning up old mappings after document consolidation</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: A stock-docs document that has already been imported</li>
+<li><strong>Next Step</strong>: None</li>
+<li><strong>Note</strong>: Only deletes routing mappings, not source documents</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent handles the full workflow (single-point deletion has low sub-agent ROI)</li>
+<li><code>subAgent: true</code>: Sub-agents are used only for <strong>batch deletion of 5 or more topics</strong>; the main agent must control scope confirmation and <code>fallbackTopic</code> re-pointing; <code>manifest-routing.json</code> and <code>index.md</code> are always persisted by the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-doc-pdf"><code>f2s-doc-pdf</code></h3>
+<p><strong>Purpose</strong>: Converts PDF technical proposals to Markdown format, saves to <code>req-docs/</code>, and can supplement the process description.</p>
+<p><strong>How It Works</strong>: Extracts structured content from the PDF (API definitions, data models, sequence flows, etc.) into Markdown under <code>req-docs/</code> for editing and follow-up with <code>f2s-req-clarify</code> / <code>f2s-req-tech</code>. Unlike <code>f2s-doc-final</code>, <code>doc-pdf</code> writes to <code>req-docs/</code>; <code>doc-final</code> writes to <code>stock-docs/</code> for <code>ctx-build</code>. <strong>Not recommended</strong> as a shortcut for “PDF straight to coding” without clarification and a technical proposal.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Cross-team deliverables are in PDF format and need conversion to editable Markdown</li>
+<li>Historical PDF proposals need to live under <code>req-docs/</code></li>
+<li>Provide a readable draft before <code>f2s-req-clarify</code> / <code>f2s-req-tech</code></li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: PDF document</li>
+<li><strong>Output</strong>: <code>.Knowledge/req-docs/&#x3C;Proposal>.md</code></li>
+<li><strong>Next Step</strong> (recommended): <code>f2s-req-clarify</code> → <code>f2s-req-tech</code> → implement from the technical proposal MD via <code>implement-tech-design</code>; for knowledge base archival use <code>f2s-doc-final</code> → <code>f2s-kb-build</code></li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes the full workflow</li>
+<li><code>subAgent: true</code>: When the PDF exceeds 50 pages or 5MB, sub-agents may be used for the PDF -> MD first draft and persist to <code>req-docs</code>; sub-agents must not ask the user questions or supplement process description sections; the main agent handles follow-up questions and process description supplementation</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Asks the user for process description supplements, completes <code>req-docs</code> deposition acceptance</td></tr><tr><td>Sub-Agent</td><td>Only performs PDF -> MD first draft and persists to <code>req-docs</code>, does not ask the user questions</td></tr></tbody></table>
+<hr>
+<h2 id="2-requirements-and-proposals">2) Requirements and Proposals</h2>
+<h3 id="f2s-req-clarify"><code>f2s-req-clarify</code></h3>
+<p><strong>Purpose</strong>: Asks clarifying questions against PRDs/requirement documents, using multi-round Q&#x26;A to define requirement boundaries, non-goals, and key flows, until the requirements are clear enough for a technical proposal.</p>
+<p><strong>How It Works</strong>: Uses a “structured questioning” strategy — decomposes the requirement document along six dimensions (roles, scenarios, flows, boundaries, exceptions, non-goals), checks each for vague wording, undefined concepts, or contradictions, and generates targeted questions for each gap. Dialogue continues until all dimensions are unambiguous, then outputs a clarification record as input for <code>f2s-req-tech</code>. It turns unstructured PRDs into structured, actionable requirement constraints.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>First step after receiving a PRD, ensuring correct understanding</li>
+<li>When requirement boundaries are fuzzy or acceptance criteria are missing</li>
+<li>Cross-team collaboration requirements that need clear interface contracts</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: None (can be triggered directly)</li>
+<li><strong>Next Step</strong>: <code>f2s-req-tech</code> (generates a technical proposal after clarification)</li>
+<li><strong>Output</strong>: Requirement clarification record (optionally saved to <code>.Knowledge/req-docs/</code>)</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>: None (clarification relies on continuous dialogue and immediate user feedback throughout; no sub-agent splitting)</p>
+<hr>
+<h3 id="f2s-req-tech"><code>f2s-req-tech</code></h3>
+<p><strong>Purpose</strong>: Based on clarified requirements and the project knowledge base, generates an implementation-ready technical proposal. The content is selected by scenario: APIs, pages/components, scripts/tools, data processing, configuration, events, or module changes.</p>
+<p><strong>How It Works</strong>: Centered on “knowledge base constraints + template-guided” authoring — first pull a constraint summary for the current project from <code>topics/stock-docs</code> (architecture conventions, contract style, data and module boundaries, etc.), then choose only the relevant blocks from the technical proposal template. Do not force API, database, error-code, or message-queue sections just to fit the template. Output is persisted under <code>req-docs/</code> as the coding contract for <code>implement-tech-design</code>.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>After <code>f2s-req-clarify</code> completes, output a proposal based on clarification results</li>
+<li>When clear requirement documents already exist, directly generate a technical proposal</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: <code>f2s-req-clarify</code> (recommended) or a clear requirement document</li>
+<li><strong>Output</strong>: <code>.Knowledge/req-docs/&#x3C;Technical Proposal>.md</code></li>
+<li><strong>Next Step</strong>: Provide the technical proposal path with instructions “implement according to the technical proposal”, driven by the <code>implement-tech-design</code> rule</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes the proposal within the session</li>
+<li><code>subAgent: true</code>: The main agent must first extract a project convention summary (under 80 lines) from topics/stock-docs (covering architecture conventions, API style, data model standards, etc. across 6 categories) as the mandatory sub-agent context, then dispatch sub-agents to write the <code>req-docs</code> draft in parallel; the main agent handles contract finalization and acceptance</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Extracts project convention summary, assigns writing tasks, finalizes the draft against the template, and writes to <code>req-docs</code></td></tr><tr><td>Sub-Agent</td><td>Read-only access to multiple sources (topics / stock-docs / clarified req-docs / templates), writes <code>req-docs</code> draft per template; must not expand the read scope on its own</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Draft proposals persisted by sub-agents -> Main agent verifies consistency across deliverables, data structures, processing flows, error handling, and project conventions</li>
+<li>Only effective when <code>subAgent: true</code> and sub-tasks are actually dispatched; otherwise all verification happens within the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-req-plan"><code>f2s-req-plan</code></h3>
+<p><strong>Purpose</strong>: Starting from a technical proposal or requirement description, <strong>always creates a task checklist</strong>, then implements the code accordingly. Does not depend on the <code>changeTracking</code> configuration; represents the user’s explicit need for traceable task management.</p>
+<blockquote>
+<p><strong>About task checklists</strong>: Task checklists are not exclusive to <code>/f2s-req-plan</code>. <code>/f2s-kb-feat</code>, <code>/f2s-kb-fix</code>, and <code>implement-tech-design</code> also create task checklists automatically when the corresponding <code>changeTracking.*</code> field is set to <code>true</code> in <code>flow2spec.config.json</code>. The distinction of <code>/f2s-req-plan</code> is that it <strong>always creates a checklist regardless of any config</strong> — suited for large features where the user explicitly wants to track progress across sessions.</p>
+</blockquote>
+<p><strong>How It Works</strong>: Runs a five-phase closed loop: parse → plan → confirm → implement → archive. (1) Parse the technical proposal for implementation points; (2) split into executable tasks at module/feature granularity and write to <code>.task/</code>; (3) show the draft to the user, lock the checklist after confirmation; (4) implement item by item, checking off <code>task.md</code> immediately when each item completes; (5) archive when all are done. Unlike the <code>implement-tech-design</code> rule, <code>req-plan</code> always carries task tracking and can parallelize implementation with sub-agents for large work; the rule path is lightweight, single-threaded coding.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>A technical proposal document exists and needs to be broken down into a task list before implementation</li>
+<li>The requirement description is complex and the user wants to confirm the checklist before starting work</li>
+<li>The user wants to track implementation progress across sessions</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: Technical proposal document path (<code>.Knowledge/req-docs/*.md</code> or PDF) or requirement/change description</li>
+<li><strong>Output</strong>: <code>.task/active/&#x3C;task-name>/task.md</code> + <code>context.md</code>; implementation code</li>
+<li><strong>Next Step</strong>: Optionally invoke <code>f2s-kb-sync</code> to supplement the knowledge base</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes parsing, confirmation, and implementation in full</li>
+<li><code>subAgent: true</code>: Step 1 (document parsing) can dispatch sub-agents for parallel read-only; Step 2 (draft confirmation) must be done by the main agent; Step 4 (code implementation) can dispatch sub-agents per module; <code>todo.json</code> is always written by the main agent</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Outputs draft, gets user confirmation, writes <code>todo.json</code>, aggregates implementation summary</td></tr><tr><td>Sub-Agent (parsing)</td><td>Read-only document parsing, outputs parsing result summary, does not persist</td></tr><tr><td>Sub-Agent (implementation)</td><td>Implements code per module, does not touch <code>.task/</code> or <code>.Knowledge/</code></td></tr></tbody></table>
+<hr>
+<h2 id="3-git-commit">3) Git Commit</h2>
+<h3 id="f2s-git-commit"><code>f2s-git-commit</code></h3>
+<p><strong>Purpose</strong>: Executes a Git commit after code is written. By default it checks changed files and knowledge base coverage, prompting the user about capabilities not yet imported. If the user explicitly asks for a “quick commit”, it skips the knowledge base coverage check. Before committing, it displays the commit message subject and then runs <code>git commit</code>.</p>
+<p><strong>How It Works</strong>: Layers a “knowledge base coverage gate” on top of <code>git commit</code> — infer touched capability areas from <code>git diff</code>, cross-check against <code>.Knowledge/topics/</code> and <code>stock-docs/</code>, and decide whether changed capabilities are documented in the knowledge base. If not covered, block and offer three choices (document first / skip / cancel) to avoid silent drift where “code exists but the knowledge base does not know.” Quick commit mode only skips this coverage gate; it does not skip conflict checks, message display, precise <code>git add</code>, or git hooks. Commit messages use emoji + Conventional Commits for consistent, machine-friendly <code>git log</code>.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Committing code after each feature implementation or bug fix</li>
+<li>Wanting reminders about knowledge base coverage at commit time</li>
+<li>Explicitly wanting to skip this commit’s coverage check with a quick commit</li>
+<li>Needing AI help to generate meaningful commit messages</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: Code has been written (after <code>implement-tech-design</code>, <code>f2s-kb-fix</code>, <code>f2s-kb-feat</code>, etc.)</li>
+<li><strong>Next Step</strong>: None (ends when commit completes; does not auto-push)</li>
+<li><strong>Bridging</strong>: If the knowledge base is not yet covered, you can first run <code>f2s-kb-sync</code> or <code>f2s-kb-feat</code> to supplement before committing</li>
+</ul>
+<p><strong>Execution Flow</strong>:</p>
+<ol>
+<li><code>git status --short</code> + <code>git diff HEAD</code> to classify files into staged / unstaged / untracked; immediately terminates if merge conflict markers are found</li>
+<li>By default, compare <code>.Knowledge/topics/</code> and <code>stock-docs/</code> to determine whether the changed capabilities have been imported; skips and notifies if <code>.Knowledge</code> does not exist; skips this step when the user asks for a quick commit</li>
+<li>If not covered, prompt the user to choose: A) Import first, then commit / B) Commit now, import later / C) Cancel</li>
+<li>Generate a commit message draft based on <code>git diff</code> content, wait for user confirmation or changes</li>
+<li><code>git add &#x3C;specific files></code> + <code>git commit</code>; if a hook fails, prompt for fix, do not skip</li>
+<li>Output the commit hash; if option B was selected, include a reminder about capabilities not yet imported</li>
+</ol>
+<p><strong>Constraints</strong>:</p>
+<ul>
+<li><code>git add -A</code> / <code>git add .</code> is forbidden; only add confirmed changed files</li>
+<li><code>--no-verify</code> is forbidden; hook failures must be fixed and retried</li>
+<li>Auto-push is forbidden</li>
+<li>The commit message subject must be displayed before committing; an extra user confirmation round is not required</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>: None (full interactive confirmation, handled within the main agent)</p>
+<hr>
+<h2 id="4-knowledge-base-maintenance">4) Knowledge Base Maintenance</h2>
+<h3 id="f2s-kb-fix"><code>f2s-kb-fix</code></h3>
+<p><strong>Purpose</strong>: Fixes code based on implementation or rule errors reported by the user, and <strong>by default automatically syncs</strong> the knowledge base documents and index.</p>
+<p><strong>How It Works</strong>: Three steps: locate → fix → sync. From the user’s description, locate context and code via the knowledge routing path (manifest → topic → stock-docs) and confirm root cause; after fixing code, automatically check whether related descriptions in <code>topics/stock-docs/matchers</code> need updates and revise in place if so (current truth only, no stacked historical negation). “Fix code, sync docs” is the core principle to prevent knowledge drift.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Code implementation does not match the technical proposal</li>
+<li>Rule understanding errors need correction</li>
+<li>Documentation needs to be synced after bug fixes</li>
+</ul>
+<p><strong>Change Tracking</strong>: If <code>changeTracking.fix: true</code>, automatically checks <code>.task/todo.json</code> before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see <code>f2s-task</code> rules).</p>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: Problem discovered (code implementation error or rule deviation)</li>
+<li><strong>Next Step</strong>: None (ends when fixes and sync are complete)</li>
+<li><strong>Feature</strong>: No need for the user to explicitly request “please sync the knowledge base”; it is done automatically</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes fixes and knowledge base sync</li>
+<li><code>subAgent: true</code>: Code sub-packages (bug fixes) can be outsourced to sub-agents; documentation sub-packages (rules/skills/topics style-related) default to the main agent writing directly; if sub-agents are used, they only output before/after diff snippets, not full-file rewrites; manifest and index are always persisted by the main agent</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Locates root cause, devises fix plan, persists style-compliant content, verifies knowledge base consistency</td></tr><tr><td>Sub-Agent (code)</td><td>Responsible for bug fixes in designated modules, outputs changes and reports impact scope</td></tr><tr><td>Sub-Agent (documentation, optional)</td><td>Only outputs before/after diff snippets, no full-file rewrites, does not touch manifest or index</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Code changes persisted by sub-agents -> Main agent verifies fix correctness and knowledge base consistency</li>
+<li>Knowledge base sync persisted by the main agent -> Sub-agent reviews topic/manifest consistency (requires <code>subAgent: true</code> and sub-tasks actually dispatched; otherwise self-verification within the main agent)</li>
+<li>The reviewer and the persister must be different agent instances</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-feat"><code>f2s-kb-feat</code></h3>
+<p><strong>Purpose</strong>: When adding a new capability, completes both the implementation and the knowledge base; if the capability is already implemented, only syncs the knowledge base.</p>
+<p><strong>How It Works</strong>: Three phases: assess → implement → ingest. First assess whether the described capability is not implemented, partially implemented, or already implemented in code; if not or partial, complete the code first; then sync the knowledge base: write a capability description in <code>stock-docs</code>, generate or update <code>topics</code> summaries, register routing in <code>manifest-routing</code> and <code>matchers</code>. Unlike <code>f2s-kb-fix</code>, <code>kb-feat</code> targets <strong>new</strong> work; <code>kb-fix</code> targets <strong>correcting existing</strong> work.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>New feature development</li>
+<li>Adding knowledge base documentation for an existing feature</li>
+</ul>
+<p><strong>Change Tracking</strong>: If <code>changeTracking.feat: true</code>, automatically checks <code>.task/todo.json</code> before execution, creates a task checklist, and automatically archives upon completion; cross-session continuation via keywords is supported (see <code>f2s-task</code> rules).</p>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: None (can be triggered directly)</li>
+<li><strong>Next Step</strong>: None (ends when implementation + sync are complete)</li>
+<li><strong>Feature</strong>: Knowledge base sync is automatic; no additional user request needed</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes everything</li>
+<li><code>subAgent: true</code>: Code sub-packages (new implementation) can be outsourced to sub-agents; documentation sub-packages (rules/skills/topics style-related) default to the main agent writing directly; if sub-agents are used, they only output before/after diff snippets; manifest and index are always persisted by the main agent</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Defines capability boundaries and implementation scope, persists style-compliant content, performs final verification of knowledge base consistency</td></tr><tr><td>Sub-Agent (code)</td><td>Responsible for code implementation (APIs, logic, data layer), outputs implementation checklist</td></tr><tr><td>Sub-Agent (documentation, optional)</td><td>Only outputs before/after diff snippets, no full-file rewrites, does not touch manifest or index</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Topics persisted by documentation sub-agents -> Main agent verifies consistency between the capability description and the implementation code</li>
+<li>Only effective when <code>subAgent: true</code> and sub-tasks are actually dispatched; otherwise all verification happens within the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-distill"><code>f2s-kb-distill</code></h3>
+<p><strong>Purpose</strong>: Extracts reusable knowledge facts from a Q&#x26;A session and automatically commits them to the knowledge base; decides whether to create a new topic or supplement an existing one based on drill-down depth and matched topics.</p>
+<p><strong>How It Works</strong>: After the Agent answers a user question by drilling into source code, this skill analyzes the current conversation for reusable knowledge facts (core mechanisms, state transitions, return-value contracts, config-switch effects, failure fallback strategies, module boundaries, etc.) and determines whether they are already covered in the knowledge base. Uncovered facts are written to a new or extended topic; covered facts that lack detail get supplemented. Distinction from <code>f2s-kb-sync</code>: <code>sync</code> is for batch syncing multiple capabilities; <code>distill</code> focuses on incremental knowledge extraction driven by a single Q&#x26;A.</p>
+<p><strong>Execution Tiers (agent auto-judges, no command parameter)</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Tier</th><th>Skips</th><th>Applies when</th></tr></thead><tbody><tr><td><strong>Light tier</strong></td><td>Step 2.1 (quantitative drill-down scoring) / 2.4 (existing topic description-depth eval) / 3 (decision matrix) / 4.1 (reading neighboring topics for style alignment)</td><td>Upstream already gave a definite ingestion conclusion + this turn’s knowledge is light + user did not reject the upstream conclusion</td></tr><tr><td><strong>Strict tier</strong></td><td>Nothing — runs the full 6 steps</td><td>Any of the three conditions above is not met</td></tr></tbody></table>
+<p><strong>Tier judgment (all 4 dimensions must be satisfied for light tier)</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Dimension</th><th>Condition</th></tr></thead><tbody><tr><td>Upstream <code>f2s-kb-feedback-closing</code> case</td><td><strong>case 2 or case 3</strong> (case 1 / no closing block → strict tier)</td></tr><tr><td>Business source files Read this turn</td><td><strong>≤ 3 files</strong></td></tr><tr><td>Function / class names cited in this turn’s reply</td><td><strong>≤ 5</strong></td></tr><tr><td>Did the user reject the upstream conclusion in a follow-up?</td><td><strong>No</strong></td></tr></tbody></table>
+<p><strong>Business source defined</strong>: a Read whose path is <strong>not</strong> under <code>.claude/</code> / <code>.cursor/</code> / <code>.codex/</code> / <code>.Knowledge/</code> / <code>.task/</code> counts.</p>
+<p><strong>Why this design</strong>:</p>
+<ul>
+<li>“Upstream already gave a definite conclusion” → the decision matrix can be skipped; we just adopt the “this round will ingest” summary</li>
+<li>“This turn’s knowledge is light” → no risk of the “description-depth mismatch ≥ 2 levels” incident (light supplements are naturally at the same level as the existing topic)</li>
+<li>“User did not reject” → the upstream conclusion itself is not invalidated</li>
+</ul>
+<p><strong>Steps 5 / 6 never skipped</strong>: regardless of tier, <strong>routing / matcher / index sync</strong> and <strong>write + self-check</strong> always run in full — these are hard correctness constraints.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>After a Q&#x26;A drills into source code and the topic doesn’t cover it or lacks detail</li>
+<li>Automatically suggested by the <code>f2s-kb-feedback-closing</code> rule</li>
+<li>User wants to persist the conclusions of a Q&#x26;A session into the knowledge base</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: A Q&#x26;A session that included source code drill-down (context auto-extracted from conversation history)</li>
+<li><strong>Next Step</strong>: None (ends when ingestion is complete)</li>
+<li><strong>Feature</strong>: Only maintains <code>.Knowledge/</code>; does not touch <code>rules/skills</code> config root</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>: None (single-round focused task; completed by the main agent end-to-end)</p>
+<hr>
+<h3 id="f2s-kb-sync"><code>f2s-kb-sync</code></h3>
+<p><strong>Purpose</strong>: Sinks already-implemented capabilities from the conversation back into the knowledge base. Can accept an explicit capability description or infer with zero input.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Implementation is complete within the conversation and needs knowledge base documentation</li>
+<li>Reverse-documenting knowledge from code</li>
+<li>Periodic knowledge base organization</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: None (can be triggered directly, or with zero-input inference)</li>
+<li><strong>Next Step</strong>: None</li>
+<li><strong>Feature</strong>: First outputs a knowledge base update outline, then writes only after user confirmation</li>
+<li><strong>Difference from <code>f2s-kb-build</code></strong>: <code>ctx-build</code> is driven from <code>stock-docs</code>; <code>kb-sync</code> infers from the conversation/code</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes inference and sync</li>
+<li><code>subAgent: true</code>: Steps are split — <strong>Step 1</strong> (aggregation and inference) can dispatch sub-agents for parallel read-only access to conversation history; <strong>Step 2</strong> (user confirmation of the outline) must be done by the main agent; <strong>Step 3</strong> (persist sync) can dispatch sub-agents to write topic/matcher files, but sub-agents must read 2-3 neighboring topic summaries for style alignment before persisting; manifest and index are always persisted by the main agent</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Outputs outline and gets confirmation, single-point persists manifest and index, final acceptance</td></tr><tr><td>Sub-Agent (aggregation)</td><td>Read-only access to conversation history, infers capability points, generates structured update outline fragments</td></tr><tr><td>Sub-Agent (sync)</td><td>Writes topic/matcher per outline, loads neighboring topic summaries for style alignment before persisting, does not touch manifest or index</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Topics/matchers persisted by sync sub-agents -> Main agent verifies cross-topic routing completeness and <code>includeAny</code> keyword coverage</li>
+<li>Only effective when <code>subAgent: true</code> and sub-tasks are actually dispatched; otherwise all verification happens within the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-merge"><code>f2s-kb-merge</code></h3>
+<p><strong>Purpose</strong>: Resolves editor context conflicts after Git merges. An optional conflict file path can be provided.</p>
+<p><strong>How It Works</strong>: Layered by file kind — split conflict files into “safe to auto-merge” (structured files such as index, manifest, matchers, using union or latest) vs “needs user judgment” (implementation code, business rules, and other semantic files). Auto-resolve the former; for the latter, produce a comparison table (ours/theirs summary + recommendation) and list differences for the user to decide item by item. Design idea: knowledge-base metadata can be automated; business semantics must not be decided unilaterally.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Context conflicts arise after a Git merge/rebase</li>
+<li>Knowledge base file conflicts caused by multi-person collaboration</li>
+<li>Need to unify knowledge base state after branch merging</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: Conflicts generated by a Git merge</li>
+<li><strong>Next Step</strong>: None (ends when conflicts are resolved)</li>
+<li><strong>Feature</strong>: Implementation-side conflicts are only listed for the user to confirm</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent analyzes and resolves conflicts</li>
+<li><code>subAgent: true</code>: Sub-agents can be dispatched for conflict scanning and classification into a comparison table (<code>file / category / ours_summary / theirs_summary / recommendation</code>); sub-agents must not merge files on their own; the main agent persists per strategy, handles implementation-side decisions, and completes acceptance</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Persists merge results per strategy, handles implementation-side conflict decisions, acceptance</td></tr><tr><td>Sub-Agent</td><td>Only performs conflict scanning and classification, delivers comparison table in the five-field schema, does not merge files on its own</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-migrate"><code>f2s-kb-migrate</code></h3>
+<p><strong>Purpose</strong>: Migrates an old-format knowledge base (<code>docs-index.md</code> + <code>rules/</code> pattern) into the <code>.Knowledge/</code> structure organized by topic.</p>
+<p><strong>How It Works</strong>: Uses the legacy <code>docs-index.md</code> and <code>rules/main.md(c)</code> as index clues, recursively finds all referenced business rules and skill files, and reorganizes by topic into <code>.Knowledge/</code> (<code>topics</code> / <code>stock-docs</code> / <code>req-docs</code>). After migration, persist <code>migration-report.md</code> (mapping table + proposed deletion paths), then clean up old files after user confirmation. A one-time structural merge of scattered rules/docs into one knowledge base.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Upgrading an old project to the new Flow2Spec version</li>
+<li>An existing knowledge base needs structured reorganization</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: Old-format knowledge base (<code>docs-index.md</code>, <code>rules/</code>, <code>skills/</code>)</li>
+<li><strong>Next Step</strong>: <code>f2s-kb-upgrade</code> (<strong>Flow V1</strong>: old knowledge base must migrate first, then upgrade; <strong>Current V2+ knowledge base</strong> (including npm v3.x): see the upgrade skill Step 0)</li>
+<li><strong>Flow</strong>:
+<ol>
+<li>Use <code>docs-index.md</code> + <code>rules/main.md(c)</code> as the primary index</li>
+<li>Process all business <code>rules/</code> and business <code>skills/</code> in full (excluding <code>f2s-*</code> package skills)</li>
+<li>Migrate all <code>stock-docs</code>/<code>req-docs</code></li>
+<li>Persist <code>.Knowledge/migration-report.md</code></li>
+<li>Delete migrated old files after user confirmation</li>
+</ol>
+</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent migrates topic by topic</li>
+<li><code>subAgent: true</code>: Sub-agents only handle migration + draft migration-report fragments (delivered as patches); status files (migration-report.md, deletion execution records) are exclusively persisted by the main agent; the main agent leads the deletion confirmation and closure</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Creates migration plan, consolidates migration results, persists migration-report, leads deletion confirmation and execution closure</td></tr><tr><td>Sub-Agent</td><td>Handles topic migration and draft fragment generation (patch format) for designated topics; does not write status files or deletion execution records</td></tr></tbody></table>
+<p><strong>Cross-Verification (when <code>switchAgentVerification: true</code>)</strong>:</p>
+<ul>
+<li>Topics migrated and persisted by sub-agents -> Main agent verifies migration completeness (whether old paths are fully covered, whether topic boundaries overlap)</li>
+<li>Only effective when <code>subAgent: true</code> and sub-tasks are actually dispatched; otherwise all verification happens within the main agent</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-upgrade"><code>f2s-kb-upgrade</code></h3>
+<p><strong>Purpose</strong>: Knowledge base template upgrade. Aligns manifest-routing and matchers shards.</p>
+<p><strong>How It Works</strong>: Uses “version branching + delegated init” — detect whether the current knowledge base is V1 (legacy structure, migrate first) or V2+ (already has <code>.Knowledge</code>): V1 runs migrate then init; V2+ runs <code>flow2spec init</code> directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone <code>init</code>, <code>kb-upgrade</code> includes version routing and re-run logic; <code>init</code> alone is a one-shot structural fill-in.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>After a <code>flow2spec</code> package version upgrade, upgrade the project knowledge base template</li>
+<li>Upgrade an old project to the latest structure</li>
+<li>When interactive <code>flow2spec version</code> / <code>flow2spec init</code> detects a newer npm version, the CLI prompts you to run <code>flow2spec update</code>, then execute this skill in the Agent conversation</li>
+<li>When Cursor detects an older knowledge-base version through <code>.cursor/hooks.json</code> on <code>sessionStart</code>, it prompts you to execute this skill</li>
+<li>When Codex detects an older knowledge-base version through <code>.codex/hooks.json</code> on <code>SessionStart</code>, it prompts you to execute this skill (new or changed hooks must be trusted through <code>/hooks</code> first)</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: <code>f2s-kb-migrate</code> (V1 flow) or an existing <code>.Knowledge/</code></li>
+<li><strong>Includes</strong>: Internally invokes <code>flow2spec init</code> for structural alignment</li>
+<li><strong>Note</strong>: A standalone <code>flow2spec init</code> is <strong>not</strong> an upgrade command</li>
+</ul>
+<p><strong>Flow Differences (in-skill routing codes, <strong>not</strong> equivalent to npm major versions)</strong>:</p>
+<ul>
+<li><strong>V1</strong>: First <code>f2s-kb-migrate</code>, then runs <code>flow2spec init</code></li>
+<li><strong>Current Knowledge Base (V2+)</strong>: When <code>.Knowledge</code> + <code>manifest-routing</code> are already stable, runs <code>flow2spec init</code> to align manifest-routing + matchers shards (<strong>includes Flow2Spec npm v3.x, etc.</strong>; see <code>skills/f2s-kb-upgrade/SKILL.md</code> Step 0 for details)</li>
+</ul>
+<p><strong>Sub-Agent Invocation</strong>:</p>
+<ul>
+<li><code>subAgent: false</code> (default): The main agent completes the upgrade</li>
+<li><code>subAgent: true</code>: Sub-agents only handle shell command execution (running <code>flow2spec init</code>), not knowledge base content persistence; the following steps must not be delegated by the main agent: version routing (V1 / Current V2+), re-reading SKILL.md after init and determining a full skill re-run, Step 3b index.md consolidation, verification summary output</li>
+</ul>
+<p><strong>Responsibility Matrix</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th></tr></thead><tbody><tr><td>Main Agent</td><td>Version routing, re-reading and determining re-run after init, Step 3b index.md consolidation, verification summary; persists <code>manifest-routing.json</code> and <code>index.md</code></td></tr><tr><td>Sub-Agent</td><td>Only runs shell commands like <code>flow2spec init</code>, does not persist knowledge base content</td></tr></tbody></table>
+<p><strong>Cross-Verification</strong>: This skill is not bound to cross-verification; self-verification by the persisting side.</p>
+<hr>
+<h2 id="5-rule-descriptions">5) Rule Descriptions</h2>
+<p>The following are not skill commands but rules activated by trigger words to guide Agent behavior.</p>
+<hr>
+<hr>
+<h3 id="f2s-task"><code>f2s-task</code></h3>
+<p><strong>Trigger Words</strong>: changeTracking, change tracking, task tracking, continuation, continue last task</p>
+<p><strong>Purpose</strong>: Change tracking rules (<code>alwaysApply</code>). When the corresponding skill’s <code>changeTracking.*</code> is set to <code>true</code>, automatically creates, progressively updates, and finally archives task checklists under <code>.task/</code> before and after skill execution, supporting cross-session continuation.</p>
+<p><strong>How It Works</strong>: Cross-session persistence via “disk checkpoints + keyword matching” — each active task records progress with checkboxes (<code>[ ]</code> / <code>[x]</code>) in <code>.task/active/&#x3C;name>/task.md</code>, with <code>todo.json</code> as the active-task index. At the start of a new session, the rule fuzzy-matches the user’s first message to each task’s <code>keywords</code>; on a match, it loads the remaining steps in <code>task.md</code> and the skill file for <code>linkedSkill</code>, restoring full execution context. Completed tasks move to <code>completed/</code>. Design: the file system, not chat memory, is the source of truth so interrupted sessions do not lose progress.</p>
+<p><strong>Scope</strong>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Config Item</th><th>Corresponding Skill</th></tr></thead><tbody><tr><td><code>changeTracking.feat</code></td><td><code>f2s-kb-feat</code></td></tr><tr><td><code>changeTracking.fix</code></td><td><code>f2s-kb-fix</code></td></tr><tr><td><code>changeTracking.implement</code></td><td><code>f2s-implement-tech-design</code></td></tr></tbody></table>
+<p><strong>Cross-Session Continuation</strong>: When a new session starts and <code>.task/todo.json</code> exists, automatically matches the user’s first message against each task’s <code>keywords</code>; on a match, loads the corresponding <code>task.md</code> and <code>linkedSkill</code> skill file, displays the remaining checklist, and asks whether to continue; if there is no match, proceeds without interruption.</p>
+<p><strong>Rule Location</strong>: <code>Config Root/rules/f2s-task.*</code></p>
+<hr>
+<hr>
+<hr>
+<h3 id="implement-tech-design"><code>implement-tech-design</code></h3>
+<p><strong>Trigger Words</strong>: implement according to technical proposal, implement-tech-design, implement per proposal</p>
+<p><strong>Purpose</strong>: Implements runnable code based on technical proposal documents in <code>req-docs/</code>.</p>
+<p><strong>How It Works</strong>: “Proposal as contract” — the agent treats the technical proposal in <code>req-docs/</code> as the sole coding contract and must follow the mandatory six-step pipeline: understand proposal → output task list → ask clarifying questions before coding → implement step by step → output remaining work and post-implementation reminders. The task list and pre-implementation Q&#x26;A are non-skippable gates so coding does not start on a misunderstood spec. Unlike <code>f2s-req-plan</code>, this rule is lightweight single-threaded coding and does not force <code>.task/</code> tracking unless <code>changeTracking.implement: true</code>.</p>
+<p><strong>Change Tracking</strong>: If <code>changeTracking.implement: true</code>, after outputting the task list in Step 2.5, synchronously writes to <code>.task/active/&#x3C;task-name>/task.md</code>; archives the task in Step 5 during wrap-up.</p>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Technical proposal is ready and needs to be coded per the proposal</li>
+<li>After a proposal change, code needs to be updated accordingly</li>
+</ul>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li><strong>Prerequisite</strong>: <code>.Knowledge/req-docs/&#x3C;Technical Proposal>.md</code> (via <code>f2s-req-tech</code> or manual placement)</li>
+<li><strong>Rule Location</strong>:
+<ul>
+<li>Cursor: <code>.cursor/rules/f2s-implement-tech-design.mdc</code></li>
+<li>Claude: <code>.claude/rules/f2s-implement-tech-design.md</code></li>
+<li>Codex: <code>.codex/AGENTS.md</code> + <code>.codex/topics/f2s-implement-tech-design.md</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Execution Flow (mandatory by rules)</strong>:</p>
+<ol>
+<li>Input normalization</li>
+<li>Understand the proposal and context</li>
+<li><strong>Output the implementation task list</strong> (required, cannot be skipped)</li>
+<li><strong>Ask questions before implementing</strong> (required, cannot be skipped)</li>
+<li>Implement per task list</li>
+<li><strong>Output the remaining checklist and post-implementation reminders</strong> (required)</li>
+</ol>
+<p><strong>Sub-Agent Invocation</strong>: None (rule-driven coding; the main agent completes the full workflow)</p>
+<hr>
+<h2 id="6-sub-agent-configuration">6) Sub-Agent Configuration</h2>
+<p>Controlled via <code>flow2spec.config.json</code> at the project root. Defaults: <code>subAgent=false</code>, <code>switchAgentVerification=false</code>, <code>changeTracking.feat=true</code>, <code>changeTracking.fix=false</code>, <code>changeTracking.implement=true</code>.</p>
+<h3 id="how-different-products-see-the-configuration-use-with-the-field-table-below">How Different Products “See” the Configuration (use with the field table below)</h3>
+<p><code>subAgent</code> and similar fields are written to the <strong>on-disk JSON</strong>; products do not guarantee automatic file opening. Therefore, multi-layered hints are provided via <strong>Cursor rules / Claude SessionStart summary + PreToolUse guard / Codex SessionStart summary + AGENTS field-semantics table / knowledge base <code>config-precheck</code> summary</strong>, but <strong>the authoritative source remains <code>Read("flow2spec.config.json")</code></strong> (design rationale in <a href="/Flow2Spec/en/docs/design/">design-principles.md — Agent Orchestration § 5.1</a>; talk / deck pacing in <a href="../../presentations/flow2spec-intro-public-en/index.html">intro deck HTML</a> (internal); Chinese source in <code>flow2spec-intro-draft</code>, config section). <strong>The full path and table are maintained in one place</strong>: <a href="/Flow2Spec/en/docs/usage/">usage-guide.md Sec. 1, <code>f2s-*</code> and <code>flow2spec.config.json</code></a>.</p>
+<h3 id="subagent-field"><code>subAgent</code> Field</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Value</th><th>Behavior</th></tr></thead><tbody><tr><td><code>false</code> (default)</td><td>All <code>f2s-*</code> skills complete within the main agent</td></tr><tr><td><code>true</code></td><td>Certain skills may use sub-agents per their documentation (large-scale parallel processing scenarios)</td></tr></tbody></table>
+<h3 id="switchagentverification-field"><code>switchAgentVerification</code> Field</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Value</th><th>Behavior</th></tr></thead><tbody><tr><td><code>false</code> (default)</td><td>Self-verification on the persisting side: whoever persists verifies</td></tr><tr><td><code>true</code></td><td>When a skill explicitly states this step, enables cross-verification: sub-agent persists -> main agent verifies; main agent persists -> sub-agent verifies (requires <code>subAgent: true</code> and sub-tasks actually dispatched)</td></tr></tbody></table>
+<h3 id="changetracking-field"><code>changeTracking</code> Field</h3>
+<p>A nested object, with each skill independently controlled:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Sub-field</th><th>Corresponding Skill</th><th>Effect</th></tr></thead><tbody><tr><td><code>feat</code></td><td><code>f2s-kb-feat</code></td><td>Creates a task checklist before execution, archives on completion, supports cross-session continuation</td></tr><tr><td><code>fix</code></td><td><code>f2s-kb-fix</code></td><td>Same as above</td></tr><tr><td><code>implement</code></td><td><code>f2s-implement-tech-design</code></td><td>Same as above</td></tr></tbody></table>
+<blockquote>
+<p><code>f2s-req-plan</code> is not constrained by this configuration; it always creates a task checklist. Legacy boolean values (<code>"changeTracking": true/false</code>) are backward-compatible and automatically expand to all three sub-fields on/off.</p>
+</blockquote>
+<p>For full principles and design intent, see <a href="/Flow2Spec/en/docs/architecture/">architecture.md Sec. 7. Agent Execution Model</a>.</p>
+<hr>
+<h2 id="7-flow2spec-kb-cli-for-collaborative-merges">7) <code>flow2spec kb</code> CLI for Collaborative Merges</h2>
+<p>Unlike <code>/f2s-*</code> skills invoked in chat, <code>flow2spec kb *</code> runs in the shell. Skills describe the intended knowledge change in <code>.task/&#x3C;id>/active/&#x3C;task>/kb-delta.json</code>; the CLI validates and merges that change into <code>.Knowledge/</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Command</th><th>Purpose</th><th>Writes files</th></tr></thead><tbody><tr><td><code>flow2spec kb status</code></td><td>Report routing drift, topic health, and deltas under the current <code>TASK_ROOT</code></td><td>No</td></tr><tr><td><code>flow2spec kb check [--strict]</code></td><td>Validate manifest, topics, frontmatter, and revisions; exit 1 on issues</td><td>No</td></tr><tr><td><code>flow2spec kb plan &#x3C;delta.json></code></td><td>Dry-run a delta and report revision conflicts</td><td>No</td></tr><tr><td><code>flow2spec kb apply &#x3C;delta.json></code></td><td>Re-plan, then write topics and routing when mergeable</td><td>Yes</td></tr><tr><td><code>flow2spec kb build [--fix-topics]</code></td><td>Normalize routing metadata from topic frontmatter; optionally add revisions to legacy topics</td><td>Yes</td></tr></tbody></table>
+<p>All five support <code>--json</code>. <code>status</code> and <code>check</code> use exit codes <code>0</code> for healthy and <code>1</code> for issues, so they can run in CI.</p>
+<h3 id="kb-deltajson"><code>kb-delta.json</code></h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "taskId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"add-payment-rule"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "baseRevisions"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"topic-a"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#79B8FF">  "changes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    { </span><span style="color:#79B8FF">"targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"topic-a"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"appendBody"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">    { </span><span style="color:#79B8FF">"targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"topic-c"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"createTopic"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"frontmatter"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"title"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Topic C"</span><span style="color:#E1E4E8"> } }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><code>baseRevisions</code> records the topic versions read when the delta was written. A mismatch at plan/apply time blocks disk writes. Accepted change types are <code>appendBody</code>, <code>replaceBody</code>, <code>updateFrontmatter</code>, and <code>createTopic</code>; append/replace content must be non-blank. <code>apply</code> owns revision increments.</p>
+<p>Knowledge skills produce the delta; the CLI owns the merge boundary. <code>f2s-git-commit</code> can run the full sequence automatically when it finds one unambiguous, mergeable delta. A revision mismatch is resolved by pulling and rewriting the delta against the latest topic. <code>f2s-kb-merge</code> is for Git conflict markers such as <code>&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;</code>, not stale <code>baseRevisions</code>.</p>
+<p>See <a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a> for the operating model and <a href="/Flow2Spec/en/docs/architecture/">Architecture § 6</a> for the design rationale.</p>
+<hr>
+<h2 id="8-quick-reference">8) Quick Reference</h2>
+<p>For typical work scenarios and full workflows, see <a href="/Flow2Spec/en/docs/usage/">Usage Guide § 3. Typical Workflows</a>.</p>
+<p>For a complete directory description, see <a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a>.</p>
+<hr>
+<p>Related Documents:</p>
+<ul>
+<li><a href="/Flow2Spec/en/docs/intro/">Flow2Spec Introduction</a></li>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/scenarios/">Usage Scenarios</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

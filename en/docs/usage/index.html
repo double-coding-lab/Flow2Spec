@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Usage guide documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/usage/"><title>Usage guide — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/" aria-current="page">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/" aria-current="page">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#1-what-init-does" class="is-active">1. What init Does</a><a href="#2-directory-conventions">2. Directory Conventions</a><a href="#3-typical-workflows">3. Typical Workflows</a><a href="#4-agent-execution-configuration">4. Agent Execution Configuration</a><a href="#5-customization-suggestions">5. Customization Suggestions</a><a href="#6-skill-identification">6. Skill Identification</a><a href="#7-related-documents">7. Related Documents</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="flow2spec-usage-guide">Flow2Spec Usage Guide</h1>
+<h2 id="1-what-init-does">1. What <code>init</code> Does</h2>
+<p>Execute in the project root:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> init</span><span style="color:#E1E4E8"> [cursor</span><span style="color:#F97583">|</span><span style="color:#B392F0">claude</span><span style="color:#F97583">|</span><span style="color:#B392F0">codex</span><span style="color:#9ECBFF"> ...]</span></span>
+<span class="line"><span style="color:#6A737D"># To force reset .Knowledge from template:</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> init</span><span style="color:#E1E4E8"> [cursor</span><span style="color:#F97583">|</span><span style="color:#B392F0">claude</span><span style="color:#F97583">|</span><span style="color:#B392F0">codex</span><span style="color:#9ECBFF"> ...]</span><span style="color:#79B8FF"> --reset-knowledge</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>What <code>init</code> does</th><th>What <code>init</code> does NOT do</th></tr></thead><tbody><tr><td>Fills in missing directories and template files</td><td>Write or update business document content</td></tr><tr><td>Writes agent config root <code>rules/</code> <code>skills/</code></td><td>Update <code>includeAny</code> business terms</td></tr><tr><td>Aligns <code>manifest-routing</code> + <code>matchers/</code> package-level structure</td><td>Replace <code>f2s-*</code> skills for writing business semantics</td></tr><tr><td>Overwrites <code>.Knowledge</code> template files with <code>--reset-knowledge</code></td><td>Override existing <code>.Knowledge</code> content (without this flag)</td></tr></tbody></table>
+<blockquote>
+<p><strong><code>init</code> and “knowledge base upgrade” are two different things</strong>: <code>init</code> only handles structural alignment — business semantics (topics content, routing terms, stock-docs/req-docs) are maintained by skills like <code>f2s-kb-add</code>, <code>f2s-kb-fix</code>, <code>f2s-kb-feat</code>, <code>f2s-kb-sync</code>, <code>f2s-kb-build</code>, etc. For cross-version upgrades, use <code>f2s-kb-upgrade</code>. <strong>Do not treat a standalone <code>init</code> as an upgrade command.</strong></p>
+</blockquote>
+<h3 id="f2s--and-flow2specconfigjson-multi-client-multi-layered-reminders-authority-remains-the-disk-json"><code>f2s-*</code> and <code>flow2spec.config.json</code>: Multi-Client, Multi-Layered Reminders (Authority Remains the Disk JSON)</h3>
+<p>Before executing any <strong><code>f2s-*</code> skill</strong>, the Agent needs to obtain the actual values of <strong><code>subAgent</code> / <code>switchAgentVerification</code> / <code>changeTracking</code></strong>, etc. Flow2Spec enforces this via <strong>different mechanisms</strong> on <strong>different clients</strong>; they <strong>complement</strong> each other and do <strong>not</strong> replace one another. <strong>Authority always</strong> resides in the project root <strong><code>flow2spec.config.json</code></strong> (call <strong>Read</strong> to verify against disk before proceeding into skill body).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Client</th><th><code>init</code> Output &#x26; Behavior</th><th>Description</th></tr></thead><tbody><tr><td><strong>Cursor</strong></td><td><code>.cursor/rules/f2s-config-check.mdc</code> (<code>alwaysApply</code>)</td><td>Config reading remains rule-based: <strong>Read(<code>flow2spec.config.json</code>)</strong> before entering skill body. Cursor hooks are used for update checks only, not automatic config reads.</td></tr><tr><td><strong>Claude Code</strong></td><td><code>.claude/hooks/f2s-config-session.js</code> + <code>.claude/hooks/f2s-config-inject.js</code> + <code>.claude/settings.json</code></td><td><code>SessionStart</code> injects one config summary; <code>PreToolUse</code> only guards <strong><code>f2s-*</code> Skill</strong> calls by reminding the agent that the first skill-body action must be <strong>Read</strong>. Neither replaces the disk read.</td></tr><tr><td><strong>Codex</strong></td><td>root <code>AGENTS.md</code> mandatory step + <code>.codex/topics/f2s-config-check.md</code> + <code>{{FLOW2SPEC_PROJECT_CONFIG}}</code> field-semantics table + <code>.codex/hooks/f2s-config-session.js</code></td><td><code>SessionStart</code> injects one configuration summary; config reading still relies on text rules and <strong>Read</strong> as a hard requirement; the table explains field semantics only, does not write current values, and disk Read is authoritative. Codex has no Claude-style <code>PreToolUse</code> guard, so when <code>subAgent=true</code> the skill body must explicitly decide whether to split; even when it does not split, it must output the no-split reason.</td></tr><tr><td><strong>Knowledge Base (optional)</strong></td><td>When <code>.Knowledge/manifest-routing</code> hits <strong><code>config-precheck</code></strong></td><td><code>.Knowledge/topics/f2s-config-precheck.md</code> is a <strong>routing summary</strong> that links to the Codex long-form article; Flow2Spec does <strong>not</strong> maintain a second full copy in <code>.Knowledge</code>, nor does it replace a <code>Read</code> of the JSON.</td></tr></tbody></table>
+<p>For field semantics and default value rules, see <a href="/Flow2Spec/en/docs/commands/">Commands Reference § 6) Sub-Agent Configuration</a>. For the design perspective, see <a href="/Flow2Spec/en/docs/design/">Design Principles § 4.5.1</a>.</p>
+<hr>
+<h2 id="2-directory-conventions">2. Directory Conventions</h2>
+<p>Core distinction: <code>stock-docs/</code> holds solidified documents (driving knowledge routing), <code>req-docs/</code> holds technical designs (driving coding implementation); they are not interchangeable.</p>
+<p>See <a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a> for the full directory description.</p>
+<hr>
+<h2 id="3-typical-workflows">3. Typical Workflows</h2>
+<h3 id="change-tracking-and-cross-session-continuation-recommended">Change Tracking and Cross-Session Continuation (Recommended)</h3>
+<p>Enable <code>changeTracking</code> per skill in <code>flow2spec.config.json</code> (each sub-field is independent):</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>When enabled, <code>f2s-kb-feat</code> / <code>f2s-kb-fix</code> / <code>f2s-implement-tech-design</code> automatically create a checklist under <strong><code>TASK_ROOT/active/</code></strong> (see multi-developer below), check off steps, and archive on completion. In later sessions, the <code>f2s-task</code> rule matches related wording and resumes the remaining steps — no need to re-explain context.</p>
+<p>If <strong><code>changeTracking</code> is off</strong> but you still need a task checklist temporarily, call <code>f2s-req-plan</code> explicitly (always creates a checklist, ignores config) — a <strong>fallback</strong>, not the default path. See <a href="/Flow2Spec/en/docs/commands/">Commands Reference § f2s-req-plan</a>.</p>
+<h3 id="team-collaboration">Team Collaboration</h3>
+<p>Flow2Spec separates personal execution state from team knowledge:</p>
+<ul>
+<li><code>.task/</code> is local and ignored by Git. With collaboration enabled it is partitioned into <code>.task/&#x3C;developerId>/</code>; continuation logic reads only the current <code>TASK_ROOT</code>.</li>
+<li><code>.Knowledge/</code> is shared through Git. Knowledge skills produce a structured <code>kb-delta.json</code>, and the CLI checks topic revisions before merging it.</li>
+</ul>
+<p>developerId resolution follows explicit <code>collaboration.developerId</code> -> Git email prefix -> Git user name -> legacy <code>.task/</code>. Invalid explicit ids fail instead of silently changing identity. Non-ASCII Git identities use a stable <code>dev-xxxxxxxx</code> hash fallback with a warning. Setting <code>collaboration.enabled: false</code> always selects the legacy root.</p>
+<p>The knowledge merge commands are:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> status</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> check</span><span style="color:#79B8FF"> --strict</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> plan</span><span style="color:#9ECBFF">  .task/</span><span style="color:#F97583">&#x3C;</span><span style="color:#9ECBFF">i</span><span style="color:#E1E4E8">d</span><span style="color:#F97583">></span><span style="color:#9ECBFF">/active/</span><span style="color:#F97583">&#x3C;</span><span style="color:#9ECBFF">tas</span><span style="color:#E1E4E8">k</span><span style="color:#F97583">></span><span style="color:#9ECBFF">/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> apply</span><span style="color:#9ECBFF"> .task/</span><span style="color:#F97583">&#x3C;</span><span style="color:#9ECBFF">i</span><span style="color:#E1E4E8">d</span><span style="color:#F97583">></span><span style="color:#9ECBFF">/active/</span><span style="color:#F97583">&#x3C;</span><span style="color:#9ECBFF">tas</span><span style="color:#E1E4E8">k</span><span style="color:#F97583">></span><span style="color:#9ECBFF">/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> build</span></span></code></pre>
+<p>In normal work, <code>f2s-git-commit</code> runs the relevant <code>check -> status -> plan -> apply -> build -> check</code> sequence. The shell commands are useful for diagnosis and CI. When <code>baseRevisions</code> no longer matches disk, pull the latest topic, reread its meaning, and rewrite the delta; changing only the number is not a semantic merge.</p>
+<p>Existing topics without revisions require a one-time migration with <code>flow2spec kb build --fix-topics</code>, followed by review and <code>flow2spec kb check --strict</code>. The full model, same-topic conflict handling, and manager visibility are covered in <a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a>.</p>
+<h3 id="new-feature-development">New Feature Development</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-req-clarify (one-line requirement or doc) → f2s-req-tech → implement &#x3C;technical design> (strictly follows implement-tech-design rule)</span></span>
+<span class="line"><span>After implementation, new capability → f2s-kb-feat</span></span>
+<span class="line"><span>After implementation, bug fix → f2s-kb-fix</span></span>
+<span class="line"><span>After debugging → f2s-kb-sync</span></span>
+<span class="line"><span>Finally → f2s-git-commit</span></span></code></pre>
+<p>When requirements are already clear, <code>f2s-req-clarify</code> can be skipped, starting directly from <code>f2s-req-tech</code>. After the technical design is written into <code>req-docs/</code>, the <code>implement-tech-design</code> rule drives coding.</p>
+<h3 id="document-ingestion">Document Ingestion</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>New architecture document ingestion: f2s-doc-arch → f2s-doc-final → f2s-kb-build</span></span>
+<span class="line"><span>PDF/draft ingestion:               f2s-doc-final → f2s-kb-build</span></span></code></pre>
+<p>Integrate architecture descriptions or PDF final drafts into knowledge routing (generates topics/matchers/manifest-routing). To ingest a PDF into the knowledge base, use <code>f2s-doc-final</code> then <code>f2s-kb-build</code>. <code>f2s-doc-pdf</code> only converts a PDF to Markdown under <code>req-docs/</code> for editing; it is <strong>not</strong> the recommended path for “PDF straight to coding.”</p>
+<h3 id="backfilling-existing-capabilities">Backfilling Existing Capabilities</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-add      # Aggregate multiple files, extract from source code / documents</span></span>
+<span class="line"><span>f2s-kb-sync      # Infer already-implemented capabilities from current session</span></span></code></pre>
+<p>Use these when code has already been shipped but the knowledge base has no record. <code>f2s-kb-add</code> is suitable for batch imports; <code>f2s-kb-sync</code> is suitable for real-time consolidation at the end of a session.</p>
+<h3 id="routine-maintenance">Routine Maintenance</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-fix       # Fix implementation or rule errors, auto-sync knowledge base</span></span>
+<span class="line"><span>f2s-kb-feat      # Add new capabilities, auto-sync knowledge base</span></span>
+<span class="line"><span>f2s-kb-sync      # Periodic sync or backfill</span></span>
+<span class="line"><span>f2s-kb-merge     # Resolve context conflicts after Git merges</span></span></code></pre>
+<h3 id="cross-version-knowledge-base-upgrade">Cross-Version Knowledge Base Upgrade</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-migrate (Legacy V1: old knowledge base) → f2s-kb-upgrade</span></span>
+<span class="line"><span>f2s-kb-upgrade (Current V2+: already has .Knowledge; includes npm v3.x projects, etc.; see skill step 0)</span></span></code></pre>
+<p>In interactive terminals, the Flow2Spec CLI checks the latest npm version with a cache when running <code>flow2spec version</code> / <code>flow2spec init</code>. If a newer version exists, it prompts you to run <code>flow2spec update</code>, then execute <code>f2s-kb-upgrade</code> in the Agent conversation to align the project knowledge templates, manifest/matchers, and agent config roots. Failed update checks are skipped silently and do not affect the current command; checks are disabled in <code>CI</code>, non-TTY sessions, or when <code>FLOW2SPEC_SKIP_UPDATE_CHECK=1</code> is set.</p>
+<p>After <code>flow2spec init codex</code>, Codex projects include <code>.codex/hooks.json</code>, <code>.codex/hooks/f2s-config-session.js</code>, and <code>.codex/hooks/f2s-update-check.js</code>. On Codex <code>SessionStart</code> for <code>startup|resume</code>, the first script injects one configuration summary and the second checks the knowledge-base version automatically. When the hook is first generated or changed, trust it through <code>/hooks</code> in Codex. Set <code>updateCheck.enabled=false</code> in <code>flow2spec.config.json</code> to skip only the version check.</p>
+<p>After <code>flow2spec init cursor</code>, Cursor projects include <code>.cursor/hooks.json</code> and <code>.cursor/hooks/f2s-update-check.js</code>. The hook runs on Cursor <code>sessionStart</code> and injects upgrade reminders through <code>additional_context</code>. Set <code>updateCheck.enabled=false</code> in <code>flow2spec.config.json</code> to skip the check.</p>
+<p>After <code>flow2spec init claude</code>, Claude projects include <code>.claude/settings.json</code>, <code>.claude/hooks/f2s-config-session.js</code>, <code>.claude/hooks/f2s-config-inject.js</code>, and <code>.claude/hooks/f2s-update-check.js</code>: <code>SessionStart</code> injects the configuration summary and checks the knowledge-base version, while <code>PreToolUse Skill</code> only guards <code>f2s-*</code> Skill calls. The version-check script injects an agent-instruction notice through <code>additional_context</code>, requiring the agent to relay the message verbatim to the user. The notice format is: “Current project <code>&#x3C;project></code> knowledge-base version v<current>, lower than latest package version v<latest>. Run the f2s-kb-upgrade skill to align templates and routing.” If today’s cache still flags a needed upgrade, every new session re-injects the reminder; after a successful upgrade, <code>f2s-kb-upgrade</code> clears <code>.Knowledge/update-check.json</code> so stale reminders disappear.</latest></current></p>
+<hr>
+<h2 id="4-agent-execution-configuration">4. Agent Execution Configuration</h2>
+<p>Controlled via the project root <code>flow2spec.config.json</code>. For complete field rules, see <a href="/Flow2Spec/en/docs/commands/">Commands Reference § 6) Sub-Agent Configuration</a>. <strong>How each client is reminded to read the config, and why <code>Read</code> remains authoritative</strong> — see <strong>§ 1</strong> (this § only explains <strong>when</strong> to toggle each switch).</p>
+<p><strong>When to enable <code>subAgent: true</code></strong>: When the task is large (multi-module parallel implementation, batch document ingestion, large-scale migration). When enabled, each skill decides whether to actually split based on its own size threshold; tasks below the threshold are still completed within the main agent.</p>
+<p><strong>When to enable <code>switchAgentVerification: true</code></strong>: When higher write consistency is needed (large-scale migration, critical design implementation). The trade-off is increased execution rounds; for routine maintenance, the default <code>false</code> is sufficient. Requires <code>subAgent: true</code> to trigger the “main-writes, sub-verifies” cross-check direction.</p>
+<p><strong>When to enable <code>changeTracking.*</code></strong>: When you want each skill execution to automatically leave a resumable task checklist. Each skill sub-item is independently configurable without mutual interference:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Use <code>f2s-req-plan</code> only when all <code>changeTracking</code> sub-fields are off and you still need a checklist (see § 3 footnote).</p>
+<hr>
+<h2 id="5-customization-suggestions">5. Customization Suggestions</h2>
+<ul>
+<li>When customizing the “implement from technical design” logic for your project, prioritize adjusting <strong><code>f2s-implement-tech-design</code></strong>: Cursor <code>.cursor/rules/f2s-implement-tech-design.mdc</code>, Claude <code>.claude/rules/f2s-implement-tech-design.md</code>; Codex uses <code>.codex/AGENTS.md</code> and associated <code>skills/</code> as the source of truth.</li>
+<li>Running <code>init</code> again by default only fills in missing templates and performs package-level structural alignment — it does <strong>not</strong> replace <code>f2s-*</code> skills for maintaining business content. To reset <code>.Knowledge</code> from the template, add <code>--reset-knowledge</code>.</li>
+</ul>
+<hr>
+<h2 id="6-skill-identification">6. Skill Identification</h2>
+<p>Skills are triggered by matching <code>name</code> and <code>description</code>. Files are located under <code>config-root/skills/*/SKILL.md</code>.</p>
+<hr>
+<h2 id="7-related-documents">7. Related Documents</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/intro/">Flow2Spec Introduction</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/scenarios/">Usage Scenarios</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

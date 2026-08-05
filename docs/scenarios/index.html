@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 使用案例文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/scenarios/"><title>使用案例 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#场景一新需求--澄清--技术方案" class="is-active">场景一：新需求 → 澄清 → 技术方案</a><a href="#场景二架构说明沉淀进知识库">场景二：架构说明沉淀进知识库</a><a href="#场景三按技术方案实现">场景三：按技术方案实现</a><a href="#场景四实现后补录知识库">场景四：实现后补录知识库</a><a href="#场景五发现违规实现修复并同步知识库">场景五：发现违规实现，修复并同步知识库</a><a href="#场景六git-合并后知识库冲突">场景六：Git 合并后知识库冲突</a><a href="#场景七两个人修改同一个-topic">场景七：两个人修改同一个 topic</a><a href="#相关文档">相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="使用案例模拟对话">使用案例（模拟对话）</h1>
+
+<p>以下示例围绕同一个电商项目展开，贯穿从需求澄清到上线后维护的完整流程。</p>
+<p><strong>前提</strong>：项目已执行 <code>flow2spec init</code>，<code>flow2spec.config.json</code> 使用默认配置（<code>subAgent: false</code>；<code>changeTracking.feat/implement: true</code>，<code>changeTracking.fix: false</code>）。<code>f2s-*</code> 技能不改动配置根 <code>rules/</code>、<code>skills/</code> 文件。</p>
+<hr>
+<h2 id="场景一新需求--澄清--技术方案">场景一：新需求 → 澄清 → 技术方案</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-req-clarify 产品给了一份退款需求，但没说清楚部分退款和全额退款走不走同一接口，退款成功后积分是否回撤。文档在 <code>.Knowledge/req-docs/退款需求v1.md</code>。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已读取需求文档，有几个点需要确认：</p>
+<ol>
+<li>部分退款与全额退款是否复用同一接口，通过 <code>amount</code> 区分，还是拆成两个端点？</li>
+<li>退款成功后积分是否回撤？回撤失败是否阻断退款流程？</li>
+<li>退款申请是同步到账还是异步（T+1）？</li>
+<li>卖家侧是否需要审核步骤？</li>
+</ol>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<ol>
+<li>同一接口用 amount 区分；2. 积分回撤，失败不阻断，异步重试；3. 异步 T+1；4. 不需要审核。</li>
+</ol>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>澄清完成。执行 <code>/f2s-req-tech</code> 输出技术方案。</p>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-req-tech</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已生成 <code>.Knowledge/req-docs/退款功能_技术方案.md</code>，包含：</p>
+<ul>
+<li>接口设计：<code>POST /refunds</code>，<code>amount</code> 字段区分全额/部分</li>
+<li>状态机：<code>PENDING → SUCCESS / FAILED</code></li>
+<li>积分回撤：异步队列，失败进死信，告警人工处理</li>
+<li>错误码清单</li>
+</ul>
+<p>下一步：说”按方案实现 <code>.Knowledge/req-docs/退款功能_技术方案.md</code>”触发编码。</p>
+</blockquote>
+<hr>
+<h2 id="场景二架构说明沉淀进知识库">场景二：架构说明沉淀进知识库</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-doc-arch 帮我出一份订单服务架构初稿，重点看创建流、支付回调、幂等与消息投递；代码在 <code>src/order</code>、<code>src/payment</code>。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已扫描相关目录，生成 <code>.Knowledge/stock-docs/订单服务架构说明_初稿.md</code>，包含：</p>
+<ul>
+<li>模块边界与依赖关系</li>
+<li>创建流时序</li>
+<li>支付回调幂等机制（基于 <code>payment_callback_log</code> 表）</li>
+<li>消息投递重试策略</li>
+</ul>
+<p>确认无误后执行 <code>/f2s-doc-final</code> 规范化格式。</p>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-doc-final .Knowledge/stock-docs/订单服务架构说明_初稿.md</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已生成 <code>.Knowledge/stock-docs/订单服务架构说明_终稿.md</code>，按终稿模板整理，标注了待补充项。</p>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>f2s-kb-build .Knowledge/stock-docs/订单服务架构说明_终稿.md</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已完成知识库同步：</p>
+<ul>
+<li>新增 <code>.Knowledge/topics/order-service.md</code></li>
+<li>更新 <code>.Knowledge/manifest-routing.json</code>（新增路由规则）</li>
+<li>生成 <code>.Knowledge/matchers/order-service.json</code>（关键词：订单创建、支付回调、幂等、消息投递）</li>
+<li>更新 <code>.Knowledge/index.md</code></li>
+</ul>
+<p>后续与订单服务相关的任务会自动命中此主题。</p>
+</blockquote>
+<hr>
+<h2 id="场景三按技术方案实现">场景三：按技术方案实现</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>按方案实现：<code>.Knowledge/req-docs/退款功能_技术方案.md</code>，只改 <code>src/refund/</code>，不要动支付模块。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已读取方案。实现任务列表：</p>
+<ol>
+<li>新建 <code>RefundController</code>，实现 <code>POST /refunds</code></li>
+<li>新建 <code>RefundService</code>，含状态机流转逻辑</li>
+<li>新建 <code>RefundRepository</code>，对应 <code>refund</code> 表</li>
+<li>新建 <code>PointRollbackProducer</code>，向积分队列发送回撤消息</li>
+<li>单元测试覆盖状态机流转</li>
+</ol>
+<p>实现前确认：</p>
+<ul>
+<li><code>refund</code> 表是否已存在，还是需要生成 migration？</li>
+<li>积分队列 Topic 名称是什么？</li>
+</ul>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>表已存在，不用 migration；Topic 是 <code>point-rollback-events</code>。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已完成以上 5 项，均在 <code>src/refund/</code> 内，未触碰 <code>src/payment/</code>。</p>
+<p><strong>待完成（需人工）</strong>：</p>
+<ul>
+<li><code>point-rollback-events</code> 消费端（积分服务侧）</li>
+<li>死信监控告警规则配置</li>
+</ul>
+<p>建议执行 <code>/f2s-kb-feat</code> 将本次新增能力同步进知识库。</p>
+</blockquote>
+<hr>
+<h2 id="场景四实现后补录知识库">场景四：实现后补录知识库</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-kb-sync 退款功能上线了，帮我把支付失败重试队列命名、死信表字段、监控告警口径沉淀进知识库，先给大纲我确认再写。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>知识库更新大纲（待确认）：</p>
+<p><strong>更新主题</strong>：<code>order-service</code>（已有）</p>
+<ul>
+<li>新增「支付失败重试机制」：队列名 <code>payment-retry-queue</code>，最大重试 3 次，间隔 30s / 120s / 300s</li>
+<li>新增「死信表」：表名 <code>payment_dead_letter</code>，字段 <code>order_id / error_code / retry_count / created_at</code></li>
+<li>新增「监控口径」：告警阈值 <code>retry_count >= 3</code>，通知渠道 DingTalk</li>
+</ul>
+<p>确认后写入，或告诉我需要修改的地方。</p>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>确认写入。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已形成当前任务的 <code>kb-delta.json</code>：</p>
+<ul>
+<li>目标主题：<code>order-service</code></li>
+<li>基线版本：<code>revision: 6</code></li>
+<li>变更类型：<code>appendBody</code></li>
+</ul>
+<p>提交时会由 <code>f2s-git-commit</code> 自动执行 <code>plan → apply → build → check</code>；若磁盘 revision 已变化，会停止并报告冲突，不会覆盖队友的新内容。</p>
+</blockquote>
+<hr>
+<h2 id="场景五发现违规实现修复并同步知识库">场景五：发现违规实现，修复并同步知识库</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-kb-fix <code>RefundService</code> 里直接 <code>new RestTemplate()</code> 了，违反 Spring Bean 注入约定。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已修复：<code>RefundService.java</code> 第 34 行改为构造注入，<code>RefundConfig</code> 补充 <code>@Bean</code> 声明。</p>
+<p>已把「<code>RestTemplate</code> 必须通过 Bean 注入，禁止直接实例化」整理为知识变更 delta，并记录修复证据。提交前会先做 revision 预检，再合入对应 topic。</p>
+</blockquote>
+<hr>
+<h2 id="场景六git-合并后知识库冲突">场景六：Git 合并后知识库冲突</h2>
+<p><strong>你</strong></p>
+<blockquote>
+<p>/f2s-kb-merge <code>.Knowledge/index.md</code> 和 <code>.Knowledge/stock-docs/订单服务架构说明_终稿.md</code> 合并后有冲突标记，业务代码我已手动合完。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已扫描两个文件的冲突标记：</p>
+<ul>
+<li><code>index.md</code>：2 处冲突，均为主题描述字段，取 HEAD 版本（内容较新），已自动处理。</li>
+<li><code>订单服务架构说明_终稿.md</code>：1 处冲突，「监控告警阈值」两个分支不同（3 次 vs 5 次），需你确认。</li>
+</ul>
+</blockquote>
+<p><strong>你</strong></p>
+<blockquote>
+<p>用 3 次。</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>已按确认结果清理全部冲突标记，文件可提交。</p>
+</blockquote>
+<hr>
+<h2 id="场景七两个人修改同一个-topic">场景七：两个人修改同一个 topic</h2>
+<p><strong>背景</strong></p>
+<blockquote>
+<p>Alice 和 Bob 都从 <code>order-service revision: 6</code> 开始工作。Alice 补充退款到账时限，Bob 补充退款重试规则；两份改动落在同一个 topic。</p>
+</blockquote>
+<p><strong>Alice</strong></p>
+<blockquote>
+<p>f2s-kb-sync 把“退款审核通过后 3 个工作日内原路退回”补进订单服务知识，确认大纲后生成 delta。</p>
+</blockquote>
+<p><strong>Agent（Alice）</strong></p>
+<blockquote>
+<p>已生成 <code>.task/alice/active/refund_arrival/kb-delta.json</code>，<code>baseRevisions.order-service = 6</code>。<code>kb plan</code> 通过，apply 后 <code>order-service</code> 已更新为 revision 7。</p>
+</blockquote>
+<p>Alice 随后提交并推送了代码与 <code>.Knowledge/</code> 变更。</p>
+<p><strong>Bob</strong></p>
+<blockquote>
+<p>我已经拉取 Alice 的最新提交。继续检查我的退款重试 delta。</p>
+</blockquote>
+<p><strong>Agent（Bob）</strong></p>
+<blockquote>
+<p><code>kb plan</code> 未通过：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>order-service: revision mismatch 6 -> 7</span></span></code></pre>
+<p>Alice 新增的是到账时限；你的 delta 新增失败重试，两条规则不互斥，但都修改同一个 topic。需要以 revision 7 的正文为基线重新整理 change，不能只把 <code>baseRevisions</code> 数字改成 7。</p>
+</blockquote>
+<p><strong>Bob</strong></p>
+<blockquote>
+<p>保留 Alice 的到账时限，把我的“最多重试 3 次，间隔 30s / 120s / 300s”放到退款失败处理下面，再试一次。</p>
+</blockquote>
+<p><strong>Agent（Bob）</strong></p>
+<blockquote>
+<p>已重读 revision 7，按当前结构重写 delta：</p>
+<ul>
+<li>保留到账时限原文</li>
+<li>在「退款失败处理」下追加重试次数与间隔</li>
+<li><code>baseRevisions.order-service</code> 更新为 7</li>
+</ul>
+<p>第二次 <code>kb plan</code> 通过，apply 后 topic 进入 revision 8；<code>kb build</code> 与 <code>kb check</code> 均通过。现在可以查看 <code>.Knowledge/</code> diff 后提交。</p>
+</blockquote>
+<p>这里处理的是 <strong>revision 冲突</strong>：拉取最新 topic、重读语义、重写 delta。只有文件已经出现 <code>&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;</code> 等标记时，才属于 Git 冲突并进入 <code>f2s-kb-merge</code>。</p>
+<hr>
+<h2 id="相关文档">相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a></li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a></li>
+<li><a href="/Flow2Spec/docs/directories/">目录与路径约定</a></li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a></li>
+<li><a href="/Flow2Spec/docs/collaboration/">团队协作</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

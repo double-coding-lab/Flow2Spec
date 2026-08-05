@@ -1,0 +1,1126 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 命令说明文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/commands/"><title>命令说明 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/" aria-current="page">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/" aria-current="page">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#命令速查表" class="is-active">命令速查表</a><a href="#1-文档沉淀stock-docs-链路">1) 文档沉淀（stock-docs 链路）</a><a href="#2-需求与方案">2) 需求与方案</a><a href="#3-git-提交">3) Git 提交</a><a href="#4-知识库维护">4) 知识库维护</a><a href="#5-规则说明">5) 规则说明</a><a href="#6-子-agent-配置说明">6) 子 Agent 配置说明</a><a href="#7-flow2spec-kb-cli协作合库">7) flow2spec kb CLI（协作合库）</a><a href="#8-快速参考">8) 快速参考</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="工作流与技能说明">工作流与技能说明</h1>
+
+<h2 id="命令速查表">命令速查表</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>命令</th><th>用途</th><th>分类</th></tr></thead><tbody><tr><td><code>/f2s-doc-arch</code></td><td>扫描项目，生成架构说明初稿</td><td>文档沉淀</td></tr><tr><td><code>/f2s-doc-final</code></td><td>PDF / 初稿转《终稿模版》规范格式</td><td>文档沉淀</td></tr><tr><td><code>/f2s-kb-build</code></td><td>终稿文档同步到知识库路由（生成 topics / matchers / manifest）</td><td>文档沉淀</td></tr><tr><td><code>/f2s-kb-add &#x3C;路径></code></td><td>已落地能力多文件聚合入知识库</td><td>文档沉淀</td></tr><tr><td><code>/f2s-kb-rm</code></td><td>删除某 stock-docs 文档对应的知识主题与索引映射</td><td>文档沉淀</td></tr><tr><td><code>/f2s-doc-pdf</code></td><td>PDF 技术方案转 Markdown，保存到 req-docs</td><td>文档沉淀</td></tr><tr><td><code>/f2s-req-clarify</code></td><td>需求澄清，多轮问答明确需求边界</td><td>需求与方案</td></tr><tr><td><code>/f2s-req-tech</code></td><td>基于澄清结果生成技术方案文档</td><td>需求与方案</td></tr><tr><td><code>/f2s-req-plan</code></td><td>按技术方案拆任务清单，支持并行实现 （不依赖 <code>changeTracking.*</code> 配置）</td><td>需求与方案</td></tr><tr><td><code>/f2s-git-commit</code></td><td>提交代码，默认检查知识库覆盖；说“快捷提交”时跳过覆盖检查</td><td>提交</td></tr><tr><td><code>/f2s-kb-feat</code></td><td>新增能力，补全实现 + 同步知识库</td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-fix</code></td><td>修复 BUG + 自动同步知识库</td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-distill</code></td><td>从问答过程中提取可复用知识事实并自动入库</td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-sync</code></td><td>将会话中已实现能力沉淀回知识库</td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-merge</code></td><td>解决 Git 合并后的知识库冲突</td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-migrate</code></td><td>旧版知识库一次性迁移到 <code>.Knowledge/</code></td><td>知识库维护</td></tr><tr><td><code>/f2s-kb-upgrade</code></td><td>知识库模板升级，对齐 manifest + matchers 分片</td><td>知识库维护</td></tr></tbody></table>
+<p>上表是聊天里触发的 <code>/f2s-*</code> 技能。仓库还带一组 <strong>shell CLI</strong>：<code>flow2spec kb status / check / plan / apply / build</code>，用来把技能写好的 <code>kb-delta.json</code> 合入共享的 <code>.Knowledge/</code>，见 <a href="#7-flow2spec-kb-cli%E5%8D%8F%E4%BD%9C%E5%90%88%E5%BA%93">§ 7) <code>flow2spec kb</code> CLI</a>。</p>
+<hr>
+<h2 id="1-文档沉淀stock-docs-链路">1) 文档沉淀（stock-docs 链路）</h2>
+<h3 id="f2s-doc-arch"><code>f2s-doc-arch</code></h3>
+<p><strong>作用</strong>：根据用户说明或扫描代码，生成项目架构说明初稿。无固定格式要求，描述清楚系统结构、模块关系、关键决策即可。</p>
+<p><strong>工作原理</strong>：以「inventory 驱动扫描」为核心——先由主 agent 产出模块清单（inventory）与扫描契约（读哪些入口、关注哪些维度），再按 inventory 执行只读代码扫描，最后将扫描结果聚合为人可读的架构初稿落盘 <code>stock-docs/</code>。整个流程不改代码，仅做「代码→文档」的单向提取。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>新项目需要架构文档</li>
+<li>存量项目需要补充架构说明</li>
+<li>系统重构后更新架构描述</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：无</li>
+<li><strong>后续</strong>：<code>f2s-doc-final</code>（规范化终稿）→ <code>f2s-kb-build</code>（<strong>须终稿入参</strong>；初稿不可直驱 build）</li>
+<li><strong>输出</strong>：<code>.Knowledge/stock-docs/&#x3C;架构说明>_初稿.md</code></li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内扫描代码并生成</li>
+<li><code>subAgent: true</code>：默认走 <strong>B 模式</strong>（主产出 inventory + 扫描契约 → 子 agent 并行只读扫表 → 主合并落盘）；满足以下任一条件时升级为 <strong>C 模式</strong>（多轮纠偏）：多 workspace / monorepo、源路径 > 20 条、首轮子表有矛盾或空洞、多源叙述冲突严重</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>产出 inventory（入口 + 核心模块名）与扫描契约，汇总子 agent 交付，落盘 stock-docs 初稿</td></tr><tr><td>子 agent（B/C 模式）</td><td>按主手写 inventory 并行只读扫描，按统一 YAML schema 交付（<code>source / scope / cross_refs / pending</code>），不得自行裁剪范围</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-doc-final"><code>f2s-doc-final</code></h3>
+<p><strong>作用</strong>：将 PDF 技术方案或初稿文档转为《终稿模版》规范格式，统一文档结构，便于后续进入知识库。</p>
+<p><strong>工作原理</strong>：将非结构化或格式各异的文档（PDF/初稿）对照内置终稿模版进行格式归一化：提取核心概念表、业务规则、关键流程、配置与错误处理等标准章节，补齐缺失段落标记，最终输出格式统一的 <code>_终稿.md</code>。终稿是 <code>f2s-kb-build</code> 的标准输入物，确保知识库入口的结构一致性。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>PDF 技术方案需要转为 Markdown</li>
+<li>初稿需要规范化以便沉淀</li>
+<li>外部文档需要纳入 Flow2Spec 管理</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：PDF 文档或初稿文档</li>
+<li><strong>后续</strong>：<code>f2s-kb-build</code>（终稿入库）</li>
+<li><strong>输出</strong>：<code>.Knowledge/stock-docs/&#x3C;文档>_终稿.md</code></li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成全流程</li>
+<li><code>subAgent: true</code>：PDF > 50 页或 > 5MB 时，可拆子做套模版与排版草稿；子不追问用户、不补写流程说明、不宣称终稿合规；主 agent 识别格式缺口并定稿验收</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>识别格式缺口、对照模版与澄清文档验收定稿</td></tr><tr><td>子 agent</td><td>套模版与排版草稿，不追问用户、不写流程说明</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-build"><code>f2s-kb-build</code></h3>
+<p><strong>作用</strong>：将 <code>stock-docs/</code> 中的沉淀文档（架构、终稿）同步到知识库路由系统，生成/更新主题文件、索引、manifest-routing、matchers。</p>
+<p><strong>工作原理</strong>：以终稿文档为输入，执行「文档→路由」的三步映射：① 从终稿中提取能力主题与关键词；② 生成 <code>topics/&#x3C;topic>.md</code>（路由摘要，含执行边界与下一步指针）和 <code>matchers/&#x3C;id>.json</code>（机读匹配词 <code>includeAny</code>）；③ 在 <code>manifest-routing.json</code> 注册 task→topic 映射规则，并更新 <code>index.md</code> 人读导航。完成后，任务路由引擎即可通过关键词命中该主题。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>终稿文档完成后，需要让知识库”知道”这些文档</li>
+<li>新增业务领域，需要建立路由映射</li>
+<li>文档内容更新后，同步更新知识库索引</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：<code>f2s-doc-arch</code>、<code>f2s-doc-final</code> 或直接编写的终稿</li>
+<li><strong>后续</strong>：无（入库完成后可直接使用）</li>
+<li><strong>输入</strong>：<code>.Knowledge/stock-docs/*.md</code></li>
+<li><strong>输出</strong>：
+<ul>
+<li><code>.Knowledge/topics/&#x3C;topic>.md</code></li>
+<li><code>.Knowledge/index.md</code></li>
+<li><code>.Knowledge/manifest-routing.json</code></li>
+<li><code>.Knowledge/matchers/*.json</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内顺序处理各文档</li>
+<li><code>subAgent: true</code>：改动超过阈值（新增/修改主题 > 2 个 OR 新增 matcher > 1 个 OR 涉及跨主题批量引用调整）时拆子；子A 只写 topics/、子B 只写 matchers/；主 agent 单点编辑 manifest-routing.json 和 index.md，子 agent 不跨边界落盘</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>单点落盘 manifest-routing.json 和 index.md，整体验收</td></tr><tr><td>子 agent（topics）</td><td>仅写 topics/ 目录下的主题文件，不触碰 manifest 和 index</td></tr><tr><td>子 agent（matchers）</td><td>仅写 matchers/ 目录下的分片文件，不触碰 manifest 和 index</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-add"><code>f2s-kb-add</code></h3>
+<p><strong>作用</strong>：将已落地能力（多文件聚合）解析进知识库。适用于代码已实现但缺少文档，或已有多个文档需要统一入库的场景。</p>
+<p><strong>工作原理</strong>：从多个分散的源文件（代码、配置、散落文档）中聚合提取能力描述，走完整的「初稿→终稿→topics/index/manifest」沉淀链路。与 <code>f2s-kb-build</code> 的区别在于输入：<code>ctx-build</code> 从已有的单份终稿驱动，<code>doc-add</code> 从多个散落源聚合后再走同一管线。本质是补齐「有实现无文档」的缺口。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>存量代码需要补录知识库</li>
+<li>多份相关文档需要聚合入库</li>
+<li>第三方文档批量导入</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：无（可直接触发）</li>
+<li><strong>后续</strong>：无（入库完成即结束）</li>
+<li><strong>流程</strong>：初稿 → 终稿 → topics/index/manifest</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内顺序处理</li>
+<li><code>subAgent: true</code>：满足以下任一阈值时启用，默认走 <strong>B 模式</strong>（主产出 inventory → 子并行只读按 schema 填表 → 主合并落盘）；多 workspace / monorepo、首轮子表矛盾或空洞、多源叙述冲突严重时升级 <strong>C 模式</strong>（多轮纠偏）
+<ul>
+<li>阈值：输入路径 ≥ 5 条 OR 单源 > 3000 行 OR 多路径总量 > 10000 行</li>
+</ul>
+</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>产出 inventory 与扫描契约，汇总子表，落盘 topics/index/manifest</td></tr><tr><td>子 agent（B/C 模式）</td><td>按主手写 inventory 执行只读扫描，按 schema 交表（<code>source / scope / capabilities / cross_refs / pending</code>）；不得自行裁剪范围、不写 manifest 和 index、不宣布”已进知识库”</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>子 agent 落盘的 topic 文件 → 主 agent 校验路由映射完整性与关键词覆盖</li>
+<li>仅当 <code>subAgent: true</code> 且实际拆出子任务时生效；否则全部在主 agent 内验证</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-rm"><code>f2s-kb-rm</code></h3>
+<p><strong>作用</strong>：按 stock-docs 文档删除对应的知识主题与索引映射。仅删除知识库中的引用关系，不删除源文档本身。</p>
+<p><strong>工作原理</strong>：<code>f2s-kb-build</code> 的逆操作——给定一份 <code>stock-docs</code> 文档路径，定位其在 <code>manifest-routing.json</code> 中的 task→topic 规则、对应的 <code>matchers/&#x3C;id>.json</code> 分片、<code>topics/&#x3C;topic>.md</code> 文件以及 <code>index.md</code> 中的行项，逐一清除引用。若删除后某 topic 无任何 task 引用，则移除该 topic 文件。源文档本身保留不动，用户可自行决定是否物理删除。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>文档已废弃，需要从知识路由中移除</li>
+<li>误入库的文档需要撤销路由映射</li>
+<li>文档合并后清理旧映射</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：已入库的 stock-docs 文档</li>
+<li><strong>后续</strong>：无</li>
+<li><strong>注意</strong>：只删路由映射，不删源文档</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内全流程执行（单点删除拆子收益低）</li>
+<li><code>subAgent: true</code>：仅当<strong>批量删除 ≥ 5 个主题</strong>时才拆子执行删除与清引用；主 agent 必控范围确认与 fallbackTopic 重指；manifest-routing.json 与 index.md 恒由主落盘</li>
+</ul>
+<hr>
+<h3 id="f2s-doc-pdf"><code>f2s-doc-pdf</code></h3>
+<p><strong>作用</strong>：将 PDF 技术方案转为 Markdown 格式，保存到 <code>req-docs/</code>，可补全流程说明。</p>
+<p><strong>工作原理</strong>：将 PDF 中的接口定义、数据模型、时序流程等提取为 Markdown 并落盘 <code>req-docs/</code>，便于后续编辑或与 <code>f2s-req-clarify</code> / <code>f2s-req-tech</code> 衔接。与 <code>f2s-doc-final</code> 的区别：<code>doc-pdf</code> 输出到 <code>req-docs/</code>（实现侧文档目录），<code>doc-final</code> 输出到 <code>stock-docs/</code> 供 <code>ctx-build</code> 入库。<strong>不推荐</strong>把「PDF 转 MD」当作跳过澄清与技术方案的直驱编码路径。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>跨团队交付物为 PDF，需转为可编辑的 Markdown</li>
+<li>历史 PDF 技术方案需纳入 <code>req-docs/</code> 管理</li>
+<li>为后续 <code>f2s-req-clarify</code> / <code>f2s-req-tech</code> 提供可读底稿</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：PDF 文档</li>
+<li><strong>输出</strong>：<code>.Knowledge/req-docs/&#x3C;方案>.md</code></li>
+<li><strong>下一步</strong>（推荐）：<code>f2s-req-clarify</code> → <code>f2s-req-tech</code> → 按 <code>req-docs/</code> 中技术方案 MD 触发 <code>implement-tech-design</code>；若目标是知识库沉淀则 <code>f2s-doc-final</code> → <code>f2s-kb-build</code></li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成全流程</li>
+<li><code>subAgent: true</code>：PDF > 50 页或 > 5MB 时，可拆子做 PDF→MD 首稿落盘 req-docs；子不追问用户、不补写流程说明章节；主 agent 接手追问与流程说明补写</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>追问用户补充流程说明、完成 req-docs 落盘验收</td></tr><tr><td>子 agent</td><td>仅做 PDF→MD 首稿并落盘 req-docs，不向用户追问</td></tr></tbody></table>
+<hr>
+<h2 id="2-需求与方案">2) 需求与方案</h2>
+<h3 id="f2s-req-clarify"><code>f2s-req-clarify</code></h3>
+<p><strong>作用</strong>：针对 PRD/需求文档进行反问澄清，通过多轮问答明确需求边界、非目标、关键流程，直至需求足够清晰可供技术方案编写。</p>
+<p><strong>工作原理</strong>：采用「结构化追问」策略——将需求文档按「角色/场景/流程/边界/异常/非目标」六维拆解，逐维检查是否存在模糊表述、未定义概念或矛盾点，对每个缺口生成针对性追问。多轮对话直到所有维度无歧义后，输出需求澄清记录作为 <code>f2s-req-tech</code> 的输入。本质是将非结构化 PRD 转为可落地的结构化需求约束。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>收到 PRD 后首步骤，确保理解正确</li>
+<li>需求边界模糊、缺少验收标准时</li>
+<li>跨团队协作需求，需明确接口契约</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：无（可直接触发）</li>
+<li><strong>后续</strong>：<code>f2s-req-tech</code>（澄清后生成技术方案）</li>
+<li><strong>输出</strong>：需求澄清记录（可选保存至 <code>.Knowledge/req-docs/</code>）</li>
+</ul>
+<p><strong>子 agent 调用</strong>：无（澄清全程依赖连续对话与用户即时反馈，不拆子 agent）</p>
+<hr>
+<h3 id="f2s-req-tech"><code>f2s-req-tech</code></h3>
+<p><strong>作用</strong>：基于已澄清的需求和项目知识库，生成可实现的技术方案文档；具体内容按需求选择，可能是 API、页面/组件、脚本工具、数据处理、配置、消息事件或模块改造等。</p>
+<p><strong>工作原理</strong>：以「知识库约束 + 模版参考」为核心——先从 <code>topics/stock-docs</code> 中抽取当前项目的架构约定、契约风格、数据与模块边界等约束摘要，再按技术方案模版的可选积木取舍章节；不为套模板强行生成接口、数据库、错误码或消息队列章节。输出落盘 <code>req-docs/</code>，即为 <code>implement-tech-design</code> 的编码依据。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li><code>f2s-req-clarify</code> 完成后，基于澄清结果输出方案</li>
+<li>已有明确需求文档，直接生成技术方案</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：<code>f2s-req-clarify</code>（推荐）或明确的需求文档</li>
+<li><strong>输出</strong>：<code>.Knowledge/req-docs/&#x3C;技术方案>.md</code></li>
+<li><strong>下一步</strong>：提供技术方案路径并说明”按技术方案实现”，由 <code>implement-tech-design</code> 规则驱动编码</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成方案编写</li>
+<li><code>subAgent: true</code>：主 agent 必须先从 topics/stock-docs 抽取 &#x3C; 80 行项目约定摘要（含架构约定、接口风格、数据模型规范等 6 类条款）作为子强制上下文，再拆子并行写 req-docs 初稿；主 agent 做契约定稿与验收</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>抽取项目约定摘要、分配写作任务、对照模版做定稿验收并写入 req-docs</td></tr><tr><td>子 agent</td><td>只读多源（topics / stock-docs / 澄清 req-docs / 模版），按模版写 req-docs 初稿；不自行扩展读取范围</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>子 agent 落盘的方案初稿 → 主 agent 校验交付单元、数据结构、处理流程、异常处理与项目约定是否一致</li>
+<li>仅当 <code>subAgent: true</code> 且实际拆出子任务时生效；否则全部在主 agent 内验证</li>
+</ul>
+<hr>
+<h3 id="f2s-req-plan"><code>f2s-req-plan</code></h3>
+<p><strong>作用</strong>：从技术方案或需求描述出发，<strong>始终创建任务清单</strong>，然后按清单实现代码。不依赖 <code>changeTracking</code> 配置，代表用户明确需要可追溯的任务管理。</p>
+<blockquote>
+<p><strong>关于任务清单</strong>：任务清单不是 <code>/f2s-req-plan</code> 专属。<code>/f2s-kb-feat</code>、<code>/f2s-kb-fix</code> 和 <code>implement-tech-design</code> 在 <code>flow2spec.config.json</code> 中对应 <code>changeTracking.*</code> 字段为 <code>true</code> 时同样会自动创建任务清单。<code>/f2s-req-plan</code> 的区别是<strong>不依赖任何配置、始终创建清单</strong>，适合用户明确希望追踪进度的大型需求。</p>
+</blockquote>
+<p><strong>工作原理</strong>：执行「解析→规划→确认→实现→归档」五阶段闭环。① 解析技术方案文档提取实现要点；② 按模块/功能粒度拆分为可执行任务清单并写入 <code>.task/</code>；③ 展示草稿给用户确认后锁定清单；④ 按清单逐项实现代码，每完成一项立即打钩 <code>task.md</code>；⑤ 全部完成后归档。与 <code>implement-tech-design</code> 规则的区别：<code>req-plan</code> 始终带任务追踪且支持并行子 agent 实现，适合大型需求；后者是轻量规则驱动的单线程编码。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>有技术方案文档，需要拆解为任务清单后再实现</li>
+<li>需求描述较复杂，希望先确认清单再动手</li>
+<li>希望跨会话追踪实现进度</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：技术方案文档路径（<code>.Knowledge/req-docs/*.md</code> 或 PDF）或需求/变更描述</li>
+<li><strong>输出</strong>：<code>.task/active/&#x3C;task-name>/task.md</code> + <code>context.md</code>；实现代码</li>
+<li><strong>后续</strong>：可按需调用 <code>f2s-kb-sync</code> 补充知识库</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成解析、确认、实现全流程</li>
+<li><code>subAgent: true</code>：步骤 1（解析文档）可拆子并行只读；步骤 2（草稿确认）必须主 agent；步骤 4（实现代码）可按模块拆子并行；<code>todo.json</code> 恒由主 agent 写</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>输出草稿、用户确认、写 <code>todo.json</code>、汇总实现摘要</td></tr><tr><td>子 agent（解析）</td><td>只读文档，输出解析结果摘要，不落盘</td></tr><tr><td>子 agent（实现）</td><td>按模块实现代码，不触碰 <code>.task/</code> 和 <code>.Knowledge/</code></td></tr></tbody></table>
+<hr>
+<h2 id="3-git-提交">3) Git 提交</h2>
+<h3 id="f2s-git-commit"><code>f2s-git-commit</code></h3>
+<p><strong>作用</strong>：代码写完后执行 Git 提交。默认自动检查变更文件、比对知识库覆盖情况，未入库的能力会提示用户处理；用户明确说“快捷提交”时跳过知识库覆盖检查。提交前会展示提交信息首行，然后直接执行 commit。</p>
+<p><strong>工作原理</strong>：在 <code>git commit</code> 之上叠加「知识库覆盖门控」——先通过 <code>git diff</code> 推断本次变更涉及的功能模块，再与 <code>.Knowledge/topics/</code> 和 <code>stock-docs/</code> 交叉比对，判断变更能力是否已有知识库记录。未覆盖时阻断并提示三选（补录/跳过/取消），避免「代码有了但知识库不知道」的静默漂移。快捷提交模式只跳过这层覆盖门控，不跳过冲突检查、提交信息展示、精确 <code>git add</code>、git hooks。提交信息强制 emoji + Conventional Commits 格式，保证 git log 的机读一致性。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>每次功能实现或 Bug 修复后提交代码</li>
+<li>希望在提交时得到知识库覆盖情况的提醒</li>
+<li>已明确不需要本次覆盖检查，只想快捷提交</li>
+<li>需要 AI 帮助生成有意义的提交信息</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：代码已写完（<code>implement-tech-design</code>、<code>f2s-kb-fix</code>、<code>f2s-kb-feat</code> 等执行后）</li>
+<li><strong>后续</strong>：无（commit 完成即结束，不自动 push）</li>
+<li><strong>可衔接</strong>：若知识库未覆盖，可先运行 <code>f2s-kb-sync</code> 或 <code>f2s-kb-feat</code> 补录后继续提交</li>
+</ul>
+<p><strong>执行流程</strong>：</p>
+<ol>
+<li><code>git status --short</code> + <code>git diff HEAD</code> 区分 staged / unstaged / untracked 三类文件；发现 merge conflict 标记立即终止</li>
+<li>默认对比 <code>.Knowledge/topics/</code> 与 <code>stock-docs/</code>，判断本次变更能力是否已入库；<code>.Knowledge</code> 不存在时跳过并提示；用户说“快捷提交”时跳过本步</li>
+<li>未覆盖时提示用户选择：A) 先补录再提交 / B) 先提交稍后补录 / C) 取消</li>
+<li>基于 <code>git diff</code> 实际内容生成提交信息草稿，等待用户确认或修改</li>
+<li><code>git add &#x3C;具体文件></code> + <code>git commit</code>；hook 失败则提示修复，不跳过</li>
+<li>输出 commit hash；若选 B 则附带未补录能力提醒</li>
+</ol>
+<p><strong>约束</strong>：</p>
+<ul>
+<li>禁止 <code>git add -A</code> / <code>git add .</code>，只 add 已确认的变更文件</li>
+<li>禁止 <code>--no-verify</code>，hook 失败须修复后重试</li>
+<li>禁止自动 push</li>
+<li>提交前必须展示提交信息首行；不要求用户额外确认 commit</li>
+</ul>
+<p><strong>子 agent 调用</strong>：无（全程交互确认，主 agent 内完成）</p>
+<hr>
+<h2 id="4-知识库维护">4) 知识库维护</h2>
+<h3 id="f2s-kb-fix"><code>f2s-kb-fix</code></h3>
+<p><strong>作用</strong>：根据用户指出的实现或规则错误修正代码，并<strong>默认自动同步</strong>知识库相关文档与索引。</p>
+<p><strong>工作原理</strong>：执行「定位→修复→同步」三步——先根据用户描述在知识库路由（manifest→topic→stock-docs）中定位相关上下文与代码位置，确认问题根因；修复代码后，自动检查 <code>topics/stock-docs/matchers</code> 中与该能力相关的描述是否因修复而需要更新，若有则原位修订（现行真值覆盖，不追加历史否定句）。「修代码必同步文档」是核心原则，避免知识库与实现漂移。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>代码实现与技术方案不符</li>
+<li>规则理解有误需要修正</li>
+<li>Bug 修复后需要同步文档</li>
+</ul>
+<p><strong>变更追踪</strong>：若 <code>changeTracking.fix: true</code>，执行前自动检查 <code>.task/todo.json</code> 并创建任务清单，完成后自动归档；跨会话可通过关键词续作（见 <code>f2s-task</code> 规则）。</p>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：问题发现（代码实现错误或规则偏差）</li>
+<li><strong>后续</strong>：无（修复并同步完成即结束）</li>
+<li><strong>特点</strong>：无需用户额外要求”请同步知识库”，自动完成</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成修复和知识库同步</li>
+<li><code>subAgent: true</code>：代码子包（bug 修复）可外包给子 agent；文档子包（rules/skills/topics 文风类）默认主 agent 直接写，如拆则子 agent 仅输出 before/after diff 片段，不整文件重写；manifest 和 index 恒由主落盘</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>定位问题根因、制定修复方案、落盘文风合规内容、校验知识库一致性</td></tr><tr><td>子 agent（代码）</td><td>负责指定模块的代码 bug 修复，输出变更并报告影响范围</td></tr><tr><td>子 agent（文档，可选）</td><td>仅输出 before/after diff 片段，不整文件重写，不触碰 manifest 和 index</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>子 agent 落盘的代码变更 → 主 agent 校验修复正确性与知识库一致性</li>
+<li>主 agent 落盘的知识库同步 → 子 agent 复核 topic/manifest 一致性（须 <code>subAgent: true</code> 且已拆出子任务，否则主 agent 内自验）</li>
+<li>复核方与落盘方必须为不同 agent 实例</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-feat"><code>f2s-kb-feat</code></h3>
+<p><strong>作用</strong>：新增能力时补全实现与知识库；若能力已实现，则仅同步知识库。</p>
+<p><strong>工作原理</strong>：执行「判断→实现→入库」三阶段——先判断用户描述的能力在代码中处于「未实现/部分实现/已实现」哪种状态；未实现或部分实现时先补齐代码；最后走知识库同步：写 <code>stock-docs</code> 能力说明、生成或更新 <code>topics</code> 主题摘要、在 <code>manifest-routing</code> 和 <code>matchers</code> 注册路由映射。与 <code>f2s-kb-fix</code> 的区别：<code>kb-feat</code> 面向「新增」，<code>kb-fix</code> 面向「修正已有」。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>新功能开发</li>
+<li>存量功能需要补录知识库</li>
+</ul>
+<p><strong>变更追踪</strong>：若 <code>changeTracking.feat: true</code>，执行前自动检查 <code>.task/todo.json</code> 并创建任务清单，完成后自动归档；跨会话可通过关键词续作（见 <code>f2s-task</code> 规则）。</p>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：无（可直接触发）</li>
+<li><strong>后续</strong>：无（实现+同步完成即结束）</li>
+<li><strong>特点</strong>：自动同步知识库，无需用户额外要求</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成</li>
+<li><code>subAgent: true</code>：代码子包（新增实现）可外包给子 agent；文档子包（rules/skills/topics 文风类）默认主 agent 直接写，如拆则子 agent 仅输出 before/after diff 片段；manifest 和 index 恒由主落盘</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>确定能力边界与实现范围、落盘文风合规内容、最终校验知识库一致性</td></tr><tr><td>子 agent（代码）</td><td>负责代码实现（接口、逻辑、数据层），输出实现清单</td></tr><tr><td>子 agent（文档，可选）</td><td>仅输出 before/after diff 片段，不整文件重写，不触碰 manifest 和 index</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>文档子 agent 落盘的 topic → 主 agent 校验与实现代码的能力描述一致性</li>
+<li>仅当 <code>subAgent: true</code> 且实际拆出子任务时生效；否则全部在主 agent 内验证</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-distill"><code>f2s-kb-distill</code></h3>
+<p><strong>作用</strong>：从问答过程中提取可复用知识事实，自动入库；根据下钻深度与命中主题判断是新增主题还是补充既有主题。</p>
+<p><strong>工作原理</strong>：在 Agent 通过源码回答用户问题后，自动分析本轮对话中出现的可复用知识事实（核心机制、状态流转、返回值契约、配置开关影响、失败回退策略、模块边界等），判断是否已被知识库覆盖：未覆盖则新建或扩充 topic；已覆盖但不够细则补充细节。与 <code>f2s-kb-sync</code> 的区别：<code>sync</code> 适合批量同步多个能力；<code>distill</code> 专注于单次问答驱动的增量知识提取。</p>
+<p><strong>执行挡位（agent 自动判，无命令参数）</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>挡位</th><th>跳过</th><th>适用场景</th></tr></thead><tbody><tr><td><strong>轻量挡</strong></td><td>步骤 2.1（下钻量化打分）/ 2.4（既有 topic 描述程度评估）/ 3（决策矩阵）/ 4.1（读近邻 topic 风格对齐）</td><td>上游已给明确入库结论 + 本轮知识够轻 + 用户没推翻上游</td></tr><tr><td><strong>严格挡</strong></td><td>不跳，跑完整 6 步</td><td>上述三条任一不成立</td></tr></tbody></table>
+<p><strong>判挡 4 维度</strong>（<strong>全满足</strong>才走轻量挡，否则严格挡）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>维度</th><th>条件</th></tr></thead><tbody><tr><td>上游 <code>f2s-kb-feedback-closing</code> case</td><td><strong>case 2 或 case 3</strong>（case 1 / 无收口块 → 严格挡）</td></tr><tr><td>本轮 Read 业务源码文件数</td><td><strong>≤ 3 个</strong></td></tr><tr><td>本轮回答引用函数 / 类名数</td><td><strong>≤ 5 个</strong></td></tr><tr><td>用户追问是否否定上游结论</td><td><strong>否</strong></td></tr></tbody></table>
+<p><strong>业务源码定义</strong>：路径<strong>不在</strong> <code>.claude/</code> / <code>.cursor/</code> / <code>.codex/</code> / <code>.Knowledge/</code> / <code>.task/</code> 这 5 个目录下的 Read 才计数。</p>
+<p><strong>为什么这样划分</strong>：</p>
+<ul>
+<li>「上游已给明确结论」→ 决策矩阵不用跑，照搬「本轮将入库」概要即可</li>
+<li>「本轮知识够轻」→ 不会撞「描述程度差 ≥ 2 级」事故（轻量补充天然和既有 topic 同级）</li>
+<li>「用户没推翻」→ 上游结论本身没被否定</li>
+</ul>
+<p><strong>步骤 5 / 6 永不省</strong>：无论哪一挡，<strong>路由 / matcher / index 同步</strong>和<strong>落盘 + 自检</strong>都跑完整版——这是入库正确性的硬约束。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>问答下钻源码后，发现 topic 不覆盖或不够细</li>
+<li>由 <code>f2s-kb-feedback-closing</code> 规则自动建议调用</li>
+<li>用户主动将本次问答结论沉淀进知识库</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：一次含有源码下钻的问答（自动从对话历史提取上下文）</li>
+<li><strong>后续</strong>：无（入库完成即结束）</li>
+<li><strong>特点</strong>：不改 <code>rules/skills</code> 配置根，只维护 <code>.Knowledge/</code></li>
+</ul>
+<p><strong>子 agent 调用</strong>：无（单轮聚焦任务，主 agent 内全流程完成）</p>
+<hr>
+<h3 id="f2s-kb-sync"><code>f2s-kb-sync</code></h3>
+<p><strong>作用</strong>：将会话中的已实现能力沉淀回知识库。可显式给出能力或零输入推断。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>会话中已完成实现，需要补录知识库</li>
+<li>从代码反向沉淀知识</li>
+<li>定期知识库整理</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：无（可直接触发，或零输入推断）</li>
+<li><strong>后续</strong>：无</li>
+<li><strong>特点</strong>：先输出知识库更新大纲，用户确认后才写入</li>
+<li><strong>与 <code>f2s-kb-build</code> 区别</strong>：<code>ctx-build</code> 从 <code>stock-docs</code> 驱动，<code>kb-sync</code> 从会话/代码推断</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成推断和同步</li>
+<li><code>subAgent: true</code>：分步骤拆子——<strong>步骤 1</strong>（汇总推断）可拆子并行只读会话历史；<strong>步骤 2</strong>（用户确认大纲）必须在主 agent 完成；<strong>步骤 3</strong>（落盘同步）可拆子写 topic/matcher，但子落盘前须读近邻 2–3 个主题摘要做风格对齐；manifest 和 index 恒由主落盘</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>输出大纲并确认、单点落盘 manifest 和 index、最终验收</td></tr><tr><td>子 agent（汇总）</td><td>只读会话历史、推断能力点、生成结构化更新大纲片段</td></tr><tr><td>子 agent（同步）</td><td>按大纲写 topic/matcher，落盘前加载近邻主题摘要对齐风格，不触碰 manifest 和 index</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>同步子 agent 落盘的 topic/matcher → 主 agent 校验跨 topic 路由完整性与 <code>includeAny</code> 关键词覆盖</li>
+<li>仅当 <code>subAgent: true</code> 且实际拆出子任务时生效；否则全部在主 agent 内验证</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-merge"><code>f2s-kb-merge</code></h3>
+<p><strong>作用</strong>：解决 Git 合并后的编辑器上下文冲突。可选传入冲突文件路径。</p>
+<p><strong>工作原理</strong>：按文件类别分层处理冲突——将冲突文件分为「可安全自动合并」（index、manifest、matchers 等结构化文件，取并集或最新版本）和「须用户确认」（实现代码、业务规则等语义文件）两类。对前者自动 resolve，对后者生成分类对照表（ours/theirs 摘要 + 建议）并罗列差异，等待用户逐项裁决。核心设计思想：知识库元数据可自动化，业务语义不可擅自裁定。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>Git merge/rebase 后出现上下文冲突</li>
+<li>多人协作导致知识库文件冲突</li>
+<li>分支合并后需要统一知识库状态</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：Git 合并产生的冲突</li>
+<li><strong>后续</strong>：无（冲突解决即结束）</li>
+<li><strong>特点</strong>：实现侧冲突仅罗列待用户确认</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内分析与解决冲突</li>
+<li><code>subAgent: true</code>：可拆子做冲突扫描与分类对照表（<code>file / category / ours_summary / theirs_summary / recommendation</code> 五字段）；子不得自行合并文件；主 agent 按策略落盘、处理实现侧决策、完成验收</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>按策略落盘合并结果、处理实现侧冲突决策、验收</td></tr><tr><td>子 agent</td><td>仅做冲突扫描与分类，按五字段 schema 交付对照表，不自行合并文件</td></tr></tbody></table>
+<hr>
+<h3 id="f2s-kb-migrate"><code>f2s-kb-migrate</code></h3>
+<p><strong>作用</strong>：将旧版知识库（<code>docs-index.md</code> + <code>rules/</code> 模式）按主题迁移到 <code>.Knowledge/</code> 结构。</p>
+<p><strong>工作原理</strong>：以旧版 <code>docs-index.md</code> 和 <code>rules/main.md(c)</code> 为「索引线索」，递归识别所有被引用的业务规则和技能文件，按主题粒度重新组织到 <code>.Knowledge/</code> 的 <code>topics/stock-docs/req-docs</code> 三层结构中。迁移完成后落盘 <code>migration-report.md</code>（对照表 + 拟删路径），待用户确认后清理旧文件。本质是一次性的结构重组，将分散的规则/文档归并为统一知识库。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>旧项目升级到 Flow2Spec 新版</li>
+<li>存量知识库需要结构化整理</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：旧版知识库（<code>docs-index.md</code>、<code>rules/</code>、<code>skills/</code>）</li>
+<li><strong>后续</strong>：<code>f2s-kb-upgrade</code>（<strong>流程 V1</strong> 旧库须先 migrate 再 upgrade；<strong>现行库 V2+</strong>（含 npm v3.x）见 upgrade 技能步骤 0）</li>
+<li><strong>流程</strong>：
+<ol>
+<li>以 <code>docs-index.md</code> + <code>rules/main.md(c)</code> 为主索引</li>
+<li>全量处理业务 <code>rules/</code> 与业务 <code>skills/</code>（排除 <code>f2s-</code>* 包技能）</li>
+<li>全量迁移 <code>stock-docs</code>/<code>req-docs</code></li>
+<li>落盘 <code>.Knowledge/migration-report.md</code></li>
+<li>用户确认后删除已迁旧的文件</li>
+</ol>
+</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内逐主题迁移</li>
+<li><code>subAgent: true</code>：子只做搬运 + migration-report 草案片段（以 patch 形式交付）；状态文件（migration-report.md、删除执行记录）由主 agent 唯一落盘；主 agent 主导删除清单确认与删除闭环</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>制定迁移规划、合并迁移结果、落盘 migration-report、主导删除确认与执行闭环</td></tr><tr><td>子 agent</td><td>负责指定主题的搬运与草案片段生成（patch 形式），不写状态文件、不写删除执行记录</td></tr></tbody></table>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code> 时）</strong>：</p>
+<ul>
+<li>子 agent 迁移落盘的主题 → 主 agent 校验迁移完整性（旧路径是否全量覆盖、主题边界是否重叠）</li>
+<li>仅当 <code>subAgent: true</code> 且实际拆出子任务时生效；否则全部在主 agent 内验证</li>
+</ul>
+<hr>
+<h3 id="f2s-kb-upgrade"><code>f2s-kb-upgrade</code></h3>
+<p><strong>作用</strong>：知识库模板升级。对齐 manifest-routing + matchers 分片。</p>
+<p><strong>工作原理</strong>：通过「版本分流 + init 代跑」实现升级——先检测当前知识库属于 V1（旧结构，需先 migrate）还是 V2+（已有 <code>.Knowledge</code>），V1 走 migrate 后再 init，V2+ 直接代跑 <code>flow2spec init</code> 进行包级结构增量对齐（补齐新模板、升级 manifest schema、对齐 matchers 分片格式）。升级后重读 SKILL.md 判断是否需要重跑某些步骤。与单独 <code>init</code> 的区别：<code>kb-upgrade</code> 包含版本判断和重跑逻辑，<code>init</code> 仅做一次性结构补齐。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>flow2spec 包版本升级后，升级项目知识库模板</li>
+<li>旧项目升级到最新结构</li>
+<li>项目使用 <code>locale</code> 模板语言时，默认沿用 <code>flow2spec.config.json.locale</code>；未配置则按 <code>zh-CN</code> 补齐</li>
+<li>CLI 在交互式 <code>flow2spec version</code> / <code>flow2spec init</code> 中发现 npm 有新版本后，会提示先 <code>flow2spec update</code>，再在 Agent 对话中执行本技能</li>
+<li>Cursor 通过 <code>.cursor/hooks.json</code> 在 <code>sessionStart</code> 自动检测到知识库版本落后后，会提示执行本技能</li>
+<li>Codex 通过 <code>.codex/hooks.json</code> 在 <code>SessionStart</code> 自动检测到知识库版本落后后，会提示执行本技能（首次或变更后需在 Codex <code>/hooks</code> 中信任）</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：<code>f2s-kb-migrate</code>（V1 流程）或已存在的 <code>.Knowledge/</code></li>
+<li><strong>包含</strong>：内部会调用 <code>flow2spec init</code> 进行结构对齐</li>
+<li><strong>注意</strong>：单独的 <code>flow2spec init</code> <strong>不是</strong>升级命令</li>
+</ul>
+<p><strong>流程差异</strong>（技能内分流代号，<strong>不等于</strong> npm 包主版本号）：</p>
+<ul>
+<li><strong>V1</strong>：先 <code>f2s-kb-migrate</code> 再代跑 <code>flow2spec init</code></li>
+<li><strong>现行库（V2+）</strong>：已稳定 <code>.Knowledge</code> + <code>manifest-routing</code> 时，代跑 <code>flow2spec init</code> 以对齐 manifest-routing + matchers 分片（<strong>含 Flow2Spec npm v3.x 等</strong>，详见 <code>skills/f2s-kb-upgrade/SKILL.md</code> 步骤 0）</li>
+</ul>
+<p><strong>子 agent 调用</strong>：</p>
+<ul>
+<li><code>subAgent: false</code>（默认）：主 agent 内完成升级</li>
+<li><code>subAgent: true</code>：子 agent 仅承接 shell 命令执行（代跑 <code>flow2spec init</code>），不承担知识库正文落盘；以下步骤主 agent 不可下放：版本分流（V1 / 现行库 V2+）、init 后重读 SKILL.md 并判断是否整技能重跑、步骤 3b index.md 融合、校验摘要输出</li>
+</ul>
+<p><strong>职责划分</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责</th></tr></thead><tbody><tr><td>主 agent</td><td>版本分流、init 后重读并判断重跑、步骤 3b index.md 融合、校验摘要；落盘 manifest-routing.json 和 index.md</td></tr><tr><td>子 agent</td><td>仅代跑 <code>flow2spec init</code> 等 shell 命令，不落盘知识库内容</td></tr></tbody></table>
+<p><strong>交叉验证</strong>：本技能不绑定交叉校验，落盘侧自验。</p>
+<hr>
+<h2 id="5-规则说明">5) 规则说明</h2>
+<p>以下不是技能命令，而是通过触发词激活的规则，用于辅助指导 Agent 的行为。</p>
+<hr>
+<hr>
+<h3 id="f2s-task"><code>f2s-task</code></h3>
+<p><strong>触发词</strong>：changeTracking、变更追踪、任务追踪、续作、继续上次任务</p>
+<p><strong>作用</strong>：变更追踪规则（<code>alwaysApply</code>）。当对应技能的 <code>changeTracking.</code>* 为 <code>true</code> 时，在技能执行前后自动创建、逐步更新、最终归档 <code>.task/</code> 下的任务清单，支持跨会话续作。</p>
+<p><strong>工作原理</strong>：基于「磁盘 checkpoint + 关键词匹配」实现跨会话状态持久化——每个活跃任务在 <code>.task/active/&#x3C;name>/task.md</code> 中以 checkbox 记录进度（<code>[ ]</code>/<code>[x]</code>），<code>todo.json</code> 作为活跃任务索引。新会话开始时，规则自动将用户首条消息与各任务的 <code>keywords</code> 做模糊匹配：命中则加载 <code>task.md</code> 剩余步骤和 <code>linkedSkill</code> 对应的技能文件，恢复完整执行上下文。任务完成后移入 <code>completed/</code> 归档。核心设计：以文件系统而非对话记忆作为状态真值，对话中断不丢进度。</p>
+<p><strong>生效范围</strong>：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>配置项</th><th>对应技能</th></tr></thead><tbody><tr><td><code>changeTracking.feat</code></td><td><code>f2s-kb-feat</code></td></tr><tr><td><code>changeTracking.fix</code></td><td><code>f2s-kb-fix</code></td></tr><tr><td><code>changeTracking.implement</code></td><td><code>f2s-implement-tech-design</code></td></tr></tbody></table>
+<p><strong>跨会话续作</strong>：新会话开始时若存在 <code>.task/todo.json</code>，自动将用户首条消息与各任务 <code>keywords</code> 匹配；命中则加载对应 <code>task.md</code> 及 <code>linkedSkill</code> 技能文件，展示剩余清单，提示是否继续；无命中则不打扰。</p>
+<p><strong>规则位置</strong>：<code>配置根/rules/f2s-task.</code>*</p>
+<hr>
+<hr>
+<hr>
+<h3 id="implement-tech-design"><code>implement-tech-design</code></h3>
+<p><strong>触发词</strong>：按技术方案实现、implement-tech-design、根据方案实现</p>
+<p><strong>作用</strong>：根据 <code>req-docs/</code> 中的技术方案文档实现可运行代码。</p>
+<p><strong>工作原理</strong>：以「方案即合约」为核心约束——Agent 以 <code>req-docs/</code> 中的技术方案为唯一编码依据，按「理解方案→输出任务列表→提问确认→逐步实现→输出待完成列表」的强制六步流水线执行。任务列表和实现前提问是不可跳过的门禁，确保不会在理解偏差的情况下动手编码。与 <code>f2s-req-plan</code> 的区别：本规则是轻量单线程编码驱动，不强制创建 <code>.task/</code> 追踪（除非 <code>changeTracking.implement: true</code>）。</p>
+<p><strong>变更追踪</strong>：若 <code>changeTracking.implement: true</code>，在步骤 2.5 输出任务列表后同步写入 <code>.task/active/&#x3C;task-name>/task.md</code>；步骤 5 收尾时归档任务。</p>
+<p><strong>使用场景</strong>：</p>
+<ul>
+<li>技术方案已就绪，需要按方案编码</li>
+<li>方案变更后需要同步更新代码</li>
+</ul>
+<p><strong>关联关系</strong>：</p>
+<ul>
+<li><strong>前置</strong>：<code>.Knowledge/req-docs/&#x3C;技术方案>.md</code>（通过 <code>f2s-req-tech</code> 或手动放置）</li>
+<li><strong>规则位置</strong>：
+<ul>
+<li>Cursor：<code>.cursor/rules/f2s-implement-tech-design.mdc</code></li>
+<li>Claude：<code>.claude/rules/f2s-implement-tech-design.md</code></li>
+<li>Codex：<code>.codex/AGENTS.md</code> + <code>.codex/topics/f2s-implement-tech-design.md</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>执行流程</strong>（规则强制）：</p>
+<ol>
+<li>输入标准化</li>
+<li>理解方案与上下文</li>
+<li><strong>输出实现任务列表</strong>（必做，不可跳过）</li>
+<li><strong>实现前提问</strong>（必做，不可跳过）</li>
+<li>按任务列表实现</li>
+<li><strong>输出待完成列表与实现后提醒</strong>（必做）</li>
+</ol>
+<p><strong>子 agent 调用</strong>：无（规则驱动编码，主 agent 内完成全流程）</p>
+<hr>
+<h2 id="6-子-agent-配置说明">6) 子 Agent 配置说明</h2>
+<p>通过项目根 <code>flow2spec.config.json</code> 控制。默认值：<code>subAgent=false</code>、<code>switchAgentVerification=false</code>、<code>changeTracking.feat=true</code>、<code>changeTracking.fix=false</code>、<code>changeTracking.implement=true</code>。</p>
+<h3 id="多端如何看到配置与下文字段表配合">多端如何「看到」配置（与下文字段表配合）</h3>
+<p><code>subAgent</code> 等写在 <strong>磁盘 JSON</strong>；各产品不保证自动打开文件，故用 <strong>Cursor 规则 / Claude SessionStart 摘要 + PreToolUse 守门 / Codex SessionStart 摘要 + AGENTS 字段语义表 / 知识库 <code>config-precheck</code> 摘要</strong> 多层提示，<strong>权威仍为 Read(<code>flow2spec.config.json</code>)</strong>（设计意图见 <a href="/Flow2Spec/docs/design/">设计说明 § 四、5.1</a>，演讲口径见 <a href="../presentations/flow2spec-intro-public/%E6%BC%94%E8%AE%B2%E7%A8%BF.md">Flow2Spec 演讲稿 Slide 13b</a>）。<strong>完整路径与表格只维护一处</strong>：<a href="/Flow2Spec/docs/usage/">使用说明 § 一、<code>f2s-*</code> 与 <code>flow2spec.config.json</code></a>。</p>
+<h3 id="subagent-字段"><code>subAgent</code> 字段</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>取值</th><th>行为</th></tr></thead><tbody><tr><td><code>false</code>（默认）</td><td>所有 <code>f2s-*</code> 技能在主 agent 内完成</td></tr><tr><td><code>true</code></td><td>部分技能可按正文约定使用子 agent（大规模并行处理场景）</td></tr></tbody></table>
+<h3 id="switchagentverification-字段"><code>switchAgentVerification</code> 字段</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>取值</th><th>行为</th></tr></thead><tbody><tr><td><code>false</code>（默认）</td><td>落盘侧自验：谁落盘谁验</td></tr><tr><td><code>true</code></td><td>技能正文明确写出该步骤时，启用交叉校验：子 agent 落盘 → 主 agent 验；主 agent 落盘 → 子 agent 验（须 <code>subAgent: true</code> 且已拆出子任务）</td></tr></tbody></table>
+<h3 id="changetracking-字段"><code>changeTracking</code> 字段</h3>
+<p>嵌套对象，各技能子项独立控制：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>子项</th><th>对应技能</th><th>效果</th></tr></thead><tbody><tr><td><code>feat</code></td><td><code>f2s-kb-feat</code></td><td>执行前创建任务清单，完成后归档，支持跨会话续作</td></tr><tr><td><code>fix</code></td><td><code>f2s-kb-fix</code></td><td>同上</td></tr><tr><td><code>implement</code></td><td><code>f2s-implement-tech-design</code></td><td>同上</td></tr></tbody></table>
+<blockquote>
+<p><code>f2s-req-plan</code> 不受此配置约束，始终创建任务清单。旧版布尔值（<code>"changeTracking": true/false</code>）向下兼容，自动展开为三项全开/全关。</p>
+</blockquote>
+<p>完整原则与设计意图见 <a href="/Flow2Spec/docs/architecture/">体系与原理 § 4. Agent 执行模型</a>。</p>
+<hr>
+<h2 id="7-flow2spec-kb-cli协作合库">7) <code>flow2spec kb</code> CLI（协作合库）</h2>
+<p>上面 6) 之前的 <code>/f2s-*</code> 都是聊天里触发的技能。<strong><code>flow2spec kb *</code> 不同——是 shell 里跑的 CLI</strong>，只做一件事：把技能写到 <code>.task/&#x3C;id>/active/&#x3C;task>/kb-delta.json</code> 里的变更请求，安全地合入共享的 <code>.Knowledge/</code>。设计动机与两条隔离线的关系见 <a href="/Flow2Spec/docs/architecture/">体系与原理 § 6</a>。</p>
+<h3 id="五个子命令">五个子命令</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>命令</th><th>何时用</th><th>是否落盘</th></tr></thead><tbody><tr><td><code>flow2spec kb status</code></td><td>看 routing 是否漂移、topic 是否健康，以及当前 <code>TASK_ROOT</code> 有没有 active delta</td><td>否</td></tr><tr><td><code>flow2spec kb check [--strict]</code></td><td>提交前完整体检 manifest/topic/frontmatter/revision，一处不对就 exit 1</td><td>否</td></tr><tr><td><code>flow2spec kb plan &#x3C;delta.json></code></td><td>写完 delta 先 dry-run，看能不能自动合入、哪几个 topic 冲突</td><td>否</td></tr><tr><td><code>flow2spec kb apply &#x3C;delta.json></code></td><td>plan 通过后真正落盘 topic + routing，写完再 <code>git add .Knowledge/</code></td><td>是</td></tr><tr><td><code>flow2spec kb build [--fix-topics]</code></td><td>由现存 topic frontmatter 反向归一化 routing 元数据，或给旧 topic 补 <code>revision</code></td><td>是</td></tr></tbody></table>
+<p><code>--json</code> 所有子命令都支持，给脚本/hook 消费。<code>kb status</code> 与 <code>kb check</code> 通过 exit code 表明健康度（<code>0</code> ok，<code>1</code> 有 issue），可以直接接进 CI。</p>
+<h3 id="kb-deltajson-结构">kb-delta.json 结构</h3>
+<p>技能产出这份文件，形状约定：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "taskId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"add-payment-rule"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "baseRevisions"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"topic-a"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#79B8FF">  "changes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    { </span><span style="color:#79B8FF">"targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"topic-a"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"appendBody"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">    { </span><span style="color:#79B8FF">"targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"topic-c"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"createTopic"</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"..."</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">"frontmatter"</span><span style="color:#E1E4E8">: { </span><span style="color:#79B8FF">"title"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Topic C"</span><span style="color:#E1E4E8"> } }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><code>baseRevisions</code> 是本次改动读取时磁盘上的 <code>revision</code>，<code>apply</code> 时若盘上已经变了（别人先 apply 过），<code>plan</code> 会报出该 topic 冲突且拒绝落盘。四种 <code>type</code>：</p>
+<ul>
+<li><code>appendBody</code> / <code>replaceBody</code>：正文级，<code>content</code> 不能为空字符串，parse 阶段就拒</li>
+<li><code>updateFrontmatter</code>：改 frontmatter 键值，<code>revision</code> 由 apply 自动 +1</li>
+<li><code>createTopic</code>：新增 <code>targetTopic</code>，路径由 topic id 推导；已存在则冲突，可选携带 <code>taskRule</code> + <code>matcher</code> 同步接入路由</li>
+</ul>
+<h3 id="与-f2s-kb--技能的关系">与 <code>f2s-kb-*</code> 技能的关系</h3>
+<p>技能产出 delta、CLI 负责合库，两侧不重叠：</p>
+<ul>
+<li><code>f2s-kb-feat</code> / <code>f2s-kb-fix</code> / <code>f2s-kb-distill</code> / <code>f2s-kb-sync</code> 形成 <code>kb-delta</code>，不绕开预检直接改 <code>.Knowledge/topics/*.md</code></li>
+<li>触发 <code>f2s-git-commit</code> 后，Agent 会自动检查当前任务线并在可唯一定位、可合并时执行 <code>plan → apply → build → check</code>；手动 CLI 主要用于独立排查、维护和 CI</li>
+<li><code>kb plan</code> 报 revision 冲突（队友先 apply 了同一 topic）通常靠 <code>git pull</code> 拉最新 topic → 重读 revision → 重写 delta 里该 topic 的 change；<code>f2s-kb-merge</code> 是给 Git 层面的 <code>&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;</code> 冲突标记用的，不是 revision 层</li>
+<li><code>f2s-kb-build</code> 技能仍然存在，语义与 CLI <code>kb build</code> 对齐（从 stock-docs 反向重生成 topics/index/manifest）</li>
+</ul>
+<p>日常操作模板见 <a href="/Flow2Spec/docs/usage/">使用说明 § 多人协作</a>。</p>
+<p>完整概念、同 topic 冲突示例与管理者视角见 <a href="/Flow2Spec/docs/collaboration/">团队协作</a>。</p>
+<hr>
+<h2 id="8-快速参考">8) 快速参考</h2>
+<p>典型工作场景与完整链路见 <a href="/Flow2Spec/docs/usage/">使用说明 § 三、典型工作场景</a>。</p>
+<p>目录完整说明见 <a href="/Flow2Spec/docs/directories/">目录与路径约定</a>。</p>
+<hr>
+<p>相关文档：</p>
+<ul>
+<li><a href="/Flow2Spec/docs/intro/">Flow2Spec 基础介绍</a></li>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a></li>
+<li><a href="/Flow2Spec/docs/directories/">目录与路径约定</a></li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a></li>
+<li><a href="/Flow2Spec/docs/scenarios/">使用案例-模拟对话</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

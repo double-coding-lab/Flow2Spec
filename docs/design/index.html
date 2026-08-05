@@ -1,0 +1,673 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 设计说明文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/design/"><title>设计说明 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/" aria-current="page">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/" aria-current="page">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#解决的问题" class="is-active">解决的问题</a><a href="#核心设计">核心设计</a><a href="#设计亮点">设计亮点</a><a href="#优势与劣势">优势与劣势</a><a href="#适合谁">适合谁</a><a href="#相关文档">相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="设计说明">设计说明</h1>
+
+<h2 id="解决的问题">解决的问题</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ 现状                          ✅ Flow2Spec 之后</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>架构约定  ──┐                    .Knowledge/</span></span>
+<span class="line"><span>技术方案  ──┼──► 散落            ├── manifest-routing.json</span></span>
+<span class="line"><span>模块边界  ──┤    无结构           ├── matchers/</span></span>
+<span class="line"><span>团队经验  ──┘    每次重新解释     ├── topics/</span></span>
+<span class="line"><span>                                 ├── stock-docs/</span></span>
+<span class="line"><span>                                 └── req-docs/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>                                 AI 随时能读懂项目</span></span></code></pre>
+<hr>
+<h2 id="核心设计">核心设计</h2>
+<h3 id="0-memory-coding-与仓内四环">0. Memory Coding 与仓内四环</h3>
+<p><strong>Memory Coding</strong>：把必须长期记住的上下文<strong>编码进可提交仓库</strong>（可 PR、可 review），而不是押在模型 Memory 或聊天里。</p>
+<p>仓内 <strong>四环</strong>（规则环与技能环分列，勿合并为「规则+技能」）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>环</th><th>落点</th><th>职责</th></tr></thead><tbody><tr><td>知识环</td><td><code>.Knowledge/</code></td><td>路由 + 主题 + 存量/需求文档</td></tr><tr><td>任务环</td><td><code>.task/</code></td><td>跨会话续作、用户代办</td></tr><tr><td>规则环</td><td>各工具 <code>rules</code> / <code>AGENTS.md</code></td><td>怎么读、怎么做（缺口闸门、路由顺序）</td></tr><tr><td>技能环</td><td><code>f2s-</code>* / <code>skills/</code></td><td>维护知识、触发 feat/fix/sync 等</td></tr></tbody></table>
+<div class="mermaid">graph TB
+    subgraph MC["Memory Coding · 仓内四环"]
+        KR["知识环 .Knowledge/"]
+        TR["任务环 .task/"]
+        RR["规则环 rules"]
+        SR["技能环 f2s-*"]
+    end
+    SR -->|"维护 ↑"| KR
+    RR -->|"读与做 ↓"| KR
+    TR -.->|"并列，不在 .Knowledge 内"| KR</div>
+<p>Flow2Spec 提供的是 <strong>Memory Coding 的落盘与维护闭环</strong>，不是「又一个 RAG 知识库」。</p>
+<h3 id="01-知识环多层记忆结构">0.1 知识环：多层记忆结构</h3>
+<p>知识环内部是 <strong>横读 + 纵链</strong> 的多层结构（与下文「渐进式路由」「topicDependencies」对应）：</p>
+<div class="mermaid">graph TB
+    subgraph H["横读 · 渐进式收窄"]
+        L0["L0 manifest-routing"]
+        L1["L1 matchers 分片"]
+        L2["L2 topics 摘要"]
+        L3["L3 stock-docs / req-docs"]
+        L0 --> L1 --> L2 --> L3
+    end
+    subgraph V["纵链 · topicDependencies"]
+        T1["通用约定"]
+        T2["子域边界"]
+        T3["端上白名单"]
+        T4["本域细则"]
+        T1 --> T2 --> T3 --> T4
+    end
+    L2 --- V</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>层级</th><th>路径</th><th>作用</th></tr></thead><tbody><tr><td>L0</td><td><code>manifest-routing.json</code></td><td>机读路由、依赖声明</td></tr><tr><td>L1</td><td><code>matchers/*.json</code></td><td>关键词命中，<strong>match</strong> 只读一片</td></tr><tr><td>L2</td><td><code>topics/*.md</code></td><td>硬约束摘要；<strong>expand</strong> 拉依赖</td></tr><tr><td>L3</td><td><code>stock-docs/</code>、<code>req-docs/</code></td><td>长文档，按需下钻</td></tr><tr><td>纵链</td><td><code>topicDependencies</code></td><td>主题级前置，所有任务共享</td></tr></tbody></table>
+<p>读取流水线：<code>match → expand → verify → act</code>（详见 <a href="/Flow2Spec/docs/architecture/">体系与原理 §4</a>）。</p>
+<h3 id="1-知识与规则分离">1. 知识与规则分离</h3>
+<div class="mermaid">graph LR
+    subgraph K[".Knowledge/  知识层"]
+        K1[架构说明]
+        K2[技术方案]
+        K3[路由索引]
+    end
+
+    subgraph R["配置根  执行层"]
+        R1[.cursor/rules/]
+        R2[.claude/rules/]
+        R3[.codex/AGENTS.md]
+    end
+
+    K -->|知识输入| AI[AI 工具]
+    R -->|规则约束| AI
+
+    note1["知识随项目迭代"] -.-> K
+    note2["规则随工具升级"] -.-> R</div>
+<h3 id="11-规则范围与优先级">1.1 规则范围与优先级</h3>
+<p>Flow2Spec 的 rules 存在少量<strong>有意重叠</strong>：全局入口负责总路线，专项规则负责某个环节的强约束。这样做是为了降低 Agent 漏读关键步骤的概率，但执行时必须按优先级理解，避免把相似描述当成冲突。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>场景</th><th>优先规则</th><th>说明</th></tr></thead><tbody><tr><td>普通提问首读 / 首工具调用</td><td><code>f2s-knowledge-preflight</code></td><td>决定当前仓库相关问题是否必须先读 <code>.Knowledge/manifest-routing.json</code>，并约束缺口闸门与源码下钻节奏。</td></tr><tr><td>普通问答源码补答收口</td><td><code>f2s-kb-feedback-closing</code></td><td>源码补答后强制四 case 显式表态：case 1～3 输出 <code>f2s-kb-distill</code> 补充建议，case 4 输出”知识库已覆盖”显式标记；禁止悄悄跳过整个收口流程。</td></tr><tr><td>全局路由事实源 / 渐进式读取链路</td><td><code>f2s-flow2spec-unified-entry</code></td><td>定义 manifest、matcher、topic、stock-docs/req-docs 的读取顺序与事实源口径。</td></tr><tr><td>执行任意 <code>f2s-</code>* 技能前读配置</td><td><code>f2s-config-check</code></td><td>专门约束技能首步必须读 <code>flow2spec.config.json</code>。</td></tr><tr><td>按技术方案实现</td><td><code>f2s-implement-tech-design</code></td><td>命中技术方案实现时的完整执行条令。</td></tr><tr><td><code>stock-docs</code> / <code>req-docs</code> 边界</td><td><code>f2s-stock-docs-vs-req-docs</code></td><td>详细约束存量上下文与需求/技术方案文档的路径职责。</td></tr><tr><td>写 topic / metadata / dependencies</td><td><code>f2s-topic-authoring</code></td><td>创作侧规则，约束主题命名、粒度、分类、依赖与落盘。</td></tr><tr><td>任务清单维护</td><td><code>f2s-task</code></td><td>约束 <code>.task/</code> 的创建、续作、归档。</td></tr><tr><td>通用编码习惯</td><td><code>f2s-karpathy-guidelines</code></td><td>只作为编码纪律补充；不得覆盖 f2s 强制流程。</td></tr></tbody></table>
+<p>核心原则：<strong>门禁规则先判断是否必须读 / 是否允许做，专项规则再决定具体怎么做</strong>。若规则表述重叠，按上表的场景优先级执行。</p>
+<h3 id="2-渐进式路由">2. 渐进式路由</h3>
+<div class="mermaid">graph LR
+    T[任务] --> M[manifest-routing\n读路由表]
+    M -->|关键词匹配| MT[matchers/xxx.json\n只读这一个分片]
+    MT -->|命中| TP[topics/xxx.md]
+    TP --> V{缺口检查}
+    V -->|通过| ACT[执行]
+    V -->|不足| Q[向用户澄清]
+    M -->|未命中| FB[fallback-triage\n结构化分诊]</div>
+<h3 id="3-技能维护闭环">3. 技能维护闭环</h3>
+<p>Mermaid 源码</p>
+<div class="mermaid">graph LR
+    AI["下次会话\n的 AI"] --> C["功能迭代"]
+    K[".Knowledge/"] 
+    K1[".Knowledge/"] --> AI["下次会话\n的 AI"]
+
+    C -->|"修复 Bug"| FIX["f2s-kb-fix"] --> K1
+    C -->|"新增能力"| FEAT["f2s-kb-feat"] --> K1
+    C -->|"会话结束"| SYNC["f2s-kb-sync"] --> K1
+    C -->|"提交代码"| CMT["f2s-git-commit\n收口检查"]
+    CMT -->|"未入库则提醒\n-> kb-sync/kb-feat"| K1
+
+    D1["架构文档"] -->|f2s-doc-arch| FIN["f2s-doc-final"]
+    D2["PDF/初稿"] -->|f2s-doc-final| FIN
+    FIN --> CTX["f2s-kb-build"] --> K
+
+    OLD["存量代码/文档"] -->|f2s-kb-add| K
+
+    NR["新需求"] --> CL["f2s-req-clarify"] --> BE["f2s-req-tech"]
+    BE --> IMPL["实现xxx技术方案"] -->|自动触发implement-tech-design规则| K
+
+    GIT["Git 合并后"] -->|f2s-kb-merge| K</div>
+<p>七条入口 · <code>f2s-git-commit</code> 是提交时的知识纪律收口 · <code>.Knowledge/</code> 是唯一汇聚点 · 知识驱动 AI，AI 驱动下轮开发</p>
+<h3 id="4-任务清单与跨会话续作">4. 任务清单与跨会话续作</h3>
+<div class="mermaid">graph LR
+    SKILL["f2s-kb-feat / f2s-kb-fix\nimplement-tech-design"] -->|"changeTracking: true"| TJ[".task/active/\ntask.md · todo.json"]
+    RP["f2s-req-plan\n（始终创建）"] --> TJ
+
+    TJ --> NS[新会话首条消息]
+    NS -->|关键词匹配| LD["加载剩余 checklist\n+ linkedSkill 上下文"]
+    LD --> RS[按原技能约束继续]</div>
+<p>任务不因会话结束丢失 · 关键词自动续作，无需重新说明上下文 · 技能约束完整恢复</p>
+<h3 id="5-协作状态的所有权">5. 协作状态的所有权</h3>
+<p><code>.task/</code> 早期跟普通项目文件一样进入 Git。单人使用时问题不大；多人开始共用仓库后，<code>todo.json</code> 和 <code>active/</code> 暴露了它们的真实属性：这是某个开发者、某次 Agent 会话的工作现场，不是项目事实。</p>
+<p>于是 <code>.task/</code> 的所有权从“仓库共有”改成“开发者本地持有”：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>旧模型</span></span>
+<span class="line"><span>  .task/ -> Git -> 所有人共享同一份 todo.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>现模型</span></span>
+<span class="line"><span>  .task/alice/ -> Alice 本地续作</span></span>
+<span class="line"><span>  .task/bob/   -> Bob 本地续作</span></span>
+<span class="line"><span>  .Knowledge/  -> Git -> 团队共享事实</span></span></code></pre>
+<p>这次变化解决的不是文件冲突本身，而是“谁有资格声明这份状态”的问题。任务做到第几步，由执行者自己的 <code>TASK_ROOT</code> 负责；能力最终是什么，由代码、正式文档和 <code>.Knowledge/</code> 负责。前者可以随会话变化，后者必须经过团队评审。</p>
+<p><code>developerId</code> 仍保留在本地路径中，用来覆盖共享开发机、devcontainer 和 Agent 越界读取等场景。它不是远程账号体系，也不承担团队权限管理。</p>
+<h3 id="6-知识合并为什么用乐观锁">6. 知识合并为什么用乐观锁</h3>
+<p><code>.Knowledge/</code> 必须共享，不能像 <code>.task/</code> 一样按人拆开。这里采用 topic revision 乐观锁，而没有引入文件锁或远程锁服务。</p>
+<p>文件锁要求所有写入者在修改前都能看到同一个在线锁状态，还要处理租约、断线、锁遗留和 CI 身份。Flow2Spec 的协作单元却是 Git 分支：开发者可以离线工作，Agent 也可能在不同 worktree 中运行。为了一个 Markdown 知识库再部署锁服务，会让本地优先的工作流反过来依赖中心节点。</p>
+<p>乐观锁利用了仓库已经拥有的磁盘真值。delta 记录“我读取时 topic revision 是多少”，<code>plan</code> 在写入前比较当前 revision：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>baseRevision == diskRevision  -> 可以 apply，revision +1</span></span>
+<span class="line"><span>baseRevision != diskRevision  -> 停止，重读最新 topic，做语义合并</span></span></code></pre>
+<p>代价也很明确：锁是 topic 级，两个互不相关的段落只要落在同一 topic，仍会互相阻塞；本地没拉到远端最新提交时，<code>plan</code> 也不可能感知远端变化。Flow2Spec 接受这两个限制，换取无服务、可离线、可审阅的实现。频繁冲突的正确处理通常是缩小 topic 职责，而不是把锁细化到行级后掩盖业务语义冲突。</p>
+<hr>
+<h2 id="设计亮点">设计亮点</h2>
+<h3 id="一路由与上下文加载">一、路由与上下文加载</h3>
+<h4 id="1-matchers-分片不嵌入-manifest">1. matchers 分片，不嵌入 manifest</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ 嵌入 manifest                  ✅ 独立分片</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>manifest.json (每次全读)          manifest-routing.json</span></span>
+<span class="line"><span>├── task1: keywords:[...]    →    ├── task1 → m-order.json ──► 只读这一个</span></span>
+<span class="line"><span>├── task2: keywords:[...]         ├── task2 → m-payment.json</span></span>
+<span class="line"><span>└── task3: keywords:[...]         └── task3 → m-refund.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>                                  更新关键词不动路由结构</span></span>
+<span class="line"><span>                                  每次路由 token 成本固定</span></span></code></pre>
+<h4 id="2-topicdependencies依赖挂在主题上">2. topicDependencies：依赖挂在主题上</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ 挂在任务级                     ✅ 挂在主题级</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>taskA → [dep, main]               topicDependencies:</span></span>
+<span class="line"><span>taskB → [main]      ← 漏写了        main: [dep]</span></span>
+<span class="line"><span>taskC → [main]      ← 漏写了</span></span>
+<span class="line"><span>                                  任何路径加载 main</span></span>
+<span class="line"><span>新增任务时漏写 → 静默失效          都自动带上前置依赖</span></span></code></pre>
+<h4 id="3-topic-只存摘要规则文件存全文">3. topic 只存摘要，规则文件存全文</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>.Knowledge/topics/implement-tech-design.md     ← 轻量，路由时加载</span></span>
+<span class="line"><span>┌──────────────────────────────────────────┐</span></span>
+<span class="line"><span>│ 主题 id、路径约定、下一步指针             │</span></span>
+<span class="line"><span>│ ~100 行                                   │</span></span>
+<span class="line"><span>└──────────────────────────────────────────┘</span></span>
+<span class="line"><span>             ↓ 命中后才读</span></span>
+<span class="line"><span>.claude/rules/f2s-implement-tech-design.md     ← 全文，执行时加载</span></span>
+<span class="line"><span>┌──────────────────────────────────────────┐</span></span>
+<span class="line"><span>│ 完整执行约束、强制步骤、禁止项、边界说明  │</span></span>
+<span class="line"><span>│ ~500 行                                   │</span></span>
+<span class="line"><span>└──────────────────────────────────────────┘</span></span></code></pre>
+<p>路由层保持轻量 · 执行细节按需加载 · 两者独立更新</p>
+<h4 id="4-禁止全量扫描是硬约束">4. 禁止全量扫描是硬约束</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>读取顺序（必须）</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  1. manifest-routing.json   ← 先看路由表</span></span>
+<span class="line"><span>  2. matchers/xxx.json       ← 只读命中分片</span></span>
+<span class="line"><span>  3. index.md                ← 按需，确认语义</span></span>
+<span class="line"><span>  4. stock-docs / req-docs   ← 按需，补充背景</span></span>
+<span class="line"><span>  5. 业务源码                ← 最后手段</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  ❌ 未读 manifest 前，禁止全仓无范围扫描</span></span>
+<span class="line"><span>  ❌ 同一任务线内，manifest 已读则不重复全文读取</span></span>
+<span class="line"><span>  ❌ index.md 禁止与 manifest 交替"刷清单"代替决策</span></span></code></pre>
+<h4 id="5-技能触发词写在-description-字段">5. 技能触发词写在 description 字段</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="yaml"><code><span class="line"><span style="color:#85E89D">name</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">f2s-kb-sync</span></span>
+<span class="line"><span style="color:#85E89D">description</span><span style="color:#E1E4E8">: </span><span style="color:#F97583">></span></span>
+<span class="line"><span style="color:#9ECBFF">  同步已实现能力到知识库。</span></span>
+<span class="line"><span style="color:#9ECBFF">  触发词：f2s-kb-sync、全局同步、知识库同步、已实现能力</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>用户输入 → Agent 扫 description 做语义匹配 → 触发对应技能</span></span></code></pre>
+<p>触发词在 description 里 · 不在正文里 · 命中率更高 · 双语覆盖减少漏触发</p>
+<hr>
+<h3 id="二知识结构">二、知识结构</h3>
+<h4 id="1-stock-docs-vs-req-docs-语义禁止">1. stock-docs vs req-docs 语义禁止</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>stock-docs/                        req-docs/</span></span>
+<span class="line"><span>架构说明 / 终稿                     需求 / 技术方案</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     ↓ 用于                              ↓ 用于</span></span>
+<span class="line"><span>知识路由 / 背景参考              驱动编码实现</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     ✅ 可以读                           ✅ 可以读</span></span>
+<span class="line"><span>     ❌ 不能作为编码输入                  ✅ implement-tech-design 的输入</span></span></code></pre>
+<p>防止：用过期参考文档驱动实现 → 代码与最新方案脱节</p>
+<h4 id="2-init-幂等">2. init 幂等</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec init  可以安全重跑</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>        ✅  做                         ❌  不做</span></span>
+<span class="line"><span>┌─────────────────────┐      ┌─────────────────────┐</span></span>
+<span class="line"><span>│ 补齐缺失目录和模板   │      │ 写业务文档内容       │</span></span>
+<span class="line"><span>│ 落盘 rules/skills   │      │ 更新路由关键词       │</span></span>
+<span class="line"><span>│ 包级结构对齐        │      │ 覆盖已有知识内容     │</span></span>
+<span class="line"><span>└─────────────────────┘      └─────────────────────┘</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>结构操作  ≠  业务语义         两者职责不交叉</span></span></code></pre>
+<h4 id="3-知识版本化">3. 知识版本化</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>git log .Knowledge/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  a3f1c2  f2s-kb-feat: 新增退款状态机路由</span></span>
+<span class="line"><span>  b7e9d1  f2s-kb-fix: 修正 RestTemplate 注入约定</span></span>
+<span class="line"><span>  c2a8f0  f2s-kb-build: 订单服务架构说明入库</span></span>
+<span class="line"><span>  d5b3e9  f2s-kb-sync: 沉淀支付重试队列设计</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  代码变更  +  知识变更  →  同一 commit 或相邻 commit</span></span></code></pre>
+<p>知识有版本 · 可 review · 可回溯 · 可 blame</p>
+<h4 id="31-版本检测与升级提示">3.1 版本检测与升级提示</h4>
+<div class="mermaid">graph TD
+    A["flow2spec init codex"] -->|写入| B["hooks/f2s-update-check.js"]
+    A -->|写入| C["hooks.json"]
+    C --> D["注册 SessionStart hook"]
+
+    G["新 session 启动"] --> H{hook 已信任?}
+    H -->|否| H2["本次不自动执行"]
+    H -->|是| F["执行检测脚本"]
+
+    F --> I{CI 环境?}
+    I -->|是| Z["静默跳过"]
+    I -->|否| J{"updateCheck\n.enabled=false?"}
+    J -->|是| Z
+    J -->|否| K{"update-check.json\n今天已检查?"}
+
+    K -->|是| K1{缓存显示需升级?}
+    K1 -->|否| Z
+    K1 -->|是| Q
+    K -->|否| L["读取 manifest version"]
+
+    L --> M{有 manifest version?}
+    M -->|否| Z
+    M -->|是| N["npm view 查最新版本"]
+    N --> O["写入 update-check.json 缓存"]
+    O --> P{"manifest version\n&#x3C; npm latest?"}
+    P -->|否| Z
+    P -->|是| Q["stdout 输出 JSON"]
+
+    Q --> S["注入会话上下文"]
+    S --> T["提示执行 f2s-kb-upgrade"]</div>
+<p>以 Codex 为例；Claude / Cursor 链路相同，仅 hook 配置路径不同。每日首次启动触发版本比对，需要升级时通过 <code>additionalContext</code> 注入提示，无需人工检查。</p>
+<h4 id="4-禁止历史否定堆砌">4. 禁止历史否定堆砌</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>❌ 错误写法（知识库越来越臃肿）        ✅ 正确写法（只保留当前成立的表述）</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  RestTemplate 约定（更新于 2026-05）    RestTemplate 必须通过 Bean 注入</span></span>
+<span class="line"><span>  ~~原错误地使用 new RestTemplate()~~    禁止直接 new RestTemplate()</span></span>
+<span class="line"><span>  → 不再与直接实例化有关</span></span>
+<span class="line"><span>  → 原写法已废弃，现改为 Bean 注入</span></span></code></pre>
+<p>每次修复原位改写 · 不叠加历史 · 知识库永远只描述现在</p>
+<hr>
+<h3 id="三执行约束">三、执行约束</h3>
+<h4 id="1-强制步骤是约束不是建议">1. 强制步骤是约束，不是建议</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>implement-tech-design 执行流</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  输入标准化</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  读取方案与上下文</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  ★ 输出实现任务列表    ← 不可跳过</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  ★ 实现前提问确认      ← 不可跳过</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  按任务列表实现</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  输出待完成清单与提醒   ← 不可跳过</span></span></code></pre>
+<p>建议 → 可以被跳过 · 约束 → 必须明确处理才能继续</p>
+<h4 id="2-fallback-本身是有程序的-topic">2. fallback 本身是有程序的 topic</h4>
+<div class="mermaid">graph TD
+    F[进入 fallback-triage] --> S1{路由是否命中?}
+    S1 -->|已命中但上下文不足| EXP[展开依赖主题\n补齐后继续]
+    S1 -->|未命中| Q[询问用户:\n这个领域文档是否已录入?]
+    Q -->|是| HINT[路由词条缺失\n建议补路由]
+    Q -->|否| CHOICE[下钻源码\n或补充 req-docs]
+    Q -->|不确定| STOP[停止执行\n等待明确指令]</div>
+<p>未命中 ≠ 静默失败 · 降级本身有明确程序</p>
+<h4 id="3-manifest--index-写权硬约束">3. manifest / index 写权硬约束</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>子 agent 可以落盘的               子 agent 不得触碰</span></span>
+<span class="line"><span>────────────────────             ────────────────────</span></span>
+<span class="line"><span>代码实现文件                      manifest-routing.json  ← 恒主 agent 落盘</span></span>
+<span class="line"><span>stock-docs 内容文件               .Knowledge/index.md    ← 恒主 agent 落盘</span></span>
+<span class="line"><span>topics 内容文件（diff 模式）</span></span>
+<span class="line"><span>matchers/*.json（diff 模式）</span></span></code></pre>
+<p>多个子 agent 并行时，共享状态文件由主 agent 单点写入，防止并发冲突</p>
+<h4 id="4-文档改动-vs-代码改动拆分策略不同">4. 文档改动 vs 代码改动，拆分策略不同</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>代码子包                          文档子包</span></span>
+<span class="line"><span>────────────────────             ────────────────────</span></span>
+<span class="line"><span>✅ 可下放子 agent 执行            ❌ 默认不拆，主 agent 直接写</span></span>
+<span class="line"><span>✅ 子 agent 直接落盘              若确需外包 →</span></span>
+<span class="line"><span>                                  子侧只输出 before/after diff 片段</span></span>
+<span class="line"><span>                                  主 agent 审核后合并落盘</span></span>
+<span class="line"><span>                                  ❌ 整文件重写严格禁止</span></span></code></pre>
+<p>原因：文档需要保证「现行真值覆盖 / 文风一致 / 禁历史否定堆砌」 · 要求写的人看到全文上下文</p>
+<h4 id="5-任务清单与跨会话续作">5. 任务清单与跨会话续作</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>关键词自动续作示例</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  新会话第一句："支付回调还有个问题"</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  匹配 todo.json 各条目 keywords</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  命中 { name: "payment_callback_fix", keywords: ["支付", "回调"] }</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  加载 task.md（展示剩余步骤）</span></span>
+<span class="line"><span>  linkedSkill = "f2s-kb-fix" → 加载 SKILL.md</span></span>
+<span class="line"><span>       ↓</span></span>
+<span class="line"><span>  技能的落盘规则 / 文风要求 / 自检清单全部恢复</span></span>
+<span class="line"><span>  用户无需重新描述上下文，直接继续</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  ✅ 不需要说"继续上次任务"</span></span>
+<span class="line"><span>  ✅ 技能约束完整恢复，与首次调用一致</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>todo.json 写权约束</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  主 agent ── 读 / 写 todo.json   ✅</span></span>
+<span class="line"><span>  子 agent ── 读 todo.json        ✅</span></span>
+<span class="line"><span>  子 agent ── 写 todo.json        ❌</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  原因：多子 agent 并行落盘时，并发写会导致条目互相覆盖</span></span></code></pre>
+<p>生命周期由技能驱动 · 关键词路由实现跨会话自动续作 · linkedSkill 保证技能约束完整恢复</p>
+<hr>
+<h3 id="四agent-编排">四、Agent 编排</h3>
+<h4 id="1-subagent--switchagentverification-正交">1. subAgent × switchAgentVerification 正交</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                    switchAgentVerification</span></span>
+<span class="line"><span>                   false            true</span></span>
+<span class="line"><span>     subAgent  ┌────────────┬─────────────────┐</span></span>
+<span class="line"><span>     true →    │ 并行执行    │ 并行执行         │</span></span>
+<span class="line"><span>               │ 落盘侧自验  │ 子落盘→主验      │</span></span>
+<span class="line"><span>               │            │ 主落盘→子验      │</span></span>
+<span class="line"><span>               ├────────────┼─────────────────┤</span></span>
+<span class="line"><span>     false →   │ 顺序执行   │ 顺序执行         │</span></span>
+<span class="line"><span>               │ 主 agent   │ 主 agent 自验    │</span></span>
+<span class="line"><span>               │ 自验       │（无子侧可交叉）   │</span></span>
+<span class="line"><span>               └────────────┴─────────────────┘</span></span></code></pre>
+<p>两个维度正交 · 独立配置 · 默认左下角</p>
+<h4 id="2-确认权不可下放子-agent">2. 确认权不可下放子 agent</h4>
+<div class="mermaid">graph LR
+    S1[步骤1: 素材汇总] -->|subAgent=true 可并行| SUB[子 agent]
+    SUB -->|只读，不落盘| S2
+
+    S2[步骤2: 输出大纲\n用户确认] -->|必须主 agent| USER[用户]
+    USER -->|确认| S3
+
+    S3[步骤3: 落盘] -->|subAgent=true 可并行| SUB2[子 agent]</div>
+<p>用户对话只经过主 agent · 确认决策不可绕过用户 · 子 agent 只做执行不做决策</p>
+<h4 id="3-技能可覆盖全局-subagent-配置">3. 技能可覆盖全局 subAgent 配置</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec.config.json        f2s-req-clarify SKILL.md</span></span>
+<span class="line"><span>subAgent: true               本技能默认不拆子：</span></span>
+<span class="line"><span>                             无论 subAgent 真值，</span></span>
+<span class="line"><span>                             澄清流程全程在主会话</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>原因：需求澄清强依赖连续同会话追问</span></span>
+<span class="line"><span>     拆子会断上下文，导致澄清质量下降</span></span></code></pre>
+<p>全局配置是允许拆的上限 · 技能自己判断是否适合拆 · 配置 true 不等于一定拆</p>
+<h4 id="4-f2s-kb-sync-先出大纲确认后再写">4. f2s-kb-sync 先出大纲，确认后再写</h4>
+<div class="mermaid">graph LR
+    T[触发 f2s-kb-sync] --> O[输出更新大纲]
+    O --> U{用户确认}
+    U -->|确认| W[写入 .Knowledge/]
+    U -->|修改| O
+    U -->|取消| STOP[不写入]</div>
+<p>写入是破坏性操作 · 大纲是用户唯一的纠错机会 · 确认前不落盘</p>
+<h4 id="5-零输入推断">5. 零输入推断</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-sync 三种输入方式</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  方式 1：用户显式给出能力列表    "帮我把退款状态机同步进知识库"</span></span>
+<span class="line"><span>  方式 2：用户给辅助材料          @src/refund/ @docs/方案.md</span></span>
+<span class="line"><span>  方式 3：零输入                  "f2s-kb-sync"（仅此一句）</span></span>
+<span class="line"><span>                                       ↓</span></span>
+<span class="line"><span>                                  Agent 基于会话上下文推断</span></span>
+<span class="line"><span>                                  本次实现了什么、有什么值得沉淀</span></span></code></pre>
+<p>会话上下文本身就是信息源 · 不需要用户整理再输入</p>
+<h4 id="51-执行开关如何进入-agent多端提示">5.1 执行开关如何进入 Agent（多端提示）</h4>
+<p><code>flow2spec.config.json</code> 决定 <code>**subAgent</code> / <code>switchAgentVerification</code> / <code>changeTracking**</code>，但各 AI 产品<strong>不保证</strong>会话启动即自动打开该文件。设计上用 <strong>多条弱约束叠加</strong> 降低「未读配置就开跑 <code>f2s-*</code>」的概率，同时避免在 <code>.Knowledge</code> 再维护一份与 <code>.codex/topics/f2s-config-check.md</code> 逐字重复的长文：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>机制</th><th>设计意图</th></tr></thead><tbody><tr><td><strong>Cursor <code>f2s-config-check.mdc</code></strong></td><td>规则层强制「技能正文前先 Read」；Cursor hook 仅用于版本更新检测，不自动读取配置。</td></tr><tr><td><strong>Claude <code>f2s-config-session</code> SessionStart</strong></td><td>会话开始时注入一次配置摘要，降低遗忘概率。</td></tr><tr><td><strong>Claude <code>f2s-config-inject</code> PreToolUse</strong></td><td>仅在调用 <code>**f2s-*</code> Skill** 时做守门提示，提醒首步必须 Read；不反复注入完整配置。</td></tr><tr><td><strong>Codex <code>AGENTS.md</code> / <code>.codex/topics/f2s-config-check.md</code> + <code>f2s-config-session</code></strong></td><td><code>SessionStart</code> 注入一次配置摘要，文本层强制「技能正文前先 Read」；仍无 Claude 式 <code>PreToolUse Skill</code> 守门。</td></tr><tr><td><strong>Codex <code>AGENTS.md</code> + <code>renderProjectConfigBlock</code></strong></td><td>顶部 <strong>Read</strong> 硬约束 + 字段语义表；当前值只来自磁盘 Read 与 SessionStart 摘要。</td></tr><tr><td><strong>知识库 <code>config-precheck</code> 主题</strong></td><td>路由命中时只提供<strong>摘要</strong>与链向 Codex 长文，<strong>不</strong>替代 Read JSON。</td></tr></tbody></table>
+<p><strong>权威仍为</strong>项目根 JSON 的 <strong>Read</strong> 结果；各层为提示而非第二份真值源。操作侧完整表格与路径见 <strong><a href="/Flow2Spec/docs/usage/">使用说明 § 一、<code>f2s-*</code> 与 <code>flow2spec.config.json</code></a></strong>；口述节奏见 <strong><a href="../presentations/flow2spec-intro-public/%E6%BC%94%E8%AE%B2%E7%A8%BF.md">Flow2Spec 演讲稿 Slide 13b</a></strong>。</p>
+<h4 id="6-技能不复述统一入口规则只引用">6. 技能不复述统一入口规则，只引用</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>每个 SKILL.md 的编排部分写法：</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  subAgent / switchAgentVerification 语义</span></span>
+<span class="line"><span>  以统一入口为唯一事实源，本处不复述。</span></span>
+<span class="line"><span>  ↓</span></span>
+<span class="line"><span>  Cursor/Claude → rules/f2s-flow2spec-unified-entry.*</span></span>
+<span class="line"><span>  Codex         → .codex/topics/f2s-flow2spec-unified-entry.md</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>15 个技能，每个只写自己特有的编排约束</span></span>
+<span class="line"><span>公共规则统一在一处定义，修改一处全部生效</span></span></code></pre>
+<hr>
+<h3 id="五可插拔架构">五、可插拔架构</h3>
+<h4 id="1-工具可插拔一份知识任意组合工具">1. 工具可插拔：一份知识，任意组合工具</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec init cursor claude codex   ← 三工具全装</span></span>
+<span class="line"><span>flow2spec init claude                ← 只装 Claude</span></span>
+<span class="line"><span>flow2spec init cursor codex          ← 跳过 Claude</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>.Knowledge/ 始终不变，工具随时加减</span></span></code></pre>
+<p>同一份 <code>.Knowledge/</code> 驱动所有工具 · 加减工具不影响知识内容 · 新工具接入零重建</p>
+<h4 id="2-知识主题可插拔增删不连带">2. 知识主题可插拔：增删不连带</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>添加主题                              删除主题</span></span>
+<span class="line"><span>─────────────────────               ─────────────────────</span></span>
+<span class="line"><span>1. 写 topics/xxx.md                  f2s-kb-rm stock-docs/xxx.md</span></span>
+<span class="line"><span>2. 写 matchers/m-xxx.json                    ↓</span></span>
+<span class="line"><span>3. 在 manifest-routing 注册          自动清除 topics/ + manifest</span></span>
+<span class="line"><span>                                     + index 引用</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>其他主题完全不受影响</span></span></code></pre>
+<p>新主题只需在 <code>topicDependencies</code> 里声明依赖 · 不声明则彼此独立 · 删除无副作用</p>
+<h4 id="3-技能可插拔自包含单元项目级可覆盖包级">3. 技能可插拔：自包含单元，项目级可覆盖包级</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>包级技能（随 flow2spec init 分发）     项目级技能（放 配置根/skills/）</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>f2s-kb-sync/SKILL.md                  my-domain-skill/SKILL.md</span></span>
+<span class="line"><span>f2s-doc-arch/SKILL.md                 my-review-skill/SKILL.md</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>名字不冲突则共存  ·  同名则项目级覆盖包级  ·  互不感知</span></span></code></pre>
+<p>技能靠 <code>description</code> 字段自描述触发词 · 不需要注册表 · 不需要改全局配置 · 上线即生效</p>
+<h4 id="4-路由词表可插拔分片隔离局部更新">4. 路由词表可插拔：分片隔离，局部更新</h4>
+<p>词条变更只改对应 <code>matchers/m-xxx.json</code>，其他路由 diff 为零；结构见「<a href="#matchers-%E5%88%86%E7%89%87%E4%B8%8D%E5%B5%8C%E5%85%A5-manifest">一、路由与上下文加载 → matchers 分片</a>」。</p>
+<p>词条变更局部化 · 合并冲突最小化 · 新增路由不影响存量</p>
+<h4 id="5-执行模型可插拔config-按项目切换">5. 执行模型可插拔：config 按项目切换</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec.config.json</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  subAgent: false               → 全程主 agent，低开销，适合小项目</span></span>
+<span class="line"><span>  subAgent: true                → 允许拆子并行，适合大规模改动</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  switchAgentVerification: false → 落盘侧自验，日常使用</span></span>
+<span class="line"><span>  switchAgentVerification: true  → 交叉校验，高置信度关键场景</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  changeTracking.feat: true        → f2s-kb-feat 默认创建任务清单</span></span>
+<span class="line"><span>  changeTracking.fix: false        → f2s-kb-fix 默认不创建任务清单</span></span>
+<span class="line"><span>  changeTracking.implement: true   → implement-tech-design 默认创建任务清单</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>  三个维度正交 · 各技能可进一步细化覆盖全局配置</span></span></code></pre>
+<p>改一行配置切换执行策略 · 不修改任何技能文件 · 新项目开箱即用，老项目按需升级</p>
+<hr>
+<h2 id="优势与劣势">优势与劣势</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>✅ 优势                              ⚠️  局限</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>上下文精准                           前期投入：知识要靠技能建起来</span></span>
+<span class="line"><span>└─ 路由只加载相关文档                 规模门槛：小项目开销 > 收益</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>跨工具共享                           需要团队纪律</span></span>
+<span class="line"><span>└─ 知识写一份，三工具都用             └─ 技能只降低摩擦，不消灭摩擦</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>工具无关                             学习曲线</span></span>
+<span class="line"><span>└─ 换工具不重建知识                   └─ stock/req 边界、路由结构不直觉</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>可持续</span></span>
+<span class="line"><span>└─ 维护绑定开发动作</span></span></code></pre>
+<hr>
+<h2 id="适合谁">适合谁</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>                      项目规模</span></span>
+<span class="line"><span>                 小 ◄──────────► 大</span></span>
+<span class="line"><span>          ┌──────────┬────────────┐</span></span>
+<span class="line"><span>    短期   │  不需要   │   可以用    │</span></span>
+<span class="line"><span>          ├──────────┼────────────┤</span></span>
+<span class="line"><span>    长期   │  可以用   │  强烈推荐   │</span></span>
+<span class="line"><span>          └──────────┴────────────┘</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>同时满足：有规模 · 长期迭代 · 多工具或多人 AI 协作</span></span></code></pre>
+<hr>
+<h2 id="相关文档">相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a></li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a></li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a></li>
+<li><a href="/Flow2Spec/docs/collaboration/">团队协作</a></li>
+<li><a href="/Flow2Spec/docs/scenarios/">使用案例-模拟对话</a></li>
+<li><a href="../presentations/flow2spec-intro-public/%E6%BC%94%E8%AE%B2%E7%A8%BF.md">Flow2Spec 演讲稿</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

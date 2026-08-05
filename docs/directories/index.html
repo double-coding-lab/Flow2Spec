@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 目录与路径约定文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/directories/"><title>目录与路径约定 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#核心边界" class="is-active">核心边界</a><a href="#目录职责">目录职责</a><a href="#路径约束">路径约束</a><a href="#task-的两种形态">.task/ 的两种形态</a><a href="#主题元数据">主题元数据</a><a href="#主题粒度">主题粒度</a><a href="#相关文档">相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="目录与路径约定">目录与路径约定</h1>
+
+<h2 id="核心边界">核心边界</h2>
+<ul>
+<li><code>.Knowledge/</code>：<strong>知识环</strong>——业务知识文档与机读路由（见 <a href="/Flow2Spec/docs/architecture/">体系与原理 §2 多层记忆</a>）</li>
+<li><code>.task/</code>：<strong>任务环</strong>——变更追踪与跨会话续作（不在 <code>.Knowledge/</code> 内）</li>
+<li><code>配置根</code>（<code>.cursor/.claude/.codex</code>）：<strong>规则环 + 技能环</strong>入口</li>
+</ul>
+<p>Memory Coding 四环总览见 <a href="/Flow2Spec/docs/architecture/">体系与原理 §1</a>。</p>
+<hr>
+<h2 id="目录职责">目录职责</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>路径</th><th>职责</th></tr></thead><tbody><tr><td><code>.Knowledge/stock-docs/</code></td><td><strong>L3</strong> 架构、终稿、沉淀长文档</td></tr><tr><td><code>.Knowledge/req-docs/</code></td><td><strong>L3</strong> 需求澄清、技术方案长文档</td></tr><tr><td><code>.Knowledge/topics/</code></td><td><strong>L2</strong> 主题摘要（硬约束、边界、路由指针）</td></tr><tr><td><code>.Knowledge/template/</code></td><td>终稿/技术方案模板</td></tr><tr><td><code>.Knowledge/index.md</code></td><td>人类可读索引</td></tr><tr><td><code>.Knowledge/manifest-routing.json</code></td><td><strong>L0</strong> 机读路由骨架（task/topic/<code>topicDependencies</code>/<code>topicMetadata</code>）</td></tr><tr><td><code>.Knowledge/matchers/*.json</code></td><td><strong>L1</strong> 关键词分片（<code>id/includeAny</code>），由 <code>matcherPath</code> 直链；<strong>match</strong> 只读一片</td></tr><tr><td><code>.Knowledge/migration-report.md</code></td><td><code>f2s-kb-migrate</code> 落盘的迁移对照表与拟删除路径列表</td></tr><tr><td><code>.task/</code></td><td>变更追踪任务清单目录，本地运行态、默认进 <code>.gitignore</code>。多人协作时按 <code>&#x3C;developerId>/</code> 再分一层，两种形态见下文 §<code>.task/</code> 的两种形态。仅当 <code>changeTracking.*</code> 为 <code>true</code> 或显式调用 <code>f2s-req-plan</code> 时创建</td></tr><tr><td><code>配置根/rules/</code></td><td>规则文件（Cursor <code>.mdc</code>，Claude <code>.md</code>）</td></tr><tr><td><code>配置根/skills/</code></td><td>技能定义（<code>SKILL.md</code>）</td></tr><tr><td><code>配置根/template/</code></td><td>（废弃）不再写入；历史目录可清理</td></tr><tr><td><code>.codex/AGENTS.md</code></td><td>Codex 统一入口与加载说明</td></tr><tr><td><code>flow2spec.config.json</code></td><td>项目根配置，控制 <code>subAgent</code>、<code>switchAgentVerification</code>、<code>changeTracking</code>（嵌套对象，含 <code>feat</code> / <code>fix</code> / <code>implement</code> 三个子项）</td></tr></tbody></table>
+<blockquote>
+<p>多端提示与路径表见 <a href="/Flow2Spec/docs/usage/">使用说明 § 一</a>（详表单点维护）；<strong>权威仍为 Read(<code>flow2spec.config.json</code>)</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="路径约束">路径约束</h2>
+<ol>
+<li><code>.Knowledge/topics</code> 是知识路由主题层，允许并鼓励通过 <code>f2s-*</code> 技能维护。</li>
+<li><code>f2s-kb-build</code> 从 <code>.Knowledge/stock-docs</code> 读，更新 <code>.Knowledge/topics</code>、<code>.Knowledge/index.md</code>、<code>.Knowledge/manifest-routing.json</code>、<code>.Knowledge/matchers/*.json</code>。</li>
+<li>实现类任务统一读取 <code>.Knowledge/req-docs/*.md</code>。</li>
+<li><code>manifest-routing.json</code> 与 <code>matchers/*.json</code> 由 <code>f2s-*</code> 技能流程维护；不再使用 <code>.Knowledge/manifest-matchers.json</code>（<code>flow2spec init</code> 会删除遗留文件）。</li>
+<li><code>.task/</code> 与 <code>.Knowledge/update-check.json</code> 是本地运行态，默认不进 Git；<code>flow2spec init</code> 会非破坏式补充 <code>.gitignore</code>。任务进度是<strong>个人过程草稿</strong>，知识库才是<strong>团队沉淀</strong>，两者分线管，具体形态见下文 §<code>.task/</code> 的两种形态。</li>
+</ol>
+<hr>
+<h2 id="task-的两种形态"><code>.task/</code> 的两种形态</h2>
+<p><code>.task/</code> 有两套摆法，取决于 <code>flow2spec.config.json</code> 里 <code>collaboration</code> 的解析结果：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>模式</th><th>触发条件</th><th>路径</th></tr></thead><tbody><tr><td><strong>legacy 单根</strong></td><td><code>collaboration.enabled: false</code>，或跑到最后一档仍解析不出 developerId</td><td><code>.task/todo.json</code> · <code>.task/active/</code> · <code>.task/completed/</code></td></tr><tr><td><strong>按 developerId 隔离</strong></td><td><code>collaboration.enabled: true</code>（默认）且能解析出 id</td><td><code>.task/&#x3C;developerId>/todo.json</code> · <code>.task/&#x3C;developerId>/active/</code> · <code>.task/&#x3C;developerId>/completed/</code></td></tr></tbody></table>
+<p>两种形态下 <code>active/</code> 与 <code>completed/</code> 的子目录命名规则一致：进行中直接用 task-name；已归档改成 <strong><code>&#x3C;YYYYMMDD>-&#x3C;task-name></code></strong>（日期在前）。</p>
+<h3 id="developerid-的解析顺序">developerId 的解析顺序</h3>
+<p>自顶向下取第一个能落地的：</p>
+<ol>
+<li><code>flow2spec.config.json</code> → <code>collaboration.developerId</code>（<strong>非空但含非 ASCII 或全被 <code>[^a-z0-9]</code> 过滤成空的会直接报错</strong>，让用户显式修正配置，不再静默降级 legacy）</li>
+<li><code>git config user.email</code> 的 <code>@</code> 前缀</li>
+<li><code>git config user.name</code></li>
+<li>上面都拿不到 → legacy 单根</li>
+</ol>
+<p>第 2、3 档如果拿到的是中文/日文/其他非 ASCII 字符串，会退化到 <code>dev-&#x3C;sha256 前 8 位></code> 的 hash id 作为兜底，跨机器稳定；解析器同时把这次降级放进返回值的 <code>warnings</code>，供调用方决定是否提示用户改成显式的英文标识。</p>
+<h3 id="为什么在本地也要按人分层">为什么在本地也要按人分层</h3>
+<p><code>.task/</code> 已经不进 Git 了，本地机器天然按人隔离，但 <code>&#x3C;developerId>/</code> 这一层仍然有意义，覆盖三个边界：</p>
+<ul>
+<li>同一台开发/构建机上多个账号共用（devcontainer、共享 Mac mini、跳板机）</li>
+<li>AI 需要一个稳定的 <code>TASK_ROOT</code> 边界，防止跨读别人未归档的任务上下文（配置根 <code>rules/f2s-task</code> 是硬约束）</li>
+<li>若团队日后约定把 <code>completed/</code> 白名单加回 Git 做团队归档，<code>&#x3C;developerId>/</code> 结构直接生效，不用回头改代码</li>
+</ul>
+<h3 id="从-legacy-迁到隔离模式">从 legacy 迁到隔离模式</h3>
+<p>开启 <code>collaboration.enabled</code> 之前 <code>.task/active/</code> 里可能还有进行中的任务，<code>f2s-*</code> 技能<strong>不会自动搬</strong>：如果多人共用过同一个 legacy <code>.task/</code>，自动挪目录会把别人未完成的任务卷进当前 developer 的目录。用户确认后手动 <code>mv .task/active .task/&#x3C;id>/active</code>（<code>completed/</code> 同理）即可完成迁移。</p>
+<hr>
+<h2 id="主题元数据">主题元数据</h2>
+<p><code>manifest-routing.json.topicMetadata</code> 是 topic 的机读治理元数据，只用于盘点、过滤、路由审计、升级补缺和阅读预期；不参与 matcher 命中，不决定是否读取 topic，不作为执行强制性的事实源，也不驱动 <code>topicId</code> 或文件名变化。执行强制性始终以 <code>AGENTS.md</code>、rules、skills 与 topic 正文中的明确要求为准。</p>
+<p><code>topicMetadata</code> 独立于 <code>topicPaths</code>，key 必须是 <code>topicPaths</code> 中已存在的 topicId。新增 topic 时有明确证据可同步写入；仅补分类不得创建 topic、重命名 topic 或拆分 topic。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>字段</th><th>取值</th><th>说明</th></tr></thead><tbody><tr><td><code>primary</code></td><td><code>feature</code> / <code>module</code> / <code>config</code> / <code>policy</code></td><td>单值主分类。取 topic 最核心的性质，读 topic 正文后写入。</td></tr><tr><td><code>tags</code></td><td><code>feature</code> / <code>module</code> / <code>config</code> / <code>policy</code> 数组</td><td>可选次要分类，不得与 <code>primary</code> 重复。</td></tr><tr><td><code>confidence</code></td><td><code>manual</code> / <code>inferred</code></td><td><code>manual</code> 为人工确认；<code>inferred</code> 为有明确证据推断；证据不足时不写 metadata，并在摘要列为待确认。</td></tr></tbody></table>
+<p>类型含义：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>类型</th><th>阅读预期</th></tr></thead><tbody><tr><td><code>feature</code></td><td>已落地业务/产品能力背景</td></tr><tr><td><code>module</code></td><td>目录、包、模块边界与工程结构</td></tr><tr><td><code>config</code></td><td>配置项、开关、默认值、初始化参数</td></tr><tr><td><code>policy</code></td><td>流程、规则、约束、门禁、禁止项、agent 编排、技能步骤</td></tr></tbody></table>
+<h2 id="主题粒度">主题粒度</h2>
+<p>topic 是路由摘要与关键边界，细节放在 <code>stock-docs/</code>。若对应 stock-doc 超过 300–500 行、matcher <code>includeAny</code> 超过 12 个，或正文出现 3 个以上不相干职责域，建议拆成主 topic + 可独立命中的子 topic。</p>
+<hr>
+<h2 id="相关文档">相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a></li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a></li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a></li>
+<li><a href="/Flow2Spec/docs/scenarios/">使用案例-模拟对话</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

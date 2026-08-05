@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 使用说明文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/usage/"><title>使用说明 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/" aria-current="page">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/" aria-current="page">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#一init-做了什么" class="is-active">一、init 做了什么</a><a href="#二目录约定">二、目录约定</a><a href="#三典型工作场景">三、典型工作场景</a><a href="#四agent-执行配置">四、Agent 执行配置</a><a href="#五规则改造建议">五、规则改造建议</a><a href="#六技能标识">六、技能标识</a><a href="#七相关文档">七、相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="使用说明">使用说明</h1>
+
+<h2 id="一init-做了什么">一、init 做了什么</h2>
+<p>在业务仓库根执行：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> init</span><span style="color:#E1E4E8"> [cursor</span><span style="color:#F97583">|</span><span style="color:#B392F0">claude</span><span style="color:#F97583">|</span><span style="color:#B392F0">codex</span><span style="color:#9ECBFF"> ...]</span></span>
+<span class="line"><span style="color:#6A737D"># 使用英文模板：</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> init</span><span style="color:#E1E4E8"> [cursor</span><span style="color:#F97583">|</span><span style="color:#B392F0">claude</span><span style="color:#F97583">|</span><span style="color:#B392F0">codex</span><span style="color:#9ECBFF"> ...]</span><span style="color:#79B8FF"> --locale</span><span style="color:#9ECBFF"> en-US</span></span>
+<span class="line"><span style="color:#6A737D"># 需要强制重置 .Knowledge 到模板时：</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> init</span><span style="color:#E1E4E8"> [cursor</span><span style="color:#F97583">|</span><span style="color:#B392F0">claude</span><span style="color:#F97583">|</span><span style="color:#B392F0">codex</span><span style="color:#9ECBFF"> ...]</span><span style="color:#79B8FF"> --reset-knowledge</span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>init 做</th><th>init 不做</th></tr></thead><tbody><tr><td>补齐缺失的目录与模板文件</td><td>撰写或更新业务文档内容</td></tr><tr><td>落盘各 agent 配置根 <code>rules/</code> <code>skills/</code></td><td>更新 <code>includeAny</code> 业务词条</td></tr><tr><td><code>manifest-routing</code> + <code>matchers/</code> 包级结构对齐</td><td>替代 <code>f2s-*</code> 技能对业务语义的书写</td></tr><tr><td><code>--reset-knowledge</code> 时强制覆盖 <code>.Knowledge</code> 模板文件</td><td>（不加此参数时）覆盖已有 <code>.Knowledge</code> 内容</td></tr></tbody></table>
+<blockquote>
+<p><strong><code>init</code> 与「知识库升级」是两件事</strong>：<code>init</code> 只做结构补齐，业务语义（topics 内容、路由词条、stock-docs/req-docs）由 <code>f2s-kb-add</code>、<code>f2s-kb-fix</code>、<code>f2s-kb-feat</code>、<code>f2s-kb-sync</code>、<code>f2s-kb-build</code> 等技能维护。跨版本升级用 <code>f2s-kb-upgrade</code>，<strong>不要把单独 <code>init</code> 当作升级命令</strong>。</p>
+</blockquote>
+<h3 id="模板语言">模板语言</h3>
+<p><code>flow2spec init</code> 默认使用 <code>zh-CN</code> 模板；可通过 <code>--locale en-US</code> 使用英文模板。<code>locale</code> 只决定 Flow2Spec 包模板（rules / skills / knowledge template / hooks / AGENTS）的自然语言，不翻译已有业务知识库内容。<code>f2s-kb-upgrade</code> 默认沿用项目 <code>flow2spec.config.json.locale</code>，字段不存在时按 <code>zh-CN</code> 补齐。</p>
+<h3 id="f2s--与-flow2specconfigjson多端多重提示权威仍为磁盘-json"><code>f2s-*</code> 与 <code>flow2spec.config.json</code>：多端多重提示（权威仍为磁盘 JSON）</h3>
+<p>执行任意 <strong><code>f2s-*</code> 技能</strong>前，需要让 Agent 拿到 <strong><code>subAgent</code> / <code>switchAgentVerification</code> / <code>changeTracking</code></strong> 等实际值。Flow2Spec 在 <strong>不同客户端</strong> 用 <strong>不同机制</strong> 强化这一点；它们彼此<strong>补充</strong>，<strong>不</strong>互相替代，<strong>权威始终</strong>是项目根 <strong><code>flow2spec.config.json</code></strong>（须用 <strong>Read</strong> 与磁盘一致后再进技能正文）。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>端</th><th><code>init</code> 落盘与行为</th><th>说明</th></tr></thead><tbody><tr><td><strong>Cursor</strong></td><td><code>.cursor/rules/f2s-config-check.mdc</code>（<code>alwaysApply</code>）</td><td>配置读取走文本约束：技能正文前先 <strong>Read(<code>flow2spec.config.json</code>)</strong>；Cursor hook 仅用于版本更新检测，不自动读取配置。</td></tr><tr><td><strong>Claude Code</strong></td><td><code>.claude/hooks/f2s-config-session.js</code> + <code>.claude/hooks/f2s-config-inject.js</code> + <code>.claude/settings.json</code></td><td><code>SessionStart</code> 仅注入一次配置摘要；<code>PreToolUse</code> 仅在调用 <strong><code>f2s-*</code> Skill</strong> 时做守门提示，提醒首步必须 <strong>Read</strong>。两者都不替代磁盘 Read。</td></tr><tr><td><strong>Codex</strong></td><td>根 <code>AGENTS.md</code> 顶部强制步骤 + <code>.codex/topics/f2s-config-check.md</code> + <code>{{FLOW2SPEC_PROJECT_CONFIG}}</code> 字段语义表 + <code>.codex/hooks/f2s-config-session.js</code></td><td><code>SessionStart</code> 注入一次配置摘要；配置读取仍以文本约束 + <strong>Read</strong> 为硬要求；表格只说明字段语义，不写当前值，配置真值以磁盘 <strong>Read</strong> 为准。Codex 无 Claude 的 <code>PreToolUse</code> 守门，<code>subAgent=true</code> 时需在技能正文前段显式判断是否拆子；即使不拆，也必须输出不拆原因。</td></tr><tr><td><strong>知识库（可选）</strong></td><td><code>.Knowledge/manifest-routing</code> 命中 <strong><code>config-precheck</code></strong> 时</td><td><code>.Knowledge/topics/f2s-config-precheck.md</code> 为<strong>路由摘要</strong>，链向 Codex 长文；<strong>不</strong>在 <code>.Knowledge</code> 再维护第二份全文，也<strong>不</strong>替代 Read JSON。</td></tr></tbody></table>
+<p>字段语义与默认值规则见 <a href="/Flow2Spec/docs/commands/">命令说明 § 6) 子 Agent 配置说明</a>。设计视角见 <a href="/Flow2Spec/docs/design/">设计说明 § 四、5.1</a>；口述见 <a href="../presentations/flow2spec-intro-public/%E6%BC%94%E8%AE%B2%E7%A8%BF.md">Flow2Spec 演讲稿 Slide 13b</a>。</p>
+<hr>
+<h2 id="二目录约定">二、目录约定</h2>
+<p>核心区分：<code>stock-docs/</code> 放沉淀文档（驱动知识路由），<code>req-docs/</code> 放技术方案（驱动编码实现），两者不互换。</p>
+<p>完整目录说明见 <a href="/Flow2Spec/docs/directories/">目录与路径约定</a>。</p>
+<hr>
+<h2 id="三典型工作场景">三、典型工作场景</h2>
+<h3 id="变更追踪与跨会话续作推荐">变更追踪与跨会话续作（推荐）</h3>
+<p>在 <code>flow2spec.config.json</code> 按技能开启 <code>changeTracking</code>（各子项独立）：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>开启后，<code>f2s-kb-feat</code> / <code>f2s-kb-fix</code> / <code>f2s-implement-tech-design</code> 执行时会在 <code>.task/active/</code> 自动创建任务清单，逐步勾选，完成后归档。下次会话描述相关内容时，<code>f2s-task</code> 规则会匹配并加载剩余步骤，无需重复交代上下文。</p>
+<p>若你<strong>关闭了</strong> <code>changeTracking</code> 但仍临时需要 <code>.task/</code> 清单，可显式调用 <code>f2s-req-plan</code>（不读配置、始终建清单）——这是兜底用法，非常规主路径；详见 <a href="/Flow2Spec/docs/commands/">命令说明 § f2s-req-plan</a>。</p>
+<h3 id="新需求开发">新需求开发</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-req-clarify 一句话需求或文档 → f2s-req-tech → 实现xx技术方案 （会严格按照implement-tech-design规则走）</span></span>
+<span class="line"><span>实现完成后需新增能力→ f2s-kb-feat</span></span>
+<span class="line"><span>实现完成后需修bug→ f2s-kb-fix</span></span>
+<span class="line"><span>调试完成后-> f2s-kb-sync</span></span>
+<span class="line"><span>最后->f2s-git-commit</span></span></code></pre>
+<p>需求已明确时可跳过 <code>f2s-req-clarify</code>，直接从 <code>f2s-req-tech</code> 开始。技术方案落入 <code>req-docs/</code> 后，由 <code>implement-tech-design</code> 规则驱动编码。</p>
+<h3 id="文档沉淀">文档沉淀</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>新增架构文档沉淀：f2s-doc-arch → f2s-doc-final → f2s-kb-build</span></span>
+<span class="line"><span>PDF/初稿沉淀：     f2s-doc-final → f2s-kb-build</span></span></code></pre>
+<p>把架构说明或 PDF 终稿纳入知识路由（生成 topics/matchers/manifest-routing）。若仅有 PDF 且要入库，先用 <code>f2s-doc-final</code> 转为终稿再 <code>f2s-kb-build</code>；<code>f2s-doc-pdf</code> 仅把 PDF 转为 <code>req-docs/</code> 下的 Markdown 便于编辑，<strong>不</strong>作为「PDF 直驱编码」的推荐路径。</p>
+<h3 id="存量能力补录">存量能力补录</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-add      # 多文件聚合，从源码/文档提取</span></span>
+<span class="line"><span>f2s-kb-sync      # 从当前会话推断已实现能力</span></span></code></pre>
+<p>代码已落地但知识库没有记录时使用。<code>f2s-kb-add</code> 适合批量导入，<code>f2s-kb-sync</code> 适合会话结束时的即时沉淀。</p>
+<h3 id="日常维护">日常维护</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-fix       # 修复实现或规则错误，自动同步知识库</span></span>
+<span class="line"><span>f2s-kb-feat      # 新增能力，自动同步知识库</span></span>
+<span class="line"><span>f2s-kb-sync      # 定期同步或补录</span></span>
+<span class="line"><span>f2s-kb-merge     # Git 合并后解决上下文冲突</span></span></code></pre>
+<h3 id="知识库跨版本升级">知识库跨版本升级</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>f2s-kb-migrate（流程 V1：旧库）→ f2s-kb-upgrade</span></span>
+<span class="line"><span>f2s-kb-upgrade（流程现行库 V2+：已有 .Knowledge；含 npm v3.x 等，见技能步骤 0）</span></span></code></pre>
+<p>Flow2Spec CLI 在交互式执行 <code>flow2spec version</code> / <code>flow2spec init</code> 时会按缓存检查 npm 最新版本；若发现新版本，会提示先执行 <code>flow2spec update</code>，随后在 Agent 对话中执行 <code>f2s-kb-upgrade</code>，用于对齐项目知识库模板、manifest/matchers 与配置根产物。更新检查失败会静默跳过，不影响当前命令；<code>CI</code>、非 TTY 或设置 <code>FLOW2SPEC_SKIP_UPDATE_CHECK=1</code> 时不检查。</p>
+<p>Codex 项目执行 <code>flow2spec init codex</code> 后会写入 <code>.codex/hooks.json</code>、<code>.codex/hooks/f2s-config-session.js</code> 与 <code>.codex/hooks/f2s-update-check.js</code>：前者在 Codex <code>SessionStart</code> 的 <code>startup|resume</code> 事件注入一次配置摘要，后者自动检查知识库版本；首次生成或 hook 内容变化后，需要在 Codex 中通过 <code>/hooks</code> 信任该项目 hook。<code>flow2spec.config.json</code> 中 <code>updateCheck.enabled=false</code> 时仅跳过版本检查，不影响配置摘要注入。</p>
+<p>Cursor 项目执行 <code>flow2spec init cursor</code> 后会写入 <code>.cursor/hooks.json</code> 与 <code>.cursor/hooks/f2s-update-check.js</code>，在 Cursor <code>sessionStart</code> 自动检查知识库版本；脚本通过 <code>additional_context</code> 把升级提示注入会话。<code>flow2spec.config.json</code> 中 <code>updateCheck.enabled=false</code> 时跳过检查。</p>
+<p>Claude 项目执行 <code>flow2spec init claude</code> 后会写入 <code>.claude/settings.json</code>、<code>.claude/hooks/f2s-config-session.js</code>、<code>.claude/hooks/f2s-config-inject.js</code> 与 <code>.claude/hooks/f2s-update-check.js</code>：<code>SessionStart</code> 注入配置摘要并检查知识库版本，<code>PreToolUse Skill</code> 仅在调用 <code>f2s-*</code> Skill 前做守门提示。版本检查脚本通过 <code>additional_context</code> 注入命令式升级提示（agent-instruction 文案要求 agent 必须原文转告用户），格式为：“当前项目「&#x3C;项目名>」知识库版本 v&#x3C;当前版本>，低于最新包版本 v&#x3C;最新版本>。可执行 f2s-kb-upgrade skill 对齐模板与路由。“若当天缓存仍标记需升级，新会话每次都会重新注入提示；升级成功后 <code>f2s-kb-upgrade</code> 会清理 <code>.Knowledge/update-check.json</code>，避免旧提示残留。</p>
+<hr>
+<h3 id="多人协作">多人协作</h3>
+<p>Flow2Spec 把协作拆成两条互不干扰的线：<strong><code>.Knowledge/</code> 走 Git，全员共享</strong>；<strong><code>.task/</code> 只在本地，按 developerId 分层</strong>。团队沉淀和个人过程分开管，不用为一份 <code>todo.json</code> 反复解冲突。</p>
+<h3 id="任务进度本地按人隔离">任务进度：本地按人隔离</h3>
+<p>最小配置：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "collaboration"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "enabled"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><code>developerId</code> 留空时按 git identity 兜底解析；非 ASCII 的 git identity 会退化到 <code>dev-&#x3C;sha256 前 8 位></code> 的稳定 hash id，同时在解析上下文里挂 <code>warnings</code> 提醒改成显式英文 id——不会静默降到 legacy，也不会因为字符集炸掉。解析优先级、hash 兜底与迁移步骤详见 <a href="/Flow2Spec/docs/directories/">目录与路径约定 § <code>.task/</code> 的两种形态</a>。</p>
+<p>执行约束是硬的：<code>rules/f2s-task</code> 只准读写当前 developer 的 <code>TASK_ROOT</code>，禁止扫别人 <code>.task/&#x3C;otherId>/</code> 目录，也不会自动跨人合并 <code>todo.json</code>。</p>
+<h3 id="知识库delta--乐观锁">知识库：delta + 乐观锁</h3>
+<p><code>.Knowledge/topics/*.md</code> 的 frontmatter 有一个 <code>revision</code> 计数。技能不再直接改 topic 文件，而是往当前任务目录写一份 <code>kb-delta.json</code>（路径 <code>.task/&#x3C;id>/active/&#x3C;task-name>/kb-delta.json</code>），带上 <code>baseRevisions</code> 与 <code>changes[]</code>；真正落盘由 <code>flow2spec kb</code> 子命令统一处理：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>flow2spec kb status   # 扫本人 active 任务的 delta、routing 漂移、topic 校验</span></span>
+<span class="line"><span>flow2spec kb check    # 严格校验 manifest/topic/frontmatter/revision</span></span>
+<span class="line"><span>flow2spec kb plan &#x3C;delta.json>    # 预演能否自动合入，不落盘</span></span>
+<span class="line"><span>flow2spec kb apply &#x3C;delta.json>   # 真正合入 .Knowledge/</span></span>
+<span class="line"><span>flow2spec kb build    # 由 topic frontmatter 归一化 routing 元数据</span></span></code></pre>
+<p>变更类型白名单：<code>appendBody</code> / <code>replaceBody</code> / <code>updateFrontmatter</code> / <code>createTopic</code>。空 body 的 append/replace 在 <code>parse</code> 阶段就被拒，不会漏到 apply；<code>baseRevisions</code> 不匹配盘上真值时 <code>plan</code> 直接报冲突，<code>git pull</code> 拉最新 topic 后重写 delta 里对应 change 即可。命令细节见 <a href="/Flow2Spec/docs/commands/">命令说明 § 7) flow2spec kb CLI</a>，机制原理见 <a href="/Flow2Spec/docs/architecture/">体系与原理 § 6. 多人协作的两条隔离线</a>。</p>
+<h3 id="日常节奏">日常节奏</h3>
+<p>正常走 <code>f2s-git-commit</code> 时，Agent 会自动完成 <code>check → status → plan → apply → build → check</code>，不要求开发者手动逐条执行。需要独立排查或接入 CI 时，对应的 shell 流程是：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>git pull                # 拉队友的 .Knowledge/</span></span>
+<span class="line"><span>flow2spec kb status     # 看有没有 routing 漂移或本地待落盘 delta</span></span>
+<span class="line"><span>… 走 f2s-kb-feat / f2s-kb-fix / f2s-implement-tech-design …</span></span>
+<span class="line"><span>flow2spec kb plan  .task/&#x3C;id>/active/&#x3C;task>/kb-delta.json   # dry-run</span></span>
+<span class="line"><span>flow2spec kb apply .task/&#x3C;id>/active/&#x3C;task>/kb-delta.json   # 落盘</span></span>
+<span class="line"><span>git add .Knowledge/ &#x26;&#x26; git commit &#x26;&#x26; git push</span></span></code></pre>
+<p><code>.task/</code> 全程留在本地，不进 push；<code>.Knowledge/</code> 每次 apply 之后再提交。只要两个人基于同一个 <code>revision</code> 修改同一 topic，先合入的一方就会推进版本，另一方在拉取后重新 plan 时会被阻塞，即使双方碰的是不同段落。锁是 topic 级，不是行级。</p>
+<p>完整协作模型、同 topic 冲突示例与管理者视角见 <a href="/Flow2Spec/docs/collaboration/">团队协作</a>。</p>
+<hr>
+<h2 id="四agent-执行配置">四、Agent 执行配置</h2>
+<p>通过项目根 <code>flow2spec.config.json</code> 控制，字段完整规则见 <a href="/Flow2Spec/docs/commands/">命令说明 § 6) 子 Agent 配置说明</a>。<strong>各端如何被提示读到配置、为何仍以 Read 为权威</strong>见 <strong>§ 一</strong>（本 § 仅说明<strong>何时</strong>打开各开关）。</p>
+<p><strong>何时开启 <code>subAgent: true</code></strong>：任务规模较大时（多模块并行实现、批量文档入库、大规模迁移）。开启后各技能按自身规模门槛决定是否实际拆分，未达门槛的仍在主 agent 内完成。</p>
+<p><strong>何时开启 <code>switchAgentVerification: true</code></strong>：需要更高落盘一致性时（大规模迁移、重要方案实现）。代价是增加执行轮次；常规维护场景默认 <code>false</code> 足够。须搭配 <code>subAgent: true</code> 才能触发”主落子验”方向的交叉。</p>
+<p><strong>何时开启 <code>changeTracking.*</code></strong>：希望每次技能执行自动留下可续作的任务清单时。各技能子项独立配置，互不影响：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><code>changeTracking</code> 全关且仍要任务清单时，再考虑 <code>f2s-req-plan</code>（见 § 三「变更追踪」脚注）。</p>
+<hr>
+<h2 id="五规则改造建议">五、规则改造建议</h2>
+<ul>
+<li>项目特化「按技术方案实现」逻辑时，优先调整 <strong><code>f2s-implement-tech-design</code></strong>：Cursor <code>.cursor/rules/f2s-implement-tech-design.mdc</code>，Claude <code>.claude/rules/f2s-implement-tech-design.md</code>；Codex 以 <code>.codex/AGENTS.md</code> 与相关 <code>skills/</code> 为准</li>
+<li>再次 <code>init</code> 默认仅补齐缺失模板并做包级结构对齐，<strong>不</strong>替代 <code>f2s-*</code> 对业务内容的维护；需用模板重置 <code>.Knowledge</code> 时加 <code>--reset-knowledge</code></li>
+</ul>
+<hr>
+<h2 id="六技能标识">六、技能标识</h2>
+<p>技能以 <code>name</code> 与 <code>description</code> 匹配触发，文件位于 <code>配置根/skills/*/SKILL.md</code>。</p>
+<hr>
+<h2 id="七相关文档">七、相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/intro/">Flow2Spec 基础介绍</a></li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a></li>
+<li><a href="/Flow2Spec/docs/directories/">目录与路径约定</a></li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a></li>
+<li><a href="/Flow2Spec/docs/scenarios/">使用案例-模拟对话</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

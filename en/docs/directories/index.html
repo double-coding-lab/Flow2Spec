@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Directory conventions documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/directories/"><title>Directory conventions — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#core-boundary" class="is-active">Core Boundary</a><a href="#directory-responsibilities">Directory Responsibilities</a><a href="#path-constraints">Path Constraints</a><a href="#the-two-task-layouts">The two .task/ layouts</a><a href="#topic-metadata">Topic Metadata</a><a href="#topic-granularity">Topic Granularity</a><a href="#related-documents">Related Documents</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="directory-and-path-conventions">Directory and Path Conventions</h1>
+<h2 id="core-boundary">Core Boundary</h2>
+<ul>
+<li><code>.Knowledge/</code>: <strong>Knowledge ring</strong> — business docs and machine-readable routing (<a href="/Flow2Spec/en/docs/architecture/">architecture.md §2</a>)</li>
+<li><code>.task/</code>: <strong>Task ring</strong> — change tracking (not inside <code>.Knowledge/</code>)</li>
+<li><code>Config Root</code> (<code>.cursor/.claude/.codex</code>): <strong>Rules ring + skills ring</strong></li>
+</ul>
+<p>See <a href="/Flow2Spec/en/docs/architecture/">architecture.md §1</a> for Memory Coding four rings.</p>
+<hr>
+<h2 id="directory-responsibilities">Directory Responsibilities</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Path</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>.Knowledge/stock-docs/</code></td><td><strong>L3</strong> Architecture, final drafts, reference documents</td></tr><tr><td><code>.Knowledge/req-docs/</code></td><td><strong>L3</strong> Requirement clarification, technical proposals</td></tr><tr><td><code>.Knowledge/topics/</code></td><td><strong>L2</strong> Topic summaries (hard constraints, boundaries, pointers)</td></tr><tr><td><code>.Knowledge/template/</code></td><td>Templates for final drafts / technical proposals</td></tr><tr><td><code>.Knowledge/index.md</code></td><td>Human-readable index</td></tr><tr><td><code>.Knowledge/manifest-routing.json</code></td><td><strong>L0</strong> Machine-readable routing skeleton (task/topic/<code>topicDependencies</code>/<code>topicMetadata</code>)</td></tr><tr><td><code>.Knowledge/matchers/*.json</code></td><td><strong>L1</strong> Keyword fragments (<code>id/includeAny</code>); <strong>match</strong> reads one shard via <code>matcherPath</code></td></tr><tr><td><code>.Knowledge/migration-report.md</code></td><td>Migration comparison table and deletion path list written by <code>f2s-kb-migrate</code></td></tr><tr><td><code>.task/</code></td><td>Local change-tracking state, ignored by Git by default. In collaboration mode it has an extra <code>&#x3C;developerId>/</code> layer; see “The two <code>.task/</code> layouts” below. It is created only when <code>changeTracking.*</code> is <code>true</code> or <code>f2s-req-plan</code> is explicitly invoked.</td></tr><tr><td><code>Config Root/rules/</code></td><td>Rule files (Cursor <code>.mdc</code>, Claude <code>.md</code>)</td></tr><tr><td><code>Config Root/skills/</code></td><td>Skill definitions (<code>SKILL.md</code>)</td></tr><tr><td><code>Config Root/template/</code></td><td>(Deprecated) No longer written to; historical directories may be cleaned up</td></tr><tr><td><code>.codex/AGENTS.md</code></td><td>Codex unified entry point and loading instructions</td></tr><tr><td><code>flow2spec.config.json</code></td><td>Project root configuration, controls <code>subAgent</code>, <code>switchAgentVerification</code>, <code>changeTracking</code> (nested object with <code>feat</code> / <code>fix</code> / <code>implement</code> sub-items)</td></tr></tbody></table>
+<blockquote>
+<p>See <a href="/Flow2Spec/en/docs/usage/">Usage Guide Section 1</a> for multi-platform references and path tables (detail maintained in a single table); <strong>the authoritative source remains <code>Read(flow2spec.config.json)</code></strong>.</p>
+</blockquote>
+<hr>
+<h2 id="path-constraints">Path Constraints</h2>
+<ol>
+<li><code>.Knowledge/topics</code> is the knowledge routing topic layer; it is allowed and encouraged to be maintained via <code>f2s-*</code> skills.</li>
+<li><code>f2s-kb-build</code> reads from <code>.Knowledge/stock-docs</code> and updates <code>.Knowledge/topics</code>, <code>.Knowledge/index.md</code>, <code>.Knowledge/manifest-routing.json</code>, <code>.Knowledge/matchers/*.json</code>.</li>
+<li>Implementation tasks uniformly read from <code>.Knowledge/req-docs/*.md</code>.</li>
+<li><code>manifest-routing.json</code> and <code>matchers/*.json</code> are maintained by <code>f2s-*</code> skill workflows; <code>.Knowledge/manifest-matchers.json</code> is no longer used (<code>flow2spec init</code> will delete legacy files).</li>
+<li><code>.task/</code> and <code>.Knowledge/update-check.json</code> are local runtime state and should not be committed by default; <code>flow2spec init</code> non-destructively adds the corresponding <code>.gitignore</code> entries. Task progress is a personal working draft; the knowledge base is the shared team record.</li>
+</ol>
+<hr>
+<h2 id="the-two-task-layouts">The two <code>.task/</code> layouts</h2>
+<p>The layout depends on the resolved <code>collaboration</code> settings in <code>flow2spec.config.json</code>:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Mode</th><th>Condition</th><th>Paths</th></tr></thead><tbody><tr><td><strong>Legacy single root</strong></td><td><code>collaboration.enabled: false</code>, or no developerId can be resolved</td><td><code>.task/todo.json</code>, <code>.task/active/</code>, <code>.task/completed/</code></td></tr><tr><td><strong>Isolated by developerId</strong></td><td><code>collaboration.enabled: true</code> (default) and an id is available</td><td><code>.task/&#x3C;developerId>/todo.json</code>, <code>.task/&#x3C;developerId>/active/</code>, <code>.task/&#x3C;developerId>/completed/</code></td></tr></tbody></table>
+<p>Both layouts use the same child-directory convention: active tasks use the task name; archived tasks use <strong><code>&#x3C;YYYYMMDD>-&#x3C;task-name></code></strong>.</p>
+<h3 id="how-developerid-is-resolved">How developerId is resolved</h3>
+<p>Flow2Spec takes the first usable value in this order:</p>
+<ol>
+<li><code>flow2spec.config.json</code> -> <code>collaboration.developerId</code>. A non-empty explicit value that cannot be normalized to ASCII fails with a clear error instead of silently falling back.</li>
+<li>The part before <code>@</code> in <code>git config user.email</code>.</li>
+<li><code>git config user.name</code>.</li>
+<li>If none is available, use the legacy single root.</li>
+</ol>
+<p>For Git-derived identities, a non-ASCII value becomes a stable <code>dev-&#x3C;first 8 chars of sha256></code> id and produces a warning. Teams should still prefer an explicit, readable id.</p>
+<h3 id="why-isolate-local-state-by-developer">Why isolate local state by developer</h3>
+<p>The extra layer covers shared build machines, devcontainers, and shared workspaces. It also gives the Agent a stable <code>TASK_ROOT</code> boundary: continuation logic must not scan another developer’s unfinished tasks. <code>developerId</code> is a local path identity, not a remote account or permission system.</p>
+<h3 id="migrating-from-the-legacy-layout">Migrating from the legacy layout</h3>
+<p>Flow2Spec does not move existing legacy tasks automatically because it cannot know who owns them. After the team confirms ownership, move <code>active/</code> and <code>completed/</code> into the intended <code>.task/&#x3C;developerId>/</code> directory manually.</p>
+<hr>
+<h2 id="topic-metadata">Topic Metadata</h2>
+<p><code>manifest-routing.json.topicMetadata</code> is machine-readable governance metadata for topics. It is only used for inventory, filtering, routing audits, upgrade gap checks, and reading expectations; it does not participate in matcher hits, does not decide whether a topic is read, is not a source of execution constraints, and must not drive <code>topicId</code> or filename changes. Execution constraints always come from explicit requirements in <code>AGENTS.md</code>, rules, skills, or topic bodies.</p>
+<p><code>topicMetadata</code> is independent from <code>topicPaths</code>, and each key must be a topicId already present in <code>topicPaths</code>. When creating a new topic, metadata may be written if there is clear evidence; classification alone must not create, rename, or split topics.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Field</th><th>Values</th><th>Meaning</th></tr></thead><tbody><tr><td><code>primary</code></td><td><code>feature</code> / <code>module</code> / <code>config</code> / <code>policy</code></td><td>Single primary classification. Read the topic body and write the type that best represents its core content.</td></tr><tr><td><code>tags</code></td><td>Array of <code>feature</code> / <code>module</code> / <code>config</code> / <code>policy</code></td><td>Optional secondary classes; values must not repeat <code>primary</code>.</td></tr><tr><td><code>confidence</code></td><td><code>manual</code> / <code>inferred</code></td><td><code>manual</code> means human-confirmed; <code>inferred</code> means evidence-backed inference. When evidence is insufficient, do not write metadata and list it as pending confirmation in the summary.</td></tr></tbody></table>
+<p>Type meanings:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>Reading expectation</th></tr></thead><tbody><tr><td><code>feature</code></td><td>Landed business or product capability background</td></tr><tr><td><code>module</code></td><td>Directory, package, module boundary, and engineering structure</td></tr><tr><td><code>config</code></td><td>Configuration items, switches, defaults, initialization parameters</td></tr><tr><td><code>policy</code></td><td>Process, rule, constraint, gate, prohibition, agent orchestration, skill step</td></tr></tbody></table>
+<h2 id="topic-granularity">Topic Granularity</h2>
+<p>A topic is a routing summary plus key boundaries; details belong in <code>stock-docs/</code>. Consider splitting into a main topic plus independently matchable sub-topics when its stock-doc exceeds 300-500 lines, matcher <code>includeAny</code> exceeds 12 terms, or the body spans more than 3 unrelated responsibility areas.</p>
+<hr>
+<h2 id="related-documents">Related Documents</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/scenarios/">Usage Scenarios</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

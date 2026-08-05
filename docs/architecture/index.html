@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 体系与原理文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/architecture/"><title>体系与原理 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/" aria-current="page">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/" aria-current="page">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#1-memory-coding-与仓内四环" class="is-active">1. Memory Coding 与仓内四环</a><a href="#2-知识环内的多层记忆结构">2. 知识环内的多层记忆结构</a><a href="#3-知识层与执行层两层结构">3. 知识层与执行层（两层结构）</a><a href="#4-渐进式读取">4. 渐进式读取</a><a href="#5-关键链路">5. 关键链路</a><a href="#6-多人协作的两条隔离线">6. 多人协作的两条隔离线</a><a href="#7-agent-执行模型">7. Agent 执行模型</a><a href="#8-设计收益">8. 设计收益</a><a href="#9-相关文档">9. 相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="体系与原理">体系与原理</h1>
+
+<p>Flow2Spec 的目标是把”业务知识沉淀”与”Agent 能力加载”拆开，并在仓库里用 <strong>Memory Coding（记忆编码）</strong> 把「要记住的东西」落盘为可 diff、可评审的 Git 资产。</p>
+<ul>
+<li><strong>知识环</strong>（<code>.Knowledge/</code>）：业务文档与机读路由（见下文多层结构）</li>
+<li><strong>任务环</strong>（<code>.task/</code>）：跨会话续作清单</li>
+<li><strong>规则环</strong>（各工具 <code>rules</code> / <code>AGENTS.md</code>）：规定 Agent <strong>怎么读、怎么做</strong></li>
+<li><strong>技能环</strong>（<code>f2s-*</code>）：维护知识、触发流程</li>
+</ul>
+<blockquote>
+<p>Flow2Spec ≠ 只有知识库；上述四环同属 Memory Coding，下文「两层结构」描述的是<strong>知识环 vs 工具侧执行落点</strong>的生命周期分工。</p>
+</blockquote>
+<hr>
+<h2 id="1-memory-coding-与仓内四环">1. Memory Coding 与仓内四环</h2>
+<p><strong>Memory Coding</strong>：把必须长期记住的上下文<strong>编码进可提交仓库</strong>——不押在模型私有 Memory、不只在聊天里重复，也不靠全仓向量概率猜。</p>
+<p>仓内拆成 <strong>四环</strong>（勿说成「三环」把规则与技能合并）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>环</th><th>落点</th><th>记什么</th></tr></thead><tbody><tr><td><strong>知识环</strong></td><td><code>.Knowledge/</code></td><td>路由、主题、存量/需求文档（见 §2 多层）</td></tr><tr><td><strong>任务环</strong></td><td><code>.task/</code></td><td><code>todo.json</code>、checklist、用户代办</td></tr><tr><td><strong>规则环</strong></td><td><code>.cursor/.claude/.codex</code> 下 rules、<code>AGENTS.md</code></td><td>读取顺序、缺口闸门、实现约束</td></tr><tr><td><strong>技能环</strong></td><td>配置根 <code>skills/*/SKILL.md</code></td><td><code>f2s-kb-feat/fix/sync</code> 等维护与触发</td></tr></tbody></table>
+<p>与「两层结构」的关系：<strong>知识环</strong>对应「随项目走」的知识层；<strong>规则环 + 技能环</strong>落在各工具配置根，随工具升级迭代；<strong>任务环</strong>与 <code>.Knowledge/</code> 并列于仓内，不属于 <code>.Knowledge/</code> 目录。</p>
+<hr>
+<h2 id="2-知识环内的多层记忆结构">2. 知识环内的多层记忆结构</h2>
+<p><code>.Knowledge/</code> 不是扁平「一堆 Markdown」，而是 <strong>横读（渐进式路由）+ 纵链（主题依赖）</strong> 的多层记忆：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>层级</th><th>路径 / 机制</th><th>记什么</th><th>典型读法</th></tr></thead><tbody><tr><td><strong>L0 路由索引</strong></td><td><code>manifest-routing.json</code></td><td>task→topic、<code>topicDependencies</code>、<code>topicPaths</code>、<code>topicMetadata</code></td><td>会话首读（机读事实源）</td></tr><tr><td><strong>L1 关键词分片</strong></td><td><code>matchers/&#x3C;id>.json</code></td><td><code>includeAny</code> 触发词</td><td><strong>match</strong>：只打开命中的一个分片</td></tr><tr><td><strong>L2 主题摘要</strong></td><td><code>topics/&#x3C;topic>.md</code></td><td>硬约束摘要、边界、下一步指针</td><td><strong>expand</strong>：拉齐依赖主题</td></tr><tr><td><strong>L3 长文档</strong></td><td><code>stock-docs/</code>、<code>req-docs/</code></td><td>架构终稿、技术方案全文</td><td>按需下钻背景</td></tr><tr><td><strong>纵链（横切）</strong></td><td><code>topicDependencies</code></td><td>通用约定 → 子域 → 白名单 → 本域细则</td><td><strong>expand</strong> 时按依赖顺序叠层</td></tr></tbody></table>
+<p><strong>渐进式读取</strong>（<code>match → expand → verify → act</code>）作用在 L0–L2（必要时再到 L3）：先收窄入口，再展开依赖与缺口检查，最后才改代码。主题级依赖挂一次、所有任务共享，避免每个任务重复声明前置约束。</p>
+<p>人读导航：<code>index.md</code> 仅作语义边界校验，<strong>不</strong>替代 <code>manifest-routing</code> 机读链。</p>
+<hr>
+<h2 id="3-知识层与执行层两层结构">3. 知识层与执行层（两层结构）</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>层</th><th>位置</th><th>作用</th></tr></thead><tbody><tr><td>知识层（知识环）</td><td><code>.Knowledge/</code></td><td>保存业务文档、索引、路由（§2 多层）</td></tr><tr><td>执行层（规则环 + 技能环）</td><td><code>.cursor/.claude/.codex</code></td><td>保存规则与技能入口</td></tr></tbody></table>
+<hr>
+<h2 id="4-渐进式读取">4. 渐进式读取</h2>
+<p>统一建议顺序：</p>
+<ol>
+<li><code>.Knowledge/manifest-routing.json</code></li>
+<li><code>.Knowledge/matchers/&#x3C;matcher>.json</code>（按需：由 <code>manifest-routing.taskToTopicRules[].matcherPath</code> 直链定位）</li>
+<li><code>.Knowledge/index.md</code></li>
+<li>命中的 <code>stock-docs</code> / <code>req-docs</code> 文档</li>
+<li>必要时下钻源码</li>
+</ol>
+<p>读取后执行 <code>match → expand → verify → act</code> 四步流水线：命中主候选后展开依赖主题、缺口检查，置信度足够时才执行；低置信度先澄清。</p>
+<p>同时由配置根入口（Flow2Spec 包规则：<code>f2s-flow2spec-unified-entry.mdc</code> / <code>f2s-flow2spec-unified-entry.md</code>；旧版业务仓库常见为 <code>main.md(c)</code>；以及 <code>AGENTS.md</code>）约束加载行为。<br>
+其中 Codex 不读取 <code>rules/</code> 目录，统一通过 <code>.codex/AGENTS.md</code> + <code>skills/</code> 承载执行约束。</p>
+<hr>
+<h2 id="5-关键链路">5. 关键链路</h2>
+<ul>
+<li>文档沉淀链：<code>f2s-doc-arch</code> → <code>f2s-doc-final</code> → <code>f2s-kb-build</code></li>
+<li>实现链：<code>.Knowledge/req-docs/*.md</code> → <code>implement-tech-design</code> → 代码</li>
+<li>维护链：<code>f2s-kb-fix</code> / <code>f2s-kb-feat</code> / <code>f2s-kb-sync</code> / <code>f2s-kb-merge</code></li>
+<li>需求规划链：<code>f2s-req-plan</code>（规划 + 实现，始终创建任务清单）</li>
+<li>变更追踪链：<code>changeTracking.*</code> 配置 → <code>f2s-task</code> 规则（自动）→ <code>.task/</code> 任务清单 → 跨会话续作</li>
+<li>包模板/路由形态与配置根对齐：<code>f2s-kb-upgrade</code>（<strong>勿</strong>将单独 <code>flow2spec init</code> 等同于「知识库升级」）；旧库结构迁入 <code>.Knowledge</code>：<code>f2s-kb-migrate</code></li>
+</ul>
+<p>文档沉淀链产出两类文档：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th>初稿</th><th>终稿</th></tr></thead><tbody><tr><td>本质</td><td>从源文件提取的原始记录</td><td>供 AI/知识库消费的结构化知识</td></tr><tr><td>结构</td><td>来源清单、分模块归纳、待确认项</td><td>核心概念、业务规则、关键流程、接口</td></tr><tr><td>视角</td><td>“我读到了什么”</td><td>“AI 需要知道什么”</td></tr><tr><td>不确定内容</td><td>保留，显式标注”待确认”</td><td>清洗掉或已确认后吸收</td></tr></tbody></table>
+<hr>
+<h2 id="6-多人协作的两条隔离线">6. 多人协作的两条隔离线</h2>
+<p>Flow2Spec 假设团队场景是「一份知识库、多个人一起写」。围绕这个假设，仓内两条环走了相反的策略：<strong>任务环切开、知识环合并</strong>。</p>
+<ul>
+<li><strong>任务环</strong>：<code>.task/</code> 不进 Git、按 <code>&#x3C;developerId>/</code> 分层，是个人过程草稿。</li>
+<li><strong>知识环</strong>：<code>.Knowledge/</code> 完整走 Git，配合 topic frontmatter 里的整数 <code>revision</code> 做<strong>磁盘乐观锁</strong>，多人并写靠 <code>kb-delta.json</code> 结构化提交自动合并。</li>
+</ul>
+<p>两条线共同用一个前提——Git 是团队的共享通道。凡是团队要看的东西都进 Git，凡是个人过程状态都不进。</p>
+<h3 id="61-任务环按-developerid-本地隔离">6.1 任务环：按 developerId 本地隔离</h3>
+<p><code>.task/</code> 记的是「这一轮 AI 会话在做什么」——checklist、user-todos、跨会话续作的中间态。这些内容对别人来说是噪声，所以：</p>
+<ul>
+<li><code>.task/</code> 默认写进 <code>.gitignore</code>，不跨机器同步；</li>
+<li><code>collaboration.enabled: true</code>（默认）时，<code>.task/</code> 内部再按 <code>&#x3C;developerId>/</code> 分层，兜底同机多账号、共享构建机等场景；</li>
+<li>developerId 从 <code>collaboration.developerId</code> → git email → git name 逐档降级；解析不出（或 <code>enabled: false</code>）时回落到 legacy 单根 <code>.task/</code>，与旧版行为一致。</li>
+</ul>
+<p>看到 <code>.task/&#x3C;developerId>/</code> 是隔离模式，看到 <code>.task/todo.json</code> 直接躺根下是 legacy——两种形态并存。详细路径与 developerId 解析规则见 <a href="/Flow2Spec/docs/directories/">目录与路径约定 §<code>.task/</code> 的两种形态</a>。</p>
+<p><strong>这条切法的副作用</strong>：manager 视角看团队进度不能靠 <code>.task/completed/</code>（它不在 Git 里），要走 git log、PR、里程碑文档。这是刻意的取舍——<code>.task/</code> 是过程草稿，<code>.Knowledge/</code>、commit message 与 milestone 才是团队产出。</p>
+<h3 id="62-知识环磁盘乐观锁--结构化-delta">6.2 知识环：磁盘乐观锁 + 结构化 delta</h3>
+<p><code>.Knowledge/</code> 是团队沉淀，必须共享，也必须扛得住多人并写。做法：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>机制</th><th>位置</th><th>作用</th></tr></thead><tbody><tr><td>磁盘 revision</td><td>每个 <code>topics/&#x3C;topic>.md</code> frontmatter 里的 <code>revision: N</code></td><td>每次成功写入 +1，作为该 topic 当前版本号</td></tr><tr><td>变更申请单</td><td><code>.task/&#x3C;developerId>/active/&#x3C;task>/kb-delta.json</code></td><td>声明「基于 topic-a <code>revision=3</code> 改成什么样」；结构化 delta，不写整段文件</td></tr><tr><td>4 种 change 类型</td><td><code>appendBody</code> / <code>replaceBody</code> / <code>updateFrontmatter</code> / <code>createTopic</code></td><td>白名单，禁止 delta 绕开语义直改任意字节</td></tr><tr><td>自动合并流水线</td><td><code>flow2spec kb check → status → plan → apply → build</code></td><td>plan 阶段做乐观锁校验，apply 阶段两阶段落盘</td></tr></tbody></table>
+<p>关键判断在 <code>plan</code> 阶段：delta 里的 <code>baseRevisions</code> 对得上磁盘现状就 mergeable，<code>apply</code> 写盘并把 revision +1、刷路由；对不上就报 <code>mergeable: false</code> 附具体 topic 与差值，交给人做语义合并。</p>
+<p>冲突不是靠拦截并发写，而是让第二个人 <code>git pull</code> 到最新磁盘 revision 之后再重新 plan——这跟平时 Git 分支要先 pull main 再 merge 的思路一致。乐观锁只覆盖<strong>走 delta 通道的改动</strong>；任何绕开 delta 的直接文件编辑仍然需要人肉解冲突，所以 <code>f2s-kb-*</code> 技能强制走 delta。</p>
+<h3 id="63-两条线为什么这样切">6.3 两条线为什么这样切</h3>
+<p>一个反问：既然 <code>.task/</code> 不进 Git，为什么还要 <code>&#x3C;developerId>/</code> 这一层？在 <a href="/Flow2Spec/docs/directories/">目录与路径约定 §<code>.task/</code> 的两种形态</a> 里列了三个具体边界，简言之是「本地磁盘隔离不能覆盖所有场景」（同机多账号、AI 越界扫描、未来 <code>completed/</code> 白名单进 Git 的可能性）。</p>
+<p>反过来 <code>.Knowledge/</code> 也可以走「按 developerId 拆知识库」的路线——但那会导致每个人看到的知识库版本不一样，团队协作的语义直接崩掉。所以知识库必须共享，冲突必须解决，只是解决方式换成了「自动合并 + 冲突时人工介入」。</p>
+<hr>
+<h2 id="7-agent-执行模型">7. Agent 执行模型</h2>
+<p>Flow2Spec 通过项目根 <code>flow2spec.config.json</code> 的 <code>subAgent</code>、<code>switchAgentVerification</code> 两个字段控制执行行为。</p>
+<p><strong>Agent 如何读到上述真值</strong>：多端提示 + <strong>Read</strong> 权威，见 <a href="/Flow2Spec/docs/usage/">使用说明 § 一（唯一详表）</a>；设计归纳见 <a href="/Flow2Spec/docs/design/">设计说明 § 四、5.1</a>。</p>
+<h3 id="71-主子-agent-职责划分原则">7.1 主/子 Agent 职责划分原则</h3>
+<p><strong><code>subAgent: false</code>（默认）</strong>：全部 <code>f2s-*</code> 技能在主 agent 内顺序完成，无并行拆分。</p>
+<p><strong><code>subAgent: true</code></strong>：达到技能正文约定的规模门槛时，允许拆分子 agent 并行处理。职责边界如下：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>角色</th><th>职责边界</th></tr></thead><tbody><tr><td>主 agent</td><td>统筹规划、确定任务粒度与分配策略、汇总子 agent 输出、校验跨单元一致性、最终落盘</td></tr><tr><td>子 agent</td><td>处理指定单元（模块/文档/主题），按约定格式输出结果，不跨单元决策</td></tr></tbody></table>
+<p>子 agent 的拆分边界由各 <code>f2s-*</code> 技能正文逐步约定（如模块数、文档数、代码行数等门槛），<strong>当前尚未在模板层给出统一阶段表</strong>，以技能正文为准。</p>
+<h3 id="72-验证归属原则">7.2 验证归属原则</h3>
+<p><strong>默认（谁落盘谁验）</strong>：落盘或变更后的验证在落盘侧 agent 内完成。子 agent 落盘则子 agent 自验，主 agent 落盘则主 agent 自验。</p>
+<p><strong>交叉验证（<code>switchAgentVerification: true</code>）</strong>：由对方 agent 承担验证，适用于需要更高置信度的场景。启用条件必须<strong>同时满足</strong>：</p>
+<ol>
+<li>配置 <code>switchAgentVerification: true</code></li>
+<li>当前执行的 <code>f2s-*</code> 技能正文<strong>明确写出</strong>该步骤依赖本项</li>
+</ol>
+<p>交叉验证规则：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>落盘方</th><th>验证方</th><th>前提条件</th></tr></thead><tbody><tr><td>子 agent 落盘</td><td>主 agent 验证</td><td>无额外条件</td></tr><tr><td>主 agent 落盘</td><td>子 agent 验证</td><td>须 <code>subAgent: true</code> 且实际已拆出子任务；否则仍由主 agent 自验</td></tr></tbody></table>
+<p>设计意图：交叉验证引入外部视角，降低落盘侧的自验盲区，但增加执行开销，因此设为显式 opt-in 而非默认行为。</p>
+<h3 id="73-变更追踪changetracking">7.3 变更追踪（changeTracking）</h3>
+<p><code>changeTracking</code> 是独立于 <code>subAgent</code> / <code>switchAgentVerification</code> 的第三个维度，控制技能执行时是否自动创建可跨会话续作的任务清单。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<ul>
+<li>各技能子项独立控制，互不影响</li>
+<li>开启后：技能执行前自动检查 <code>.task/todo.json</code>，创建或续接任务；完成后自动归档</li>
+<li>跨会话：新会话描述相关内容，<code>f2s-task</code> 规则（<code>alwaysApply</code>）关键词匹配命中后自动加载剩余清单和对应技能上下文</li>
+<li><code>f2s-req-plan</code> 不受此配置约束，始终创建任务清单</li>
+</ul>
+<hr>
+<h2 id="8-设计收益">8. 设计收益</h2>
+<ol>
+<li>跨工具共享同一业务知识源</li>
+<li>不破坏 Claude/Cursor/Codex 的规则加载习惯</li>
+<li>通过 <code>manifest-routing</code> + <code>matcherPath</code> 分片（<code>matchers/*.json</code>）控制任务路由与依赖，减少误读与全量扫描</li>
+<li>主/子 agent 职责边界清晰，主 agent 始终持有全局视图，子 agent 专注单元处理，汇总一致性由主 agent 保证</li>
+<li>验证归属可配置：默认落盘侧自验保持低开销，交叉验证按需启用提升关键场景置信度</li>
+<li>多人协作分两条线各自解决：任务环靠本地隔离避免串戏，知识环靠磁盘乐观锁 + 结构化 delta 自动合并</li>
+</ol>
+<hr>
+<h2 id="9-相关文档">9. 相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/intro/">Flow2Spec 基础介绍</a></li>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a></li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a></li>
+<li><a href="/Flow2Spec/docs/directories/">目录与路径约定</a></li>
+<li><a href="/Flow2Spec/docs/scenarios/">使用案例-模拟对话</a></li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

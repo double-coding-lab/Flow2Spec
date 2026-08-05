@@ -1,0 +1,299 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 团队协作文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/collaboration/"><title>团队协作 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/" aria-current="page">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/" aria-current="page">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#1-仓库里有三种协作对象" class="is-active">1. 仓库里有三种协作对象</a><a href="#2-任务隔离先确定自己的-task_root">2. 任务隔离：先确定自己的 TASK_ROOT</a><a href="#3-知识合并用-delta-表达意图">3. 知识合并：用 delta 表达意图</a><a href="#4-一次正常的协作过程">4. 一次正常的协作过程</a><a href="#5-两个人改了同一个-topic">5. 两个人改了同一个 topic</a><a href="#6-团队最好提前约定的几件事">6. 团队最好提前约定的几件事</a><a href="#7-管理者怎么看进度">7. 管理者怎么看进度</a><a href="#8-常见问题">8. 常见问题</a><a href="#相关文档">相关文档</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article><h1 id="团队协作">团队协作</h1>
+<p>Flow2Spec 的团队协作不是把所有运行状态都塞进 Git。它先把内容分成两类：个人正在做什么，留在本地；已经足以影响团队判断的知识，进入仓库。</p>
+<p>对应到目录就是一句话：</p>
+<ul>
+<li><code>.task/</code> 是个人过程，默认不进 Git；</li>
+<li><code>.Knowledge/</code> 是团队知识，和代码一起评审、提交、拉取。</li>
+</ul>
+<p>这条边界比具体命令更重要。边界立住以后，<code>developerId</code>、<code>kb-delta.json</code> 和 topic revision 都只是让它可执行的机制。</p>
+<hr>
+<h2 id="1-仓库里有三种协作对象">1. 仓库里有三种协作对象</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>内容</th><th>典型路径</th><th>谁能看到</th><th>怎么协作</th></tr></thead><tbody><tr><td>个人任务现场</td><td><code>.task/&#x3C;developerId>/</code></td><td>当前开发者和本机 Agent</td><td>本地续作，不提交</td></tr><tr><td>项目知识</td><td><code>.Knowledge/</code></td><td>拉取了仓库的所有成员</td><td>delta 合入、Git 评审</td></tr><tr><td>实现与正式文档</td><td>业务代码、<code>docs/</code></td><td>拉取了仓库的所有成员</td><td>常规分支、PR、commit</td></tr></tbody></table>
+<p><code>.task/</code> 里可以有尚未验证的判断、执行到一半的 checklist、需要用户处理的代办。它们对当前会话有用，却不等于团队事实。把这类文件推给所有人，得到的通常不是透明度，而是一批没人敢删、也没人知道是否过期的运行残留。</p>
+<p><code>.Knowledge/</code> 正好相反。Agent 会用它判断业务规则、实现边界和读取路径，因此团队成员必须看到同一个版本。知识可以暂时不完整，但不能按开发者各存一份。</p>
+<p>大致的数据流如下：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>.task/alice/active/...  --生成 delta--\</span></span>
+<span class="line"><span>                                      +--> plan/apply --> .Knowledge/ --> Git</span></span>
+<span class="line"><span>.task/bob/active/...    --生成 delta--/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>个人过程（隔离）                         团队事实（共享）</span></span></code></pre>
+<p>两个人的 delta 不会在 <code>.task/</code> 里互相合并。每个人只处理自己的任务根，最终通过 <code>.Knowledge/</code> 的 Git 变更会合。</p>
+<hr>
+<h2 id="2-任务隔离先确定自己的-task_root">2. 任务隔离：先确定自己的 TASK_ROOT</h2>
+<p>多人模式由项目根 <code>flow2spec.config.json</code> 控制：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "collaboration"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "enabled"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>解析成功后，Alice 的任务根是 <code>.task/alice/</code>，Bob 的任务根是 <code>.task/bob/</code>。<code>rules/f2s-task</code> 只允许 Agent 读写当前 <code>TASK_ROOT</code>；为了找“可续作任务”而遍历其他人的目录，属于越界。</p>
+<h3 id="developerid-从哪里来">developerId 从哪里来</h3>
+<p>Flow2Spec 按下面的顺序取第一个可用值：</p>
+<ol>
+<li><code>collaboration.developerId</code></li>
+<li>Git <code>user.email</code> 的 <code>@</code> 前缀</li>
+<li>Git <code>user.name</code></li>
+<li>都取不到时使用 legacy 单根 <code>.task/</code></li>
+</ol>
+<p>显式配置的 id 会规范化为小写的 <code>[a-z0-9-]</code>。如果配置值无法规范化，例如纯中文或纯符号，解析器会直接报错；这是用户已经明确配置过的字段，不能悄悄换成另一个身份。</p>
+<p>从 Git identity 推断时稍有不同。纯中文等值会变成稳定的 <code>dev-xxxxxxxx</code> hash id，并附带 warning。任务仍然隔离，只是目录名不够直观。固定团队最好显式写一个可读 id，排查共享开发机上的路径时省事。</p>
+<h3 id="legacy-不是错误模式">legacy 不是错误模式</h3>
+<p>以下两种情况会看到旧式路径：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>.task/todo.json</span></span>
+<span class="line"><span>.task/active/&#x3C;task-name>/</span></span>
+<span class="line"><span>.task/completed/&#x3C;YYYYMMDD>-&#x3C;task-name>/</span></span></code></pre>
+<ul>
+<li><code>collaboration.enabled</code> 明确设为 <code>false</code>；</li>
+<li>配置和 Git identity 都无法提供 developerId。</li>
+</ul>
+<p>legacy 保留是为了兼容单人旧项目。它能正常工作，只是不适合同一工作区多人共用。已经存在的 legacy 任务不会被自动搬进某个开发者目录，因为系统无法判断那些任务原来属于谁；迁移要由人确认后进行。</p>
+<p>完整路径规则见 <a href="/Flow2Spec/docs/directories/">目录与路径约定</a>。</p>
+<hr>
+<h2 id="3-知识合并用-delta-表达意图">3. 知识合并：用 delta 表达意图</h2>
+<p>多人改知识库最麻烦的不是 Markdown 能不能合并，而是机器不知道一段 diff 的意图。<code>kb-delta.json</code> 把变更限制成几种明确动作，让合并前可以先做结构校验和版本判断。</p>
+<p>一份最小 delta 类似这样：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "taskId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"add-payment-rule"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "baseRevisions"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "payment-rules"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "changes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">      "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"appendBody"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"payment-rules"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "summary"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"补充退款时限"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"## 退款时限</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">审核通过后 3 个工作日内原路退回。"</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>这里真正承担并发判断的是 <code>baseRevisions</code>。它表示 Alice 写这份 change 时，<code>payment-rules</code> 的磁盘版本是 3。<code>flow2spec kb plan</code> 会拿它和当前 <code>.Knowledge/topics/payment-rules.md</code> 的 <code>revision</code> 比较：</p>
+<ul>
+<li>仍是 3，可以合入；</li>
+<li>已经变成 4，拒绝自动合入，先重读新内容；</li>
+<li>topic 不存在，或新建 topic 已被占用，同样报告冲突。</li>
+</ul>
+<p>修改现有 topic 时，技能约定必须记录对应的 <code>baseRevisions</code>。手写 delta 如果省掉这项，解析器仍能读取文件，但这份 change 也失去了 revision 预检，不应进入团队提交流程。</p>
+<p>锁的粒度是 <strong>topic</strong>，不是某一行或某一节。两个人即使修改同一个 topic 的不同段落，只要其中一份先把 revision 推进了，另一份也要基于新版本重新确认。这个选择偏保守，但不会让两段各自合理、合起来却互相矛盾的业务规则悄悄进入知识库。</p>
+<h3 id="四种-change">四种 change</h3>
+<p>delta 只接受下面四类动作：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>type</th><th>用途</th></tr></thead><tbody><tr><td><code>appendBody</code></td><td>在现有 topic 正文末尾追加内容</td></tr><tr><td><code>replaceBody</code></td><td>替换现有 topic 正文</td></tr><tr><td><code>updateFrontmatter</code></td><td>更新 topic 元数据</td></tr><tr><td><code>createTopic</code></td><td>新建 topic；可同时带 matcher 和 task route</td></tr></tbody></table>
+<p>字段级 schema、CLI flags 和退出码统一放在 <a href="/Flow2Spec/docs/commands/">命令说明 § 7</a>，这里不再复制一份规范。</p>
+<p>旧知识库第一次启用这套流程时，topic 可能还没有 revision。先执行一次 <code>flow2spec kb build --fix-topics</code>，检查生成的 frontmatter diff，再用 <code>flow2spec kb check --strict</code> 验收并提交；这是一项迁移动作，不是每天都要跑的初始化命令。</p>
+<h3 id="delta-的生命周期">delta 的生命周期</h3>
+<p>一份落盘 delta 通常经历这些状态：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>技能形成变更意图</span></span>
+<span class="line"><span>  -> 写入当前 active 任务的 kb-delta.json</span></span>
+<span class="line"><span>  -> plan 预演</span></span>
+<span class="line"><span>  -> apply 写入 topic / matcher / routing</span></span>
+<span class="line"><span>  -> build/check 校验知识图</span></span>
+<span class="line"><span>  -> .Knowledge/ 随代码提交</span></span>
+<span class="line"><span>  -> 任务满足门禁后归档到 completed/</span></span></code></pre>
+<p><code>plan</code> 不写文件，适合在任何修改前反复跑。<code>apply</code> 会重新做一次 plan，发现 revision 已变化就停止，不会带着过期结果继续写。</p>
+<p>delta 属于任务现场。任务归档后它仍跟着留在本地 <code>completed/</code> 中，不需要提交，也不应该被当成团队知识的副本。真正的合并结果以 <code>.Knowledge/</code> diff 为准。</p>
+<hr>
+<h2 id="4-一次正常的协作过程">4. 一次正常的协作过程</h2>
+<p>假设 Alice 要补一个已落地的退款规则。</p>
+<h3 id="开工">开工</h3>
+<p>先拉团队当前版本，再看本地知识状态：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> pull</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> status</span></span></code></pre>
+<p><code>kb status</code> 检查 routing 漂移、topic 健康度，以及 <strong>当前 TASK_ROOT</strong> 下 active 任务里的 delta。它看不到 Bob 本机的 <code>.task/</code>，也不应该看到。</p>
+<h3 id="工作中">工作中</h3>
+<p>Alice 通过 <code>f2s-kb-feat</code>、<code>f2s-kb-fix</code>、<code>f2s-kb-distill</code> 或 <code>f2s-kb-sync</code> 形成知识变更。技能负责把事实、证据和变更意图整理成 delta；CLI 负责判断这份 delta 还能不能合入当前磁盘版本。</p>
+<p>日常使用不要求开发者手动背下五个 <code>kb</code> 子命令。走 <code>f2s-git-commit</code> 时，Agent 会在提交前执行 <code>check + status</code>，唯一定位到当前任务且 delta 可合并时，继续完成 <code>plan -> apply -> build -> check</code>。遇到多个候选或 revision 冲突才停下来让人判断。</p>
+<p>需要单独排查、接 CI 或检查某份 delta 时，可以直接使用 shell CLI：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> plan</span><span style="color:#9ECBFF"> .task/alice/active/add_payment_rule/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> apply</span><span style="color:#9ECBFF"> .task/alice/active/add_payment_rule/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> build</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> check</span><span style="color:#79B8FF"> --strict</span></span></code></pre>
+<h3 id="收工">收工</h3>
+<p>知识已 apply 后，先看 <code>.Knowledge/</code> 的真实 diff，再和实现一起提交。<code>.task/</code> 不在 staged files 里。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> diff</span><span style="color:#79B8FF"> --</span><span style="color:#9ECBFF"> .Knowledge</span></span>
+<span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> status</span><span style="color:#79B8FF"> --short</span></span></code></pre>
+<p>团队拿到的是代码、知识库和提交说明，而不是 Alice 会话里走过的每一个步骤。</p>
+<hr>
+<h2 id="5-两个人改了同一个-topic">5. 两个人改了同一个 topic</h2>
+<p>revision 是磁盘乐观锁，不是远端服务上的全局锁。它不会隔空知道队友刚刚 push 了什么，所以开工先 pull、提交前保持分支新鲜仍然是协作前提。</p>
+<p>假设 Alice 和 Bob 都基于 <code>payment-rules revision: 3</code> 写了 delta：</p>
+<ol>
+<li>Alice 先 apply，topic 变为 revision 4，并完成 push。</li>
+<li>Bob 的 delta 还留在本地，尚未 apply。他先拉取 Alice 的提交。</li>
+<li>Bob 再 plan，得到 <code>revision mismatch 3 -> 4</code>。</li>
+<li>Bob 阅读 revision 4 的正文，判断两份规则该并列、改写还是放弃其中一份。</li>
+<li>Bob 更新 change 内容和 <code>baseRevisions</code>，再 plan；通过后 apply，topic 进入 revision 5。</li>
+</ol>
+<p>第 4 步不能由“把两边文本拼起来”替代。revision 冲突的价值就在这里：它把语义裁决留给掌握业务上下文的人或 Agent，而不是让字符串合并假装成功。</p>
+<p>如果 Bob 已经在旧分支 apply，随后 <code>git pull</code> 才出现 <code>&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;</code>，那是 Git 层冲突。两类冲突不要混用处理方式：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>冲突</th><th>何时出现</th><th>处理方式</th></tr></thead><tbody><tr><td>revision 冲突</td><td><code>kb plan/apply</code> 阶段</td><td>拉取最新 topic、重读语义、重写 delta</td></tr><tr><td>Git 冲突</td><td>merge/rebase 后文件出现冲突标记</td><td>按 Git 冲突处理；知识上下文文件可走 <code>f2s-kb-merge</code></td></tr></tbody></table>
+<p><code>f2s-kb-merge</code> 不负责替你更新过期的 <code>baseRevisions</code>。</p>
+<hr>
+<h2 id="6-团队最好提前约定的几件事">6. 团队最好提前约定的几件事</h2>
+<p>不需要为 Flow2Spec 单独设计一套复杂流程。下面几条约定已经足够覆盖大多数团队：</p>
+<ul>
+<li>每个人配置稳定、可读的 <code>collaboration.developerId</code>，共享机器上尤其如此；</li>
+<li>开工先拉取，知识变更和对应实现放在同一个 PR 或一组能互相追溯的提交里；</li>
+<li>topic 按单一职责拆分。topic 过大不仅影响路由，也会扩大 revision 冲突面；</li>
+<li>不直接把 <code>.task/</code> 加回 Git，不用 <code>todo.json</code> 充当团队看板；</li>
+<li>topic 正文尽量走 <code>f2s-kb-*</code> 形成 delta。直接手改可以被 Git 记录，却绕过了 revision 预检；</li>
+<li>合并前看 <code>.Knowledge/</code> diff，不只看 <code>kb plan</code> 的“mergeable”。结构可合并不代表业务表述一定正确；</li>
+<li>团队统一 Flow2Spec 版本。CLI schema 和模板能力不一致时，协作问题很难靠流程约定补救。</li>
+</ul>
+<p>topic 已经大到频繁互相阻塞时，先判断它是否混进了多个独立职责。拆 topic 往往比放宽锁粒度更省维护成本。</p>
+<hr>
+<h2 id="7-管理者怎么看进度">7. 管理者怎么看进度</h2>
+<p><code>.task/</code> 不进 Git，manager 自然看不到每个人的 active checklist。这不是缺了一个同步功能，而是所有权边界：尚未验证的个人过程不该自动变成团队记录。</p>
+<p>团队进度应从已经形成承诺或产出的地方看：</p>
+<ul>
+<li>PR / draft PR：正在交付什么、卡在哪里；</li>
+<li>commit 与 <code>.Knowledge/</code> diff：能力和规则实际发生了什么变化；</li>
+<li><code>.Knowledge/req-docs/</code>：已经确认、等待实现的需求或技术方案；</li>
+<li>项目里程碑：跨多个提交的阶段性结果；</li>
+<li>团队原有的 issue、项目看板或日报：负责人、截止时间和阻塞项。</li>
+</ul>
+<p>如果团队确实需要共享“进行中”状态，优先接已有 issue 或看板，而不是同步 <code>.task/active/</code>。后者包含会话上下文、临时判断和用户代办，权限与生命周期都不同。</p>
+<p>有人可能想把 <code>.task/&#x3C;id>/completed/</code> 白名单放回 Git。这可以作为团队自定义方案，但不是 Flow2Spec 默认流程。采用前至少要定清楚保留周期、敏感信息清理、谁负责归档，以及它和正式里程碑的关系，否则很快会出现两套进度真值。</p>
+<hr>
+<h2 id="8-常见问题">8. 常见问题</h2>
+<h3 id="task-已经是本地目录为什么还要-developerid"><code>.task/</code> 已经是本地目录，为什么还要 developerId？</h3>
+<p>同一台构建机、devcontainer 或共享工作区可能有多个身份；更重要的是，Agent 需要一个明确的读取边界。<code>TASK_ROOT</code> 让“不要续作别人的任务”从提醒变成可检查的路径约束。</p>
+<h3 id="换一台电脑后原来的-active-任务会自动出现吗">换一台电脑后，原来的 active 任务会自动出现吗？</h3>
+<p>不会。<code>.task/</code> 默认不进 Git，它是本机过程状态。跨机器交接应把已确认内容写进 PR、需求文档或 <code>.Knowledge/</code>，不要依赖复制任务目录。</p>
+<h3 id="collaborationenabled-false-会关闭知识库协作吗"><code>collaboration.enabled: false</code> 会关闭知识库协作吗？</h3>
+<p>不会。这个开关只决定 <code>.task/</code> 是否按 developerId 分层。<code>.Knowledge/</code> 是否共享仍由 Git 和团队分支流程决定。</p>
+<h3 id="kb-status-能看到队友还没提交的-delta-吗"><code>kb status</code> 能看到队友还没提交的 delta 吗？</h3>
+<p>不能。它只扫描当前 <code>TASK_ROOT/active/</code>。队友可见的进度应出现在 PR、issue 或其他团队系统里。</p>
+<h3 id="revision-和-git-commit-hash-是一回事吗">revision 和 Git commit hash 是一回事吗？</h3>
+<p>不是。revision 是单个 topic 的整数版本，用于判断 delta 的读取基线是否过期；commit hash 描述整个仓库的一次提交。前者解决 topic 级预检，后者仍是团队共享和历史追踪的事实源。</p>
+<h3 id="kb-plan-通过后为什么-git-仍可能冲突"><code>kb plan</code> 通过后，为什么 Git 仍可能冲突？</h3>
+<p>plan 只比较当前磁盘上的知识库。若本地没有拉到远端最新提交，它无法感知远端变化。保持分支新鲜仍是必要条件。</p>
+<h3 id="可以直接编辑-knowledgetopicsmd-吗">可以直接编辑 <code>.Knowledge/topics/*.md</code> 吗？</h3>
+<p>技术上可以，Git 也会记录，但这样绕过了 delta 的 schema 与 revision 预检。临时人工修复时必须同步维护 frontmatter 的 revision，再跑 <code>flow2spec kb build</code> 和 <code>flow2spec kb check --strict</code>，并认真检查 routing 是否同步。</p>
+<h3 id="apply-成功就可以删除-delta-吗">apply 成功就可以删除 delta 吗？</h3>
+<p>不必单独删除。它属于任务目录，任务满足验收与归档门禁后会一起进入本地 <code>completed/</code>。团队只以 apply 后的 <code>.Knowledge/</code> 为准。</p>
+<hr>
+<h2 id="相关文档">相关文档</h2>
+<ul>
+<li><a href="/Flow2Spec/docs/usage/">使用说明</a>：配置位置、技能链和日常操作</li>
+<li><a href="/Flow2Spec/docs/commands/">命令说明</a>：<code>flow2spec kb</code> 参数、delta schema 与退出码</li>
+<li><a href="/Flow2Spec/docs/directories/">目录与路径约定</a>：<code>TASK_ROOT</code>、legacy 与隔离模式的完整路径</li>
+<li><a href="/Flow2Spec/docs/architecture/">体系与原理</a>：任务环切开、知识环合并的设计原理</li>
+<li><a href="/Flow2Spec/docs/milestones/">项目里程碑</a>：团队可见的阶段性产出</li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

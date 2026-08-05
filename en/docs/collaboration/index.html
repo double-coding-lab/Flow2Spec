@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Collaboration documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/collaboration/"><title>Collaboration — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/" aria-current="page">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/" aria-current="page">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#1-three-collaboration-surfaces" class="is-active">1. Three collaboration surfaces</a><a href="#2-task-isolation-and-task_root">2. Task isolation and TASK_ROOT</a><a href="#3-knowledge-changes-as-deltas">3. Knowledge changes as deltas</a><a href="#4-a-normal-collaboration-cycle">4. A normal collaboration cycle</a><a href="#5-two-developers-change-the-same-topic">5. Two developers change the same topic</a><a href="#6-team-conventions-worth-agreeing-on">6. Team conventions worth agreeing on</a><a href="#7-how-managers-see-progress">7. How managers see progress</a><a href="#8-common-questions">8. Common questions</a><a href="#related-documents">Related Documents</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="team-collaboration">Team Collaboration</h1>
+<p>Flow2Spec does not put every piece of runtime state into Git. It separates two kinds of information: what one developer is currently doing stays local; knowledge that can affect team decisions enters the repository.</p>
+<ul>
+<li><code>.task/</code> is personal working state and is ignored by Git by default.</li>
+<li><code>.Knowledge/</code> is team knowledge and is reviewed, committed, and pulled with the code.</li>
+</ul>
+<p><code>developerId</code>, <code>kb-delta.json</code>, and topic revisions make this boundary executable.</p>
+<hr>
+<h2 id="1-three-collaboration-surfaces">1. Three collaboration surfaces</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Content</th><th>Typical path</th><th>Visibility</th><th>Collaboration model</th></tr></thead><tbody><tr><td>Personal task state</td><td><code>.task/&#x3C;developerId>/</code></td><td>Current developer and local Agent</td><td>Resume locally; do not commit</td></tr><tr><td>Project knowledge</td><td><code>.Knowledge/</code></td><td>Everyone who pulls the repository</td><td>Delta merge and Git review</td></tr><tr><td>Implementation and formal docs</td><td>Source code and <code>docs/</code></td><td>Everyone who pulls the repository</td><td>Branches, PRs, and commits</td></tr></tbody></table>
+<p>An active task can contain unverified assumptions, half-finished checklists, and user todos. Those details help the current session but are not team facts. <code>.Knowledge/</code> is different: the Agent uses it to decide business rules, implementation boundaries, and reading paths, so the team must share one version.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>.task/alice/active/...  --produces delta--\</span></span>
+<span class="line"><span>                                           +--> plan/apply --> .Knowledge/ --> Git</span></span>
+<span class="line"><span>.task/bob/active/...    --produces delta--/</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>personal process (isolated)                   team facts (shared)</span></span></code></pre>
+<p>The two deltas do not merge inside <code>.task/</code>. Each developer works only within their own task root; the results meet in the Git diff for <code>.Knowledge/</code>.</p>
+<hr>
+<h2 id="2-task-isolation-and-task_root">2. Task isolation and TASK_ROOT</h2>
+<p>The project root configuration controls collaboration mode:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "collaboration"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "enabled"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p>Alice receives <code>.task/alice/</code>; Bob receives <code>.task/bob/</code>. The <code>f2s-task</code> rule permits the Agent to read and write only the current <code>TASK_ROOT</code>. Scanning other developers’ directories to find resumable work crosses that boundary.</p>
+<h3 id="developerid-resolution">developerId resolution</h3>
+<p>Flow2Spec uses the first available value:</p>
+<ol>
+<li><code>collaboration.developerId</code></li>
+<li>The part before <code>@</code> in Git <code>user.email</code></li>
+<li>Git <code>user.name</code></li>
+<li>Legacy single-root <code>.task/</code> if none is available</li>
+</ol>
+<p>An explicit id must normalize to lowercase <code>[a-z0-9-]</code>; an invalid explicit value fails because the user deliberately selected that identity. A non-ASCII Git-derived identity becomes a stable <code>dev-xxxxxxxx</code> hash id and produces a warning. A readable explicit id is preferable on shared machines.</p>
+<h3 id="legacy-mode-remains-supported">Legacy mode remains supported</h3>
+<p>The legacy layout is used when <code>collaboration.enabled</code> is false or no identity is available:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>.task/todo.json</span></span>
+<span class="line"><span>.task/active/&#x3C;task-name>/</span></span>
+<span class="line"><span>.task/completed/&#x3C;YYYYMMDD>-&#x3C;task-name>/</span></span></code></pre>
+<p>Flow2Spec does not move old tasks automatically because it cannot infer ownership. A team should confirm the owner before moving those directories under <code>.task/&#x3C;developerId>/</code>.</p>
+<hr>
+<h2 id="3-knowledge-changes-as-deltas">3. Knowledge changes as deltas</h2>
+<p>Raw Markdown diffs do not tell a merge engine why text changed. <code>kb-delta.json</code> restricts a change to explicit actions and carries the version that the author read:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "taskId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"add-payment-rule"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "developerId"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"alice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "baseRevisions"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "payment-rules"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">3</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "changes"</span><span style="color:#E1E4E8">: [</span></span>
+<span class="line"><span style="color:#E1E4E8">    {</span></span>
+<span class="line"><span style="color:#79B8FF">      "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"appendBody"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "targetTopic"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"payment-rules"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "summary"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Add refund timing"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">      "content"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"## Refund timing</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">Return funds through the original payment method within three business days."</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">  ]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<p><code>flow2spec kb plan</code> compares <code>baseRevisions</code> with the current topic frontmatter:</p>
+<ul>
+<li>revision is still 3: the delta is mergeable;</li>
+<li>revision is now 4: stop and reread the current topic;</li>
+<li>the target is missing, or a new topic id is already occupied: report a conflict.</li>
+</ul>
+<p>The lock is at topic granularity. Two changes to different sections of the same topic still conflict after the first apply. This is conservative by design: two individually reasonable paragraphs can still contradict each other as business rules.</p>
+<h3 id="allowed-change-types">Allowed change types</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>Purpose</th></tr></thead><tbody><tr><td><code>appendBody</code></td><td>Append to an existing topic body</td></tr><tr><td><code>replaceBody</code></td><td>Replace an existing topic body</td></tr><tr><td><code>updateFrontmatter</code></td><td>Update topic metadata</td></tr><tr><td><code>createTopic</code></td><td>Create a topic, optionally with a matcher and task route</td></tr></tbody></table>
+<p>Legacy knowledge bases may lack topic revisions. Run <code>flow2spec kb build --fix-topics</code> once, inspect the frontmatter diff, then validate with <code>flow2spec kb check --strict</code> and commit the migration.</p>
+<h3 id="delta-lifecycle">Delta lifecycle</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>skill forms a knowledge change</span></span>
+<span class="line"><span>  -> writes kb-delta.json under the active task</span></span>
+<span class="line"><span>  -> plan previews the merge</span></span>
+<span class="line"><span>  -> apply writes topics and routing</span></span>
+<span class="line"><span>  -> build/check validate the graph</span></span>
+<span class="line"><span>  -> .Knowledge/ is committed with the implementation</span></span>
+<span class="line"><span>  -> task is archived locally after its gates pass</span></span></code></pre>
+<p><code>plan</code> does not write files. <code>apply</code> plans again immediately before writing, so a stale preview cannot force an outdated change onto disk. The delta remains local with the task; the <code>.Knowledge/</code> diff is the shared result.</p>
+<hr>
+<h2 id="4-a-normal-collaboration-cycle">4. A normal collaboration cycle</h2>
+<p>Start by pulling team state and checking local knowledge health:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> pull</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> status</span></span></code></pre>
+<p>Knowledge-producing skills such as <code>f2s-kb-feat</code>, <code>f2s-kb-fix</code>, <code>f2s-kb-distill</code>, and <code>f2s-kb-sync</code> assemble evidence and write the delta. The CLI decides whether that delta can still merge into the current disk state.</p>
+<p>Developers do not need to memorize every command. During <code>f2s-git-commit</code>, the Agent runs <code>check + status</code> and, when exactly one current delta is unambiguous and mergeable, continues through <code>plan -> apply -> build -> check</code>. Direct commands remain useful for diagnosis and CI:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> plan</span><span style="color:#9ECBFF"> .task/alice/active/add_payment_rule/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> apply</span><span style="color:#9ECBFF"> .task/alice/active/add_payment_rule/kb-delta.json</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> build</span></span>
+<span class="line"><span style="color:#B392F0">flow2spec</span><span style="color:#9ECBFF"> kb</span><span style="color:#9ECBFF"> check</span><span style="color:#79B8FF"> --strict</span></span></code></pre>
+<p>After apply, inspect the real <code>.Knowledge/</code> diff and commit it with the implementation. <code>.task/</code> should not appear among staged files.</p>
+<hr>
+<h2 id="5-two-developers-change-the-same-topic">5. Two developers change the same topic</h2>
+<p>A revision is an optimistic disk lock, not a remote lock service. It cannot see a teammate’s push until the branch is updated.</p>
+<p>Suppose Alice and Bob both start from <code>payment-rules revision: 3</code>:</p>
+<ol>
+<li>Alice applies first, advances the topic to revision 4, and pushes.</li>
+<li>Bob pulls Alice’s commit before applying his local delta.</li>
+<li>Bob runs plan and receives <code>revision mismatch 3 -> 4</code>.</li>
+<li>Bob reads revision 4 and decides whether the two rules should coexist, be rewritten, or replace one another.</li>
+<li>Bob rewrites the change and its base revision. A successful apply advances the topic to revision 5.</li>
+</ol>
+<p>Step 4 cannot be replaced by concatenating text. The conflict exists to force a semantic decision.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Conflict</th><th>Appears when</th><th>Resolution</th></tr></thead><tbody><tr><td>Revision conflict</td><td><code>kb plan/apply</code></td><td>Pull, reread the latest topic, rewrite the delta</td></tr><tr><td>Git conflict</td><td>Merge/rebase produces conflict markers</td><td>Resolve as a Git conflict; knowledge context files can use <code>f2s-kb-merge</code></td></tr></tbody></table>
+<p><code>f2s-kb-merge</code> does not update stale <code>baseRevisions</code>.</p>
+<hr>
+<h2 id="6-team-conventions-worth-agreeing-on">6. Team conventions worth agreeing on</h2>
+<ul>
+<li>Give each developer a stable, readable <code>collaboration.developerId</code>, especially on shared machines.</li>
+<li>Pull before starting; keep a knowledge change and its implementation in the same PR or in traceable commits.</li>
+<li>Keep topics focused. Oversized topics enlarge both the routing surface and the revision conflict surface.</li>
+<li>Do not add <code>.task/</code> back to Git or use <code>todo.json</code> as a team board.</li>
+<li>Prefer delta-producing <code>f2s-kb-*</code> workflows for topic changes. Direct edits bypass revision preflight.</li>
+<li>Review the <code>.Knowledge/</code> diff before merging. “Mergeable” means structurally safe, not necessarily correct business wording.</li>
+<li>Keep the team on one Flow2Spec version so CLI schemas and templates agree.</li>
+</ul>
+<hr>
+<h2 id="7-how-managers-see-progress">7. How managers see progress</h2>
+<p>Managers cannot see another developer’s active <code>.task/</code> checklist, by design. Team progress should come from durable commitments and outputs:</p>
+<ul>
+<li>PRs or draft PRs for current delivery and blockers;</li>
+<li>commits and <code>.Knowledge/</code> diffs for actual capability or rule changes;</li>
+<li><code>.Knowledge/req-docs/</code> for approved work waiting for implementation;</li>
+<li>milestones for results spanning multiple commits;</li>
+<li>the team’s issue tracker, board, or status reports for owners and deadlines.</li>
+</ul>
+<p>If the team needs shared work-in-progress state, integrate the existing issue tracker instead of synchronizing <code>.task/active/</code>, which may contain session context, tentative judgments, and user todos with a different lifecycle.</p>
+<hr>
+<h2 id="8-common-questions">8. Common questions</h2>
+<h3 id="if-task-is-local-why-keep-developerid">If <code>.task/</code> is local, why keep developerId?</h3>
+<p>Shared workspaces, build machines, and devcontainers can host multiple identities. More importantly, <code>TASK_ROOT</code> gives the Agent an enforceable boundary for task continuation.</p>
+<h3 id="does-switching-computers-restore-active-tasks">Does switching computers restore active tasks?</h3>
+<p>No. <code>.task/</code> is local. Put confirmed handoff information in a PR, requirement document, or <code>.Knowledge/</code>.</p>
+<h3 id="does-collaborationenabled-false-disable-knowledge-collaboration">Does <code>collaboration.enabled: false</code> disable knowledge collaboration?</h3>
+<p>No. It only selects the <code>.task/</code> layout. Git still controls how <code>.Knowledge/</code> is shared.</p>
+<h3 id="can-kb-status-see-a-teammates-uncommitted-delta">Can <code>kb status</code> see a teammate’s uncommitted delta?</h3>
+<p>No. It scans only the current <code>TASK_ROOT/active/</code>. Use PRs, issues, or the team board for visible progress.</p>
+<h3 id="is-a-revision-the-same-as-a-git-commit-hash">Is a revision the same as a Git commit hash?</h3>
+<p>No. A revision is an integer version for one topic and detects stale delta baselines. A commit hash describes a repository commit and remains the team history source of truth.</p>
+<h3 id="why-can-git-still-conflict-after-kb-plan-succeeds">Why can Git still conflict after <code>kb plan</code> succeeds?</h3>
+<p>Plan checks only the local disk. It cannot see remote commits that have not been pulled.</p>
+<h3 id="can-i-edit-knowledgetopicsmd-directly">Can I edit <code>.Knowledge/topics/*.md</code> directly?</h3>
+<p>Git allows it, but it bypasses the delta schema and revision preflight. For an emergency manual repair, update the revision consistently, then run <code>flow2spec kb build</code> and <code>flow2spec kb check --strict</code> and review routing changes.</p>
+<hr>
+<h2 id="related-documents">Related Documents</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

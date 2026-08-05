@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Usage scenarios documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/scenarios/"><title>Usage scenarios — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#scenario-1-new-requirement---clarification---technical-design" class="is-active">Scenario 1: New Requirement -&gt; Clarification -&gt; Technical Design</a><a href="#scenario-2-architectural-documentation-into-knowledge-base">Scenario 2: Architectural Documentation into Knowledge Base</a><a href="#scenario-3-implementation-from-technical-design">Scenario 3: Implementation from Technical Design</a><a href="#scenario-4-post-implementation-knowledge-base-recording">Scenario 4: Post-Implementation Knowledge Base Recording</a><a href="#scenario-5-non-compliant-implementation-found-fix-and-sync-knowledge-base">Scenario 5: Non-compliant Implementation Found, Fix and Sync Knowledge Base</a><a href="#scenario-6-knowledge-base-conflicts-after-git-merge">Scenario 6: Knowledge Base Conflicts After Git Merge</a><a href="#scenario-7-two-developers-change-the-same-topic">Scenario 7: Two Developers Change the Same Topic</a><a href="#related-documentation">Related Documentation</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="flow2spec-usage-scenarios-simulated-dialogues">Flow2Spec Usage Scenarios (Simulated Dialogues)</h1>
+<p>The following examples revolve around the same e-commerce project, covering the full pipeline from requirements clarification through post-launch maintenance.</p>
+<p><strong>Prerequisite</strong>: The project has executed <code>flow2spec init</code>, and <code>flow2spec.config.json</code> uses the default configuration (<code>subAgent: false</code>; <code>changeTracking.feat/implement: true</code>, <code>changeTracking.fix: false</code>). <code>f2s-*</code> skills do not modify the configuration root <code>rules/</code> or <code>skills/</code> files.</p>
+<hr>
+<h2 id="scenario-1-new-requirement---clarification---technical-design">Scenario 1: New Requirement -> Clarification -> Technical Design</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-req-clarify The product team provided a refund requirement doc, but it does not specify whether partial refunds and full refunds go through the same API, or whether points should be reversed after a successful refund. The document is at <code>.Knowledge/req-docs/refund-requirements-v1.md</code>.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>I have read the requirements document. There are a few points that need clarification:</p>
+<ol>
+<li>Do partial refunds and full refunds reuse the same endpoint, differentiated by the <code>amount</code> field, or should they be two separate endpoints?</li>
+<li>Should points be reversed after a successful refund? If the reversal fails, should it block the refund flow?</li>
+<li>Is the refund processed synchronously or asynchronously (T+1)?</li>
+<li>Is there a seller-side review step?</li>
+</ol>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<ol>
+<li>Same endpoint, differentiated by amount; 2. Points are reversed; failure does not block the flow, retry asynchronously; 3. Asynchronous T+1; 4. No review needed.</li>
+</ol>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Clarification complete. Run <code>/f2s-req-tech</code> to produce the technical design.</p>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-req-tech</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Generated <code>.Knowledge/req-docs/refund-tech-design.md</code>, which includes:</p>
+<ul>
+<li>API design: <code>POST /refunds</code>, <code>amount</code> field distinguishes full / partial refunds</li>
+<li>State machine: <code>PENDING -> SUCCESS / FAILED</code></li>
+<li>Points reversal: asynchronous queue, failures go to dead letter queue, alert for manual handling</li>
+<li>Error code list</li>
+</ul>
+<p>Next step: say “implement according to <code>.Knowledge/req-docs/refund-tech-design.md</code>” to trigger coding.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-2-architectural-documentation-into-knowledge-base">Scenario 2: Architectural Documentation into Knowledge Base</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-doc-arch Help me draft an order service architecture document, focusing on the creation flow, payment callback, idempotency, and message delivery. The code is in <code>src/order</code> and <code>src/payment</code>.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Scanned the relevant directories. Generated <code>.Knowledge/stock-docs/order-service-architecture-draft.md</code>, which includes:</p>
+<ul>
+<li>Module boundaries and dependencies</li>
+<li>Creation flow sequence diagram</li>
+<li>Payment callback idempotency mechanism (based on the <code>payment_callback_log</code> table)</li>
+<li>Message delivery retry strategy</li>
+</ul>
+<p>Confirm it looks good, then run <code>/f2s-doc-final</code> to normalize the format.</p>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-doc-final .Knowledge/stock-docs/order-service-architecture-draft.md</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Generated <code>.Knowledge/stock-docs/order-service-architecture-final.md</code>, formatted according to the final-draft template, with placeholders for items still to be filled in.</p>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>f2s-kb-build .Knowledge/stock-docs/order-service-architecture-final.md</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Knowledge base sync complete:</p>
+<ul>
+<li>Added <code>.Knowledge/topics/order-service.md</code></li>
+<li>Updated <code>.Knowledge/manifest-routing.json</code> (added routing rule)</li>
+<li>Generated <code>.Knowledge/matchers/order-service.json</code> (keywords: order creation, payment callback, idempotency, message delivery)</li>
+<li>Updated <code>.Knowledge/index.md</code></li>
+</ul>
+<p>Future tasks related to the order service will automatically hit this topic.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-3-implementation-from-technical-design">Scenario 3: Implementation from Technical Design</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>Implement according to <code>.Knowledge/req-docs/refund-tech-design.md</code>. Only modify <code>src/refund/</code>; do not touch the payment module.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>I have read the design document. Task list for implementation:</p>
+<ol>
+<li>Create <code>RefundController</code> with <code>POST /refunds</code></li>
+<li>Create <code>RefundService</code> with state machine transition logic</li>
+<li>Create <code>RefundRepository</code> for the <code>refund</code> table</li>
+<li>Create <code>PointRollbackProducer</code> to send rollback messages to the points queue</li>
+<li>Unit tests covering state machine transitions</li>
+</ol>
+<p>Before proceeding, I need to confirm:</p>
+<ul>
+<li>Does the <code>refund</code> table already exist, or do I need to generate a migration?</li>
+<li>What is the points queue topic name?</li>
+</ul>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>The table already exists; no migration needed. The topic is <code>point-rollback-events</code>.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Completed all 5 tasks above, all within <code>src/refund/</code>. Did not touch <code>src/payment/</code>.</p>
+<p><strong>Requires manual action</strong>:</p>
+<ul>
+<li>Consumer side for <code>point-rollback-events</code> (on the points service side)</li>
+<li>Dead letter monitoring and alerting rule configuration</li>
+</ul>
+<p>Recommend running <code>/f2s-kb-feat</code> to sync this new capability into the knowledge base.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-4-post-implementation-knowledge-base-recording">Scenario 4: Post-Implementation Knowledge Base Recording</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-kb-sync The refund feature has gone live. Help me record the payment failure retry queue naming, dead letter table fields, and monitoring alerting criteria into the knowledge base. Give me an outline first so I can confirm before you write.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Knowledge base update outline (pending confirmation):</p>
+<p><strong>Update topic</strong>: <code>order-service</code> (already exists)</p>
+<ul>
+<li>Add “Payment Failure Retry Mechanism”: queue name <code>payment-retry-queue</code>, max retries 3, intervals 30s / 120s / 300s</li>
+<li>Add “Dead Letter Table”: table name <code>payment_dead_letter</code>, fields <code>order_id / error_code / retry_count / created_at</code></li>
+<li>Add “Monitoring Criteria”: alert threshold <code>retry_count >= 3</code>, notification channel DingTalk</li>
+</ul>
+<p>Confirm to write, or let me know what needs to be changed.</p>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>Confirm, go ahead and write.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Created the current task’s <code>kb-delta.json</code>:</p>
+<ul>
+<li>Target topic: <code>order-service</code></li>
+<li>Base version: <code>revision: 6</code></li>
+<li>Change type: <code>appendBody</code></li>
+</ul>
+<p>During commit, <code>f2s-git-commit</code> will run <code>plan -> apply -> build -> check</code>. If the disk revision changed, it will stop and report a conflict instead of overwriting a teammate’s work.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-5-non-compliant-implementation-found-fix-and-sync-knowledge-base">Scenario 5: Non-compliant Implementation Found, Fix and Sync Knowledge Base</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-kb-fix <code>RefundService</code> directly calls <code>new RestTemplate()</code>, which violates the Spring Bean injection convention.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Fixed: Line 34 of <code>RefundService.java</code> changed to constructor injection; <code>RefundConfig</code> supplemented with <code>@Bean</code> declaration.</p>
+<p>The rule “<code>RestTemplate</code> must be injected as a Bean; direct instantiation is prohibited” has been prepared as a knowledge delta with the fix evidence. The corresponding topic will receive it only after revision preflight.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-6-knowledge-base-conflicts-after-git-merge">Scenario 6: Knowledge Base Conflicts After Git Merge</h2>
+<p><strong>You</strong></p>
+<blockquote>
+<p>/f2s-kb-merge <code>.Knowledge/index.md</code> and <code>.Knowledge/stock-docs/order-service-architecture-final.md</code> have conflict markers after the merge. I have already resolved the conflicts in the business code manually.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>Scanned the conflict markers in both files:</p>
+<ul>
+<li><code>index.md</code>: 2 conflicts, both in topic description fields. Took the HEAD version (newer content). Resolved automatically.</li>
+<li><code>order-service-architecture-final.md</code>: 1 conflict. The “monitoring alert threshold” differs between branches (3 vs. 5). Please confirm which one to keep.</li>
+</ul>
+</blockquote>
+<p><strong>You</strong></p>
+<blockquote>
+<p>Use 3.</p>
+</blockquote>
+<p><strong>Agent</strong></p>
+<blockquote>
+<p>All conflict markers have been cleaned up per your confirmation. The files are ready to commit.</p>
+</blockquote>
+<hr>
+<h2 id="scenario-7-two-developers-change-the-same-topic">Scenario 7: Two Developers Change the Same Topic</h2>
+<p><strong>Background</strong></p>
+<blockquote>
+<p>Alice and Bob both started from <code>order-service revision: 6</code>. Alice adds the refund arrival time; Bob adds refund retry rules. Both changes target the same topic.</p>
+</blockquote>
+<p><strong>Alice</strong></p>
+<blockquote>
+<p>Use f2s-kb-sync to add “return through the original payment method within three business days after approval” to the order-service knowledge. Generate the delta after I confirm the outline.</p>
+</blockquote>
+<p><strong>Agent (Alice)</strong></p>
+<blockquote>
+<p>Created <code>.task/alice/active/refund_arrival/kb-delta.json</code> with <code>baseRevisions.order-service = 6</code>. Plan passed; after apply, <code>order-service</code> is revision 7.</p>
+</blockquote>
+<p>Alice commits and pushes the implementation and <code>.Knowledge/</code> change.</p>
+<p><strong>Bob</strong></p>
+<blockquote>
+<p>I pulled Alice’s latest commit. Continue checking my refund retry delta.</p>
+</blockquote>
+<p><strong>Agent (Bob)</strong></p>
+<blockquote>
+<p>Plan failed:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>order-service: revision mismatch 6 -> 7</span></span></code></pre>
+<p>Alice added the arrival time; your delta adds failure retries. The rules do not conflict, but both edit one topic. Reread revision 7 and rewrite the change; changing only the base number is not enough.</p>
+</blockquote>
+<p><strong>Bob</strong></p>
+<blockquote>
+<p>Keep Alice’s timing rule. Put “retry at most three times, after 30s / 120s / 300s” under refund failure handling and try again.</p>
+</blockquote>
+<p><strong>Agent (Bob)</strong></p>
+<blockquote>
+<p>Rewrote the delta against revision 7, preserving the timing rule and placing the retry policy under the current structure. The second plan passed; apply advanced the topic to revision 8, and build/check passed.</p>
+</blockquote>
+<p>This is a <strong>revision conflict</strong>: pull, reread the latest topic, and rewrite the delta. It becomes a Git conflict only when the file contains markers such as <code>&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;&#x3C;</code>, which belongs to the <code>f2s-kb-merge</code> path.</p>
+<hr>
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a></li>
+<li><a href="/Flow2Spec/en/docs/architecture/">Architecture</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>

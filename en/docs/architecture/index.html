@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Architecture documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/architecture/"><title>Architecture — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/" aria-current="page">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/" aria-current="page">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#1-memory-coding-and-four-rings" class="is-active">1. Memory Coding and Four Rings</a><a href="#2-multi-layer-memory-inside-the-knowledge-ring">2. Multi-Layer Memory Inside the Knowledge Ring</a><a href="#3-knowledge-layer-vs-execution-layer-two-layers">3. Knowledge Layer vs Execution Layer (Two Layers)</a><a href="#4-progressive-reading">4. Progressive Reading</a><a href="#5-key-chains">5. Key Chains</a><a href="#6-two-isolation-boundaries-for-collaboration">6. Two Isolation Boundaries for Collaboration</a><a href="#7-agent-execution-model">7. Agent Execution Model</a><a href="#8-design-benefits">8. Design Benefits</a><a href="#9-related-documents">9. Related Documents</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
+<h1 id="architecture--principles">Architecture &#x26; Principles</h1>
+<p>Flow2Spec separates “business knowledge curation” from “Agent capability loading”, and uses <strong>Memory Coding</strong> to persist “what must be remembered” as versioned Git assets.</p>
+<ul>
+<li><strong>Knowledge ring</strong> (<code>.Knowledge/</code>): documents and machine-readable routing (multi-layer, see below)</li>
+<li><strong>Task ring</strong> (<code>.task/</code>): cross-session task checklists</li>
+<li><strong>Rules ring</strong> (tool <code>rules</code> / <code>AGENTS.md</code>): how to <strong>read</strong> and <strong>act</strong></li>
+<li><strong>Skills ring</strong> (<code>f2s-*</code>): maintain knowledge and trigger workflows</li>
+</ul>
+<blockquote>
+<p>Flow2Spec is not “just a knowledge base.” All four rings are Memory Coding; the two-layer table below is the <strong>knowledge ring vs tool-side execution</strong> lifecycle split.</p>
+</blockquote>
+<hr>
+<h2 id="1-memory-coding-and-four-rings">1. Memory Coding and Four Rings</h2>
+<p><strong>Memory Coding</strong>: encode durable context into the <strong>committed repo</strong>—not private model memory, not chat-only repetition, not whole-repo vector guessing.</p>
+<p>Four rings in the repo (do not collapse rules + skills into a single “third ring”):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Ring</th><th>Location</th><th>Stores</th></tr></thead><tbody><tr><td><strong>Knowledge</strong></td><td><code>.Knowledge/</code></td><td>Routing, topics, stock/req docs (§2 layers)</td></tr><tr><td><strong>Task</strong></td><td><code>.task/</code></td><td><code>todo.json</code>, checklists, user todos</td></tr><tr><td><strong>Rules</strong></td><td><code>.cursor/.claude/.codex</code> rules, <code>AGENTS.md</code></td><td>Read order, gap gates, execution constraints</td></tr><tr><td><strong>Skills</strong></td><td>config root <code>skills/*/SKILL.md</code></td><td><code>f2s-kb-feat/fix/sync</code>, etc.</td></tr></tbody></table>
+<hr>
+<h2 id="2-multi-layer-memory-inside-the-knowledge-ring">2. Multi-Layer Memory Inside the Knowledge Ring</h2>
+<p><code>.Knowledge/</code> is not a flat pile of Markdown. It combines <strong>horizontal narrowing</strong> (progressive routing) and <strong>vertical chaining</strong> (topic dependencies):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Layer</th><th>Path / mechanism</th><th>Stores</th><th>Typical read</th></tr></thead><tbody><tr><td><strong>L0 routing</strong></td><td><code>manifest-routing.json</code></td><td>task→topic, <code>topicDependencies</code>, <code>topicPaths</code>, <code>topicMetadata</code></td><td>First read (machine source of truth)</td></tr><tr><td><strong>L1 matcher shard</strong></td><td><code>matchers/&#x3C;id>.json</code></td><td><code>includeAny</code> triggers</td><td><strong>match</strong>: one shard only</td></tr><tr><td><strong>L2 topic summary</strong></td><td><code>topics/&#x3C;topic>.md</code></td><td>Hard constraints, boundaries, pointers</td><td><strong>expand</strong>: pull dependency topics</td></tr><tr><td><strong>L3 long docs</strong></td><td><code>stock-docs/</code>, <code>req-docs/</code></td><td>Architecture finals, tech specs</td><td>Drill down on demand</td></tr><tr><td><strong>Vertical chain</strong></td><td><code>topicDependencies</code></td><td>Common → subdomain → whitelist → domain rules</td><td><strong>expand</strong> stacks layers</td></tr></tbody></table>
+<p>The pipeline <code>match → expand → verify → act</code> operates on L0–L2 (and L3 when needed). Topic-level dependencies are declared once and shared by all tasks.</p>
+<p><code>index.md</code> is human navigation only; it does not replace the machine-readable chain.</p>
+<hr>
+<h2 id="3-knowledge-layer-vs-execution-layer-two-layers">3. Knowledge Layer vs Execution Layer (Two Layers)</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Layer</th><th>Location</th><th>Role</th></tr></thead><tbody><tr><td>Knowledge layer (knowledge ring)</td><td><code>.Knowledge/</code></td><td>Business docs, index, routing (§2 layers)</td></tr><tr><td>Execution layer (rules + skills rings)</td><td><code>.cursor/.claude/.codex</code></td><td>Rules and skill entry points</td></tr></tbody></table>
+<hr>
+<h2 id="4-progressive-reading">4. Progressive Reading</h2>
+<p>The recommended unified order:</p>
+<ol>
+<li><code>.Knowledge/manifest-routing.json</code></li>
+<li><code>.Knowledge/matchers/&#x3C;matcher>.json</code> (on demand: directly located by <code>manifest-routing.taskToTopicRules[].matcherPath</code>)</li>
+<li><code>.Knowledge/index.md</code></li>
+<li>The matched <code>stock-docs</code> / <code>req-docs</code> documents</li>
+<li>Source code drill-down when necessary</li>
+</ol>
+<p>After reading, execute the four-step pipeline <code>match -> expand -> verify -> act</code>: expand dependency topics after hitting the primary candidate, perform gap analysis, execute only when confidence is sufficient; clarify first when confidence is low.</p>
+<p>Simultaneously, loading behavior is governed by the config root entry points (Flow2Spec package rules: <code>f2s-flow2spec-unified-entry.mdc</code> / <code>f2s-flow2spec-unified-entry.md</code>; legacy business repos commonly use <code>main.md(c)</code>; and <code>AGENTS.md</code>).
+Codex does not read the <code>rules/</code> directory; execution constraints are carried through <code>.codex/AGENTS.md</code> + <code>skills/</code>.</p>
+<hr>
+<h2 id="5-key-chains">5. Key Chains</h2>
+<ul>
+<li>Documentation curation chain: <code>f2s-doc-arch</code> -> <code>f2s-doc-final</code> -> <code>f2s-kb-build</code></li>
+<li>Implementation chain: <code>.Knowledge/req-docs/*.md</code> -> <code>implement-tech-design</code> -> code</li>
+<li>Maintenance chain: <code>f2s-kb-fix</code> / <code>f2s-kb-feat</code> / <code>f2s-kb-sync</code> / <code>f2s-kb-merge</code></li>
+<li>Requirements planning chain: <code>f2s-req-plan</code> (planning + implementation, always creates task checklist)</li>
+<li>Change tracking chain: <code>changeTracking.*</code> config -> <code>f2s-task</code> rules (automatic) -> <code>.task/</code> task checklist -> cross-session continuation</li>
+<li>Package template/routing shape alignment with config root: <code>f2s-kb-upgrade</code> (<strong>do not</strong> equate running <code>flow2spec init</code> alone with “knowledge base upgrade”); migrate legacy repo structure into <code>.Knowledge</code>: <code>f2s-kb-migrate</code></li>
+</ul>
+<p>The documentation curation chain produces two document types:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th>Draft (初稿)</th><th>Final (终稿)</th></tr></thead><tbody><tr><td>Nature</td><td>Raw extraction from source files</td><td>Structured knowledge for AI/knowledge base consumption</td></tr><tr><td>Structure</td><td>Source list, per-module summary, pending items</td><td>Core concepts, business rules, key flows, interfaces</td></tr><tr><td>Perspective</td><td>“What I read”</td><td>“What the AI needs to know”</td></tr><tr><td>Uncertain content</td><td>Retained, explicitly marked “pending”</td><td>Cleaned up or absorbed after confirmation</td></tr></tbody></table>
+<hr>
+<h2 id="6-two-isolation-boundaries-for-collaboration">6. Two Isolation Boundaries for Collaboration</h2>
+<p>Flow2Spec assumes that a team shares one knowledge base. It applies opposite policies to two loops: <strong>task state is separated; knowledge is merged</strong>.</p>
+<ul>
+<li><strong>Task loop</strong>: <code>.task/</code> stays out of Git and is partitioned by <code>&#x3C;developerId>/</code> as personal working state.</li>
+<li><strong>Knowledge loop</strong>: <code>.Knowledge/</code> stays in Git. Topic-level integer <code>revision</code> values act as optimistic disk locks, while <code>kb-delta.json</code> carries structured changes into the shared knowledge base.</li>
+</ul>
+<p>Both policies follow the same rule: team facts belong in Git; personal execution state does not.</p>
+<h3 id="61-task-loop-a-local-task_root-per-developer">6.1 Task loop: a local TASK_ROOT per developer</h3>
+<p>With collaboration enabled, each developer gets <code>.task/&#x3C;developerId>/</code>. The task rule creates, resumes, and archives tasks only under the current <code>TASK_ROOT</code>; it must not scan another developer’s <code>todo.json</code>. If collaboration is disabled or no identity is available, Flow2Spec retains the legacy <code>.task/</code> root.</p>
+<p>Because <code>.task/</code> is local, team progress should be read from PRs, commits, <code>.Knowledge/</code> diffs, and milestones, not from another person’s active checklist.</p>
+<h3 id="62-knowledge-loop-structured-deltas-and-optimistic-locking">6.2 Knowledge loop: structured deltas and optimistic locking</h3>
+<p>Each topic carries <code>revision: N</code> in its frontmatter. A knowledge-producing skill writes a <code>kb-delta.json</code> that records the revisions it read and one of four allowed change types: <code>appendBody</code>, <code>replaceBody</code>, <code>updateFrontmatter</code>, or <code>createTopic</code>.</p>
+<p>The merge pipeline is:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>flow2spec kb check -> status -> plan -> apply -> build -> check</span></span></code></pre>
+<p><code>plan</code> compares <code>baseRevisions</code> with the current files. A match is mergeable; <code>apply</code> writes the changes and increments the topic revision. A mismatch stops before disk writes and requires the developer to pull, reread the topic, and rewrite the delta against the latest semantics.</p>
+<p>This is a topic-level lock. Two unrelated edits to different sections of the same topic still conflict. Direct topic edits also bypass the revision preflight, so the <code>f2s-kb-*</code> workflows use deltas.</p>
+<h3 id="63-why-the-boundary-is-drawn-here">6.3 Why the boundary is drawn here</h3>
+<p>Sharing <code>.task/</code> would turn rapidly changing checklists and session context into repository noise. Splitting <code>.Knowledge/</code> by developer would create competing versions of project truth. Keeping the first local and the second reviewable gives each kind of state one owner and one lifecycle. See <a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a> for the complete workflow and conflict examples.</p>
+<hr>
+<h2 id="7-agent-execution-model">7. Agent Execution Model</h2>
+<p>Flow2Spec controls execution behavior through two fields in the project root <code>flow2spec.config.json</code>: <code>subAgent</code> and <code>switchAgentVerification</code>.</p>
+<p><strong>How the Agent reads the above truth values</strong>: multi-end prompts + <strong>Read</strong> as authority, see <a href="/Flow2Spec/en/docs/usage/">usage-guide.md § 1 (the only detailed table)</a>; design summary see <a href="/Flow2Spec/en/docs/design/">design-principles.md § 4, 5.1</a>.</p>
+<h3 id="61-primarysub-agent-responsibility-division-principle">6.1 Primary/Sub Agent Responsibility Division Principle</h3>
+<p><strong><code>subAgent: false</code> (default)</strong>: All <code>f2s-*</code> skills execute sequentially within the primary agent, no parallel decomposition.</p>
+<p><strong><code>subAgent: true</code></strong>: When the scale threshold agreed upon in the skill body is reached, sub-agents may be spawned for parallel processing. Responsibility boundaries are as follows:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibility Boundary</th></tr></thead><tbody><tr><td>Primary agent</td><td>Overall planning, determining task granularity and allocation strategy, aggregating sub-agent output, verifying cross-unit consistency, final write-to-disk</td></tr><tr><td>Sub agent</td><td>Processes the assigned unit (module/document/topic), outputs results in the agreed format, does not make cross-unit decisions</td></tr></tbody></table>
+<p>The decomposition boundaries for sub-agents are progressively defined by each <code>f2s-*</code> skill body (e.g., thresholds for module count, document count, code line count). <strong>There is currently no unified stage table at the template layer</strong>; the skill body takes precedence.</p>
+<h3 id="62-verification-ownership-principle">6.2 Verification Ownership Principle</h3>
+<p><strong>Default (whoever writes to disk verifies)</strong>: Verification after write-to-disk or changes is performed within the agent that wrote to disk. If a sub-agent wrote, the sub-agent self-verifies; if the primary agent wrote, the primary agent self-verifies.</p>
+<p><strong>Cross-verification (<code>switchAgentVerification: true</code>)</strong>: The counterpart agent bears the verification responsibility, suitable for scenarios requiring higher confidence. The enabling conditions must be <strong>satisfied simultaneously</strong>:</p>
+<ol>
+<li>Configuration <code>switchAgentVerification: true</code></li>
+<li>The currently executing <code>f2s-*</code> skill body <strong>explicitly states</strong> that the step depends on this field</li>
+</ol>
+<p>Cross-verification rules:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Writer</th><th>Verifier</th><th>Prerequisite</th></tr></thead><tbody><tr><td>Sub-agent writes</td><td>Primary agent verifies</td><td>No additional conditions</td></tr><tr><td>Primary agent writes</td><td>Sub-agent verifies</td><td>Requires <code>subAgent: true</code> and that sub-tasks have actually been decomposed; otherwise, the primary agent self-verifies</td></tr></tbody></table>
+<p>Design intent: Cross-verification introduces an external perspective, reducing the blind spots in the writer’s self-verification, but increases execution overhead. It is therefore an explicit opt-in rather than the default behavior.</p>
+<h3 id="63-change-tracking-changetracking">6.3 Change Tracking (changeTracking)</h3>
+<p><code>changeTracking</code> is a third dimension independent of <code>subAgent</code> / <code>switchAgentVerification</code>. It controls whether the skill automatically creates a task checklist that can be continued across sessions during execution.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "changeTracking"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "feat"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "fix"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "implement"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span></code></pre>
+<ul>
+<li>Each skill sub-item is independently controlled and does not affect each other</li>
+<li>When enabled: automatically checks <code>.task/todo.json</code> before skill execution, creates or resumes tasks; automatically archives upon completion</li>
+<li>Cross-session: when a new session describes related content, the <code>f2s-task</code> rule (<code>alwaysApply</code>) loads the remaining checklist and corresponding skill context after keyword matching</li>
+<li><code>f2s-req-plan</code> is not constrained by this configuration and always creates a task checklist</li>
+</ul>
+<hr>
+<h2 id="8-design-benefits">8. Design Benefits</h2>
+<ol>
+<li>Share the same business knowledge source across tools</li>
+<li>Does not break the rule loading conventions of Claude/Cursor/Codex</li>
+<li>Controls task routing and dependencies via <code>manifest-routing</code> + <code>matcherPath</code> shards (<code>matchers/*.json</code>), reducing misreading and full scans</li>
+<li>Clear primary/sub-agent responsibility boundaries: the primary agent always holds the global view, sub-agents focus on unit processing, consistency is ensured by the primary agent</li>
+<li>Configurable verification ownership: default self-verification by the writer keeps overhead low; cross-verification can be enabled on demand to boost confidence in critical scenarios</li>
+</ol>
+<hr>
+<h2 id="9-related-documents">9. Related Documents</h2>
+<ul>
+<li><a href="/Flow2Spec/en/docs/intro/">Flow2Spec Introduction</a></li>
+<li><a href="/Flow2Spec/en/docs/usage/">Usage Guide</a></li>
+<li><a href="/Flow2Spec/en/docs/commands/">Commands Reference</a></li>
+<li><a href="/Flow2Spec/en/docs/directories/">Directory Conventions</a></li>
+<li><a href="/Flow2Spec/en/docs/scenarios/">Usage Scenarios</a></li>
+<li><a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a></li>
+<li><a href="/Flow2Spec/en/docs/milestones/">Project Milestones</a></li>
+</ul></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
+      const menuButton = document.querySelector('[data-menu-button]');
+      const mobileNav = document.querySelector('[data-mobile-nav]');
+      menuButton?.addEventListener('click', () => {
+        const open = mobileNav?.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+      });
+      mobileNav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+      }));
+      document.querySelectorAll('[data-copy]').forEach((button) => button.addEventListener('click', async () => {
+        await navigator.clipboard?.writeText(button.dataset.copy ?? '');
+        const label = button.querySelector('[data-copy-label]');
+        if (label) { const original = label.textContent; label.textContent = '已复制'; setTimeout(() => { label.textContent = original; }, 1400); }
+      }));
+    document.querySelectorAll('[data-scroll-nav]').forEach((nav) => {
+        const links = [...nav.querySelectorAll('a[href^="#"]')];
+        const hashId = (link) => {
+          try { return decodeURIComponent(link.hash.slice(1)); }
+          catch { return link.hash.slice(1); }
+        };
+        const sections = links.map((link) => document.getElementById(hashId(link))).filter(Boolean);
+        const activate = (id) => links.forEach((link) => {
+          const active = hashId(link) === id;
+          link.classList.toggle('is-active', active);
+          if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+        });
+        const update = () => {
+          const marker = window.scrollY + 150;
+          let current = sections[0];
+          sections.forEach((section) => {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            if (top <= marker) current = section;
+          });
+          if (current) activate(current.id);
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+        links.forEach((link) => link.addEventListener('click', () => activate(hashId(link))));
+      });
+    </script><script type="module" src="/Flow2Spec/_astro/Layout.astro_astro_type_script_index_0_lang.BiPnVBOY.js"></script></body></html>
