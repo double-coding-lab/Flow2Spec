@@ -18,7 +18,6 @@
 
 <p align="center">
   <img alt="npm latest" src="https://img.shields.io/npm/v/@double-coding/flow2spec?label=latest">
-  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-coding/flow2spec/beta?label=beta">
   <img alt="node version" src="https://img.shields.io/node/v/@double-coding/flow2spec">
   <img alt="license" src="https://img.shields.io/npm/l/@double-coding/flow2spec">
 </p>
@@ -27,12 +26,6 @@ Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在�
 
 ```bash
 npx @double-coding/flow2spec@latest init
-```
-
-尝试当前 beta：
-
-```bash
-npx @double-coding/flow2spec@beta init
 ```
 
 ## 为什么需要它

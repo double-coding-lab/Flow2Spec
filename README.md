@@ -18,7 +18,6 @@
 
 <p align="center">
   <img alt="npm latest" src="https://img.shields.io/npm/v/@double-coding/flow2spec?label=latest">
-  <img alt="npm beta" src="https://img.shields.io/npm/v/@double-coding/flow2spec/beta?label=beta">
   <img alt="node version" src="https://img.shields.io/node/v/@double-coding/flow2spec">
   <img alt="license" src="https://img.shields.io/npm/l/@double-coding/flow2spec">
 </p>
@@ -27,12 +26,6 @@ Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a sm
 
 ```bash
 npx @double-coding/flow2spec@latest init
-```
-
-Try the current beta:
-
-```bash
-npx @double-coding/flow2spec@beta init
 ```
 
 ## Why it exists
