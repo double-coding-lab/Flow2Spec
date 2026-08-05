@@ -1,0 +1,43 @@
+---
+import { render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from './Header.astro';
+import SectionNav from './SectionNav.astro';
+
+interface Props {
+  entry: any;
+  doc: any;
+  english?: boolean;
+}
+
+const { entry, doc, english = false } = Astro.props;
+const { Content, headings } = await render(entry);
+const meta = english ? doc.en : doc.zh;
+const toc = headings
+  .filter((heading) => heading.depth === 2)
+  .map((heading) => ({ href: `#${heading.slug}`, label: heading.text }));
+---
+<Layout
+  lang={english ? 'en' : 'zh-CN'}
+  title={`${meta.title} — Flow2Spec`}
+  description={english ? `Flow2Spec ${meta.title} documentation.` : `Flow2Spec ${meta.title}文档。`}
+>
+  <Header english={english} currentDoc={doc.id} />
+  <div class="site-shell doc-shell">
+    <SectionNav
+      items={toc}
+      label={english ? 'On this page' : '本页目录'}
+    />
+    <main class="doc-main">
+      <div class="article-frame">
+        <article class="article-prose" data-doc-article>
+          <Content />
+        </article>
+      </div>
+      <footer class="article-footer">
+        <span>Flow2Spec</span>
+        <a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </footer>
+    </main>
+  </div>
+</Layout>

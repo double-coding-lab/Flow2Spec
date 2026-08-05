@@ -3,3 +3,7 @@
 .DS_Store
 docs/*.json
 .Knowledge/update-check.json
+.playwright-cli/
+output/playwright/
+node_modules/
+.astro/

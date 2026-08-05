@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import DocPage from '../../components/DocPage.astro';
+import { docs } from '../../data/docs.mjs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('docs');
+  return docs.map((doc) => {
+    const entry = entries.find((item) => item.id === doc.zh.source);
+    if (!entry) throw new Error(`Missing Chinese document source: ${doc.zh.source}`);
+    return { params: { slug: doc.id }, props: { entry, doc } };
+  });
+}
+
+const { entry, doc } = Astro.props;
+---
+<DocPage entry={entry} doc={doc} />

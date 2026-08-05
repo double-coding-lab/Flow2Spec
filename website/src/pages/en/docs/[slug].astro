@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import DocPage from '../../../components/DocPage.astro';
+import { docs } from '../../../data/docs.mjs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('docs');
+  return docs.map((doc) => {
+    const entry = entries.find((item) => item.id === doc.en.source);
+    if (!entry) throw new Error(`Missing English document source: ${doc.en.source}`);
+    return { params: { slug: doc.id }, props: { entry, doc, english: true } };
+  });
+}
+
+const { entry, doc, english } = Astro.props;
+---
+<DocPage entry={entry} doc={doc} english={english} />
