@@ -464,6 +464,6 @@ npx @double-coding/flow2spec@latest init
 
 开源地址：`https://github.com/double-coding-lab/Flow2Spec`
 
-PPT 演示：`https://double-coding-lab.github.io/Flow2Spec`
+在线产品介绍：`https://double-coding-lab.github.io/Flow2Spec`
 
 ---

@@ -144,7 +144,7 @@ Flow2Spec is useful when context drift is expensive. It may be unnecessary for:
 
 - [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — product narrative, diagrams, and comparison with ordinary project memory.
 - [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — Chinese long-form introduction.
-- [Live demo](https://double-coding-lab.github.io/Flow2Spec) — 13-slide HTML presentation.
+- [Product website](https://double-coding-lab.github.io/Flow2Spec/en/) — a website-style guide to Flow2Spec's core capabilities and workflow.
 
 ## License
 

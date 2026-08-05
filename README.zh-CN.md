@@ -153,7 +153,7 @@ Flow2Spec 适合上下文漂移成本较高的项目。下面这些场景可能�
 
 - [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — 产品叙事、配图、与普通项目记忆的区别。
 - [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — 英文长文介绍。
-- [在线演示](https://double-coding-lab.github.io/Flow2Spec) — 13 页 HTML PPT。
+- [在线产品介绍](https://double-coding-lab.github.io/Flow2Spec) — 网站式产品导览，快速了解核心能力与使用路径。
 
 ## 协议
 
