@@ -95,6 +95,24 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 - 列出已修改路径与目的
 - 列出未执行项与原因
 
+### 步骤 5：写入同步时间戳（必须,f2s-git-commit 依赖）
+
+本技能成功完成写入后（步骤 3 有实际文件落盘时）,由主 agent 落盘 `.Knowledge/.last-sync.json`,格式：
+
+```json
+{
+  "syncedAt": "<ISO 8601 时间戳,如 2026-08-04T10:30:00.000Z>",
+  "skill": "f2s-kb-sync",
+  "developerId": "<按 f2s-task 规则解析的 developerId,legacy 时可省略>"
+}
+```
+
+- 该文件由 `f2s-git-commit` 在**默认覆盖检查**前读取,若 `syncedAt` 距今 < 30 分钟则跳过覆盖检查,避免刚同步完知识库又被要求同步一次。
+- **写入时机**：仅在本轮真正写盘（步骤 3 有 topic / index / manifest / stock-docs 变更）时才写；纯"读一遍 kb 什么也没改"的场景**不**写。
+- 覆盖式写入,不追加历史。
+- 落盘失败（磁盘只读、权限不足等）不阻塞本技能主流程,在收尾摘要中列一行 warning 即可。
+- 同类知识库写入技能（`f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-add` / `f2s-kb-addRules` / `f2s-kb-distill`）成功写盘后也应遵守相同约定,`skill` 字段填自己的 id。
+
 ## 输出摘要格式（建议）
 
 ```markdown

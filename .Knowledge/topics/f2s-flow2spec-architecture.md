@@ -24,7 +24,7 @@
 | `init [agent…] [--reset-knowledge] [--yes]` | 初始化/对齐项目结构 |
 | `config` | 打印解析后的 `flow2spec.config.json` |
 | `version` / `--version` / `-v` | 输出当前安装的 flow2spec 版本号 |
-| `update` | 检查并更新到最新版（`npm install -g @double-codeing/flow2spec@latest`） |
+| `update` | 检查并更新到最新版（`npm install -g @double-coding/flow2spec@latest`） |
 
 ## init 初始化行为
 

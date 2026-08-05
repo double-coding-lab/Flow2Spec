@@ -1,12 +1,6 @@
 {
   "id": "m-f2s-dev-workflow-constraints",
   "includeAny": [
-    "双仓同步",
-    "双仓",
-    "内仓",
-    "外仓",
-    "@ctrip",
-    "@double-codeing",
     "不要改配置根",
     "只改templates",
     "只改 templates",
@@ -18,7 +12,6 @@
     "写盘边界",
     "templates vs 配置根",
     "模板 vs 落盘",
-    "分发命令",
-    "双仓漂移"
+    "分发命令"
   ]
 }

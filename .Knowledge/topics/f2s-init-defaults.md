@@ -63,10 +63,10 @@
 
 ### 跑 `f2s-kb-upgrade` 时怎么让全局 flow2spec 保持最新
 
-`f2s-kb-upgrade` SKILL 的「步骤 -1」（先于一切）**先做前台探测再决定是否升级**：主 agent 顺序跑 `flow2spec --version` + `npm view @double-codeing/flow2spec version` + `command -v npx`，按 3 分支处理：
+`f2s-kb-upgrade` SKILL 的「步骤 -1」（先于一切）**先做前台探测再决定是否升级**：主 agent 顺序跑 `flow2spec --version` + `npm view @double-coding/flow2spec version` + `command -v npx`，按 3 分支处理：
 
 - **A. 已装且是 latest** → **完全跳过**升级；步骤 2 命令首选 `flow2spec init <agents...>`。
-- **B. 已装但落后** → 派**独立子 agent** 后台跑 `npm i -g @double-codeing/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；步骤 2 命令用 `npx @double-codeing/flow2spec@latest init <agents...>` 保证本次拿到 latest 模板。
+- **B. 已装但落后** → 派**独立子 agent** 后台跑 `npm i -g @double-coding/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；步骤 2 命令用 `npx @double-coding/flow2spec@latest init <agents...>` 保证本次拿到 latest 模板。
 - **C. 未装 / latest 未知** → 同 B 处理；探测全部失败时可放弃步骤 -1，由 cli.js 兜底。
 
 口径：

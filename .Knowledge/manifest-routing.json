@@ -12,9 +12,6 @@
     "f2s-req-plan": [
       "f2s-task"
     ],
-    "f2s-dev-workflow-constraints": [
-      "f2s-git-commit"
-    ],
     "flow2spec-collaboration": [
       "f2s-task"
     ]

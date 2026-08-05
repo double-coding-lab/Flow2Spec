@@ -6,7 +6,7 @@
 
 ## 1. 项目定位
 
-Flow2Spec（`@double-codeing/flow2spec`）是一个 CLI 工具包，用于在业务仓库中初始化并维护一套**可持续的 AI 协作结构**。核心目标：
+Flow2Spec（`@double-coding/flow2spec`）是一个 CLI 工具包，用于在业务仓库中初始化并维护一套**可持续的 AI 协作结构**。核心目标：
 
 - 将**业务知识文档**统一沉淀到项目根 `.Knowledge/`
 - 将**规则与技能能力**保留在各 AI 工具的配置根（`.cursor/`、`.claude/`、`.codex/`），不破坏原生加载机制

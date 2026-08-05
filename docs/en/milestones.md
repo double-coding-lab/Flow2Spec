@@ -9,6 +9,7 @@
 
 | Stage | Time | Summary |
 | --- | --- | --- |
+| M27 · npm org rename typo fix & migration | 2026-08-04 | Fixed npm org name typo codeing → coding; new package published as @double-coding/flow2spec 3.2.11; legacy @double-codeing/flow2spec 3.2.10 farewell release + npm deprecate all versions; README/CLI added bilingual migration notice; f2s-kb-upgrade Step -1 added D branch for automatic org rename migration (legacy pkg only) |
 | M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8 |
 | M25 · Per-developer task isolation | 2026-07 | Added collaboration settings and developerId resolution, isolating personal progress under separate task roots while retaining one shared knowledge base |
 | M24 · Codex rule mirror fix + upgrade Step -1 smart preflight + repo-local dev discipline | 2026-07-02 | Fixed writeCodexTopicMirrors filter that missed .md files (kept .codex/topics empty after init); f2s-kb-upgrade Step -1 rewritten as "probe first, upgrade on demand" (A already latest = skip / B behind = dispatch sub-agent / C missing = dispatch sub-agent); added repo-local f2s-dev-workflow-constraints rule and repo-dev-check self-check skill |
@@ -35,6 +36,18 @@
 | M3 · .Knowledge machine-readable routing | 2026-05-08 | Introduced .Knowledge, manifest-routing.json, topics and matchers; match→expand→verify→act chain; config preflight and KB preflight rules |
 | M2 · OpenSpec removal and f2s skills | 2026-04-23 | Removed OpenSpec/opsx; converted to f2s skill workflow; requirements clarification and technical proposal generation established |
 | M1 · CLI bootstrap and OpenSpec workflow | 2026-02 ~ 2026-04 | Flow2Spec started as an installable CLI; early AI collaboration organized around OpenSpec/opsx change flows |
+
+## M27 · npm Org Rename Typo Fix & Migration
+
+- Discovered a typo in the legacy org name `@double-codeing` (extra `e`); migrated to `@double-coding`
+- Repo-wide rewrite of `@double-codeing/flow2spec` → `@double-coding/flow2spec` across templates, config roots, `.Knowledge`, docs, README, lib, presentations, hero SVG — 38 files
+- Main branch removed dual-repo sync discipline while keeping write-boundary and distribution-mouthpiece guards
+- **Legacy farewell release**: branched from `v3.2.8` as `release/legacy-3.2.9-farewell`, first published 3.2.9 then 3.2.10 with bilingual migration notice
+  - README top gained a prominent migration notice (Chinese + English side by side)
+  - `cli.js` prints a red warning box when the legacy package name is detected
+  - `f2s-kb-upgrade` Step -1 added a new **branch D**: when the legacy package name is detected, dispatches an independent sub-agent to silently run `npm uninstall -g @double-codeing/flow2spec` + `npm install -g @double-coding/flow2spec@latest` in order
+- **New package first release**: main branch bumped from 3.2.8 to 3.2.11 to avoid version-number collisions with the legacy package
+- npm registry farewell: `npm deprecate @double-codeing/flow2spec@"*"` with a bilingual deprecate message
 
 ## M26 · Automated Knowledge Merge Engine and Collaboration Hardening
 
@@ -65,7 +78,7 @@
 - Added **`f2s-dev-workflow-constraints`** rule long text (Cursor / Claude / Codex, three ends): writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
 - Added **`repo-dev-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
 - `.Knowledge/topics/f2s-dev-workflow-constraints.md` thinned to a routing summary pointing to the config-root long text; matcher added new trigger words (`sync:agents`, `写盘边界`, `双仓漂移`); index.md topic table updated with related-doc column
-- Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-codeing` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
+- Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-coding` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names
 
 ## M23 · f2s-kb-distill Auto Tier Judgment + f2s-kb-upgrade Step -1
 
@@ -172,7 +185,7 @@
 ## M10 · Documentation Capture Rules
 
 - f2s-doc-add (predecessor of f2s-kb-add) added multi-module detection to prevent merging unrelated modules into single output
-- Dual-repo milestone stock-doc added package naming rules (public @double-codeing/flow2spec vs internal path)
+- Dual-repo milestone stock-doc added package naming rules (public @double-coding/flow2spec vs internal path)
 - Global rules added negation-style constraint: use affirmative statements instead of "not X / non-X"
 
 ## M9 · README and Task Capability Exposure

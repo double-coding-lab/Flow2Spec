@@ -7,3 +7,4 @@ docs/*.json
 output/playwright/
 node_modules/
 .astro/
+.Knowledge/.last-sync.json

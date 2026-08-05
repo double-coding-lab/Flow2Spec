@@ -102,7 +102,7 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 # 1. 探测本机全局是否装了 flow2spec
 flow2spec --version 2>/dev/null || echo __F2S_NOT_INSTALLED__
 # 2. 查询 npm 上 latest 版本号（网络受限时可能失败，允许失败）
-npm view @double-codeing/flow2spec version 2>/dev/null || echo __F2S_NPM_UNREACHABLE__
+npm view @double-coding/flow2spec version 2>/dev/null || echo __F2S_NPM_UNREACHABLE__
 # 3. （备用）若第 1 步返回 __F2S_NOT_INSTALLED__，用来确认 npx 可用
 command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 ```
@@ -112,13 +112,13 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 | 情况 | 判定条件 | 行动 | 步骤 2 命令默认形态 |
 | --- | --- | --- | --- |
 | **A. 已装且是 latest** | 第 1 步返回版本号 `V`，第 2 步返回版本号 `L`，且 `V === L` | **完全跳过升级**，本轮不派子 agent、不跑 `npm i -g` | **`flow2spec init <agents...>`**（用全局） |
-| **B. 已装但落后** | 第 1 步返回版本号 `V`，第 2 步返回版本号 `L`，且 `V !== L`（`V < L` 或 semver 不等） | **派独立子 agent 后台跑** `npm i -g @double-codeing/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；本轮步骤 2 仍用 `npx @latest` 保证本次拿到 latest 模板 | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
-| **C. 未装 or 版本无法确认** | 第 1 步命中 `__F2S_NOT_INSTALLED__`，或第 2 步命中 `__F2S_NPM_UNREACHABLE__` 且第 1 步也未拿到版本号 | 若 A 情况「已装 latest」不成立且**未装**：派独立子 agent 后台跑 `npm i -g ...@latest`（同 B）；若第 2 步失败但第 1 步已装某版本：视作 B 且无法比对 latest，**不派**升级、仅提示「latest 未知，保守用 npx」 | **`npx @double-codeing/flow2spec@latest init <agents...>`** |
+| **B. 已装但落后** | 第 1 步返回版本号 `V`，第 2 步返回版本号 `L`，且 `V !== L`（`V < L` 或 semver 不等） | **派独立子 agent 后台跑** `npm i -g @double-coding/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；本轮步骤 2 仍用 `npx @latest` 保证本次拿到 latest 模板 | **`npx @double-coding/flow2spec@latest init <agents...>`** |
+| **C. 未装 or 版本无法确认** | 第 1 步命中 `__F2S_NOT_INSTALLED__`，或第 2 步命中 `__F2S_NPM_UNREACHABLE__` 且第 1 步也未拿到版本号 | 若 A 情况「已装 latest」不成立且**未装**：派独立子 agent 后台跑 `npm i -g ...@latest`（同 B）；若第 2 步失败但第 1 步已装某版本：视作 B 且无法比对 latest，**不派**升级、仅提示「latest 未知，保守用 npx」 | **`npx @double-coding/flow2spec@latest init <agents...>`** |
 
 **编排（必须）**：
 
 - **A 分支**：主 agent 直接跳过所有升级动作，**不派**子 agent；本轮步骤 2 命令首选 `flow2spec init`。
-- **B / C 分支**：若确需升级（未装或版本落后），派**独立子 agent** fire-and-forget 执行 `npm i -g @double-codeing/flow2spec@latest`，**不等待完成**、**不阻塞**主流程；成败均不进入 SKILL 结论。该派子**强制**执行，**不受** `flow2spec.config.json.subAgent` 字段约束（全局 npm 装包不属业务拆分范畴）。
+- **B / C 分支**：若确需升级（未装或版本落后），派**独立子 agent** fire-and-forget 执行 `npm i -g @double-coding/flow2spec@latest`，**不等待完成**、**不阻塞**主流程；成败均不进入 SKILL 结论。该派子**强制**执行，**不受** `flow2spec.config.json.subAgent` 字段约束（全局 npm 装包不属业务拆分范畴）。
 - **写权**：子 agent 仅执行该 shell，**不**触碰 `.Knowledge` / `manifest-routing.json` / `index.md` 等任何项目文件；写权硬约束不变。
 - **探测失败兜底**：若 3 条探测全部失败（无 shell 权限、极端受限环境），按 C 分支处理并用 `npx @latest`；此时也可以直接放弃步骤 -1、把升级留给 `cli.js` 的 `maybeAutoUpdateGlobalInstall()` 收尾兜底。
 
@@ -163,7 +163,7 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 1. **步骤 -1 判定为 A（已装且是 latest）**：直接用全局 CLI（**首选**）：
    - `flow2spec init <agents...>`
 2. **步骤 -1 判定为 B/C（未装 / 落后 / latest 未知）**：拉 npm latest 跑（**保证本次拿到最新模板**）：
-   - `npx @double-codeing/flow2spec@latest init <agents...>`
+   - `npx @double-coding/flow2spec@latest init <agents...>`
 3. 覆盖重置时：
    - 在上述命令末尾追加 `--reset-knowledge`
 4. 用户显式要求切换模板语言时：
@@ -346,7 +346,7 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 
 ## 完成后自检
 
-1. 是否已做 **步骤 -1**：在进入步骤 0 前**已顺序前台执行 3 条探测**（`flow2spec --version` / `npm view ... version` / `npx` 可用性），并按 A/B/C 分支得出结论；仅在 B/C 时才**派独立子 agent**后台跑 `npm i -g @double-codeing/flow2spec@latest`（不等待），A 分支**未派**任何升级动作；步骤 2 命令默认形态是否随分支选定（A→`flow2spec init`，B/C→`npx @latest init`）；摘要中已写清分支与版本对比。
+1. 是否已做 **步骤 -1**：在进入步骤 0 前**已顺序前台执行 3 条探测**（`flow2spec --version` / `npm view ... version` / `npx` 可用性），并按 A/B/C 分支得出结论；仅在 B/C 时才**派独立子 agent**后台跑 `npm i -g @double-coding/flow2spec@latest`（不等待），A 分支**未派**任何升级动作；步骤 2 命令默认形态是否随分支选定（A→`flow2spec init`，B/C→`npx @latest init`）；摘要中已写清分支与版本对比。
 2. 是否已做 **步骤 0**：V1 未跳过 migrate、**现行库（V2+）** 未误跑 migrate。
 3. 是否在 **步骤 2 开始前** 记录了项目侧 `projectRev`（`projectRev`），并在 **步骤 2 的 `init` 之后** 重读 `pkgRev`、执行 **步骤 2c** 判定。
 4. 是否在 **步骤 2 的 `init` 之后**重读过 **`f2s-kb-upgrade/SKILL.md`**：完整流程下有变化必须**按新版字面从步骤 2c 起重跑**（**不再次 init**）；快速路径下可跳过该闭环（见「init 与技能自更新」「快速路径例外」）。

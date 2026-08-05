@@ -116,7 +116,7 @@ function getPackageName() {
   if (PACKAGE_NAME && PACKAGE_NAME !== PACKAGE_NAME_PLACEHOLDER) {
     return PACKAGE_NAME;
   }
-  return '@double-codeing/flow2spec';
+  return '@double-coding/flow2spec';
 }
 
 function queryNpmLatest(pkgName) {
