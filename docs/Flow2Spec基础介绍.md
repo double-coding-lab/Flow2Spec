@@ -2,13 +2,13 @@
 
 # Flow2Spec：让项目在开发中自然长出知识图谱
 
-<p><img src="./images/flow2spec-intro-cover.png" alt="Flow2Spec 封面" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-cover.jpg" alt="Flow2Spec 封面" style="max-width:720px;width:100%;" /></p>
 
 ---
 
 ## 一、前言
 
-<p><img src="./images/flow2spec-intro-01-preface.png" alt="前言" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-01-preface.jpg" alt="前言" style="max-width:720px;width:100%;" /></p>
 
 最近一年，很多 AI 编程工具都在解决同一个问题：**让 Agent 记住项目上下文。**
 
@@ -26,7 +26,7 @@
 
 ## 二、只做"记忆"为什么不够
 
-<p><img src="./images/flow2spec-intro-02-memory.png" alt="只做记忆为什么不够" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-02-memory.jpg" alt="只做记忆为什么不够" style="max-width:720px;width:100%;" /></p>
 
 很多项目接入 AI 后，会很快遇到一个悖论：你希望 AI 多了解项目，但你给它的上下文越多，它越容易读不完、读偏、忘掉重点。
 
@@ -38,7 +38,7 @@ Flow2Spec 的判断是：**项目知识不能只靠"写下来"，还要能被路
 
 ## 三、Flow2Spec 的关键差异：开发过程生成知识图谱
 
-<p><img src="./images/flow2spec-intro-03-knowledge-graph.png" alt="开发过程生成知识图谱" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-03-knowledge-graph.jpg" alt="开发过程生成知识图谱" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec 不是要求你先做一场大规模文档工程。它更推荐的方式是：
 
@@ -60,7 +60,7 @@ Flow2Spec 不是要求你先做一场大规模文档工程。它更推荐的方�
 
 ## 四、知识库接口：不是一个大文档，而是一套路由协议
 
-<p><img src="./images/flow2spec-intro-04-routing-protocol.png" alt="知识库路由协议" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-04-routing-protocol.jpg" alt="知识库路由协议" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec 的知识库有一个明确的接口结构：
 
@@ -119,7 +119,7 @@ flowchart LR
 
 ## 五、渐进式读取：AI 每次只拿该拿的知识
 
-<p><img src="./images/flow2spec-intro-05-progressive-reading.png" alt="渐进式读取" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-05-progressive-reading.jpg" alt="渐进式读取" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec 的读取模型可以概括成四步：**match → expand → verify → act**
 
@@ -135,7 +135,7 @@ Flow2Spec 的读取模型可以概括成四步：**match → expand → verify �
 
 ## 六、多依赖能力：不让 Agent 只读到一半规则
 
-<p><img src="./images/flow2spec-intro-06-dependencies.png" alt="多依赖能力" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-06-dependencies.jpg" alt="多依赖能力" style="max-width:720px;width:100%;" /></p>
 
 真实项目里，很多错误不是因为 AI 完全没读知识，而是它只读了一个局部知识，漏掉了前置约束：
 
@@ -162,7 +162,7 @@ Flow2Spec 把这些依赖显式放进路由层。一个 topic 可以声明它依
 
 ## 七、知识库正确性：不是写了 topic 就算完
 
-<p><img src="./images/flow2spec-intro-07-knowledge-validation.png" alt="知识库正确性" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-07-knowledge-validation.jpg" alt="知识库正确性" style="max-width:720px;width:100%;" /></p>
 
 知识库最怕两件事：过期和写错。Flow2Spec 没有假设知识库永远正确，它把"验证"放进了开发流程。
 
@@ -180,7 +180,7 @@ Flow2Spec 把这些依赖显式放进路由层。一个 topic 可以声明它依
 
 ## 八、用户意图识别：不是所有话都应该自动进流程
 
-<p><img src="./images/flow2spec-intro-08-intent-recognition.png" alt="用户意图识别" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-08-intent-recognition.jpg" alt="用户意图识别" style="max-width:720px;width:100%;" /></p>
 
 用户说一句话，Agent 到底应该回答、讨论、澄清，还是直接进开发流程？
 
@@ -198,7 +198,7 @@ Flow2Spec 里有 `intentRecognition` 开关，开启后 Agent 会按意图识别
 
 ## 九、一个更真实的开发流程
 
-<p><img src="./images/flow2spec-intro-09-dev-loop.png" alt="开发流程" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-09-dev-loop.jpg" alt="开发流程" style="max-width:720px;width:100%;" /></p>
 
 使用 Flow2Spec 后，一个需求可能是这样流动的：
 
@@ -246,7 +246,7 @@ flowchart TD
 
 ## 十、它不只管知识，也管开发过程
 
-<p><img src="./images/flow2spec-intro-10-dev-closure.png" alt="开发过程管理" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-10-dev-closure.jpg" alt="开发过程管理" style="max-width:720px;width:100%;" /></p>
 
 **任务进度落盘**：开启 `changeTracking` 后，Agent 执行功能开发或方案实现时，会把任务 checklist 写到 `.task/`。新会话继续做时，不需要重新问"上次做到哪"，直接从磁盘任务接上。
 
@@ -264,7 +264,7 @@ flowchart TD
 
 多人协作时，Flow2Spec 不会把两个人的所有状态都合在一起。Alice 和 Bob 各自保留本地任务现场，只有经过确认的知识才进入共享仓库。
 
-<p><img src="./images/flow2spec-intro-11-team-collaboration.png" alt="两个人用同一份知识库：任务分开，知识合流" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-11-team-collaboration.jpg" alt="两个人用同一份知识库：任务分开，知识合流" style="max-width:720px;width:100%;" /></p>
 
 图 3：任务分开，知识合流
 
@@ -278,7 +278,7 @@ flowchart TD
 
 ## 十二、和普通知识库最大的区别
 
-<p><img src="./images/flow2spec-intro-11-vs-ordinary-kb.png" alt="与普通知识库的区别" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-11-vs-ordinary-kb.jpg" alt="与普通知识库的区别" style="max-width:720px;width:100%;" /></p>
 
 如果只用一句话概括差异：**普通知识库是给 Agent 查的；Flow2Spec 的知识库是给 Agent 参与维护的。**
 
@@ -413,7 +413,7 @@ Flow2Spec 提供三个互补命令，按触发方式与粒度区分：
 
 ## 十四、适合什么项目 \+ 快速体验
 
-<p><img src="./images/flow2spec-intro-13-quick-start.png" alt="适合什么项目与快速体验" style="max-width:720px;width:100%;" /></p>
+<p><img src="./images/flow2spec-intro-13-quick-start.jpg" alt="适合什么项目与快速体验" style="max-width:720px;width:100%;" /></p>
 
 **最适合**：中大型业务项目、长期维护的代码仓库、多人协作规则很多的项目、经常使用 Cursor / Claude Code / Codex 的团队、希望 AI 不只是"看文档"而是参与维护项目知识的场景。
 
