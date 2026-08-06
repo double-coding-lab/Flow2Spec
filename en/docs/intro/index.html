@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec Introduction documentation."><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/en/docs/intro/"><title>Introduction — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/en/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/" aria-current="page">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/">中文</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="Complete reference"><a href="/Flow2Spec/en/docs/intro/" aria-current="page">Introduction</a><a href="/Flow2Spec/en/docs/usage/">Usage guide</a><a href="/Flow2Spec/en/docs/commands/">Commands</a><a href="/Flow2Spec/en/docs/architecture/">Architecture</a><a href="/Flow2Spec/en/docs/design/">Design</a><a href="/Flow2Spec/en/docs/collaboration/">Collaboration</a><a href="/Flow2Spec/en/docs/milestones/">Milestones</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="On this page"><a href="#i-introduction" class="is-active">I. Introduction</a><a href="#ii-why-memory-alone-isnt-enough">II. Why “Memory” Alone Isn’t Enough</a><a href="#iii-flow2specs-key-difference-a-knowledge-graph-that-grows-during-development">III. Flow2Spec’s Key Difference: A Knowledge Graph That Grows During Development</a><a href="#iv-the-knowledge-base-interface-not-a-pile-of-docs-but-a-routing-protocol">IV. The Knowledge Base Interface: Not a Pile of Docs, but a Routing Protocol</a><a href="#v-incremental-retrieval-the-agent-only-takes-what-it-needs">V. Incremental Retrieval: The Agent Only Takes What It Needs</a><a href="#vi-multi-dependency-capability-dont-let-the-agent-read-only-half-the-rules">VI. Multi-Dependency Capability: Don’t Let the Agent Read Only Half the Rules</a><a href="#vii-knowledge-base-correctness-writing-a-topic-isnt-enough">VII. Knowledge Base Correctness: Writing a Topic Isn’t Enough</a><a href="#viii-user-intent-recognition-not-every-message-should-trigger-a-workflow">VIII. User Intent Recognition: Not Every Message Should Trigger a Workflow</a><a href="#ix-a-more-realistic-development-loop">IX. A More Realistic Development Loop</a><a href="#x-it-manages-more-than-knowledge--it-manages-the-development-loop">X. It Manages More Than Knowledge — It Manages the Development Loop</a><a href="#xi-two-developers-one-knowledge-base">XI. Two Developers, One Knowledge Base</a><a href="#xii-the-biggest-difference-from-ordinary-knowledge-bases">XII. The Biggest Difference from Ordinary Knowledge Bases</a><a href="#xiii-common-questions">XIII. Common Questions</a><a href="#xiv-what-projects-is-this-for--quick-start">XIV. What Projects Is This For + Quick Start</a><a href="#closing">Closing</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
 <h1 id="flow2spec-let-projects-naturally-grow-a-knowledge-graph-during-development">Flow2Spec: Let Projects Naturally Grow a Knowledge Graph During Development</h1>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-cover.png" alt="Flow2Spec cover" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-cover.jpg" alt="Flow2Spec cover" style="max-width:720px;width:100%;"></p>
 <hr>
 <h2 id="i-introduction">I. Introduction</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-01-preface.png" alt="Introduction" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-01-preface.jpg" alt="Introduction" style="max-width:720px;width:100%;"></p>
 <p>Over the past year, many AI coding tools have been solving the same problem: <strong>helping Agents remember project context.</strong></p>
 <p>That matters, of course. But talking about “project memory,” “context management,” and “rule files” alone is no longer enough.</p>
 <p>Many open-source projects are already doing similar things: writing an <code>AGENTS.md</code> / <code>CLAUDE.md</code>, adding a set of rules, creating a docs directory, having the Agent read project documentation first, or wiring up a vector store for retrieval.</p>
@@ -12,13 +12,13 @@
 <p>That’s Flow2Spec. In one line: <strong>Flow2Spec is an Agent engineering framework that lets a project naturally grow a knowledge graph during development.</strong></p>
 <hr>
 <h2 id="ii-why-memory-alone-isnt-enough">II. Why “Memory” Alone Isn’t Enough</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-02-memory.png" alt="Why memory alone isn&#x27;t enough" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-02-memory.jpg" alt="Why memory alone isn&#x27;t enough" style="max-width:720px;width:100%;"></p>
 <p>After projects integrate AI, they quickly run into a paradox: you want the AI to understand the project better, but the more context you give it, the more likely it is to miss things, go off track, or forget what matters.</p>
 <p>So people keep adding rules: read this file first, then that directory, don’t touch this module, that interface has legacy compatibility, remember to update the docs after changes… Eventually the context becomes another burden. It looks like a knowledge base, but it’s really more like an ever-growing instruction manual.</p>
 <p>Flow2Spec’s position is: <strong>project knowledge can’t just be “written down” — it needs to be routable, composable, verifiable, and continuously updated.</strong></p>
 <hr>
 <h2 id="iii-flow2specs-key-difference-a-knowledge-graph-that-grows-during-development">III. Flow2Spec’s Key Difference: A Knowledge Graph That Grows During Development</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-03-knowledge-graph.png" alt="Knowledge graph growing during development" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-03-knowledge-graph.jpg" alt="Knowledge graph growing during development" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec doesn’t ask you to do a massive documentation effort upfront. The recommended approach is:</p>
 <ol>
 <li>
@@ -41,7 +41,7 @@
 <p>This is what sets Flow2Spec apart from ordinary “project memory files”: an ordinary solution hands the Agent a manual; Flow2Spec maintains an evolvable knowledge graph in the repository’s <code>.Knowledge/</code> — diffable, reviewable, committed alongside code.</p>
 <hr>
 <h2 id="iv-the-knowledge-base-interface-not-a-pile-of-docs-but-a-routing-protocol">IV. The Knowledge Base Interface: Not a Pile of Docs, but a Routing Protocol</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-04-routing-protocol.png" alt="Knowledge base routing protocol" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-04-routing-protocol.jpg" alt="Knowledge base routing protocol" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec’s knowledge base has a clear interface structure:</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="Plain"><code><span class="line"><span>.Knowledge/</span></span>
 <span class="line"><span>  manifest-routing.json   # Machine-readable routing manifest</span></span>
@@ -83,7 +83,7 @@
 <p><code>manifest-routing.json</code> tells the Agent what topics exist; <code>matchers/*.json</code> tells the Agent which topics a requirement might match; <code>topics/*.md</code> gives short summaries and hard constraints; <code>topicDependencies</code> tells the Agent which prerequisite rules must be read together; <code>stock-docs/</code> and <code>req-docs/</code> are only drilled into when needed.</p>
 <hr>
 <h2 id="v-incremental-retrieval-the-agent-only-takes-what-it-needs">V. Incremental Retrieval: The Agent Only Takes What It Needs</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-05-progressive-reading.png" alt="Incremental retrieval" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-05-progressive-reading.jpg" alt="Incremental retrieval" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec’s retrieval model can be summarized in four steps: <strong>match → expand → verify → act</strong></p>
 <p><strong>match</strong>: The Agent reads <code>manifest-routing.json</code>, then reads the corresponding matcher shard for the task. It doesn’t traverse the entire knowledge base — it narrows down candidates first.</p>
 <p><strong>expand</strong>: After hitting the primary topic, the Agent continues reading dependency topics via <code>topicDependencies</code>, avoiding partial rule coverage. For example, a feature might depend on common config rules, auth rules, and a specific business module’s constraints all at once.</p>
@@ -91,7 +91,7 @@
 <p><strong>act</strong>: Only when knowledge coverage is sufficient and boundaries are clear does the Agent proceed to implement, modify, or commit. If confidence is low, it clarifies first — it doesn’t forge ahead.</p>
 <hr>
 <h2 id="vi-multi-dependency-capability-dont-let-the-agent-read-only-half-the-rules">VI. Multi-Dependency Capability: Don’t Let the Agent Read Only Half the Rules</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-06-dependencies.png" alt="Multi-dependency capability" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-06-dependencies.jpg" alt="Multi-dependency capability" style="max-width:720px;width:100%;"></p>
 <p>In real projects, many errors happen not because the AI didn’t read knowledge at all, but because it read only a local piece and missed a prerequisite constraint:</p>
 <ul>
 <li>
@@ -114,7 +114,7 @@
 <p>This means every time the Agent reads, it gets a declared combination of context — not an isolated fragment.</p>
 <hr>
 <h2 id="vii-knowledge-base-correctness-writing-a-topic-isnt-enough">VII. Knowledge Base Correctness: Writing a Topic Isn’t Enough</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-07-knowledge-validation.png" alt="Knowledge base correctness" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-07-knowledge-validation.jpg" alt="Knowledge base correctness" style="max-width:720px;width:100%;"></p>
 <p>Two things kill a knowledge base: going stale, and being wrong. Flow2Spec doesn’t assume the knowledge base is always correct — it builds verification into the development process.</p>
 <p>A typical scenario: the user asks a business detail; the Agent checks the knowledge base, finds topic coverage but not enough detail, then drills into source code for a more accurate fact. At this point Flow2Spec shouldn’t just answer and move on — it also needs to determine:</p>
 <ul>
@@ -131,7 +131,7 @@
 <p>This is the “knowledge base feedback closing step.” <strong>It ensures new knowledge found in source code doesn’t just live in this one chat session — it feeds back into the knowledge base.</strong></p>
 <hr>
 <h2 id="viii-user-intent-recognition-not-every-message-should-trigger-a-workflow">VIII. User Intent Recognition: Not Every Message Should Trigger a Workflow</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-08-intent-recognition.png" alt="User intent recognition" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-08-intent-recognition.jpg" alt="User intent recognition" style="max-width:720px;width:100%;"></p>
 <p>When the user says something, should the Agent answer, discuss, clarify, or jump straight into a development workflow?</p>
 <ul>
 <li>
@@ -148,7 +148,7 @@
 <p>After validation across real projects over time, <strong>intent recognition is now stable enough that we recommend enabling it by default</strong>, letting the Agent route automatically in most scenarios; you can still type <code>f2s-req-clarify</code>, <code>f2s-kb-feat</code>, <code>f2s-kb-fix</code>, etc. explicitly at any time to override the automatic decision. We also recommend using <code>f2s-*</code> skills explicitly more often — getting familiar with them is the most efficient way to use Flow2Spec.</p>
 <hr>
 <h2 id="ix-a-more-realistic-development-loop">IX. A More Realistic Development Loop</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-09-dev-loop.png" alt="Development loop" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-09-dev-loop.jpg" alt="Development loop" style="max-width:720px;width:100%;"></p>
 <p>With Flow2Spec, a requirement might flow like this:</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="Plain"><code><span class="line"><span>User submits requirement</span></span>
 <span class="line"><span>  -> Explicit f2s-* skill / intentRecognition assists</span></span>
@@ -183,7 +183,7 @@
 <p><strong>Flow2Spec isn’t about making the AI answer better in a single session — it’s about turning each development process into an incremental update to the project’s knowledge graph.</strong></p>
 <hr>
 <h2 id="x-it-manages-more-than-knowledge--it-manages-the-development-loop">X. It Manages More Than Knowledge — It Manages the Development Loop</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-10-dev-closure.png" alt="Development loop management" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-10-dev-closure.jpg" alt="Development loop management" style="max-width:720px;width:100%;"></p>
 <p><strong>Task progress persistence</strong>: When <code>changeTracking</code> is enabled, the Agent writes a task checklist to <code>.task/</code> during feature development or design implementation. New sessions resume from the on-disk task — no need to ask “where did we stop?”</p>
 <p><strong>Technical designs don’t follow a rigid template</strong>: <code>f2s-req-tech</code> selects structure based on the current requirement, rather than mechanically filling every section — so a frontend change doesn’t generate a template full of database chapters.</p>
 <p><strong>Multi-Agent orchestration and verification</strong>: Complex tasks can be split to sub-Agents via <code>subAgent</code>. When <code>switchAgentVerification</code> is enabled, writer and verifier are separated, reducing the risk of a single Agent writing, verifying, and approving its own work.</p>
@@ -214,7 +214,7 @@
 <p>This is not automatic text concatenation. It isolates state that should remain personal, keeps shared facts in Git, and stops where a semantic decision is needed. See <a href="/Flow2Spec/en/docs/collaboration/">Team Collaboration</a>.</p>
 <hr>
 <h2 id="xii-the-biggest-difference-from-ordinary-knowledge-bases">XII. The Biggest Difference from Ordinary Knowledge Bases</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-vs-ordinary-kb.png" alt="vs ordinary knowledge bases" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-vs-ordinary-kb.jpg" alt="vs ordinary knowledge bases" style="max-width:720px;width:100%;"></p>
 <p>In one sentence: <strong>an ordinary knowledge base is something Agents query; Flow2Spec’s knowledge base is something Agents help maintain.</strong></p>
 <p>Figure 4: Ordinary Memory Files vs Flow2Spec Knowledge Graph</p>
 <div class="mermaid">flowchart LR
@@ -329,7 +329,7 @@
 </blockquote>
 <hr>
 <h2 id="xiv-what-projects-is-this-for--quick-start">XIV. What Projects Is This For + Quick Start</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-13-quick-start.png" alt="What projects and quick start" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-13-quick-start.jpg" alt="What projects and quick start" style="max-width:720px;width:100%;"></p>
 <p><strong>Best for</strong>: medium to large business projects, long-lived codebases, multi-person teams with many rules, teams using Cursor / Claude Code / Codex regularly, and projects where you want AI to participate in maintaining project knowledge — not just read docs.</p>
 <p><strong>May not fit</strong>: one-off scripts or very small personal projects (&#x3C; 5000 lines, a README is enough).</p>
 <p><strong>5-minute quick start</strong>:</p>

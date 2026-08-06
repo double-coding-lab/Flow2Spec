@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Flow2Spec 基础介绍文档。"><link rel="icon" type="image/svg+xml" href="/Flow2Spec/favicon.svg"><link rel="canonical" href="https://double-coding-lab.github.io/Flow2Spec/docs/intro/"><title>基础介绍 — Flow2Spec</title><link rel="stylesheet" href="/Flow2Spec/_astro/SectionNav.Bh3Uq5vk.css"></head><body><header class="site-header"><a class="brand" href="/Flow2Spec/" aria-label="Flow2Spec home"><img class="brand-mark" src="/Flow2Spec/favicon.svg" alt="" aria-hidden="true"><span>Flow2Spec</span></a><nav class="top-nav" aria-label="完整参考"><a href="/Flow2Spec/docs/intro/" aria-current="page">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a></nav><div class="header-actions"><a class="language-link" href="/Flow2Spec/en/">EN</a><a class="button button-small button-dark" href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a><button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span><span class="sr-only">Menu</span></button></div><nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="完整参考"><a href="/Flow2Spec/docs/intro/" aria-current="page">基础介绍</a><a href="/Flow2Spec/docs/usage/">使用说明</a><a href="/Flow2Spec/docs/commands/">命令说明</a><a href="/Flow2Spec/docs/architecture/">体系与原理</a><a href="/Flow2Spec/docs/design/">设计说明</a><a href="/Flow2Spec/docs/collaboration/">团队协作</a><a href="/Flow2Spec/docs/milestones/">项目里程碑</a><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><div class="site-shell doc-shell"><aside class="docs-sidebar section-nav" data-scroll-nav><nav class="sidebar-links" aria-label="本页目录"><a href="#一前言" class="is-active">一、前言</a><a href="#二只做记忆为什么不够">二、只做”记忆”为什么不够</a><a href="#三flow2spec-的关键差异开发过程生成知识图谱">三、Flow2Spec 的关键差异：开发过程生成知识图谱</a><a href="#四知识库接口不是一个大文档而是一套路由协议">四、知识库接口：不是一个大文档，而是一套路由协议</a><a href="#五渐进式读取ai-每次只拿该拿的知识">五、渐进式读取：AI 每次只拿该拿的知识</a><a href="#六多依赖能力不让-agent-只读到一半规则">六、多依赖能力：不让 Agent 只读到一半规则</a><a href="#七知识库正确性不是写了-topic-就算完">七、知识库正确性：不是写了 topic 就算完</a><a href="#八用户意图识别不是所有话都应该自动进流程">八、用户意图识别：不是所有话都应该自动进流程</a><a href="#九一个更真实的开发流程">九、一个更真实的开发流程</a><a href="#十它不只管知识也管开发过程">十、它不只管知识，也管开发过程</a><a href="#十一两个人用同一份知识库">十一、两个人用同一份知识库</a><a href="#十二和普通知识库最大的区别">十二、和普通知识库最大的区别</a><a href="#十三几个常见问题">十三、几个常见问题</a><a href="#十四适合什么项目--快速体验">十四、适合什么项目 + 快速体验</a><a href="#结语">结语</a></nav></aside><main class="doc-main"><div class="article-frame"><article class="article-prose" data-doc-article>
 <h1 id="flow2spec让项目在开发中自然长出知识图谱">Flow2Spec：让项目在开发中自然长出知识图谱</h1>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-cover.png" alt="Flow2Spec 封面" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-cover.jpg" alt="Flow2Spec 封面" style="max-width:720px;width:100%;"></p>
 <hr>
 <h2 id="一前言">一、前言</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-01-preface.png" alt="前言" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-01-preface.jpg" alt="前言" style="max-width:720px;width:100%;"></p>
 <p>最近一年，很多 AI 编程工具都在解决同一个问题：<strong>让 Agent 记住项目上下文。</strong></p>
 <p>这件事当然重要。但现在只说”项目记忆""上下文管理""规则文件”，已经不够了。</p>
 <p>因为很多开源项目都在做类似的事：写一个 <code>AGENTS.md</code> / <code>CLAUDE.md</code>，加一组 rules，建一个 docs 目录，让 Agent 先读项目说明，或者接入向量库做检索。</p>
@@ -12,13 +12,13 @@
 <p>这就是 Flow2Spec。一句话介绍：<strong>Flow2Spec 是一个让项目在开发过程中自然长出知识图谱的 Agent 工程框架。</strong></p>
 <hr>
 <h2 id="二只做记忆为什么不够">二、只做”记忆”为什么不够</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-02-memory.png" alt="只做记忆为什么不够" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-02-memory.jpg" alt="只做记忆为什么不够" style="max-width:720px;width:100%;"></p>
 <p>很多项目接入 AI 后，会很快遇到一个悖论：你希望 AI 多了解项目，但你给它的上下文越多，它越容易读不完、读偏、忘掉重点。</p>
 <p>于是大家不断加规则：先读这个文件，再读那个目录，这个模块不能改，那个接口有历史兼容，改完记得更新文档……最后上下文变成另一种负担。它看起来像知识库，实际上更像一个不断膨胀的说明书。</p>
 <p>Flow2Spec 的判断是：<strong>项目知识不能只靠”写下来”，还要能被路由、被组合、被校验、被持续更新。</strong></p>
 <hr>
 <h2 id="三flow2spec-的关键差异开发过程生成知识图谱">三、Flow2Spec 的关键差异：开发过程生成知识图谱</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-03-knowledge-graph.png" alt="开发过程生成知识图谱" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-03-knowledge-graph.jpg" alt="开发过程生成知识图谱" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec 不是要求你先做一场大规模文档工程。它更推荐的方式是：</p>
 <ol>
 <li>
@@ -41,7 +41,7 @@
 <p>这也是 Flow2Spec 和普通”项目记忆文件”的区别：普通方案更像给 Agent 一份说明书；Flow2Spec 更像给项目维护一张可演进的知识图谱——落在仓库里的 <code>.Knowledge/</code> 中，能 diff、能 review、能随代码提交。</p>
 <hr>
 <h2 id="四知识库接口不是一个大文档而是一套路由协议">四、知识库接口：不是一个大文档，而是一套路由协议</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-04-routing-protocol.png" alt="知识库路由协议" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-04-routing-protocol.jpg" alt="知识库路由协议" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec 的知识库有一个明确的接口结构：</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="Plain"><code><span class="line"><span>.Knowledge/</span></span>
 <span class="line"><span>  manifest-routing.json   # 机读路由清单</span></span>
@@ -83,7 +83,7 @@
 <p><code>manifest-routing.json</code> 告诉 Agent 有哪些主题；<code>matchers/*.json</code> 告诉 Agent 这个需求可能命中哪些主题；<code>topics/*.md</code> 给 Agent 短摘要和硬约束；<code>topicDependencies</code> 告诉 Agent 哪些前置规则必须一起读；<code>stock-docs/</code> 和 <code>req-docs/</code> 只在需要时下钻。</p>
 <hr>
 <h2 id="五渐进式读取ai-每次只拿该拿的知识">五、渐进式读取：AI 每次只拿该拿的知识</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-05-progressive-reading.png" alt="渐进式读取" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-05-progressive-reading.jpg" alt="渐进式读取" style="max-width:720px;width:100%;"></p>
 <p>Flow2Spec 的读取模型可以概括成四步：<strong>match → expand → verify → act</strong></p>
 <p><strong>match</strong>：Agent 先读 <code>manifest-routing.json</code>，再按任务读取对应 matcher 分片。不遍历整个知识库，先缩小候选范围。</p>
 <p><strong>expand</strong>：命中主主题后，通过 <code>topicDependencies</code> 继续读取依赖主题，避免只看到局部规则。比如一个功能可能同时依赖公共配置规则、鉴权规则、某个业务模块的约束。</p>
@@ -91,7 +91,7 @@
 <p><strong>act</strong>：只有在知识覆盖足够、边界清楚时，Agent 才进入实现、修改或提交。如果置信度不足，就先澄清，而不是硬改。</p>
 <hr>
 <h2 id="六多依赖能力不让-agent-只读到一半规则">六、多依赖能力：不让 Agent 只读到一半规则</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-06-dependencies.png" alt="多依赖能力" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-06-dependencies.jpg" alt="多依赖能力" style="max-width:720px;width:100%;"></p>
 <p>真实项目里，很多错误不是因为 AI 完全没读知识，而是它只读了一个局部知识，漏掉了前置约束：</p>
 <ul>
 <li>
@@ -114,7 +114,7 @@
 <p>这让 Agent 每次读取的不是孤立片段，而是一组经过声明的上下文组合。</p>
 <hr>
 <h2 id="七知识库正确性不是写了-topic-就算完">七、知识库正确性：不是写了 topic 就算完</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-07-knowledge-validation.png" alt="知识库正确性" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-07-knowledge-validation.jpg" alt="知识库正确性" style="max-width:720px;width:100%;"></p>
 <p>知识库最怕两件事：过期和写错。Flow2Spec 没有假设知识库永远正确，它把”验证”放进了开发流程。</p>
 <p>典型场景：用户问一个业务细节，Agent 先查知识库，发现 topic 有覆盖但不够细，继续读源码得到更准确的事实。这时 Flow2Spec 不应该只回答完就结束，还要判断：</p>
 <ul>
@@ -131,7 +131,7 @@
 <p>这就是”知识库补充建议收口”。<strong>它让 AI 从源码里找到的每次新知识，都不只留在本次聊天里，而是反哺回知识库。</strong></p>
 <hr>
 <h2 id="八用户意图识别不是所有话都应该自动进流程">八、用户意图识别：不是所有话都应该自动进流程</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-08-intent-recognition.png" alt="用户意图识别" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-08-intent-recognition.jpg" alt="用户意图识别" style="max-width:720px;width:100%;"></p>
 <p>用户说一句话，Agent 到底应该回答、讨论、澄清，还是直接进开发流程？</p>
 <ul>
 <li>
@@ -148,7 +148,7 @@
 <p>经过一段时间真实项目验证，<strong>意图识别已经比较稳定，建议默认开启</strong>，让 Agent 在大多数场景下自动分流；当然你也可以随时显式输入 <code>f2s-req-clarify</code>、<code>f2s-kb-feat</code>、<code>f2s-kb-fix</code> 等命令，覆盖自动判断结果。建议多显式使用 f2s-* skill**，熟悉这些技能的用法，可以更高效地使用 Flow2Spec。</p>
 <hr>
 <h2 id="九一个更真实的开发流程">九、一个更真实的开发流程</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-09-dev-loop.png" alt="开发流程" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-09-dev-loop.jpg" alt="开发流程" style="max-width:720px;width:100%;"></p>
 <p>使用 Flow2Spec 后，一个需求可能是这样流动的：</p>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="Plain"><code><span class="line"><span>用户提出需求</span></span>
 <span class="line"><span>  -> 显式 f2s-* skill / intentRecognition 辅助判断</span></span>
@@ -183,7 +183,7 @@
 <p><strong>Flow2Spec 做的不是”让 AI 单次回答更好”，而是在把一次次开发过程转化为项目知识图谱的增量更新。</strong></p>
 <hr>
 <h2 id="十它不只管知识也管开发过程">十、它不只管知识，也管开发过程</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-10-dev-closure.png" alt="开发过程管理" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-10-dev-closure.jpg" alt="开发过程管理" style="max-width:720px;width:100%;"></p>
 <p><strong>任务进度落盘</strong>：开启 <code>changeTracking</code> 后，Agent 执行功能开发或方案实现时，会把任务 checklist 写到 <code>.task/</code>。新会话继续做时，不需要重新问”上次做到哪”，直接从磁盘任务接上。</p>
 <p><strong>技术方案不硬套模板</strong>：<code>f2s-req-tech</code> 会根据当前需求选择合适的技术方案结构，而不是把所有章节机械套一遍，避免前端改造也生成一堆数据库章节。</p>
 <p><strong>多 Agent 编排与校验</strong>：复杂任务可以通过 <code>subAgent</code> 拆给子 Agent 处理。如果开启 <code>switchAgentVerification</code>，还可以让写入方和验证方分离，降低单个 Agent 自己写、自己验、自己放过的风险。</p>
@@ -192,14 +192,14 @@
 <hr>
 <h2 id="十一两个人用同一份知识库">十一、两个人用同一份知识库</h2>
 <p>多人协作时，Flow2Spec 不会把两个人的所有状态都合在一起。Alice 和 Bob 各自保留本地任务现场，只有经过确认的知识才进入共享仓库。</p>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-team-collaboration.png" alt="两个人用同一份知识库：任务分开，知识合流" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-team-collaboration.jpg" alt="两个人用同一份知识库：任务分开，知识合流" style="max-width:720px;width:100%;"></p>
 <p>图 3：任务分开，知识合流</p>
 <p><code>.task/</code> 默认不进 Git，并按 <code>developerId</code> 分成不同的 <code>TASK_ROOT</code>。Alice 的 Agent 不会为了找续作任务去扫描 Bob 的目录。这里保存的是 checklist、会话上下文和用户代办，它们属于执行者自己的工作现场。</p>
 <p><code>.Knowledge/</code> 则必须全员共享。技能先把知识变更写成结构化 delta，里面带着读取时的 topic revision；真正写入前由 <code>flow2spec kb plan</code> 检查磁盘版本。两个人改不同 topic 可以各自推进，改到同一个 topic 时，后合入的一方必须拉取最新版本、重新理解语义，再更新 delta。</p>
 <p>所以这套协作不是“自动把所有文本拼起来”。它把无需共享的状态隔离掉，把必须共享的事实留在 Git，并在语义可能冲突的位置停下来。完整流程见 <a href="/Flow2Spec/docs/collaboration/">团队协作</a>。</p>
 <hr>
 <h2 id="十二和普通知识库最大的区别">十二、和普通知识库最大的区别</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-vs-ordinary-kb.png" alt="与普通知识库的区别" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-11-vs-ordinary-kb.jpg" alt="与普通知识库的区别" style="max-width:720px;width:100%;"></p>
 <p>如果只用一句话概括差异：<strong>普通知识库是给 Agent 查的；Flow2Spec 的知识库是给 Agent 参与维护的。</strong></p>
 <p>图 4：普通记忆文件 vs Flow2Spec 知识图谱</p>
 <div class="mermaid">flowchart LR
@@ -314,7 +314,7 @@
 </blockquote>
 <hr>
 <h2 id="十四适合什么项目--快速体验">十四、适合什么项目 + 快速体验</h2>
-<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-13-quick-start.png" alt="适合什么项目与快速体验" style="max-width:720px;width:100%;"></p>
+<p><img src="/Flow2Spec/docs-assets/flow2spec-intro-13-quick-start.jpg" alt="适合什么项目与快速体验" style="max-width:720px;width:100%;"></p>
 <p><strong>最适合</strong>：中大型业务项目、长期维护的代码仓库、多人协作规则很多的项目、经常使用 Cursor / Claude Code / Codex 的团队、希望 AI 不只是”看文档”而是参与维护项目知识的场景。</p>
 <p><strong>可能不适合</strong>：一次性脚本或非常小的个人项目（&#x3C; 5000 行，一份 README 够用）。</p>
 <p><strong>5 分钟快速体验</strong>：</p>
@@ -344,7 +344,7 @@
 </ul>
 <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="Plain"><code><span class="line"><span>npx @double-coding/flow2spec@latest init</span></span></code></pre>
 <p>开源地址：<code>https://github.com/double-coding-lab/Flow2Spec</code></p>
-<p>PPT 演示：<code>https://double-coding-lab.github.io/Flow2Spec</code></p>
+<p>在线产品介绍：<code>https://double-coding-lab.github.io/Flow2Spec</code></p>
 <hr></article></div><footer class="article-footer"><span>Flow2Spec</span><a href="https://github.com/double-coding-lab/Flow2Spec" target="_blank" rel="noreferrer">GitHub ↗</a></footer></main></div><script>
       const menuButton = document.querySelector('[data-menu-button]');
       const mobileNav = document.querySelector('[data-mobile-nav]');
