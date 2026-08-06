@@ -2,13 +2,13 @@
 
 # Flow2Spec: Let Projects Naturally Grow a Knowledge Graph During Development
 
-<p><img src="../images/flow2spec-intro-cover.png" alt="Flow2Spec cover" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-cover.jpg" alt="Flow2Spec cover" style="max-width:720px;width:100%;" /></p>
 
 ---
 
 ## I. Introduction
 
-<p><img src="../images/flow2spec-intro-01-preface.png" alt="Introduction" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-01-preface.jpg" alt="Introduction" style="max-width:720px;width:100%;" /></p>
 
 Over the past year, many AI coding tools have been solving the same problem: **helping Agents remember project context.**
 
@@ -26,7 +26,7 @@ That's Flow2Spec. In one line: **Flow2Spec is an Agent engineering framework tha
 
 ## II. Why "Memory" Alone Isn't Enough
 
-<p><img src="../images/flow2spec-intro-02-memory.png" alt="Why memory alone isn't enough" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-02-memory.jpg" alt="Why memory alone isn't enough" style="max-width:720px;width:100%;" /></p>
 
 After projects integrate AI, they quickly run into a paradox: you want the AI to understand the project better, but the more context you give it, the more likely it is to miss things, go off track, or forget what matters.
 
@@ -38,7 +38,7 @@ Flow2Spec's position is: **project knowledge can't just be "written down" — it
 
 ## III. Flow2Spec's Key Difference: A Knowledge Graph That Grows During Development
 
-<p><img src="../images/flow2spec-intro-03-knowledge-graph.png" alt="Knowledge graph growing during development" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-03-knowledge-graph.jpg" alt="Knowledge graph growing during development" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec doesn't ask you to do a massive documentation effort upfront. The recommended approach is:
 
@@ -60,7 +60,7 @@ This is what sets Flow2Spec apart from ordinary "project memory files": an ordin
 
 ## IV. The Knowledge Base Interface: Not a Pile of Docs, but a Routing Protocol
 
-<p><img src="../images/flow2spec-intro-04-routing-protocol.png" alt="Knowledge base routing protocol" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-04-routing-protocol.jpg" alt="Knowledge base routing protocol" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec's knowledge base has a clear interface structure:
 
@@ -119,7 +119,7 @@ The value of this structure: **the knowledge base doesn't expose "files" to the 
 
 ## V. Incremental Retrieval: The Agent Only Takes What It Needs
 
-<p><img src="../images/flow2spec-intro-05-progressive-reading.png" alt="Incremental retrieval" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-05-progressive-reading.jpg" alt="Incremental retrieval" style="max-width:720px;width:100%;" /></p>
 
 Flow2Spec's retrieval model can be summarized in four steps: **match → expand → verify → act**
 
@@ -135,7 +135,7 @@ Flow2Spec's retrieval model can be summarized in four steps: **match → expand 
 
 ## VI. Multi-Dependency Capability: Don't Let the Agent Read Only Half the Rules
 
-<p><img src="../images/flow2spec-intro-06-dependencies.png" alt="Multi-dependency capability" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-06-dependencies.jpg" alt="Multi-dependency capability" style="max-width:720px;width:100%;" /></p>
 
 In real projects, many errors happen not because the AI didn't read knowledge at all, but because it read only a local piece and missed a prerequisite constraint:
 
@@ -162,7 +162,7 @@ This means every time the Agent reads, it gets a declared combination of context
 
 ## VII. Knowledge Base Correctness: Writing a Topic Isn't Enough
 
-<p><img src="../images/flow2spec-intro-07-knowledge-validation.png" alt="Knowledge base correctness" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-07-knowledge-validation.jpg" alt="Knowledge base correctness" style="max-width:720px;width:100%;" /></p>
 
 Two things kill a knowledge base: going stale, and being wrong. Flow2Spec doesn't assume the knowledge base is always correct — it builds verification into the development process.
 
@@ -180,7 +180,7 @@ This is the "knowledge base feedback closing step." **It ensures new knowledge f
 
 ## VIII. User Intent Recognition: Not Every Message Should Trigger a Workflow
 
-<p><img src="../images/flow2spec-intro-08-intent-recognition.png" alt="User intent recognition" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-08-intent-recognition.jpg" alt="User intent recognition" style="max-width:720px;width:100%;" /></p>
 
 When the user says something, should the Agent answer, discuss, clarify, or jump straight into a development workflow?
 
@@ -198,7 +198,7 @@ After validation across real projects over time, **intent recognition is now sta
 
 ## IX. A More Realistic Development Loop
 
-<p><img src="../images/flow2spec-intro-09-dev-loop.png" alt="Development loop" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-09-dev-loop.jpg" alt="Development loop" style="max-width:720px;width:100%;" /></p>
 
 With Flow2Spec, a requirement might flow like this:
 
@@ -246,7 +246,7 @@ Every step in this chain leaves a trackable asset: requirements in `req-docs/`, 
 
 ## X. It Manages More Than Knowledge — It Manages the Development Loop
 
-<p><img src="../images/flow2spec-intro-10-dev-closure.png" alt="Development loop management" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-10-dev-closure.jpg" alt="Development loop management" style="max-width:720px;width:100%;" /></p>
 
 **Task progress persistence**: When `changeTracking` is enabled, the Agent writes a task checklist to `.task/` during feature development or design implementation. New sessions resume from the on-disk task — no need to ask "where did we stop?"
 
@@ -294,7 +294,7 @@ This is not automatic text concatenation. It isolates state that should remain p
 
 ## XII. The Biggest Difference from Ordinary Knowledge Bases
 
-<p><img src="../images/flow2spec-intro-11-vs-ordinary-kb.png" alt="vs ordinary knowledge bases" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-11-vs-ordinary-kb.jpg" alt="vs ordinary knowledge bases" style="max-width:720px;width:100%;" /></p>
 
 In one sentence: **an ordinary knowledge base is something Agents query; Flow2Spec's knowledge base is something Agents help maintain.**
 
@@ -429,7 +429,7 @@ In short: **single Q&A → distill (auto), new module bulk import → add, perio
 
 ## XIV. What Projects Is This For + Quick Start
 
-<p><img src="../images/flow2spec-intro-13-quick-start.png" alt="What projects and quick start" style="max-width:720px;width:100%;" /></p>
+<p><img src="../images/flow2spec-intro-13-quick-start.jpg" alt="What projects and quick start" style="max-width:720px;width:100%;" /></p>
 
 **Best for**: medium to large business projects, long-lived codebases, multi-person teams with many rules, teams using Cursor / Claude Code / Codex regularly, and projects where you want AI to participate in maintaining project knowledge — not just read docs.
 
