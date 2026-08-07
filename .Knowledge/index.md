@@ -37,6 +37,7 @@
 | f2s-dev-workflow-constraints | `.Knowledge/topics/f2s-dev-workflow-constraints.md` | 开发工作流约束（仅 Flow2Spec 本仓自身，不给下游）：只改 templates / 不改配置根 / 用户驱动分发 | 长文：`rules/repo-dev-workflow-constraints.*`；自查技能：`skills/repo-dev-check/SKILL.md` |
 | f2s-kb-distill | `.Knowledge/topics/f2s-kb-distill.md` | Q&A 驱动知识提取；自动判断创建新 topic 或追加现有 topic | 技能：skills/f2s-kb-distill/SKILL.mdc |
 | flow2spec-init-defaults | `.Knowledge/topics/f2s-init-defaults.md` | `flow2spec init` 字段默认值、四处落点一致性、老项目缺字段补写、`init` 不动 stock/req/topics/matchers、manifest 两个版本字段（`projectRev` / `pkgRev`）对照 | 包源码：`lib/flow2specConfig.js` `DEFAULTS` / `CONFIG_FIELDS`；模板：`templates/{locale}/flow2spec.config.json` |
+| flow2spec-doctor | `.Knowledge/topics/flow2spec-doctor.md` | `flow2spec doctor` 只读检查环境、项目初始化、协作上下文与知识库健康 | stock：[Doctor 诊断命令](stock-docs/Flow2Spec-doctor诊断命令.md)；中英文命令文档：`docs/命令说明.md` / `docs/en/commands-reference.md` |
 
 每主题保留 **1–3 条** 可点击摘要链接；全量路径对照写入 `.Knowledge/migration-report.md`（迁移场景）。  
 其中 **`implement-tech-design`**、**`f2s-doc-routing`**、**`config-precheck`**、**`f2s-task`** 在 `topics/` 内为**路由摘要**；执行长文见配置根 **`rules/f2s-*.md(c)`**；使用 Codex 时见 **`.codex/AGENTS.md`**、**`.codex/topics/f2s-*.md`**（`f2s-config-check` 与 `AGENTS` 前置同源，按需打开）。**`f2s-knowledge-preflight`** 与 **`f2s-kb-feedback-closing`** 是普通问答首读 / 源码补答收口门禁，作为配置根规则 / Codex 专题长文生效，不写入 `topicPaths` 或 `taskToTopicRules`；**`f2s-kb-feedback-closing`** 在 cases 1–3 建议执行 **`f2s-kb-distill`**。

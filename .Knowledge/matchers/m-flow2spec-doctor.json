@@ -1,0 +1,16 @@
+{
+  "includeAny": [
+    "flow2spec doctor",
+    "doctor 命令",
+    "环境诊断",
+    "项目健康检查",
+    "安装检查",
+    "配置检查",
+    "Flow2Spec 诊断",
+    "TASK_ROOT 检查",
+    "知识库健康"
+  ],
+  "id": "m-flow2spec-doctor",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1"
+}
