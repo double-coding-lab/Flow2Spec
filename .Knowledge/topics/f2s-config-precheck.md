@@ -1,3 +1,11 @@
+---
+id: config-precheck
+revision: 0
+summary: "config-precheck（路由摘要）"
+primary: config
+confidence: manual
+tags: [policy]
+---
 # config-precheck（路由摘要）
 
 ## 本主题作用
