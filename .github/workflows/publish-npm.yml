@@ -1,0 +1,59 @@
+name: Publish package to npm
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish @double-coding/flow2spec
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Verify release commit belongs to main
+        shell: bash
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor HEAD origin/main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Update npm for trusted publishing
+        run: npm install --global npm@latest
+
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          tag_version="${GITHUB_REF_NAME#[vV]}"
+          if [[ "$tag_version" != "$package_version" ]]; then
+            echo "Release tag $GITHUB_REF_NAME does not match package version $package_version." >&2
+            exit 1
+          fi
+
+      - name: Run tests
+        run: npm test
+
+      - name: Verify npm package contents
+        run: npm run pack:check
+
+      - name: Publish package with provenance
+        run: npm publish --access public --provenance
