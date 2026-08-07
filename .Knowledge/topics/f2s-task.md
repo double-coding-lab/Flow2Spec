@@ -1,3 +1,10 @@
+---
+id: f2s-task
+revision: 0
+summary: "f2s-task（路由摘要）"
+primary: policy
+confidence: manual
+---
 # f2s-task（路由摘要）
 
 > 长文见配置根 **`rules/f2s-task.*`**。  

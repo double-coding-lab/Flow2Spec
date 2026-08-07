@@ -1,3 +1,11 @@
+---
+id: f2s-req-plan
+revision: 0
+summary: "f2s-req-plan（路由摘要）"
+dependsOn: [f2s-task]
+primary: policy
+confidence: manual
+---
 # f2s-req-plan（路由摘要）
 
 > 长文见配置根 **`skills/f2s-req-plan/SKILL.md`**。  

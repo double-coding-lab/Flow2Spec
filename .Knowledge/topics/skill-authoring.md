@@ -1,3 +1,10 @@
+---
+id: skill-authoring
+revision: 0
+summary: "skill-authoring（路由摘要）"
+primary: policy
+confidence: inferred
+---
 # skill-authoring（路由摘要）
 
 > 适用范围：在 **本仓**（Flow2Spec 产品开发仓）新增或重构 `f2s-*` SKILL 时遵循。**不下发**到下游业务仓——下游不写 `f2s-*` SKILL，本主题对其无意义。

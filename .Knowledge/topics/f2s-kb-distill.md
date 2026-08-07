@@ -1,3 +1,10 @@
+---
+id: f2s-kb-distill
+revision: 0
+summary: "f2s-kb-distill：Q&A 驱动知识提取与入库"
+primary: policy
+confidence: manual
+---
 # f2s-kb-distill：Q&A 驱动知识提取与入库
 
 Q&A 驱动知识提取技能，从普通问答中自动萃取可复用知识事实并入库；根据下钻深度与描述层次自动判断创建新 topic 或追加到现有 topic。

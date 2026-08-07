@@ -1,3 +1,10 @@
+---
+id: f2s-req-tech
+revision: 0
+summary: "f2s-req-tech（路由摘要）"
+primary: policy
+confidence: inferred
+---
 # f2s-req-tech（路由摘要）
 
 > 长文见配置根 **`skills/f2s-req-tech/SKILL.md`**；本仓模板源见 **`templates/skills/f2s-req-tech/SKILL.md`**。
