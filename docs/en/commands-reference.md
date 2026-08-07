@@ -24,7 +24,7 @@
 | `/f2s-kb-migrate` | One-time migration of a legacy knowledge base to `.Knowledge/` | KB Maintenance |
 | `/f2s-kb-upgrade` | Upgrade knowledge base template, align manifest + matchers shards | KB Maintenance |
 
-The table above lists conversation-triggered `/f2s-*` skills. The repository also provides shell commands under `flow2spec kb status / check / plan / apply / build`; they merge a skill-produced `kb-delta.json` into the shared `.Knowledge/`. See [§ 7](#7-flow2spec-kb-cli-for-collaborative-merges).
+The table above lists conversation-triggered `/f2s-*` skills. The repository also provides shell commands: `flow2spec kb status / check / plan / apply / build` handles collaborative knowledge merges (see [§ 7](#7-flow2spec-kb-cli-for-collaborative-merges)), while `flow2spec doctor` performs a read-only project health check (see [§ 8](#8-flow2spec-doctor-project-health-check)).
 
 ---
 
@@ -725,7 +725,36 @@ See [Team Collaboration](./team-collaboration.md) for the operating model and [A
 
 ---
 
-## 8) Quick Reference
+## 8) `flow2spec doctor` (Project Health Check)
+
+`flow2spec doctor` provides one command for diagnosing why Flow2Spec is not behaving as expected. It is read-only, does not access the network, and never modifies project configuration or knowledge files.
+
+```bash
+flow2spec doctor
+flow2spec doctor --json
+```
+
+It checks:
+
+- whether Node.js satisfies the package's `engines.node` requirement
+- whether `flow2spec.config.json`, root `AGENTS.md`, and `.Knowledge/manifest-routing.json` exist and are usable
+- whether detected `.codex`, `.claude`, and `.cursor` roots contain their required entry and hook files
+- the resolved `developerId`, source, and `TASK_ROOT`; falling back to the legacy `.task/` root produces a warning
+- whether the root `.gitignore` ignores `.task/`
+- strict knowledge graph health, topic revisions, and routing metadata drift
+
+Human-readable output marks each check with `[PASS]`, `[WARN]`, or `[FAIL]` and includes a repair suggestion when applicable. `--json` returns a stable `ok / package / cwd / summary / checks` structure for CI and scripts.
+
+Warnings alone return exit code `0`; any error returns `1`. Unknown flags such as `--fix` fail immediately. To repair legacy topics without a `revision`, follow the reported commands:
+
+```bash
+flow2spec kb build --fix-topics
+flow2spec kb check --strict
+```
+
+---
+
+## 9) Quick Reference
 
 For typical work scenarios and full workflows, see [Usage Guide § 3. Typical Workflows](./usage-guide.md).
 

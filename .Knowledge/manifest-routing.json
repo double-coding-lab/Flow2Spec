@@ -32,7 +32,8 @@
     "f2s-dev-workflow-constraints": ".Knowledge/topics/f2s-dev-workflow-constraints.md",
     "f2s-kb-distill": ".Knowledge/topics/f2s-kb-distill.md",
     "flow2spec-init-defaults": ".Knowledge/topics/f2s-init-defaults.md",
-    "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md"
+    "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md",
+    "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md"
   },
   "taskToTopicRules": [
     {
@@ -149,6 +150,14 @@
       "topics": [
         "flow2spec-collaboration"
       ]
+    },
+    {
+      "task": "flow2spec-doctor",
+      "matcherId": "m-flow2spec-doctor",
+      "matcherPath": ".Knowledge/matchers/m-flow2spec-doctor.json",
+      "topics": [
+        "flow2spec-doctor"
+      ]
     }
   ],
   "pkgRev": 1,
@@ -220,6 +229,13 @@
       "confidence": "manual",
       "tags": [
         "policy"
+      ]
+    },
+    "flow2spec-doctor": {
+      "primary": "feature",
+      "confidence": "inferred",
+      "tags": [
+        "module"
       ]
     }
   }

@@ -15,6 +15,7 @@ const {
   normalizeLocale,
 } = require("./lib/flow2specConfig");
 const knowledgeEngine = require("./lib/knowledgeEngine");
+const { runDoctor, formatDoctorReport } = require("./lib/doctor");
 
 const { execFileSync } = require("child_process");
 
@@ -234,6 +235,7 @@ Flow2Spec - 统一知识库工作流（AI 配置入口）  v${pkg.version}
 用法:
   flow2spec init [agent ...] [--reset-knowledge] [--yes] [--locale zh-CN|en-US]    在当前项目初始化：写入 .Knowledge 与所选 agent 入口
   flow2spec config              打印项目根 ${CONFIG_FILENAME} 的解析结果（缺省值合并后）
+  flow2spec doctor [--json]     只读检查运行环境、项目初始化、协作上下文与知识库健康
   flow2spec kb                  知识库协作引擎：status / check / plan / apply / build
   flow2spec version             显示当前 flow2spec 版本
   flow2spec update              更新 flow2spec 到最新版本；更新后提示执行 f2s-kb-upgrade
@@ -323,6 +325,32 @@ if (sub === "config") {
     process.exit(1);
   }
   process.exit(0);
+}
+
+if (sub === "doctor") {
+  const doctorArgs = args.slice(1);
+  if (doctorArgs.includes("--help") || doctorArgs.includes("-h")) {
+    console.log(`
+用法:
+  flow2spec doctor [--json]
+
+只读检查 Node.js、项目配置、Agent 初始化、协作上下文、.task 忽略规则与知识库健康。
+警告不阻塞（exit 0），错误会返回 exit 1；本命令不会修改文件或访问网络。
+`.trim());
+    process.exit(0);
+  }
+  const unknown = doctorArgs.filter((arg) => arg !== "--json");
+  if (unknown.length > 0) {
+    console.error(`doctor 不支持参数：${unknown.join(" ")}`);
+    process.exit(1);
+  }
+  const report = runDoctor(process.cwd());
+  if (doctorArgs.includes("--json")) {
+    printJson(report);
+  } else {
+    console.log(formatDoctorReport(report));
+  }
+  process.exit(report.ok ? 0 : 1);
 }
 
 if (sub === "kb") {
