@@ -1,3 +1,10 @@
+---
+id: f2s-doc-routing
+revision: 0
+summary: "f2s-doc-routing（路由摘要）"
+primary: policy
+confidence: manual
+---
 # f2s-doc-routing（路由摘要）
 
 > **唯一长文**：Cursor / Claude 以配置根 **`rules/f2s-stock-docs-vs-req-docs.md(c)`** 为准。  

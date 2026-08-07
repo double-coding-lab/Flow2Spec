@@ -1,3 +1,11 @@
+---
+id: flow2spec-init-defaults
+revision: 0
+summary: "flow2spec-init-defaults（路由摘要）"
+primary: config
+confidence: inferred
+tags: [policy]
+---
 # flow2spec-init-defaults（路由摘要）
 
 ## 作用
