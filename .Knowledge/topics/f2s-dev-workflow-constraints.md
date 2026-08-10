@@ -1,3 +1,10 @@
+---
+id: f2s-dev-workflow-constraints
+revision: 0
+summary: "f2s-dev-workflow-constraints（路由摘要）"
+primary: policy
+confidence: inferred
+---
 # f2s-dev-workflow-constraints（路由摘要）
 
 > **仅适用于 Flow2Spec 本仓自身**。**不给下游使用**——本 topic 与对应 rules / skill 都**只**存在于本仓，**不进 `templates/`**。

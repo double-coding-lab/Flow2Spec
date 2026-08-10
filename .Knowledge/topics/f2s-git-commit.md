@@ -1,3 +1,10 @@
+---
+id: f2s-git-commit
+revision: 0
+summary: "f2s-git-commit（路由摘要）"
+primary: policy
+confidence: manual
+---
 # f2s-git-commit（路由摘要）
 
 > 长文见配置根 **`skills/f2s-git-commit/SKILL.md`**；本仓模板源见 **`templates/skills/f2s-git-commit/SKILL.md`**。

@@ -1,3 +1,11 @@
+---
+id: implement-tech-design
+revision: 0
+summary: "implement-tech-design（路由摘要）"
+dependsOn: [f2s-doc-routing]
+primary: policy
+confidence: manual
+---
 # implement-tech-design（路由摘要）
 
 > **唯一长文**：Cursor / Claude 以配置根 **`rules/f2s-implement-tech-design.md(c)`** 为准。  

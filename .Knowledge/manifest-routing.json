@@ -6,8 +6,7 @@
   "fallbackTopic": "fallback-triage",
   "topicDependencies": {
     "implement-tech-design": [
-      "f2s-doc-routing",
-      "stock-docs-vs-req-docs"
+      "f2s-doc-routing"
     ],
     "f2s-req-plan": [
       "f2s-task"
@@ -24,7 +23,6 @@
     "f2s-task": ".Knowledge/topics/f2s-task.md",
     "f2s-req-plan": ".Knowledge/topics/f2s-req-plan.md",
     "f2s-git-commit": ".Knowledge/topics/f2s-git-commit.md",
-    "stock-docs-vs-req-docs": ".Knowledge/topics/f2s-stock-docs-vs-req-docs.md",
     "flow2spec-presentations": ".Knowledge/topics/f2s-flow2spec-presentations.md",
     "flow2spec-milestones": ".Knowledge/topics/f2s-flow2spec-milestones.md",
     "skill-authoring": ".Knowledge/topics/skill-authoring.md",
@@ -50,8 +48,7 @@
       "matcherPath": ".Knowledge/matchers/m-implement-from-spec.json",
       "topics": [
         "f2s-doc-routing",
-        "implement-tech-design",
-        "stock-docs-vs-req-docs"
+        "implement-tech-design"
       ]
     },
     {
@@ -59,8 +56,7 @@
       "matcherId": "m-doc-routing",
       "matcherPath": ".Knowledge/matchers/m-doc-routing.json",
       "topics": [
-        "f2s-doc-routing",
-        "stock-docs-vs-req-docs"
+        "f2s-doc-routing"
       ]
     },
     {
