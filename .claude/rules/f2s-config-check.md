@@ -2,6 +2,9 @@
 description: 执行任何 f2s-* 技能前强制读取 flow2spec.config.json，确定 subAgent 与 switchAgentVerification 实际值
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 # f2s 技能前置强制步骤
 
 **执行任何 `f2s-*` 技能的第一个动作，必须用 Read 工具读取项目根 `flow2spec.config.json`**，获取 `subAgent` 与 `switchAgentVerification` 的实际值，再决定后续编排方式。

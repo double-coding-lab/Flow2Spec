@@ -5,6 +5,15 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 > 执行口径：本技能只维护 `.Knowledge`，默认不改配置根 `rules/skills`。
 
+## KB 自动合并协议（必须）
+
+本技能不得把“人工执行命令”作为用户流程。用户确认同步大纲后，由 agent 自己完成知识候选生成、合并、构建与校验：
+
+1. 将已确认的大纲转换为一个或多个 `kb-delta` 草稿，记录 `taskId`、`developerId`、`baseRevisions`、`changes` 与证据摘要；没有显式任务目录时可在内存中形成等价对象，不强制为了本技能创建 `.task`。`changes` 可使用 `appendBody` / `replaceBody` / `updateFrontmatter`；确需新主题时使用 `createTopic`，并可携带 `taskRule` 与 `matcher` 让路由一并接入。
+2. 写入 `.Knowledge` 前，必须用 `flow2spec kb plan <delta>` 或等价内部能力预演；若 topic revision 不一致，停止自动写入，转入语义合并说明。
+3. 可自动合并时，由 agent 调用 `flow2spec kb apply <delta>` 或等价内部能力写入 topic，并随后执行 `flow2spec kb build` 与 `flow2spec kb check`。
+4. 用户只看到“知识库已同步 / 有语义冲突需确认 / 已跳过入库及原因”，不要求用户手动执行 `kb plan/apply/build/check`。
+
 ## 编排（主 / 子 agent）
 
 - 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。
@@ -47,11 +56,26 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 2. 能力清单（用户指定 / Agent 推断 / 合并结果）
 3. 信息来源
 4. 拟改文件清单（精确到路径）
-5. 主题同步计划：说明每个能力是“更新已有主题”还是“创建新主题”，并列出 topicId、topic 文件、index 行、manifest/matcher 变更；如涉及 `topicMetadata`，列出 `primary` / `tags` / `confidence` 候选和证据；无明确证据时写“不分类 / 暂不写入”
-6. 不改动范围
-7. 等待用户确认提示
+5. 主题同步计划：说明每个能力是"更新已有主题"还是"创建新主题"，并列出 topicId、topic 文件、index 行、manifest/matcher 变更；如涉及 `topicMetadata`，列出 `primary` / `tags` / `confidence` 候选和证据；无明确证据时写"不分类 / 暂不写入"
+6. **终稿沉淀计划（硬约束）**：对每一个"新建 / 更新"的 topic，判断其「长文背景 / 详细资料」引用槽位是否已有对应 `.Knowledge/stock-docs/*_终稿.md`：
+   - **已有** → 直接引用；
+   - **没有但本次同步的能力已经代码落地** → 大纲**必须列出**"待生成 `stock-docs/<能力名>_终稿.md`"，并注明沉淀来源（对应 `req-docs/*_技术方案.md` + 已实现代码 + 澄清文档），由本 SKILL 步骤 3 之前先触发 `f2s-doc-final` 沉淀（或由用户确认后手写），**再**让 topic 指向终稿；
+   - **能力仍在 req-docs 待实现阶段、尚无代码** → topic「长文背景」小节暂写占位说明「待代码落地后由 `f2s-doc-final` 生成 stock-doc 终稿」，**禁止**在此槽位直接列 `req-docs/*`。
+   - 依据见 `rules/f2s-topic-authoring.*`「长文背景引用的目录边界（硬约束）」。
+7. 不改动范围
+8. 等待用户确认提示
 
 > 未确认前禁止落盘修改。
+
+### 步骤 2.5：终稿沉淀（若步骤 2 列出待生成终稿）
+
+用户确认大纲后、`.Knowledge/topics/` 落盘前，先按大纲第 6 项**逐个沉淀 `stock-docs/*_终稿.md`**：
+
+- 优先调用 **`f2s-doc-final`**（在同一会话内直接进入，不需要用户重新触发）；
+- 或按 `.Knowledge/template/`（若有终稿模版）手写并落盘；
+- 沉淀完成、终稿路径确定后，再进入步骤 3 让 topic 的「长文背景」小节指向该终稿。
+
+**禁止**：跳过本步直接落 topic，把 `req-docs/*` 挂进 topic 的「长文背景 / 相关资料」整节槽位。
 
 ### 步骤 3：确认后写入
 
@@ -70,6 +94,24 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 - 列出已修改路径与目的
 - 列出未执行项与原因
+
+### 步骤 5：写入同步时间戳（必须,f2s-git-commit 依赖）
+
+本技能成功完成写入后（步骤 3 有实际文件落盘时）,由主 agent 落盘 `.Knowledge/.last-sync.json`,格式：
+
+```json
+{
+  "syncedAt": "<ISO 8601 时间戳,如 2026-08-04T10:30:00.000Z>",
+  "skill": "f2s-kb-sync",
+  "developerId": "<按 f2s-task 规则解析的 developerId,legacy 时可省略>"
+}
+```
+
+- 该文件由 `f2s-git-commit` 在**默认覆盖检查**前读取,若 `syncedAt` 距今 < 30 分钟则跳过覆盖检查,避免刚同步完知识库又被要求同步一次。
+- **写入时机**：仅在本轮真正写盘（步骤 3 有 topic / index / manifest / stock-docs 变更）时才写；纯"读一遍 kb 什么也没改"的场景**不**写。
+- 覆盖式写入,不追加历史。
+- 落盘失败（磁盘只读、权限不足等）不阻塞本技能主流程,在收尾摘要中列一行 warning 即可。
+- 同类知识库写入技能（`f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-add` / `f2s-kb-addRules` / `f2s-kb-distill`）成功写盘后也应遵守相同约定,`skill` 字段填自己的 id。
 
 ## 输出摘要格式（建议）
 
@@ -110,8 +152,9 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 ## 完成后自检
 
 1. 是否存在未确认即写入（必须为否）。
-2. topic 文件与 index 行是否一一对应，且“关联文档（摘要）”已同步更新。
+2. topic 文件与 index 行是否一一对应，且"关联文档（摘要）"已同步更新。
 3. manifest 中 `topics` / `taskToTopicRules` / `topicDependencies` 是否仍引用有效路径。
 4. 若写入 `topicMetadata`：key 是否均存在于 `topicPaths`；`primary` / `tags` / `confidence` 是否合法；是否避免类型前缀命名。
 5. 是否误改配置根 `rules/skills`（必须为否）。
 6. 步骤 2 大纲 + 用户确认未下放子 agent；步骤 3 子落盘前已加载近邻 2–3 主题摘要；manifest / index 由主单点落盘。
+7. **每个新建 / 更新的 topic**，其「长文背景 / 详细资料 / 相关资料 / 长文来源 / 参考文档」整节引用槽位**是否仅指向 `.Knowledge/stock-docs/*_终稿.md`**（或已定型的 stock-doc）；**不得**直接列 `.Knowledge/req-docs/*` 作为长文事实源。若代码已落地但对应终稿尚缺，是否已在步骤 2.5 完成沉淀。

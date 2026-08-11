@@ -3,6 +3,9 @@ name: f2s-doc-milestone
 description: 据 req-docs、git log、.task 与知识库主题语义生成里程碑（《项目里程碑模版》）；触发：f2s-doc-milestone、生成项目里程碑、里程碑。命令后可附语义化范围。本技能固定子 agent 生成、主 agent 验证，不受 flow2spec.config 编排开关影响
 ---
 
+> **任务路径**：凡 `.task/` 落盘与续作，**必须以 `rules/f2s-task` 解析的 `TASK_ROOT` 为准（`.task` 或 `.task/<developerId>`；config → git → legacy）。下文若仍出现 `.task/todo.json` / `.task/active/`，均视为 **`TASK_ROOT/...` 的简写**。
+
+
 > 执行口径：读 `.Knowledge/template/项目里程碑模版.md`；落盘 **仅** `.Knowledge/stock-docs/<范围名>里程碑.md`（无第二路径参数）。
 
 ## 编排（固定，不受项目配置影响）

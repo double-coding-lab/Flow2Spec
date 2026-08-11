@@ -16,9 +16,10 @@ description: 意图识别：高置信操作意图自动进入对应 f2s-* Skill�
 1. 用户显式 `$f2s-*` 命令最高优先级，按显式命令执行。
 2. 用户明确说「只讨论 / 先别改 / 不要执行 / 先评估 / 先聊方案」时，禁止自动调用 Skill。
 3. 当前已进入某个 `f2s-*` 流程时，保持当前流程；不得自动切到其他流程，除非用户明确说「停止当前流程，改走 X」。
-4. 用户要求改代码但需求不完整时，优先 `f2s-req-clarify`，不得直接进入 `f2s-kb-feat` / `f2s-kb-fix`。
-5. 用户只是在询问、比较、评估、解释时，不调用 Skill。
-6. 低置信度或多意图冲突时，先用一句话说明候选分流并反问，不调用 Skill。
+4. **需求不完整禁自动进入撰写类技能**：用户要求改代码但需求不完整时，优先 `f2s-req-clarify`，不得直接进入 `f2s-kb-feat` / `f2s-kb-fix`；同理，用户要"出方案 / 生成技术方案"但需求含明显未决问题时，优先 `f2s-req-clarify`，**不得**直接进入 `f2s-req-tech`；用户要"拆任务 / 实现"但方案尚未落盘时，优先 `f2s-req-tech`，**不得**直接进入 `f2s-req-plan` / `implement-tech-design`。
+5. **过程编排型技能落盘后本轮不自动衔接下一技能（一处允许的单跳例外）**：`f2s-req-clarify` / `f2s-req-tech` / `f2s-req-plan` / `f2s-doc-*` 完成落盘后，**本轮**默认只输出"文档已就绪 + 下一步指引"一行提示即停止；**下一技能须由用户在新一轮明确触发**再由本条分流。**唯一允许的同轮单跳**：`f2s-req-clarify` 澄清文档落盘后直接自动衔接 `f2s-req-tech`（详见 `skills/f2s-req-clarify/SKILL.md` 结束段），此后不得再跳；`f2s-req-tech` 落盘后不得自动衔接 `f2s-req-plan` / `implement-tech-design`。
+6. 用户只是在询问、比较、评估、解释时，不调用 Skill。
+7. 低置信度或多意图冲突时，先用一句话说明候选分流并反问，不调用 Skill。
 
 ## 意图 → Skill 映射
 
@@ -82,5 +83,7 @@ description: 意图识别：高置信操作意图自动进入对应 f2s-* Skill�
 
 - 在 `intentRecognition` 未读取或为 `false` 时自动调用任何 Skill
 - 把询问类输入误判为操作意图
-- 在需求澄清未结束时自动跳到 feat/fix/plan
+- 在需求澄清未结束时自动跳到 feat/fix/plan/tech
+- 在技术方案未落盘时自动跳到 `f2s-req-plan` / `implement-tech-design`
+- 在过程编排型技能（`f2s-req-clarify` / `f2s-req-tech` / `f2s-req-plan` / `f2s-doc-*`）落盘的**同一轮**内自动衔接下一 `f2s-*` 技能（**唯一例外**：`f2s-req-clarify` → `f2s-req-tech` 单跳；`f2s-req-tech` 落盘后不得再自动衔接）
 - 在当前流程未结束时自动切换到另一个 Skill

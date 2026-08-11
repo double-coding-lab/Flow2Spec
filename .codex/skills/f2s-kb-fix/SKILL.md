@@ -8,6 +8,15 @@ description: 根据用户指出的实现或规则错误修正代码，并默认�
 
 > 执行口径：`f2s-kb-fix` 默认"修代码 + 同步 `.Knowledge`"，无需用户额外要求"请同步知识库"。
 
+## KB 自动合并协议（必须）
+
+本技能不得把“人工执行命令”作为用户流程。修复完成后，由 agent 自己完成知识候选生成、合并、构建与校验：
+
+1. 将本次修复后的正确规则/实现边界转换为 `kb-delta` 草稿，记录 `taskId`、`developerId`、`baseRevisions`、`changes` 与修复证据；若 `changeTracking.fix=true` 且已有任务目录，可把 delta 落在当前 `TASK_ROOT/active/<task-name>/kb-delta.json`，否则可在内存中形成等价对象。`changes` 可使用 `appendBody` / `replaceBody` / `updateFrontmatter`；确需新主题时使用 `createTopic`，并可携带 `taskRule` 与 `matcher` 让路由一并接入。
+2. 写入 `.Knowledge` 前，必须用 `flow2spec kb plan <delta>` 或等价内部能力预演；若 topic revision 不一致，停止自动写入，转入语义合并说明。
+3. 可自动合并时，由 agent 调用 `flow2spec kb apply <delta>` 或等价内部能力写入 topic，并随后执行 `flow2spec kb build` 与 `flow2spec kb check`。
+4. 用户只看到“修复与知识库已同步 / 有语义冲突需确认 / 已跳过入库及原因”，不要求用户手动执行 `kb plan/apply/build/check`。
+
 ## 编排（主 / 子 agent）
 
 - 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本处不复述。

@@ -27,13 +27,16 @@ alwaysApply: false
 
 **topic 的定位**：可执行路由摘要 + 关键边界。topic 可以包含必要的边界说明、关键流程步骤、禁止项、配置摘要——Agent 读完即可执行或判断是否需要继续下钻；**不应承载**完整实现细节、长文背景或可在 stock-doc 里查的原始内容。stock-doc 承载完整背景与长文细节，topic 指向它。
 
+**长文背景引用的目录边界（硬约束）**：topic 中「详细背景 / 相关资料 / 长文来源 / 参考文档」等**指向长文源**的引用槽位，**只允许**指向 `.Knowledge/stock-docs/*_终稿.md` 或已被归档为长文事实的 `stock-docs/*`；**禁止**把这类槽位挂到 `.Knowledge/req-docs/*`（含澄清 / 技术方案 / SQL / PRD 等）——`req-docs` 是本次交付的**临时输入**，用完会随任务归档或迁移，作为 topic 的长文事实源是悬空引用。若同步 / 新建 topic 时相应 `stock-docs/*_终稿.md` 尚未生成，**必须先触发 `f2s-doc-final` 沉淀终稿**（或与用户确认由手写补齐），再让 topic 指向终稿；不得跳过终稿直接把 topic 挂在 `req-docs` 上。**允许**：topic 正文可**短引**方案里的一句结论或一个字段名作为佐证（如「见 `.Knowledge/req-docs/xxx_技术方案.md`」的偶发点引），但**长文背景槽位**（"详细背景 / 相关资料"整节）仍须指向 stock-doc。
+
 每个 topic 至少包含：
 
 1. **标题与一句话意图**（一行写清"该 topic 解决什么"）；
 2. **适用场景 / 触发词**（与对应 `matchers/<id>.json` `includeAny` 语义一致）；
 3. **核心规则 / 流程**（可执行知识；步骤须可由 Agent 复现）；
 4. **依赖声明**（若 `topicDependencies` 中存在依赖项，正文须显式写一句「执行前须先读依赖主题 `<dep>`」，参考 `topics/f2s-req-plan.md` 首段写法）；
-5. **边界与禁止项**（避免膨胀到隔壁 topic）。
+5. **边界与禁止项**（避免膨胀到隔壁 topic）；
+6. **长文背景 / 详细资料引用**（如需承载业务背景）：只列 `.Knowledge/stock-docs/*_终稿.md` 的可点击 Markdown 链接（1–3 条即可）；**禁止**直接列 `.Knowledge/req-docs/*` 作为长文背景来源；无对应终稿时**先生成终稿**再回填此小节。
 
 ## 3. topicMetadata 判定准则
 
@@ -121,3 +124,4 @@ alwaysApply: false
 - 把"重要的规则"硬塞进 `taskToTopicRules`（参见第 4 条）。
 - 用 `topicDependencies` 表达"信息相关"（应通过 `index.md` 语义边界 + matcher 关键词补召回，而非依赖边）。
 - 在 `topicDependencies` 中写传递冗余边或形成环。
+- **在 topic 的「长文背景 / 详细资料 / 相关资料 / 长文来源 / 参考文档」等指向长文源的整节引用槽位里，列出 `.Knowledge/req-docs/*`**（含澄清 / 技术方案 / SQL / PRD）。此类槽位只允许指向 `.Knowledge/stock-docs/*_终稿.md`；无终稿时须先生成再回填。短句/佐证式的偶发点引不受此约束。

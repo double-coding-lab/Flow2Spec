@@ -1,6 +1,6 @@
 ---
 name: f2s-git-commit
-description: 代码写完后提交 Git：默认检查变更与知识库覆盖；用户明确要求“快捷提交”时跳过知识库覆盖检查；生成带 emoji 首行的提交说明后**可直接 commit**（须在当条回复展示首行，不要求用户单独确认 commit）；**git pull 类拉取须用户先确认**。触发：f2s-git-commit、提交代码、快捷提交、git commit、帮我提交
+description: 代码写完后提交 Git：默认检查变更与知识库覆盖；用户明确要求“快捷提交”时跳过知识库覆盖检查；**改动全为纯文档 / 知识库自身**或**近 30 分钟内已跑过 kb-sync/kb-feat/kb-fix** 时自动跳过覆盖检查；生成带 emoji 首行的提交说明后**可直接 commit**（须在当条回复展示首行，不要求用户单独确认 commit）；**git pull 类拉取须用户先确认**。触发：f2s-git-commit、提交代码、快捷提交、git commit、帮我提交
 ---
 
 > 执行口径：本技能代用户执行 git 操作；不使用 `git add -A` / `git add .`，不跳过 hooks（`--no-verify`），不自动 push。**`git pull` / `git fetch` 合并入本地前必须取得用户对「拉取」的明确确认**；`git commit` 不要求单独一轮「确认」交互（见步骤 3–4）。用户明确要求“快捷提交”时，仅跳过步骤 2 知识库覆盖检查，其余安全步骤照常执行。
@@ -49,7 +49,7 @@ git diff HEAD
 请先解决冲突后再提交。
 ```
 
-### 步骤 2：知识库覆盖检查（默认必须；快捷提交跳过）
+### 步骤 2：知识库覆盖检查（默认必须；三种情况可跳过）
 
 若处于**快捷提交模式**，本步骤直接跳过，并在步骤 5 收尾提示中说明“已按快捷提交跳过知识库覆盖检查”。
 
@@ -57,7 +57,47 @@ git diff HEAD
 
 - 若 `.Knowledge/manifest-routing.json` 不存在：跳过本步骤，在步骤 5 收尾提示「项目尚未初始化 Flow2Spec 知识库，建议运行 flow2spec init」，继续步骤 3。
 
+**跳过判定 A：改动纯文档 / 知识库自身**（进入覆盖检查前先判定）
+
+若步骤 1 收集到的 pending 文件路径**全部**命中以下模式,直接跳过本步骤（在步骤 5 说明「本次改动纯文档,已跳过覆盖检查」）：
+
+- `.Knowledge/**`（改的就是知识库自己,检自己无意义）
+- `docs/**` / `docs/en/**`
+- `README*.md` / `LICENSE` / `CHANGELOG*`
+- `.claude/**` / `.cursor/**` / `.codex/**`（agent 配置根,由 flow2spec init 分发,与业务能力覆盖无关）
+- `presentations/**` / `assets/**` / 其他纯静态资源
+
+**任一**文件落在 `src/` / `lib/` / `cli.js` / `templates/` / 业务代码目录时,本捷径**不生效**,继续走覆盖检查。
+
+**跳过判定 B：近期已同步过知识库**
+
+读取 `.Knowledge/.last-sync.json`（若不存在直接跳过本判定）：
+
+```json
+{
+  "syncedAt": "2026-08-04T10:30:00.000Z",
+  "skill": "f2s-kb-sync",
+  "developerId": "<可选>"
+}
+```
+
+- 若 `Date.now() - Date.parse(syncedAt) < 30 * 60 * 1000`（30 分钟内）→ 直接跳过本步骤,在步骤 5 说明「近 30 分钟内已跑过 <skill>,已跳过覆盖检查」。
+- 若时间戳过期或文件损坏 → 忽略,正常走覆盖检查。
+- 该文件由 `f2s-kb-sync` / `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-add` / `f2s-kb-addRules` / `f2s-kb-distill` 等**知识库写入类技能**在成功完成后写入,`f2s-git-commit` **只读**不写。
+- 用户显式说「重新检查一次覆盖」/「不要跳过覆盖检查」→ 本判定失效,强制走覆盖检查。
+
 **存在时执行覆盖检查：**
+
+**先执行 KB 自动合并预检（必须，不让用户手动跑命令）：**
+
+1. Agent 在本步骤内部执行 `flow2spec kb check --json` 与 `flow2spec kb status --json`，或使用等价的内置 KB 引擎能力；不得把这些命令变成用户要手动执行的提交前置工作。
+2. 若 `check` 返回知识库结构错误、matcher 缺失、routing drift 等健康问题：终止本次 commit，报告具体问题与建议修复动作；不要把损坏的知识库一起提交。
+3. 若 `status.tasks` 中存在当前 developer 任务根下的 `kb-delta.json`：
+   - 能唯一定位当前任务线且 `mergeable=true`：自动执行 `plan → apply → build → check`（CLI 或等价内置能力均可），并把被写入的 `.Knowledge/**` 文件纳入本次提交文件列表。
+   - `mergeable=false`、delta 解析失败，或存在多个 active delta 且无法判断哪个属于本次提交：停止自动写入，列出 `topic / reason / deltaPath`，提示用户需要语义合并或选择任务线；不得猜测合并。
+4. 若没有当前任务线的 active `kb-delta.json`，才进入下面的粗粒度覆盖判断。
+
+**没有可自动应用的 delta 时，执行粗粒度覆盖检查：**
 
 1. 从 `git diff HEAD` 及 untracked 文件路径推断本次变更涉及的**功能模块**（以仓库内目录/包名为准，勿臆测未出现的业务名）。
 2. 读取 `.Knowledge/topics/` 目录列表与 `.Knowledge/stock-docs/` 目录列表。
@@ -176,6 +216,12 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 
 [若快捷提交跳过了步骤 2]
 ⚡ 已按快捷提交跳过知识库覆盖检查。
+
+[若命中跳过判定 A：改动纯文档]
+📄 本次改动纯文档 / 知识库自身,已跳过覆盖检查。
+
+[若命中跳过判定 B：近 30 分钟内已同步]
+🔄 近 30 分钟内已跑过 <skill 名>,已跳过覆盖检查（.Knowledge/.last-sync.json）。
 ```
 
 ## 约束
@@ -195,7 +241,7 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 1. 步骤 1 是否检查了 merge conflict（必须为是）。
 2. 是否区分了 staged / unstaged / untracked 三类文件（必须为是）。
 3. 是否用了 `git add -A` / `git add .`（必须为否）。
-4. 知识库检查是否执行或有明确跳过理由（快捷提交 / `.Knowledge` 不存在）（必须为是）。
+4. 知识库检查是否执行或有明确跳过理由（快捷提交 / `.Knowledge` 不存在）（必须为是）；若存在 active `kb-delta.json`，是否已自动 plan/apply/build/check 或明确报告冲突（必须为是）。
 5. 步骤 3 是否基于 `git diff` 实际内容生成提交信息（必须为是，而非仅 `--stat`）。
 6. 执行 commit 前是否在当条回复中**展示了拟提交首行**（必须为是）；**不得**要求用户单独「确认 commit」才执行（与策略一致）。
 7. 提交信息**首行**是否为 `<emoji> <type>[(scope)]: <简述>` 且 emoji 与 type 与上表一致（合并 revert 等例外须在展示中说明）。

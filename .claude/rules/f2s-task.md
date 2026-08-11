@@ -4,7 +4,6 @@ description: >
   变更追踪：代码变更时自动创建并维护 .task/ 下的任务清单，支持跨会话续作。
   仅当 flow2spec.config.json 中 changeTracking.feat / fix / implement 之一为 true 时，对应技能生效。
   触发词：changeTracking、任务追踪、变更追踪、续作、继续上次任务
-alwaysApply: true
 ---
 
 # f2s-task（变更追踪规则）
