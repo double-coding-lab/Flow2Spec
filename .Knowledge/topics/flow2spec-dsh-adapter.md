@@ -1,6 +1,6 @@
 ---
 id: flow2spec-dsh-adapter
-revision: 0
+revision: 1
 summary: "DeepSeek Harness 项目级技能初始化与目录适配"
 primary: feature
 confidence: inferred
@@ -25,3 +25,8 @@ tags: [module]
 - 初始化适配：`lib/init.js`、`lib/dshAgentsAdapter.js`
 - 诊断与回归：`lib/doctor.js`、`scripts/test-dsh-init.js`
 - 用户文档：`docs/使用说明.md`、`docs/en/usage-guide.md`、`docs/目录与路径约定.md`
+
+## 对外宣传口径
+
+- 宣传文案使用‘AI 开发工具’、‘已支持客户端’等可扩展表述，不写固定客户端数量或名单。
+- 命令参数、兼容性矩阵和配置路径说明需要精确指导时，可以列出具体客户端。
