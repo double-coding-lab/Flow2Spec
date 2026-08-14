@@ -16,7 +16,7 @@
 
 | 维度 | 说的是什么 | 不满足会怎样 |
 |---|---|---|
-| ① **多端复用** | 一份知识，Cursor / Claude / Codex / 未来新 IDE 都能用 | 换工具重写一份，团队分裂 |
+| ① **多端复用** | 一份知识，当前客户端与未来新 IDE 都能用 | 换工具重写一份，团队分裂 |
 | ② **路由收窄** | 一句话命中一个 topic，只读相关那 300 行 | 系统提示词扁平，token 爆、拿错段 |
 | ③ **双向同步** | 改代码顺手改知识（`f2s-kb-feat/fix`），不是一次性生成 | 第二次迭代 spec 和 code 分家 |
 | ④ **原生 agent** | 规则 + 知识喂给现有 agent，不劫持、不做 wrapper | 跟 IDE 抢主导权，新模型来了跟不上 |
@@ -76,7 +76,7 @@
 | ① 多端复用 | `.Knowledge/` 是事实源，`.cursor/.claude/.codex/` 各自按原生方式挂载规则 |
 | ② 路由收窄 | `manifest-routing.json` + `matchers/*.json` 机读命中 → 依赖链展开 → **缺口闸门**强制澄清 |
 | ③ 双向同步 | `f2s-kb-feat` / `f2s-kb-fix` 强制「改代码带着改知识」 |
-| ④ 原生 agent | 只提供 rules + skills + knowledge，执行仍走 Cursor / Claude / Codex 原生 |
+| ④ 原生 agent | 只提供 rules + skills + knowledge，执行仍走各客户端原生能力 |
 | ⑤ 变更留痕 + 收尾闸门 | `.task/todo.json` + `task.md` + `user-todos.md`，跨会话可续作；`f2s-git-commit` 提交前强制「冲突扫 / KB 覆盖查 / emoji+Conventional 首行」三查 |
 
 ---

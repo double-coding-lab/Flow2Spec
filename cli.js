@@ -246,26 +246,21 @@ agent（可多个，空格分隔；省略时交互选择）：
 
 示例:
   flow2spec init                  # 交互选择工具和配置
-  flow2spec init claude           # 直接写入 .claude/，跳过工具选择
-  flow2spec init cursor claude    # 同时写入 .cursor/ 与 .claude/
-  flow2spec init codex --locale en-US  # 使用英文模板初始化 Codex
+  flow2spec init <agent>          # 直接写入指定客户端配置根，跳过工具选择
+  flow2spec init <agent> <agent>  # 同时初始化多个客户端
+  flow2spec init <agent> --locale en-US  # 使用英文模板初始化指定客户端
+  flow2spec init dsh                  # 初始化 DeepSeek Harness 项目技能
   flow2spec init --yes            # 跳过所有问答，使用默认值（适合 CI）
   flow2spec init --reset-knowledge  # 强制用模板覆盖 .Knowledge（谨慎）
 
 init 会:
-  1. 交互询问要初始化的 AI 工具（cursor / claude / codex，可多选）；已通过参数指定则跳过。
+  1. 交互询问要初始化的 AI 工具（见上方 agent 列表，可多选）；已通过参数指定则跳过。
      传 --yes 或非 TTY 环境时跳过问答，使用默认值。
   2. 对 ${CONFIG_FILENAME} 中缺失的配置字段逐项提问（已有字段不覆盖）。模板语言由 --locale、已有 locale 或默认 zh-CN 决定。
      传 --yes 时所有缺失字段使用各自默认值。
   3. 默认仅补齐 .Knowledge 缺失模板，并对路由清单做包级/结构增量对齐（manifest-routing + matcherPath 分片；关键词仅写在 matchers/*.json）；不替代 f2s-* 对业务文档与路由内容的写入。
      传 --reset-knowledge 时才会强制用模板覆盖 .Knowledge 中模板承载部分。
-  4. 在各 agent 配置根写入 rules、skills（Claude 规则自动转 .md；Codex 在仓库根写入完整 AGENTS.md，.codex/ 写入指针）。
-     Claude 额外写入 .claude/hooks/f2s-config-session.js、f2s-config-inject.js 与 .claude/settings.json：
-     SessionStart 注入一次配置摘要；PreToolUse 仅在调用 f2s-* Skill 时提示首步必须 Read 配置。
-     Cursor 额外写入 f2s-config-check.mdc（alwaysApply），强制在技能首步读取配置文件；
-     并写入 .cursor/hooks.json，在 sessionStart 自动检测知识库版本。
-     Codex：仓库根 AGENTS.md（完整条令）；.codex/AGENTS.md 为指针；
-     并写入 .codex/hooks.json，在 SessionStart 注入配置摘要并检测知识库版本。
+  4. 在各 agent 配置根写入对应的 rules、skills、入口和 hooks（若该客户端支持）；具体落盘方式以客户端适配器为准。
   5. 每次 init 将当前 locale 包模板 knowledge/index.md 复制到 .Knowledge/template/index.template.md，供 f2s-kb-upgrade 技能与 .Knowledge/index.md 对照；不自动改写 index.md。（「知识库升级」指 f2s-kb-upgrade 技能，init 本身不是升级命令。）
   6. 非破坏式补充 .gitignore：忽略 .task/ 与 .Knowledge/update-check.json 这类本地运行态。
   7. 规则与技能在各 agent 配置根加载；其他模版类文件在 .Knowledge/template/ 等目录。
@@ -795,6 +790,8 @@ if (sub === "init") {
         const { root, label } = AGENTS[id];
         if (id === "codex")
           return `  - ${root}/：（${label}）skills/、topics/、hooks/、hooks.json、AGENTS.md（指针）；仓库根 AGENTS.md（完整）`;
+        if (id === "dsh")
+          return `  - ${root}/：（${label}）skills/、topics/、AGENTS.md（指针）；根 AGENTS.md（缺少时生成）`;
         if (id === "claude") {
           const hookLine = claudeHooksResult?.settingsChanged
             ? "rules/、skills/、hooks/f2s-config-session.js、hooks/f2s-config-inject.js、settings.json（已写入 f2s SessionStart/PreToolUse hooks）"

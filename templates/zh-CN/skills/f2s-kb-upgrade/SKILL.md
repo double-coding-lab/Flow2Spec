@@ -62,8 +62,8 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 - **旧项目一键闭环**：**先 `f2s-kb-migrate`** → **再本技能**（`init`）。禁止仅用 `init` 代替完整迁移。
 - **已是新版 `.Knowledge` 的项目**：**只跑本技能**，勿重复 migrate。
 
-**为何 Cursor / Claude / Codex 下各有一份同名 `SKILL.md`？**  
-各工具只加载**本配置根**下的 `skills/`（例如 Codex 仅 `.codex/skills/`）。`flow2spec init` 会向所选 agent 目录**同步落盘**当前语言对应的技能内容。
+**为何每个已配置客户端目录下都有一份同名 `SKILL.md`？**
+各客户端只加载**自身配置根**下的 `skills/`。`flow2spec init` 会向所选 agent 目录**同步落盘**当前语言对应的技能内容。
 
 ## 目标
 
@@ -73,7 +73,7 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 
 1. 本技能步骤 2 代跑 **`flow2spec init`** 时，默认 **增量落盘**（不带 `--reset-knowledge`）。
 2. 仅当用户明确要求「覆盖重置」时，才在 `init` 末尾追加 `--reset-knowledge`。
-3. 优先写入用户指定的 agent；未指定时默认 `cursor claude codex`。
+3. 优先写入用户指定的 agent；未指定时使用包的默认客户端选择。
 
 ## init 与技能自更新（必须）
 

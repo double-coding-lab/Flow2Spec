@@ -40,6 +40,11 @@
     "f2s-req-plan": {
       "primary": "policy",
       "confidence": "manual"
+    },
+    "flow2spec-dsh-adapter": {
+      "primary": "feature",
+      "confidence": "inferred",
+      "tags": ["module"]
     }
   },
   "topicPaths": {
@@ -48,7 +53,8 @@
     "fallback-triage": ".Knowledge/topics/f2s-fallback-triage.md",
     "config-precheck": ".Knowledge/topics/f2s-config-precheck.md",
     "f2s-task": ".Knowledge/topics/f2s-task.md",
-    "f2s-req-plan": ".Knowledge/topics/f2s-req-plan.md"
+    "f2s-req-plan": ".Knowledge/topics/f2s-req-plan.md",
+    "flow2spec-dsh-adapter": ".Knowledge/topics/flow2spec-dsh-adapter.md"
   },
   "taskToTopicRules": [
     {
@@ -90,6 +96,14 @@
       "matcherPath": ".Knowledge/matchers/m-req-plan.json",
       "topics": [
         "f2s-req-plan"
+      ]
+    },
+    {
+      "task": "flow2spec-dsh-adapter",
+      "matcherId": "m-flow2spec-dsh-adapter",
+      "matcherPath": ".Knowledge/matchers/m-flow2spec-dsh-adapter.json",
+      "topics": [
+        "flow2spec-dsh-adapter"
       ]
     }
   ]

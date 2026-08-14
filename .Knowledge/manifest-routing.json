@@ -33,7 +33,8 @@
     "f2s-kb-distill": ".Knowledge/topics/f2s-kb-distill.md",
     "flow2spec-init-defaults": ".Knowledge/topics/f2s-init-defaults.md",
     "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md",
-    "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md"
+    "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md",
+    "flow2spec-dsh-adapter": ".Knowledge/topics/flow2spec-dsh-adapter.md"
   },
   "taskToTopicRules": [
     {
@@ -156,6 +157,14 @@
       "topics": [
         "flow2spec-doctor"
       ]
+    },
+    {
+      "task": "flow2spec-dsh-adapter",
+      "matcherId": "m-flow2spec-dsh-adapter",
+      "matcherPath": ".Knowledge/matchers/m-flow2spec-dsh-adapter.json",
+      "topics": [
+        "flow2spec-dsh-adapter"
+      ]
     }
   ],
   "topicMetadata": {
@@ -229,6 +238,13 @@
       ]
     },
     "flow2spec-doctor": {
+      "primary": "feature",
+      "confidence": "inferred",
+      "tags": [
+        "module"
+      ]
+    },
+    "flow2spec-dsh-adapter": {
       "primary": "feature",
       "confidence": "inferred",
       "tags": [

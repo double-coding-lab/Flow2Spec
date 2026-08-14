@@ -1,0 +1,6 @@
+{
+  "includeAny": ["DeepSeek Harness", "deepseek-harness", "dsh", "flow2spec init dsh", ".dsh/skills", ".dsh/topics", "Cordis 插件", "Harness 适配"],
+  "id": "m-flow2spec-dsh-adapter",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1"
+}

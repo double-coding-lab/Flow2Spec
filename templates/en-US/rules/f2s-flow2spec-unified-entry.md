@@ -92,7 +92,7 @@ Some environments create an **independent `git worktree`** or equivalent isolate
 
 ## Knowledge-Base Version Self-Check (Hook Auto-Triggered; First Time Each Day Only When updateCheck.enabled=true)
 
-All three clients register a SessionStart version-check script: Cursor writes **`.cursor/hooks.json`** through `flow2spec init cursor` and runs `node .cursor/hooks/f2s-update-check.js` at `sessionStart`; Codex writes **`.codex/hooks.json`** through `flow2spec init codex` and registers both the configuration-summary script `node .codex/hooks/f2s-config-session.js` and the version-check script `node .codex/hooks/f2s-update-check.js` on `SessionStart` `startup|resume`; Claude writes **`.claude/settings.json`** through `flow2spec init claude` and registers the configuration summary, version check, and `PreToolUse Skill` guard. After the version-check script compares versions and writes cache, when an upgrade is needed it injects an imperative upgrade notice through `additional_context` (agent-instruction text requires the agent to relay it to the user verbatim).
+Each initialized client uses its own startup/update mechanism when supported; the generated client entrypoint is authoritative. Clients without hooks continue to use the generated rules, skills, `AGENTS.md`, or topic mirrors. Version-check scripts compare versions and, when an upgrade is needed, inject an imperative upgrade notice through `additional_context` where the client supports it. Project-level skill discovery clients use `.dsh/skills/` and `.dsh/topics/` through `flow2spec init dsh`.
 
 **Rule-layer fallback check** (backup for script cache):
 

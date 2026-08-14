@@ -18,13 +18,7 @@ Start from a requirement or technical design and cover the full "plan -> impleme
 | **This skill's responsibility** | Planning draft, code implementation, and sub-agent orchestration; **must not** define a custom `.task/` structure or weaken checkbox/archive requirements |
 | **Relationship with changeTracking** | `f2s-req-plan` is **not constrained by** `changeTracking.feat/fix/implement`; it **always** uses task lists. See `f2s-task` "Activation Conditions" |
 
-**All three clients must read the full `f2s-task` text (Step 0 is mandatory, before any step below):**
-
-| Client | Path |
-| --- | --- |
-| **Cursor** | Config-root `rules/f2s-task.mdc`; or initialized `.cursor/rules/f2s-task.mdc` |
-| **Claude Code** | `.claude/rules/f2s-task.md` |
-| **Codex** | `.codex/topics/f2s-task.md` |
+**Every client initialized for the project must read the full `f2s-task` text (Step 0 is mandatory, before any step below).** Use the active client's generated rules, `AGENTS.md`, or topic entrypoint; do not substitute this skill's summary for the full text.
 
 ## Orchestration (main / sub agent)
 
@@ -46,7 +40,7 @@ Start from a requirement or technical design and cover the full "plan -> impleme
 ### Step 0: Preflight (Mandatory, Before Any Step)
 
 1. **`Read("flow2spec.config.json")`** (project root; missing fields are treated as `false`).
-2. **`Read` the full `f2s-task` text for one of the three clients above** (do not skip; do not use only this SKILL summary as a substitute).
+2. **`Read` the full `f2s-task` text from the active client's generated entrypoint** (do not skip; do not use only this SKILL summary as a substitute).
 3. Decide whether to split to sub agents and whether to cross-verify based on the read `subAgent` / `switchAgentVerification` values.
 
 ### Step 1: Continuation Triage + Parse Input

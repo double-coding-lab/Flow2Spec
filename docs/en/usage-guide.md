@@ -7,9 +7,9 @@
 Execute in the project root:
 
 ```bash
-flow2spec init [cursor|claude|codex ...]
+flow2spec init [cursor|claude|codex|dsh ...]
 # To force reset .Knowledge from template:
-flow2spec init [cursor|claude|codex ...] --reset-knowledge
+flow2spec init [cursor|claude|codex|dsh ...] --reset-knowledge
 ```
 
 | What `init` does | What `init` does NOT do |
@@ -30,6 +30,7 @@ Before executing any **`f2s-*` skill**, the Agent needs to obtain the actual val
 | **Cursor** | `.cursor/rules/f2s-config-check.mdc` (`alwaysApply`) | Config reading remains rule-based: **Read(`flow2spec.config.json`)** before entering skill body. Cursor hooks are used for update checks only, not automatic config reads. |
 | **Claude Code** | `.claude/hooks/f2s-config-session.js` + `.claude/hooks/f2s-config-inject.js` + `.claude/settings.json` | `SessionStart` injects one config summary; `PreToolUse` only guards **`f2s-*` Skill** calls by reminding the agent that the first skill-body action must be **Read**. Neither replaces the disk read. |
 | **Codex** | root `AGENTS.md` mandatory step + `.codex/topics/f2s-config-check.md` + `{{FLOW2SPEC_PROJECT_CONFIG}}` field-semantics table + `.codex/hooks/f2s-config-session.js` | `SessionStart` injects one configuration summary; config reading still relies on text rules and **Read** as a hard requirement; the table explains field semantics only, does not write current values, and disk Read is authoritative. Codex has no Claude-style `PreToolUse` guard, so when `subAgent=true` the skill body must explicitly decide whether to split; even when it does not split, it must output the no-split reason. |
+| **DeepSeek Harness** | root `AGENTS.md` (generated only when absent) + `.dsh/skills/` + `.dsh/topics/` | Harness loads project instructions from repository-root `AGENTS.md` and discovers project skills from `.dsh/skills/<name>/SKILL.md`; Flow2Spec mirrors long-form rules to `.dsh/topics/`. Native Cordis plugin integration is outside this adapter. |
 | **Knowledge Base (optional)** | When `.Knowledge/manifest-routing` hits **`config-precheck`** | `.Knowledge/topics/f2s-config-precheck.md` is a **routing summary** that links to the Codex long-form article; Flow2Spec does **not** maintain a second full copy in `.Knowledge`, nor does it replace a `Read` of the JSON. |
 
 For field semantics and default value rules, see [Commands Reference § 6) Sub-Agent Configuration](./commands-reference.md). For the design perspective, see [Design Principles § 4.5.1](./design-principles.md).
@@ -136,6 +137,8 @@ f2s-kb-upgrade (Current V2+: already has .Knowledge; includes npm v3.x projects,
 In interactive terminals, the Flow2Spec CLI checks the latest npm version with a cache when running `flow2spec version` / `flow2spec init`. If a newer version exists, it prompts you to run `flow2spec update`, then execute `f2s-kb-upgrade` in the Agent conversation to align the project knowledge templates, manifest/matchers, and agent config roots. Failed update checks are skipped silently and do not affect the current command; checks are disabled in `CI`, non-TTY sessions, or when `FLOW2SPEC_SKIP_UPDATE_CHECK=1` is set.
 
 After `flow2spec init codex`, Codex projects include `.codex/hooks.json`, `.codex/hooks/f2s-config-session.js`, and `.codex/hooks/f2s-update-check.js`. On Codex `SessionStart` for `startup|resume`, the first script injects one configuration summary and the second checks the knowledge-base version automatically. When the hook is first generated or changed, trust it through `/hooks` in Codex. Set `updateCheck.enabled=false` in `flow2spec.config.json` to skip only the version check.
+
+After `flow2spec init dsh`, Flow2Spec writes project skills to `.dsh/skills/`, mirrors long-form rules to `.dsh/topics/`, and writes `.dsh/AGENTS.md` as a directory pointer. If the repository has no root `AGENTS.md`, init generates a Harness-compatible full entry; an existing root file is preserved.
 
 After `flow2spec init cursor`, Cursor projects include `.cursor/hooks.json` and `.cursor/hooks/f2s-update-check.js`. The hook runs on Cursor `sessionStart` and injects upgrade reminders through `additional_context`. Set `updateCheck.enabled=false` in `flow2spec.config.json` to skip the check.
 

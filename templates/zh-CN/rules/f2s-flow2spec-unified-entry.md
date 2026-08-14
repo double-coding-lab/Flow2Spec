@@ -92,7 +92,7 @@ alwaysApply: true
 
 ## 知识库版本自检（hook 自动触发；每日首次，仅 updateCheck.enabled=true 时）
 
-三端均在 SessionStart 注册版本检查脚本：Cursor 由 `flow2spec init cursor` 写入 **`.cursor/hooks.json`** 在 `sessionStart` 执行 `node .cursor/hooks/f2s-update-check.js`；Codex 由 `flow2spec init codex` 写入 **`.codex/hooks.json`**，在 `SessionStart` 的 `startup|resume` 事件同时注册配置摘要脚本 `node .codex/hooks/f2s-config-session.js` 与版本检查脚本 `node .codex/hooks/f2s-update-check.js`；Claude 由 `flow2spec init claude` 写入 **`.claude/settings.json`**，注册配置摘要、版本检查与 `PreToolUse Skill` 守门。版本检查脚本完成版本比对与缓存写入后，需升级时通过 `additional_context` 注入命令式升级提示（agent-instruction 文案要求 agent 必须原文转告用户）。
+各已初始化客户端在支持时使用自身的启动 / 更新机制，具体以生成的客户端入口为准。不提供 hooks 的客户端继续通过生成的 rules、skills、`AGENTS.md` 或 topics 镜像工作。版本检查脚本在客户端支持时完成版本比对并注入升级提示；项目级技能发现客户端通过 `flow2spec init dsh` 使用 `.dsh/skills/` 与 `.dsh/topics/`。
 
 **规则层双保险**（与脚本缓存互为备份）：
 

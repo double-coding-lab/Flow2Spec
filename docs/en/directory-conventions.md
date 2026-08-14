@@ -6,7 +6,7 @@
 
 - `.Knowledge/`: **Knowledge ring** — business docs and machine-readable routing ([architecture.md §2](./architecture.md))
 - `.task/`: **Task ring** — change tracking (not inside `.Knowledge/`)
-- `Config Root` (`.cursor/.claude/.codex`): **Rules ring + skills ring**
+- `Config Root` (`.cursor/.claude/.codex/.dsh`): **Rules ring + skills ring**
 
 See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 
@@ -29,6 +29,8 @@ See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 | `Config Root/skills/` | Skill definitions (`SKILL.md`) |
 | `Config Root/template/` | (Deprecated) No longer written to; historical directories may be cleaned up |
 | `.codex/AGENTS.md` | Codex unified entry point and loading instructions |
+| `.dsh/AGENTS.md` | DeepSeek Harness directory pointer; the complete project entry remains root `AGENTS.md` |
+| `.dsh/topics/` | Long-form rule mirrors loaded on demand by DeepSeek Harness |
 | `flow2spec.config.json` | Project root configuration, controls `subAgent`, `switchAgentVerification`, `changeTracking` (nested object with `feat` / `fix` / `implement` sub-items) |
 
 > See [Usage Guide Section 1](./usage-guide.md) for multi-platform references and path tables (detail maintained in a single table); **the authoritative source remains `Read(flow2spec.config.json)`**.
