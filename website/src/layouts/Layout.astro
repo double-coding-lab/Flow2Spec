@@ -7,7 +7,7 @@ interface Props {
   lang?: 'zh-CN' | 'en';
 }
 
-const { title = 'Flow2Spec — 给 AI 一份可路由的项目事实', description = 'Flow2Spec 为 Cursor、Claude Code 与 Codex 建立文档驱动、可写回知识库的协作骨架。', lang = 'zh-CN' } = Astro.props;
+const { title = 'Flow2Spec — 给 AI 一份可路由的项目事实', description = 'Flow2Spec 为 AI 开发工具建立文档驱动、可写回知识库的协作骨架。', lang = 'zh-CN' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://double-coding-lab.github.io');
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 ---
