@@ -9,6 +9,7 @@
 
 | Stage | Time | Summary |
 | --- | --- | --- |
+| M28 · DeepSeek Harness project skill adapter | 2026-08-14 | Added `flow2spec init dsh`, distributing Flow2Spec skills to `.dsh/skills/`, mirroring rules to `.dsh/topics/`, and adapting the repository-root `AGENTS.md` entry; native Cordis plugin work remains on the roadmap |
 | M27 · npm org rename typo fix & migration | 2026-08-04 | Fixed npm org name typo codeing → coding; new package published as @double-coding/flow2spec 3.2.11; legacy @double-codeing/flow2spec 3.2.10 farewell release + npm deprecate all versions; README/CLI added bilingual migration notice; f2s-kb-upgrade Step -1 added D branch for automatic org rename migration (legacy pkg only) |
 | M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8 |
 | M25 · Per-developer task isolation | 2026-07 | Added collaboration settings and developerId resolution, isolating personal progress under separate task roots while retaining one shared knowledge base |
@@ -75,7 +76,7 @@
   - B: installed but behind → dispatch an independent sub-agent to run `npm i -g ...@latest` in the background (fire-and-forget); Step 2 uses `npx @latest init`
   - C: missing / latest unknown → same as B; if all probes fail, Step -1 can be skipped entirely
 - Step 2 command list default form is now driven by the Step -1 branch; added "manual override" clause and a "helper commands" note (`flow2spec --version` / `flow2spec update`)
-- Added **`f2s-dev-workflow-constraints`** rule long text (Cursor / Claude / Codex, three ends): writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
+- Added **`f2s-dev-workflow-constraints`** rule long text: writes only to `templates/`, never to the config root; user drives distribution; dual repos stay in sync — **this rule lives only inside this repo, not in `templates/`**, so downstream projects never receive it
 - Added **`repo-dev-check`** self-check skill: on this repo, before committing, walks every pending change through the "templates vs config-root" decision table + dual-repo diff + distribution guidance; trigger words include "dual-repo drift", "write boundary", "templates vs config root"
 - `.Knowledge/topics/f2s-dev-workflow-constraints.md` thinned to a routing summary pointing to the config-root long text; matcher added new trigger words (`sync:agents`, `写盘边界`, `双仓漂移`); index.md topic table updated with related-doc column
 - Dual-repo sync for repo-local rule / skill: content contains the dual-repo package-name cross-reference table (`@double-coding` / `@ctrip`), so we sync byte-for-byte across repos without rewriting package names

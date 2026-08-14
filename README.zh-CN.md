@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>让 Cursor、Claude Code、Codex 在动手改代码前，先读到正确的项目事实。</strong>
+  <strong>让每个已初始化的 AI 编程客户端在动手改代码前，先读到正确的项目事实。</strong>
 </p>
 
 <p align="center">
@@ -13,7 +13,8 @@
   <a href="https://double-coding-lab.github.io/Flow2Spec">在线演示</a> ·
   <a href="./docs/Flow2Spec基础介绍.md">基础介绍</a> ·
   <a href="./docs/使用说明.md">使用说明</a> ·
-  <a href="./docs/命令说明.md">命令说明</a>
+  <a href="./docs/命令说明.md">命令说明</a> ·
+  <a href="https://github.com/orgs/double-coding-lab/projects/2/views/1">路线图</a>
 </p>
 
 <p align="center">
@@ -26,6 +27,8 @@ Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在�
 
 ```bash
 npx @double-coding/flow2spec@latest init
+# DeepSeek Harness 项目：
+flow2spec init dsh
 ```
 
 ## 为什么需要它
@@ -47,7 +50,7 @@ Flow2Spec 不是为了增加文档数量。它把项目事实保存在一层小�
 | --- | --- | --- |
 | 知识路由 | 把一次需求映射到 agent 需要读取的少量 topics。 | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
 | 主题分片 | 保存 API、上限、锁、数据规则、业务流程等项目事实。 | `.Knowledge/topics/*.md` |
-| Agent 入口 | 为 Cursor、Claude Code、Codex 安装规则和技能。 | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
+| Agent 入口 | 为选中的 AI 编程客户端安装规则和技能。 | 客户端配置根、`.dsh/`、`AGENTS.md` |
 | 技能工作流 | 澄清需求、编写方案、实现、修复、同步知识、提交。 | `f2s-*` skills |
 | 团队协作 | 每个人的任务现场留在本地，确认后的知识通过结构化 delta 与 topic revision 合入共享仓库。 | `.task/<developerId>/`, `.Knowledge/` |
 

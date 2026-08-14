@@ -62,8 +62,8 @@ description: Knowledge-base template upgrade skill (this SKILL only): **V1 flow 
 - **One-click closure for old projects**: **first `f2s-kb-migrate`** -> **then this skill** (`init`). Do not use only `init` as a substitute for full migration.
 - **Projects already using new `.Knowledge`**: **run only this skill**; do not repeat migrate.
 
-**Why does each Cursor / Claude / Codex directory have a same-named `SKILL.md`?**  
-Each tool only loads `skills/` under **its own configuration root** (for example, Codex only loads `.codex/skills/`). `flow2spec init` writes the current-language skill content into the selected agent directories.
+**Why does each configured client directory have a same-named `SKILL.md`?**
+Each client only loads `skills/` under **its own configuration root**. `flow2spec init` writes the current-language skill content into the selected agent directories.
 
 ## Goal
 
@@ -73,7 +73,7 @@ When the user says "help me upgrade the knowledge-base template / run f2s-kb-upg
 
 1. When this skill's step 2 runs **`flow2spec init`**, it defaults to **incremental write** (without `--reset-knowledge`).
 2. Append `--reset-knowledge` only when the user explicitly requests "overwrite reset".
-3. Prefer agents specified by the user; if unspecified, default to `cursor claude codex`.
+3. Prefer agents specified by the user; if unspecified, use the package's default client selection.
 
 ## init and Skill Self-Update (Required)
 

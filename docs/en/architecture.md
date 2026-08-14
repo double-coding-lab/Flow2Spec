@@ -23,7 +23,7 @@ Four rings in the repo (do not collapse rules + skills into a single "third ring
 | --- | --- | --- |
 | **Knowledge** | `.Knowledge/` | Routing, topics, stock/req docs (§2 layers) |
 | **Task** | `.task/` | `todo.json`, checklists, user todos |
-| **Rules** | `.cursor/.claude/.codex` rules, `AGENTS.md` | Read order, gap gates, execution constraints |
+| **Rules** | `.cursor/.claude/.codex/.dsh` rules/topics, `AGENTS.md` | Read order, gap gates, execution constraints |
 | **Skills** | config root `skills/*/SKILL.md` | `f2s-kb-feat/fix/sync`, etc. |
 
 ---
@@ -51,7 +51,7 @@ The pipeline `match → expand → verify → act` operates on L0–L2 (and L3 w
 | Layer | Location | Role |
 | --- | --- | --- |
 | Knowledge layer (knowledge ring) | `.Knowledge/` | Business docs, index, routing (§2 layers) |
-| Execution layer (rules + skills rings) | `.cursor/.claude/.codex` | Rules and skill entry points |
+| Execution layer (rules + skills rings) | `.cursor/.claude/.codex/.dsh` | Rules and skill entry points |
 
 ---
 

@@ -556,9 +556,9 @@ Each SKILL.md's orchestration section reads:
 #### 1. Tools are pluggable: one knowledge base, any tool combination
 
 ```
-flow2spec init cursor claude codex   ← all three tools installed
-flow2spec init claude                ← only Claude
-flow2spec init cursor codex          ← skip Claude
+flow2spec init <selected-agents>     ← initialize the requested tools
+flow2spec init <one-agent>           ← initialize one tool
+flow2spec init <selected-agents>     ← add or skip tools as needed
 
 .Knowledge/ stays the same, tools can be added or removed at any time
 ```

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Give Cursor, Claude Code, and Codex the project facts they need before editing.</strong>
+  <strong>Give each initialized AI coding client the project facts it needs before editing.</strong>
 </p>
 
 <p align="center">
@@ -13,7 +13,8 @@
   <a href="https://double-coding-lab.github.io/Flow2Spec">Live demo</a> ·
   <a href="./docs/en/Flow2Spec-Introduction.md">Introduction</a> ·
   <a href="./docs/en/usage-guide.md">Usage guide</a> ·
-  <a href="./docs/en/commands-reference.md">Commands</a>
+  <a href="./docs/en/commands-reference.md">Commands</a> ·
+  <a href="https://github.com/orgs/double-coding-lab/projects/2/views/1">Roadmap</a>
 </p>
 
 <p align="center">
@@ -26,6 +27,8 @@ Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a sm
 
 ```bash
 npx @double-coding/flow2spec@latest init
+# DeepSeek Harness projects:
+flow2spec init dsh
 ```
 
 ## Why it exists
@@ -47,7 +50,7 @@ Flow2Spec does not add documentation for its own sake. It keeps a small, machine
 | --- | --- | --- |
 | Knowledge routing | Maps a request to the few topics the agent needs to read. | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
 | Topic shards | Stores project facts such as APIs, limits, locks, data rules, and workflows. | `.Knowledge/topics/*.md` |
-| Agent entrypoints | Installs rules and skills for Cursor, Claude Code, and Codex. | `.cursor/`, `.claude/`, `.codex/`, `AGENTS.md` |
+| Agent entrypoints | Installs rules and skills for the selected AI coding clients. | client configuration roots, `.dsh/`, `AGENTS.md` |
 | Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
 | Team collaboration | Keeps each developer's task state local while merging reviewed knowledge through structured deltas and topic revisions. | `.task/<developerId>/`, `.Knowledge/` |
 

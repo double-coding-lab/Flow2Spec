@@ -431,7 +431,7 @@ In short: **single Q&A → distill (auto), new module bulk import → add, perio
 
 <p><img src="../images/flow2spec-intro-13-quick-start.jpg" alt="What projects and quick start" style="max-width:720px;width:100%;" /></p>
 
-**Best for**: medium to large business projects, long-lived codebases, multi-person teams with many rules, teams using Cursor / Claude Code / Codex regularly, and projects where you want AI to participate in maintaining project knowledge — not just read docs.
+**Best for**: medium to large business projects, long-lived codebases, multi-person teams with many rules, teams using multiple AI coding clients, and projects where you want AI to participate in maintaining project knowledge — not just read docs.
 
 **May not fit**: one-off scripts or very small personal projects (\< 5000 lines, a README is enough).
 
@@ -458,7 +458,7 @@ Common workflows:
 
 ```
 
-Currently supports initialization for Cursor, Claude Code, and Codex, with both Chinese and English templates.
+Initialization is client-selectable and supports both Chinese and English templates; new clients can reuse the same knowledge-base and skill-distribution model.
 
 ---
 
