@@ -1,6 +1,6 @@
 ---
 id: f2s-dev-workflow-constraints
-revision: 0
+revision: 1
 summary: "f2s-dev-workflow-constraints（路由摘要）"
 primary: policy
 confidence: inferred
@@ -55,3 +55,8 @@ flow2spec init codex claude cursor
 - **不写下游可见位置**：本 topic 与关联 rules/skill 一律不落 `templates/`；`f2s-kb-upgrade` 步骤 -1 / 步骤 2 的 init 分发**不带**这些文件到下游。
 - `LOCAL_CONTEXT.md`、`.claude/memory/` 为本地不入库文件，不视为配置根。
 
+## npm workspace 发布门禁
+
+- 主 CLI 包 `@double-coding/flow2spec` 的 `packages/cli/README.md` 与根 `README.md` 保持完全一致；Core 包维护面向程序化调用的独立 README。
+- Core、CLI 与 workspace 根版本保持一致，CLI 固定依赖同版本 Core。
+- 发布前运行 `npm run pack:check` 与 `node scripts/test-package-install.js`，并从 CLI tarball 校验 README，确保 npm 页面保留完整产品文档。
