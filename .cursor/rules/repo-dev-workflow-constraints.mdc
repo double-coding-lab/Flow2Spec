@@ -111,6 +111,13 @@ flow2spec init codex claude cursor
 
 **注意**：`init` **不会**动本仓专属手写文件（本规则、`repo-dev-check` skill）——这些文件在 `templates/` 里没有对应源，`init` 找不到就不写，用户手写的原始版本得以保留。
 
+## npm workspace 发布门禁
+
+- `@double-coding/flow2spec` 是面向普通用户的主包，`packages/cli/README.md` 必须与根 `README.md` 完全一致；根 README 变更后执行 `npm run sync:package-readme`。
+- `@double-coding/flow2spec-core` 面向 CLI 与原生插件开发者，维护独立的 `packages/core/README.md`，不复制主包的用户文档。
+- Core、CLI 与 workspace 根版本保持一致，CLI 对 Core 的依赖固定为同一版本。
+- 发布前执行 `npm run pack:check` 与 `node scripts/test-package-install.js`；安装测试必须从 CLI tarball 解出 `package/README.md` 并与根 README 比较，防止 npm 页面退化为占位说明。
+
 ## 与其他规则的关系
 
 - **`f2s-flow2spec-unified-entry`**：讲「消费侧读取顺序」；本文件讲「本仓开发时的生产侧写盘边界」。两者并存不冲突。

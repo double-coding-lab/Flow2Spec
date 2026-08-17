@@ -1,12 +1,11 @@
 {
   "name": "@double-coding/flow2spec",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "在业务仓库初始化文档驱动、可写回知识库的 AI 协作骨架",
   "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/double-coding-lab/Flow2Spec.git",
-    "directory": "packages/cli"
+    "url": "git+https://github.com/double-coding-lab/Flow2Spec.git"
   },
   "bugs": {
     "url": "https://github.com/double-coding-lab/Flow2Spec/issues"
@@ -21,7 +20,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@double-coding/flow2spec-core": "3.3.0"
+    "@double-coding/flow2spec-core": "3.3.1"
   },
   "publishConfig": {
     "access": "public",
@@ -30,5 +29,28 @@
   "engines": {
     "node": ">=16"
   },
+  "keywords": [
+    "flow2spec",
+    "cursor",
+    "cursor-rules",
+    "agent-skills",
+    "claude",
+    "codex",
+    "deepseek-harness",
+    "ai-workflow",
+    "project-context",
+    "knowledge-base",
+    "documentation",
+    "rules",
+    "skills",
+    "stock-docs",
+    "req-docs",
+    "context-engineering",
+    "f2s"
+  ],
+  "author": "兰大神 <550947002@qq.com>",
+  "contributors": [
+    "七七是只猫 <292761894@qq.com>"
+  ],
   "license": "ISC"
 }

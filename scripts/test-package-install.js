@@ -23,6 +23,18 @@ run("npm", ["pack", "--workspace", "@double-coding/flow2spec", "--pack-destinati
 
 const tarballs = fs.readdirSync(tempDir).filter((file) => file.endsWith(".tgz"));
 assert.strictEqual(tarballs.length, 2, "expected Core and CLI tarballs");
+const cliTarball = tarballs.find((file) => /^double-coding-flow2spec-\d/.test(file));
+assert.ok(cliTarball, "expected CLI tarball");
+const packedReadme = run("tar", [
+  "-xOf",
+  path.join(tempDir, cliTarball),
+  "package/README.md",
+]);
+assert.strictEqual(
+  packedReadme,
+  fs.readFileSync(path.resolve(__dirname, "..", "README.md"), "utf8"),
+  "CLI package must publish the complete root README",
+);
 run("npm", [
   "install",
   "--ignore-scripts",
