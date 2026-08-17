@@ -1,0 +1,34 @@
+{
+  "name": "@double-coding/flow2spec",
+  "version": "3.3.0",
+  "description": "在业务仓库初始化文档驱动、可写回知识库的 AI 协作骨架",
+  "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/double-coding-lab/Flow2Spec.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/double-coding-lab/Flow2Spec/issues"
+  },
+  "main": "./cli.js",
+  "bin": {
+    "flow2spec": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "lib",
+    "README.md"
+  ],
+  "dependencies": {
+    "@double-coding/flow2spec-core": "3.3.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "ISC"
+}

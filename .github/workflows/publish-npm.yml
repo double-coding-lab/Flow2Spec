@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   publish:
-    name: Publish @double-coding/flow2spec
+    name: Publish Flow2Spec workspace packages
     runs-on: ubuntu-latest
     steps:
       - name: Check out release commit
@@ -42,10 +42,20 @@ jobs:
       - name: Verify tag matches package version
         shell: bash
         run: |
-          package_version="$(node -p "require('./package.json').version")"
+          package_version="$(node -p "require('./packages/core/package.json').version")"
+          cli_version="$(node -p "require('./packages/cli/package.json').version")"
+          root_version="$(node -p "require('./package.json').version")"
           tag_version="${GITHUB_REF_NAME#[vV]}"
+          if [[ "$package_version" != "$cli_version" || "$package_version" != "$root_version" ]]; then
+            echo "Root, Core, and CLI workspace versions must match." >&2
+            exit 1
+          fi
+          if [[ "$(node -p "require('./packages/cli/package.json').dependencies['@double-coding/flow2spec-core']")" != "$package_version" ]]; then
+            echo "CLI Core dependency must match the release version $package_version." >&2
+            exit 1
+          fi
           if [[ "$tag_version" != "$package_version" ]]; then
-            echo "Release tag $GITHUB_REF_NAME does not match package version $package_version." >&2
+            echo "Release tag $GITHUB_REF_NAME does not match workspace package version $package_version." >&2
             exit 1
           fi
 
@@ -55,5 +65,8 @@ jobs:
       - name: Verify npm package contents
         run: npm run pack:check
 
-      - name: Publish package with provenance
-        run: npm publish --access public --provenance
+      - name: Publish Core package with provenance
+        run: npm publish --workspace @double-coding/flow2spec-core --access public --provenance
+
+      - name: Publish CLI package with provenance
+        run: npm publish --workspace @double-coding/flow2spec --access public --provenance
