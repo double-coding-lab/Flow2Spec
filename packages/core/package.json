@@ -1,0 +1,27 @@
+{
+  "name": "@double-coding/flow2spec-core",
+  "version": "3.3.0",
+  "description": "Flow2Spec Core APIs, knowledge engine, project initialization and shared resources",
+  "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/double-coding-lab/Flow2Spec.git",
+    "directory": "packages/core"
+  },
+  "main": "./index.js",
+  "files": [
+    "index.js",
+    "lib",
+    "templates",
+    "capabilities.json",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "ISC"
+}

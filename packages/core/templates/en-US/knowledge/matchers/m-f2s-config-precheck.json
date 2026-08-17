@@ -1,0 +1,19 @@
+{
+  "includeAny": [
+    "flow2spec.config.json",
+    "subAgent",
+    "switchAgentVerification",
+    "切换 agent 校验",
+    "技能前置",
+    "f2s-config-check",
+    "f2s-config-inject",
+    "changeTracking",
+    "agent switch verification",
+    "skill precheck",
+    "skill pre-step",
+    "configuration precheck"
+  ],
+  "id": "m-f2s-config-precheck",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1"
+}

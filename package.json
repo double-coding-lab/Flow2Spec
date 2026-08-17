@@ -1,61 +1,21 @@
 {
-  "name": "@double-coding/flow2spec",
-  "version": "3.2.13",
-  "description": "在业务仓库初始化「文档驱动、可写回知识库」的 AI 协作骨架：项目根 .Knowledge 承载 stock-docs/req-docs 与机读路由，.cursor/.claude/.codex 写入 f2s-* 规则与技能（含 Karpathy 式编码行为准则，init 同步 rules / Codex topics / skills）；init 只落结构与模板，业务内容由各 f2s-* 技能在对话中维护。",
-  "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/double-coding-lab/Flow2Spec.git"
-  },
-  "bugs": {
-    "url": "https://github.com/double-coding-lab/Flow2Spec/issues"
-  },
-  "main": "./cli.js",
-  "bin": {
-    "flow2spec": "cli.js"
-  },
-  "files": [
-    "assets/readme",
-    "cli.js",
-    "lib",
-    "templates",
-    "README.md"
+  "name": "flow2spec-workspace",
+  "private": true,
+  "version": "3.3.0",
+  "description": "Flow2Spec workspace for the Core library and CLI packages",
+  "workspaces": [
+    "packages/core",
+    "packages/cli"
   ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "scripts": {
-    "test": "node cli.js --help && node cli.js kb check && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-doctor.js",
-    "sync:agents": "node cli.js init cursor claude codex",
-    "prepublishOnly": "node cli.js --help",
-    "pack:check": "npm pack --dry-run",
-    "tag:version": "node scripts/git-tag-version.js"
-  },
-  "keywords": [
-    "flow2spec",
-    "cursor",
-    "cursor-rules",
-    "agent-skills",
-    "claude",
-    "codex",
-    "ai-workflow",
-    "project-context",
-    "knowledge-base",
-    "documentation",
-    "rules",
-    "skills",
-    "stock-docs",
-    "req-docs",
-    "context-engineering",
-    "f2s"
-  ],
-  "author": "兰大神 <550947002@qq.com>",
-  "contributors": [
-    "七七是只猫 <292761894@qq.com>"
-  ],
-  "license": "ISC",
   "engines": {
     "node": ">=16"
+  },
+  "scripts": {
+    "test": "node cli.js --help && node cli.js kb check && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-doctor.js && node scripts/test-core-api.js && node scripts/test-package-install.js",
+    "test:core": "node scripts/test-core-api.js",
+    "test:cli": "node cli.js --help && node cli.js doctor --json",
+    "sync:agents": "node cli.js init cursor claude codex",
+    "pack:check": "npm pack --workspace @double-coding/flow2spec-core --dry-run && npm pack --workspace @double-coding/flow2spec --dry-run",
+    "tag:version": "node scripts/git-tag-version.js"
   }
 }

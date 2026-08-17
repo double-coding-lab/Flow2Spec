@@ -36,6 +36,12 @@ jobs:
       - name: Run CLI tests
         run: npm test
 
+      - name: Run Core API tests
+        run: npm run test:core
+
+      - name: Verify workspace package installation
+        run: node scripts/test-package-install.js
+
       - name: Verify npm package contents
         run: npm run pack:check
 

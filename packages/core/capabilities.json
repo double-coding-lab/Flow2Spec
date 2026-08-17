@@ -1,0 +1,27 @@
+{
+  "schema": "flow2spec.capabilities.v1",
+  "protocolVersion": 1,
+  "package": "@double-coding/flow2spec-core",
+  "capabilities": [
+    { "id": "project.init", "api": "project.init", "since": "3.3.0" },
+    { "id": "project.inspect", "api": "project.inspect", "since": "3.3.0" },
+    { "id": "config.load", "api": "config.load", "since": "3.3.0" },
+    { "id": "routing.graph", "api": "routing.graph", "since": "3.3.0" },
+    { "id": "routing.state", "api": "routing.state", "since": "3.3.0" },
+    { "id": "routing.match", "api": "routing.match", "since": "3.3.0" },
+    { "id": "routing.expand", "api": "routing.expand", "since": "3.3.0" },
+    { "id": "routing.verify", "api": "routing.verify", "since": "3.3.0" },
+    { "id": "routing.load-context", "api": "routing.loadContext", "since": "3.3.0" },
+    { "id": "knowledge.status", "api": "knowledge.status", "since": "3.3.0" },
+    { "id": "knowledge.check", "api": "knowledge.check", "since": "3.3.0" },
+    { "id": "knowledge.plan", "api": "knowledge.plan", "since": "3.3.0" },
+    { "id": "knowledge.apply", "api": "knowledge.apply", "since": "3.3.0" },
+    { "id": "knowledge.build", "api": "knowledge.build", "since": "3.3.0" },
+    { "id": "collaboration.resolve", "api": "collaboration.resolveDeveloper", "since": "3.3.0" },
+    { "id": "doctor.run", "api": "doctor.run", "since": "3.3.0" },
+    { "id": "resources.capabilities", "api": "resources.capabilities", "since": "3.3.0" },
+    { "id": "resources.skills", "api": "resources.listSkills", "since": "3.3.0" },
+    { "id": "resources.rules", "api": "resources.listRules", "since": "3.3.0" },
+    { "id": "resources.read", "api": "resources.read", "since": "3.3.0" }
+  ]
+}

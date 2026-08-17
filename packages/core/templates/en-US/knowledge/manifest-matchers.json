@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "generatedFrom": ".Knowledge/manifest-routing.json",
+  "matcherKey": "matcherId",
+  "sourceOfTruth": ".Knowledge/manifest-routing.json",
+  "matchers": {
+    "m-implement-from-spec": {
+      "includeAny": [
+        "按技术方案实现",
+        "实现接口",
+        "需求文档开发",
+        "implement from technical spec",
+        "implement API",
+        "develop from requirement document",
+        "build from spec"
+      ]
+    },
+    "m-doc-routing": {
+      "includeAny": [
+        "文档放哪",
+        "stock-docs",
+        "req-docs",
+        "目录约定",
+        "where should docs go",
+        "document routing",
+        "directory convention",
+        "directory responsibilities"
+      ]
+    },
+    "m-f2s-config-precheck": {
+      "includeAny": [
+        "flow2spec.config.json",
+        "subAgent",
+        "switchAgentVerification",
+        "切换 agent 校验",
+        "技能前置",
+        "f2s-config-check",
+        "f2s-config-inject",
+        "changeTracking",
+        "agent switch verification",
+        "skill precheck",
+        "skill pre-step",
+        "configuration precheck"
+      ]
+    },
+    "m-change-tracking": {
+      "includeAny": [
+        "changeTracking",
+        "变更追踪",
+        "任务追踪",
+        "任务清单",
+        ".task",
+        "续作",
+        "继续上次任务",
+        "todo.json",
+        "task.md",
+        "f2s-task",
+        "任务清单归档",
+        "跨会话",
+        "change tracking",
+        "task tracking",
+        "task list",
+        "resume task",
+        "continue previous task",
+        "archive task list",
+        "cross-session"
+      ]
+    },
+    "m-req-plan": {
+      "includeAny": [
+        "f2s-req-plan",
+        "任务规划",
+        "任务清单设计",
+        "需求规划",
+        "创建任务清单",
+        "规划需求",
+        "req-plan",
+        "需求实现",
+        "按需求实现",
+        "按方案规划",
+        "task planning",
+        "task list design",
+        "requirement planning",
+        "create task list",
+        "plan requirement",
+        "requirement implementation",
+        "implement requirement",
+        "plan from spec"
+      ]
+    }
+  }
+}

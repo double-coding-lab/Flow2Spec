@@ -1,0 +1,15 @@
+{
+  "id": "m-doc-routing",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1",
+  "includeAny": [
+    "文档放哪",
+    "stock-docs",
+    "req-docs",
+    "目录约定",
+    "where should docs go",
+    "document routing",
+    "directory convention",
+    "directory responsibilities"
+  ]
+}
