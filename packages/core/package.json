@@ -1,6 +1,6 @@
 {
   "name": "@double-coding/flow2spec-core",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Flow2Spec Core APIs, knowledge engine, project initialization and shared resources",
   "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
   "repository": {
@@ -9,8 +9,10 @@
     "directory": "packages/core"
   },
   "main": "./index.js",
+  "types": "./index.d.ts",
   "files": [
     "index.js",
+    "index.d.ts",
     "lib",
     "templates",
     "capabilities.json",

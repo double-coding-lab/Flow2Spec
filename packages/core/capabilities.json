@@ -1,6 +1,6 @@
 {
   "schema": "flow2spec.capabilities.v1",
-  "protocolVersion": 1,
+  "protocolVersion": 2,
   "package": "@double-coding/flow2spec-core",
   "capabilities": [
     { "id": "project.init", "api": "project.init", "since": "3.3.0" },
@@ -22,6 +22,9 @@
     { "id": "resources.capabilities", "api": "resources.capabilities", "since": "3.3.0" },
     { "id": "resources.skills", "api": "resources.listSkills", "since": "3.3.0" },
     { "id": "resources.rules", "api": "resources.listRules", "since": "3.3.0" },
-    { "id": "resources.read", "api": "resources.read", "since": "3.3.0" }
+    { "id": "resources.read", "api": "resources.read", "since": "3.3.0" },
+    { "id": "resources.skill-catalog", "api": "resources.skillCatalog", "since": "3.4.0" },
+    { "id": "resources.unified-entry", "api": "resources.unifiedEntry", "since": "3.4.0" },
+    { "id": "update.check", "api": "update.check", "since": "3.4.0" }
   ]
 }
