@@ -39,6 +39,9 @@ jobs:
       - name: Update npm for trusted publishing
         run: npm install --global npm@latest
 
+      - name: Install workspace dependencies
+        run: npm ci --ignore-scripts
+
       - name: Verify tag matches package version
         shell: bash
         run: |

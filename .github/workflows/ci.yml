@@ -33,6 +33,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Install workspace dependencies
+        run: npm ci --ignore-scripts
+
       - name: Run CLI tests
         run: npm test
 
