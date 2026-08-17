@@ -82,11 +82,27 @@ async function main() {
     })}\n`,
     "utf8",
   );
-  const update = await api.update.check();
-  assert.strictEqual(update.status, "upgrade-available");
-  assert.strictEqual(update.fromCache, true);
-  assert.strictEqual(update.latestVersion, "9.0.0");
-  assert.ok(update.notice.includes("f2s-kb-upgrade"));
+  const originalCI = process.env.CI;
+  const originalContinuousIntegration = process.env.CONTINUOUS_INTEGRATION;
+  process.env.CI = "true";
+  const ciUpdate = await api.update.check();
+  assert.strictEqual(ciUpdate.status, "skipped");
+  assert.strictEqual(ciUpdate.reason, "continuous-integration");
+
+  delete process.env.CI;
+  delete process.env.CONTINUOUS_INTEGRATION;
+  try {
+    const update = await api.update.check();
+    assert.strictEqual(update.status, "upgrade-available");
+    assert.strictEqual(update.fromCache, true);
+    assert.strictEqual(update.latestVersion, "9.0.0");
+    assert.ok(update.notice.includes("f2s-kb-upgrade"));
+  } finally {
+    if (originalCI === undefined) delete process.env.CI;
+    else process.env.CI = originalCI;
+    if (originalContinuousIntegration === undefined) delete process.env.CONTINUOUS_INTEGRATION;
+    else process.env.CONTINUOUS_INTEGRATION = originalContinuousIntegration;
+  }
   const controller = new AbortController();
   controller.abort();
   await assert.rejects(
