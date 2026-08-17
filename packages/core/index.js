@@ -13,6 +13,8 @@ const dshAgentsAdapter = require("./lib/dshAgentsAdapter");
 const knowledgeEngine = require("./lib/knowledgeEngine");
 const init = require("./lib/init");
 const routing = require("./lib/routing");
+const hostResources = require("./lib/resources");
+const updateCheck = require("./lib/updateCheck");
 const capabilities = require("./capabilities.json");
 
 class Flow2SpecError extends Error {
@@ -74,6 +76,30 @@ function readResource(relativePath, locale = "zh-CN") {
   return fs.readFileSync(resolved, "utf8");
 }
 
+function toFlow2SpecError(error) {
+  if (error instanceof Flow2SpecError) return error;
+  if (error && typeof error.code === "string" && error.code.startsWith("F2S_")) {
+    return new Flow2SpecError(error.code, error.message || String(error), error.details || {});
+  }
+  return error;
+}
+
+function callCore(operation) {
+  try {
+    return operation();
+  } catch (error) {
+    throw toFlow2SpecError(error);
+  }
+}
+
+async function callCoreAsync(operation) {
+  try {
+    return await operation();
+  } catch (error) {
+    throw toFlow2SpecError(error);
+  }
+}
+
 function createFlow2Spec(options = {}) {
   const cwd = assertCwd(options.cwd || process.cwd());
   const context = {
@@ -112,8 +138,8 @@ function createFlow2Spec(options = {}) {
         const parsed = delta || knowledgeEngine.parseKnowledgeDelta(deltaFile);
         return knowledgeEngine.planKnowledgeDelta(graph, parsed);
       },
-      apply: ({ deltaFile, ...applyOptions } = {}) =>
-        knowledgeEngine.applyKnowledgeDelta(cwd, deltaFile, applyOptions),
+      apply: ({ delta, deltaFile, ...applyOptions } = {}) =>
+        knowledgeEngine.applyKnowledgeDelta(cwd, delta || deltaFile, applyOptions),
       build: (buildOptions = {}) => knowledgeEngine.buildKnowledgeGraph(cwd, buildOptions),
     },
     collaboration: {
@@ -133,6 +159,16 @@ function createFlow2Spec(options = {}) {
       listRules: (locale = "zh-CN") => listResourceFiles(locale, "rules"),
       listHooks: (locale = "zh-CN") => listResourceFiles(locale, "hooks"),
       read: (relativePath, locale = "zh-CN") => readResource(relativePath, locale),
+      skillCatalog: (resourceOptions = {}) =>
+        callCore(() => hostResources.skillCatalog(path.join(__dirname, "templates"), resourceOptions)),
+      unifiedEntry: (resourceOptions = {}) =>
+        callCore(() => hostResources.unifiedEntry(path.join(__dirname, "templates"), resourceOptions)),
+    },
+    update: {
+      check: (checkOptions = {}) =>
+        callCoreAsync(() =>
+          updateCheck.checkUpdate(cwd, config.loadFlow2specConfig(cwd), checkOptions),
+        ),
     },
   };
 }

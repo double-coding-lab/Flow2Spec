@@ -1,7 +1,7 @@
 {
   "name": "flow2spec-workspace",
   "private": true,
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Flow2Spec workspace for the Core library and CLI packages",
   "workspaces": [
     "packages/core",
