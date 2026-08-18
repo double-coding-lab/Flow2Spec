@@ -113,3 +113,19 @@
 - `f2s-req-clarify`：针对 PRD/需求反问直到清楚，再可用 f2s-req-tech 出技术方案；触发：需求澄清、PRD 澄清
 - `f2s-req-plan`：根据技术方案/需求描述/变更描述规划并实现任务；始终按 f2s-task 维护 .task/；支持子 agent 并行实现；触发：f2s-req-plan、创建任务、任务规划、我需要任务清单
 - `f2s-req-tech`：根据澄清后的需求基于项目知识库/Skills/Rules 生成技术方案文档；触发：生成技术方案、技术方案、f2s-req-tech
+
+## Cursor Cloud specific instructions
+
+> 注意：本仓根 `AGENTS.md` 由 `flow2spec init` / `npm run sync:agents` 从 `templates/{locale}/AGENTS.md` 整体重写（见 `packages/core/lib/codexAgentsAdapter.js` 的 `buildCodexAgentsMd`），不保留自定义段落。本节属本仓专属、**不进 `templates/`**；若有人重新分发配置根，本节会被覆盖，需要重新追加。VM 启动只跑更新脚本（依赖安装），不会自动跑 `sync:agents`，所以本节对后续 Cloud Agent 可见。
+
+本仓有两个可运行产物，Node 已就绪（v22.14.0，满足 `engines.node >=16`；website 要求 `>=22.12.0`）。依赖安装由更新脚本完成，无需手动重装。
+
+- CLI / Core 工作区（仓库根，npm workspaces = `packages/core` + `packages/cli`）
+  - 全量测试：`npm test`（跑 `node cli.js --help`、`kb check`、知识引擎/doctor/打包等一系列 `scripts/test-*.js`）。Core 单测：`npm run test:core`。CLI 冒烟：`npm run test:cli`。
+  - 本仓**没有 lint 工具链**（无 ESLint/Prettier 配置）；「lint」以 `npm test` 中的 `kb check`（知识库路由校验）作为等价静态检查。
+  - CLI 无构建步骤（纯 JS）。直接运行：`node cli.js <command>`（例如 `node cli.js doctor --json`）。
+  - Hello-world（核心功能 = 在业务仓初始化骨架）：在临时目录 `git init` 后运行 `node /workspace/cli.js init cursor --yes --locale en-US`，会生成 `.Knowledge/`、`.cursor/rules`、`.cursor/skills` 等。只 init 单个 agent 时 `doctor` 会报「缺少根 AGENTS.md」——这是预期（根 `AGENTS.md` 由 `codex` agent 生成），非环境问题。
+- 文档站点（`website/`，Astro）——**不在 npm workspaces 内**，需单独装依赖（更新脚本已含 `npm --prefix website ci`）。
+  - 构建：`npm --prefix website run build`（CI 用此校验，产出约 20 页）。
+  - 开发服务器：在 `website/` 下 `npm run dev`（`astro dev`）。**站点有 base path `/Flow2Spec`**：首页在 `http://<host>:4321/Flow2Spec/`，访问根 `/` 会 404。
+  - 修改本仓「下游会用到的」规则/技能/模板须改 `templates/`，再由用户跑 `npm run sync:agents` 分发；勿手改配置根（详见 `repo-dev-workflow-constraints` 规则）。
