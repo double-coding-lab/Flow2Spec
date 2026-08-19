@@ -27,7 +27,9 @@ Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a sm
 
 ```bash
 npx @double-coding/flow2spec@latest init
-# DeepSeek Harness projects:
+# Native DeepSeek Harness plugin:
+# https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness
+# Project-level adapter without the plugin:
 flow2spec init dsh
 ```
 

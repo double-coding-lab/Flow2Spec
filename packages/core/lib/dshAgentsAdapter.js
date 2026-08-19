@@ -26,7 +26,7 @@ function buildDshAgentsMd(templatesDir, projectConfig) {
       "## Flow2Spec Skills",
       `## DeepSeek Harness Integration
 
-DeepSeek Harness loads the repository-root \`AGENTS.md\` and discovers project skills from \`./.dsh/skills/\`. Flow2Spec mirrors its long-form rules to \`./.dsh/topics/\` for on-demand reading. Native Cordis plugin integration is outside this initialization adapter.`,
+DeepSeek Harness loads the repository-root \`AGENTS.md\` and discovers project skills from \`./.dsh/skills/\`. Flow2Spec mirrors its long-form rules to \`./.dsh/topics/\` for on-demand reading. Prefer the native Cordis plugin \`@double-coding/flow2spec-deepseek-harness\` when installed; \`flow2spec init dsh\` remains the project-level fallback.`,
     );
     return body;
   }
@@ -40,7 +40,7 @@ DeepSeek Harness loads the repository-root \`AGENTS.md\` and discovers project s
     "## Flow2Spec 技能",
     `## DeepSeek Harness 适配
 
-DeepSeek Harness 会加载仓库根 \`AGENTS.md\`，并从 \`./.dsh/skills/\` 发现项目技能。Flow2Spec 将规则长文镜像到 \`./.dsh/topics/\` 供按需读取。原生 Cordis 插件集成不属于本初始化适配范围。`,
+DeepSeek Harness 会加载仓库根 \`AGENTS.md\`，并从 \`./.dsh/skills/\` 发现项目技能。Flow2Spec 将规则长文镜像到 \`./.dsh/topics/\` 供按需读取。已安装时优先使用原生 Cordis 插件 \`@double-coding/flow2spec-deepseek-harness\`；\`flow2spec init dsh\` 仍作为项目级兼容入口。`,
   );
 }
 

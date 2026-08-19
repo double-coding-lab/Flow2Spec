@@ -1,6 +1,6 @@
 ---
 id: flow2spec-dsh-adapter
-revision: 1
+revision: 2
 summary: "DeepSeek Harness 项目级技能初始化与目录适配"
 primary: feature
 confidence: inferred
@@ -17,7 +17,8 @@ tags: [module]
 - `flow2spec init dsh` 将 Flow2Spec 技能复制到 `.dsh/skills/<skill-name>/SKILL.md`。
 - 将模板规则长文镜像到 `.dsh/topics/*.md`，并写入 `.dsh/AGENTS.md` 目录指针。
 - 根目录没有 `AGENTS.md` 时生成 Harness 兼容的完整入口；已有入口不会被覆盖。
-- 原生 Cordis 插件不在本适配范围内，属于后续路线图事项。
+- 原生 Cordis 插件已落地：独立仓 [Flow2Spec-DeepSeek-Harness](https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness)，npm 包 `@double-coding/flow2spec-deepseek-harness`。
+- `flow2spec init dsh` 仍作为未安装原生插件时的项目级兼容入口。
 
 ## 维护边界
 

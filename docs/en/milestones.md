@@ -3,13 +3,14 @@
 # Project Milestones
 
 > **Scope**: whole project  
-> **Updated**: `2026-08-04`
+> **Updated**: `2026-08-19`
 
 ## Overview
 
 | Stage | Time | Summary |
 | --- | --- | --- |
-| M28 · DeepSeek Harness project skill adapter | 2026-08-14 | Added `flow2spec init dsh`, distributing Flow2Spec skills to `.dsh/skills/`, mirroring rules to `.dsh/topics/`, and adapting the repository-root `AGENTS.md` entry; native Cordis plugin work remains on the roadmap |
+| M29 · DeepSeek Harness native plugin | 2026-08-19 | Core shipped host-neutral resource and update-check APIs; the [Flow2Spec-DeepSeek-Harness](https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness) repo published the `@double-coding/flow2spec-deepseek-harness` native Cordis plugin |
+| M28 · DeepSeek Harness project skill adapter | 2026-08-14 | Added `flow2spec init dsh`, distributing Flow2Spec skills to `.dsh/skills/`, mirroring rules to `.dsh/topics/`, and adapting the repository-root `AGENTS.md` entry; remains the fallback when the native plugin is not installed |
 | M27 · npm org rename typo fix & migration | 2026-08-04 | Fixed npm org name typo codeing → coding; new package published as @double-coding/flow2spec 3.2.11; legacy @double-codeing/flow2spec 3.2.10 farewell release + npm deprecate all versions; README/CLI added bilingual migration notice; f2s-kb-upgrade Step -1 added D branch for automatic org rename migration (legacy pkg only) |
 | M26 · Automated knowledge merge engine and collaboration hardening | 2026-08 | Added five `flow2spec kb` commands, structured deltas, topic-revision optimistic locking, and an automatic skill merge path; tightened developerId fallbacks and blank-content validation; version reached 3.2.8 |
 | M25 · Per-developer task isolation | 2026-07 | Added collaboration settings and developerId resolution, isolating personal progress under separate task roots while retaining one shared knowledge base |
@@ -37,6 +38,20 @@
 | M3 · .Knowledge machine-readable routing | 2026-05-08 | Introduced .Knowledge, manifest-routing.json, topics and matchers; match→expand→verify→act chain; config preflight and KB preflight rules |
 | M2 · OpenSpec removal and f2s skills | 2026-04-23 | Removed OpenSpec/opsx; converted to f2s skill workflow; requirements clarification and technical proposal generation established |
 | M1 · CLI bootstrap and OpenSpec workflow | 2026-02 ~ 2026-04 | Flow2Spec started as an installable CLI; early AI collaboration organized around OpenSpec/opsx change flows |
+
+## M29 · DeepSeek Harness Native Plugin
+
+- Published the native Cordis plugin `@double-coding/flow2spec-deepseek-harness` from [Flow2Spec-DeepSeek-Harness](https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness)
+- The plugin calls Flow2Spec Core inside the Harness process and does not copy the CLI, skills, or knowledge algorithms
+- Loads project `.Knowledge/` and `f2s-*` skills through Cordis lifecycle hooks; adds status / init / doctor / route / kb / update commands and a workspace settings card
+- Core `3.4.x` added `resources.skillCatalog()`, `resources.unifiedEntry()`, and `update.check()` for native hosts
+- `flow2spec init dsh` remains the project-level fallback when the plugin is not installed
+
+## M28 · DeepSeek Harness Project Skill Adapter
+
+- Added `flow2spec init dsh` to write Flow2Spec skills to `.dsh/skills/<skill-name>/SKILL.md`
+- Mirrored long-form rules to `.dsh/topics/` and wrote the `.dsh/AGENTS.md` directory pointer
+- Generated a Harness-compatible root `AGENTS.md` only when missing; existing entries are preserved
 
 ## M27 · npm Org Rename Typo Fix & Migration
 
