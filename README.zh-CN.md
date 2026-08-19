@@ -27,7 +27,9 @@ Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在�
 
 ```bash
 npx @double-coding/flow2spec@latest init
-# DeepSeek Harness 项目：
+# DeepSeek Harness 原生插件：
+# https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness
+# 未装插件时的项目级适配：
 flow2spec init dsh
 ```
 
