@@ -1,0 +1,49 @@
+templates/en-US/skills/f2s-kb-upgrade/SKILL.md
+  s_4aa8b6fa31b85e::t_5f4add16120b61 3
+  s_4aa8b6fa31b85e::t_76acfee22db695 154
+  s_4aa8b6fa31b85e::t_b140019fb7be52 47
+  s_4aa8b6fa31b85e::t_e0c3a97fe8b36e 355
+  s_4aa8b6fa31b85e::t_30fbbf9eafec5f 55,57,59-68
+  s_4aa8b6fa31b85e::t_e6711c1c932149 138,144
+templates/zh-CN/rules/f2s-flow2spec-unified-entry.md
+  s_4aa8b6fa31b85e::t_34764b8acd22e7 108
+  s_4aa8b6fa31b85e::t_944b8a7d4281ab 100,102
+templates/zh-CN/rules/f2s-topic-authoring.md
+  s_4aa8b6fa31b85e::t_8883f78ccc985c 18
+templates/en-US/rules/f2s-topic-authoring.md
+  s_4aa8b6fa31b85e::t_7819e1d6cab658 19
+templates/zh-CN/skills/f2s-kb-upgrade/SKILL.md
+  s_4aa8b6fa31b85e::t_aeb5ea0d8e98ea 355
+  s_4aa8b6fa31b85e::t_803819db87e372 55,57,59-68
+  s_4aa8b6fa31b85e::t_ab3ba5cac5dbd4 3
+  s_4aa8b6fa31b85e::t_c67d540487e96d 47
+  s_4aa8b6fa31b85e::t_e7d622e53673e5 138,144
+  s_4aa8b6fa31b85e::t_91c26d043583d3 154
+templates/zh-CN/hooks/f2s-update-check.js
+  s_4aa8b6fa31b85e::t_a6211e6795cb20 7
+  s_4aa8b6fa31b85e::t_60d4b9f18cab0f 44,49-50
+templates/en-US/hooks/f2s-update-check.js
+  s_4aa8b6fa31b85e::t_176ef454cb59aa 7
+  s_4aa8b6fa31b85e::t_8ed2e8cca85e37 44,49-50
+packages/core/lib/updateCheck.js
+  s_4aa8b6fa31b85e::t_d49355ab8aeb8e 63,65
+templates/en-US/rules/f2s-flow2spec-unified-entry.md
+  s_4aa8b6fa31b85e::t_dadc3db4251c8d 102,108
+  s_4aa8b6fa31b85e::t_97355d6ec4751e 100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "ae7729df8aab7554e85a10953f10a88f10b44610",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "claude-fable-5"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
