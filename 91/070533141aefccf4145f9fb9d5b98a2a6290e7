@@ -1,0 +1,33 @@
+.cursor/skills/repo-dev-check/SKILL.md
+  s_4aa8b6fa31b85e::t_31d2ea70cb4f6b 56
+.codex/skills/repo-dev-check/SKILL.md
+  s_4aa8b6fa31b85e::t_31d2ea70cb4f6b 56
+.codex/topics/repo-dev-workflow-constraints.md
+  s_4aa8b6fa31b85e::t_1f963234278f6d 21-39,139,152
+.claude/rules/repo-dev-workflow-constraints.md
+  s_4aa8b6fa31b85e::t_fe8ae0b1239013 21-39
+  s_4aa8b6fa31b85e::t_55923a6d6646a6 139
+  s_4aa8b6fa31b85e::t_d45f54a1e6f133 152
+.Knowledge/topics/f2s-dev-workflow-constraints.md
+  s_4aa8b6fa31b85e::t_ac4204c824d252 3,10,14,16,18-20,24,26-28,30-36,57,62,64-65,70-72
+.claude/skills/repo-dev-check/SKILL.md
+  s_4aa8b6fa31b85e::t_655e7a3ed2615a 56
+.cursor/rules/repo-dev-workflow-constraints.mdc
+  s_4aa8b6fa31b85e::t_1f963234278f6d 21-39,139,152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "91070533141aefccf4145f9fb9d5b98a2a6290e7",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
