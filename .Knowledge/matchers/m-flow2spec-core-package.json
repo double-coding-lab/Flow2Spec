@@ -1,0 +1,17 @@
+{
+  "includeAny": [
+    "flow2spec-core",
+    "core 包",
+    "包结构",
+    "workspace 包",
+    "包拆分",
+    "原生插件 API",
+    "createFlow2Spec",
+    "legacy shim",
+    "模板真源",
+    "CLI 依赖 core"
+  ],
+  "id": "m-flow2spec-core-package",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1"
+}

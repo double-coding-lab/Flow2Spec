@@ -21,7 +21,6 @@
 | `/f2s-kb-distill` | Extract reusable knowledge facts from Q&A and auto-commit to knowledge base | KB Maintenance |
 | `/f2s-kb-sync` | Sink implemented capabilities from the conversation into the knowledge base | KB Maintenance |
 | `/f2s-kb-merge` | Resolve knowledge base conflicts after a Git merge | KB Maintenance |
-| `/f2s-kb-migrate` | One-time migration of a legacy knowledge base to `.Knowledge/` | KB Maintenance |
 | `/f2s-kb-upgrade` | Upgrade knowledge base template, align manifest + matchers shards | KB Maintenance |
 
 The table above lists conversation-triggered `/f2s-*` skills. The repository also provides shell commands: `flow2spec kb status / check / plan / apply / build` handles collaborative knowledge merges (see [§ 7](#7-flow2spec-kb-cli-for-collaborative-merges)), while `flow2spec doctor` performs a read-only project health check (see [§ 8](#8-flow2spec-doctor-project-health-check)).
@@ -502,47 +501,11 @@ The table above lists conversation-triggered `/f2s-*` skills. The repository als
 
 ---
 
-### `f2s-kb-migrate`
-
-**Purpose**: Migrates an old-format knowledge base (`docs-index.md` + `rules/` pattern) into the `.Knowledge/` structure organized by topic.
-
-**How It Works**: Uses the legacy `docs-index.md` and `rules/main.md(c)` as index clues, recursively finds all referenced business rules and skill files, and reorganizes by topic into `.Knowledge/` (`topics` / `stock-docs` / `req-docs`). After migration, persist `migration-report.md` (mapping table + proposed deletion paths), then clean up old files after user confirmation. A one-time structural merge of scattered rules/docs into one knowledge base.
-
-**Use Cases**:
-- Upgrading an old project to the new Flow2Spec version
-- An existing knowledge base needs structured reorganization
-
-**Relationships**:
-- **Prerequisite**: Old-format knowledge base (`docs-index.md`, `rules/`, `skills/`)
-- **Next Step**: `f2s-kb-upgrade` (**Flow V1**: old knowledge base must migrate first, then upgrade; **Current V2+ knowledge base** (including npm v3.x): see the upgrade skill Step 0)
-- **Flow**:
-  1. Use `docs-index.md` + `rules/main.md(c)` as the primary index
-  2. Process all business `rules/` and business `skills/` in full (excluding `f2s-*` package skills)
-  3. Migrate all `stock-docs`/`req-docs`
-  4. Persist `.Knowledge/migration-report.md`
-  5. Delete migrated old files after user confirmation
-
-**Sub-Agent Invocation**:
-- `subAgent: false` (default): The main agent migrates topic by topic
-- `subAgent: true`: Sub-agents only handle migration + draft migration-report fragments (delivered as patches); status files (migration-report.md, deletion execution records) are exclusively persisted by the main agent; the main agent leads the deletion confirmation and closure
-
-**Responsibility Matrix**:
-| Role | Responsibilities |
-|------|-----------------|
-| Main Agent | Creates migration plan, consolidates migration results, persists migration-report, leads deletion confirmation and execution closure |
-| Sub-Agent | Handles topic migration and draft fragment generation (patch format) for designated topics; does not write status files or deletion execution records |
-
-**Cross-Verification (when `switchAgentVerification: true`)**:
-- Topics migrated and persisted by sub-agents -> Main agent verifies migration completeness (whether old paths are fully covered, whether topic boundaries overlap)
-- Only effective when `subAgent: true` and sub-tasks are actually dispatched; otherwise all verification happens within the main agent
-
----
-
 ### `f2s-kb-upgrade`
 
 **Purpose**: Knowledge base template upgrade. Aligns manifest-routing and matchers shards.
 
-**How It Works**: Uses "version branching + delegated init" — detect whether the current knowledge base is V1 (legacy structure, migrate first) or V2+ (already has `.Knowledge`): V1 runs migrate then init; V2+ runs `flow2spec init` directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone `init`, `kb-upgrade` includes version routing and re-run logic; `init` alone is a one-shot structural fill-in.
+**How It Works**: Uses "version branching + delegated init" — detect whether the current knowledge base is V1 (legacy structure) or V2+ (already has `.Knowledge`): V1 no longer has built-in migration support — the skill stops and tells the user how to proceed (one-time migration with a historical package version, or manual move into `.Knowledge`); V2+ runs `flow2spec init` directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone `init`, `kb-upgrade` includes version routing and re-run logic; `init` alone is a one-shot structural fill-in. For **non-topic version updates** (`projectRev == pkgRev` after init), the agent may directly run `flow2spec init` on the user's behalf without entering this skill's full flow.
 
 **Use Cases**:
 - After a `flow2spec` package version upgrade, upgrade the project knowledge base template
@@ -552,12 +515,12 @@ The table above lists conversation-triggered `/f2s-*` skills. The repository als
 - When Codex detects an older knowledge-base version through `.codex/hooks.json` on `SessionStart`, it prompts you to execute this skill (new or changed hooks must be trusted through `/hooks` first)
 
 **Relationships**:
-- **Prerequisite**: `f2s-kb-migrate` (V1 flow) or an existing `.Knowledge/`
+- **Prerequisite**: an existing `.Knowledge/` (legacy V1 structures no longer have automatic migration support)
 - **Includes**: Internally invokes `flow2spec init` for structural alignment
 - **Note**: A standalone `flow2spec init` is **not** an upgrade command
 
 **Flow Differences (in-skill routing codes, **not** equivalent to npm major versions)**:
-- **V1**: First `f2s-kb-migrate`, then runs `flow2spec init`
+- **V1**: Built-in migration is no longer available; the skill stops and tells the user how to proceed (one-time migration with a historical package version / manual move into `.Knowledge`)
 - **Current Knowledge Base (V2+)**: When `.Knowledge` + `manifest-routing` are already stable, runs `flow2spec init` to align manifest-routing + matchers shards (**includes Flow2Spec npm v3.x, etc.**; see `skills/f2s-kb-upgrade/SKILL.md` Step 0 for details)
 
 **Sub-Agent Invocation**:

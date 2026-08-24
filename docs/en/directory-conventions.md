@@ -23,7 +23,7 @@ See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 | `.Knowledge/index.md` | Human-readable index |
 | `.Knowledge/manifest-routing.json` | **L0** Machine-readable routing skeleton (task/topic/`topicDependencies`/`topicMetadata`) |
 | `.Knowledge/matchers/*.json` | **L1** Keyword fragments (`id/includeAny`); **match** reads one shard via `matcherPath` |
-| `.Knowledge/migration-report.md` | Migration comparison table and deletion path list written by `f2s-kb-migrate` |
+| `.Knowledge/migration-report.md` | Migration comparison table and deletion path list written by the historical `f2s-kb-migrate` skill (removed from the package; existing files may be kept) |
 | `.task/` | Local change-tracking state, ignored by Git by default. In collaboration mode it has an extra `<developerId>/` layer; see “The two `.task/` layouts” below. It is created only when `changeTracking.*` is `true` or `f2s-req-plan` is explicitly invoked. |
 | `Config Root/rules/` | Rule files (Cursor `.mdc`, Claude `.md`) |
 | `Config Root/skills/` | Skill definitions (`SKILL.md`) |
