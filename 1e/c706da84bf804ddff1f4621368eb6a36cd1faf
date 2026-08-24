@@ -1,0 +1,35 @@
+packages/core/templates/en-US/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 2
+packages/core/templates/zh-CN/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 2
+.Knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 2
+packages/core/package.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 3
+templates/en-US/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 2
+packages/cli/package.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 3,23
+templates/zh-CN/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 2
+package-lock.json
+  ai_agent 3,9,15,31,34,45
+package.json
+  s_4aa8b6fa31b85e::t_9837f6ef535a79 4,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "1ec706da84bf804ddff1f4621368eb6a36cd1faf",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
