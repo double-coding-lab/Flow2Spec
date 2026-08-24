@@ -1,0 +1,67 @@
+.Knowledge/index.md
+  s_4aa8b6fa31b85e::t_a292da4bd98779 42
+.Knowledge/matchers/m-flow2spec-core-package.json
+  s_4aa8b6fa31b85e::t_0156f4121e2bf2 1-17
+packages/core/templates/en-US/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 2
+.Knowledge/stock-docs/flow2spec架构说明_终稿.md
+  s_4aa8b6fa31b85e::t_71ab2ed987bb40 90-91
+docs/en/architecture.md
+  s_4aa8b6fa31b85e::t_c1bd2a2de7c065 82
+docs/命令说明.md
+  s_4aa8b6fa31b85e::t_fabba754bd8c14 590
+  s_4aa8b6fa31b85e::t_57d927dd14d6cd 603
+  s_4aa8b6fa31b85e::t_ae2fd533b1bcf5 609
+docs/使用说明.md
+  s_4aa8b6fa31b85e::t_0019245a4d8f7e 120-122,125
+docs/目录与路径约定.md
+  s_4aa8b6fa31b85e::t_f5eeb2af171243 26
+.Knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 2
+  s_4aa8b6fa31b85e::t_acc7f6dc179892 35-36
+  s_4aa8b6fa31b85e::t_44092f60f479e1 167-174
+  s_4aa8b6fa31b85e::t_80bc67328cfd11 262-265
+packages/cli/package.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 3,23
+templates/en-US/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 2
+docs/en/commands-reference.md
+  s_4aa8b6fa31b85e::t_574f2515a7eb20 518
+  s_4aa8b6fa31b85e::t_aaa4cc0c3ea783 508
+  s_4aa8b6fa31b85e::t_42615207067190 523
+docs/en/directory-conventions.md
+  s_4aa8b6fa31b85e::t_abe1b07893703e 26
+docs/体系与原理.md
+  s_4aa8b6fa31b85e::t_8a73cec4736023 84
+docs/en/usage-guide.md
+  s_4aa8b6fa31b85e::t_5fdabc9169c48d 133-135,138
+packages/core/templates/zh-CN/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 2
+package.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 4,21-22
+  s_4aa8b6fa31b85e::t_b03fbde0277a42 23
+package-lock.json
+  ai_agent 3,9,14-16,31,34,45
+templates/zh-CN/knowledge/manifest-routing.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 2
+.Knowledge/topics/flow2spec-core-package.md
+  s_4aa8b6fa31b85e::t_0b2404f00e6feb 1-27
+packages/core/package.json
+  s_4aa8b6fa31b85e::t_97296a1640ac80 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "2dea8df77a118a0c5181e6a512dedc15e34621f0",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "claude-fable-5"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
