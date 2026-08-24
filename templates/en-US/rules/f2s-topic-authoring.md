@@ -16,7 +16,7 @@ This rule is touched when any of the following is true:
 - Add, delete, or adjust `manifest-routing.topicMetadata`;
 - Add, delete, or adjust dependency edges in `manifest-routing.topicDependencies`;
 - Add a reference to a topic id in `taskToTopicRules[].topics`;
-- Delete or migrate a topic (`f2s-kb-rm` / `f2s-kb-migrate` / `f2s-kb-upgrade`).
+- Delete or migrate a topic (`f2s-kb-rm` / `f2s-kb-upgrade`).
 
 ## 1. Topic Naming
 

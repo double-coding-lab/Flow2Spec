@@ -39,7 +39,6 @@ When the user input **clearly triggers** one of the following operational intent
 | 新增规则、口述规则、把这条记到知识库; add rule, spoken rule, record this in the KB | `f2s-kb-addRules` |
 | 生成项目上下文、终稿生成上下文; generate project context, generate context from final draft | `f2s-kb-build` |
 | 合并上下文冲突、解决知识库冲突; merge context conflict, resolve KB conflict | `f2s-kb-merge` |
-| 知识库迁移、旧版迁移; knowledge-base migration, legacy migration | `f2s-kb-migrate` |
 | 删除项目上下文; delete project context | `f2s-kb-rm` |
 | 知识库模板升级、知识库升级、一键升级迁移; KB template upgrade, KB upgrade, one-click upgrade migration | `f2s-kb-upgrade` |
 | 项目架构说明、架构初稿; project architecture description, architecture draft | `f2s-doc-arch` |
