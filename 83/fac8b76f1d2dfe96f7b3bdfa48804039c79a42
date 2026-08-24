@@ -1,0 +1,19 @@
+.uniai-project.json
+  s_4aa8b6fa31b85e::t_c900d956387afb 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "83fac8b76f1d2dfe96f7b3bdfa48804039c79a42",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "claude-fable-5"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
