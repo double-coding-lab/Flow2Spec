@@ -1,7 +1,7 @@
 {
   "name": "flow2spec-workspace",
   "private": true,
-  "version": "3.5.0",
+  "version": "3.4.2",
   "description": "Flow2Spec workspace for the Core library and CLI packages",
   "workspaces": [
     "packages/core",
@@ -20,6 +20,6 @@
     "tag:version": "node scripts/git-tag-version.js"
   },
   "dependencies": {
-    "@double-coding/flow2spec-core": "^3.5.0"
+    "@double-coding/flow2spec-core": "^3.4.2"
   }
 }
