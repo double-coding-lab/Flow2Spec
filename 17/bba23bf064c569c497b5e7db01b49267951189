@@ -1,0 +1,19 @@
+package.json
+  s_4aa8b6fa31b85e::t_172dfc58750f53 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "17bba23bf064c569c497b5e7db01b49267951189",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
