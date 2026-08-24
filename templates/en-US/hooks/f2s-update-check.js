@@ -4,7 +4,7 @@
  * flow2spec SessionStart hook — checks for version updates on the first conversation each day.
  * Compares the local knowledge-base manifest-routing.json version with the latest npm version:
  *   - Same or local is newer -> exit silently
- *   - Behind -> inject one notice into Agent context (suggest running f2s-kb-upgrade)
+ *   - Behind -> inject a notice into Agent context (the agent may run flow2spec init directly; use f2s-kb-upgrade only for topic-layer changes)
  * If already checked and no upgrade is needed, stay silent; if already checked and an upgrade is still needed, keep injecting the reminder in each new session.
  * Written by flow2spec init to the corresponding agent's hooks/f2s-update-check.js.
  */
@@ -41,11 +41,13 @@ function getProjectName() {
 }
 
 function buildNotice(latestNpm, manifestVersion) {
-  const userMsg = `📦 [flow2spec] The current project "${getProjectName()}" knowledge-base version is v${manifestVersion}, which is lower than the latest package version v${latestNpm}. You can run the f2s-kb-upgrade skill to align templates and routing.`;
+  const userMsg = `📦 [flow2spec] The current project "${getProjectName()}" knowledge-base version is v${manifestVersion}, which is lower than the latest package version v${latestNpm}. I can run flow2spec init on your behalf to complete the update; if this update includes topic-layer changes, run the full f2s-kb-upgrade flow afterwards.`;
   return [
     `[flow2spec/agent-instruction] At the start of this response, you must relay the following upgrade notice to the user verbatim. Do not omit it or skip it after only internal judgment:`,
     ``,
     userMsg,
+    ``,
+    `[flow2spec/agent-instruction] After relaying, you may directly run \`flow2spec init <initialized agents, e.g. claude cursor codex>\` on the user's behalf to complete the update; the user does not need to run f2s-kb-upgrade manually. After init succeeds, read .Knowledge/manifest-routing.json: if projectRev equals pkgRev (a non-topic version update), the update is complete — delete .Knowledge/update-check.json; if they differ (the update includes topic-layer changes), continue with the full f2s-kb-upgrade skill flow (you may start from its step 2c without re-running init).`,
   ].join('\n');
 }
 

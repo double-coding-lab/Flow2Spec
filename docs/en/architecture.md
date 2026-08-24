@@ -79,7 +79,7 @@ Codex does not read the `rules/` directory; execution constraints are carried th
 - Maintenance chain: `f2s-kb-fix` / `f2s-kb-feat` / `f2s-kb-sync` / `f2s-kb-merge`
 - Requirements planning chain: `f2s-req-plan` (planning + implementation, always creates task checklist)
 - Change tracking chain: `changeTracking.*` config -> `f2s-task` rules (automatic) -> `.task/` task checklist -> cross-session continuation
-- Package template/routing shape alignment with config root: `f2s-kb-upgrade` (**do not** equate running `flow2spec init` alone with "knowledge base upgrade"); migrate legacy repo structure into `.Knowledge`: `f2s-kb-migrate`
+- Package template/routing shape alignment with config root: `f2s-kb-upgrade` (**do not** equate running `flow2spec init` alone with "knowledge base upgrade"; for non-topic version updates the agent may directly run `flow2spec init` to complete the alignment)
 
 The documentation curation chain produces two document types:
 

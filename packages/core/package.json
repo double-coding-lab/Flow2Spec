@@ -1,6 +1,6 @@
 {
   "name": "@double-coding/flow2spec-core",
-  "version": "3.4.1",
+  "version": "3.5.0",
   "description": "Flow2Spec Core APIs, knowledge engine, project initialization and shared resources",
   "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
   "repository": {

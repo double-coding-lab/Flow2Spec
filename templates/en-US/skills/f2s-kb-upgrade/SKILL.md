@@ -1,6 +1,6 @@
 ---
 name: f2s-kb-upgrade
-description: Knowledge-base template upgrade skill (this SKILL only): **V1 flow branch** must run f2s-kb-migrate first, then run flow2spec init inside the workflow; **current repositories (flow branch V2+, including Flow2Spec npm v3.x projects already using .Knowledge)** run init to align manifest-routing + matcher shards (package `manifest-matchers.json` is only an init merge seed and is not written into .Knowledge). Triggers: f2s-kb-upgrade、一键升级迁移、旧项目升级、知识库模板升级、upgrade knowledge base、template upgrade. Note: do not call standalone flow2spec init an "upgrade command"; **V1/V2+ are flow-branch labels inside this skill, not npm package major versions**.
+description: Knowledge-base template upgrade skill (this SKILL only): **current repositories (flow branch V2+, including Flow2Spec npm v3.x projects already using .Knowledge)** run init to align manifest-routing + matcher shards (package `manifest-matchers.json` is only an init merge seed and is not written into .Knowledge); **non-topic version updates** (projectRev == pkgRev after init) can be completed by the agent directly running flow2spec init, without entering this skill's full flow; **legacy layouts (flow branch V1) no longer have built-in migration support** (f2s-kb-migrate has been removed from the package). Triggers: f2s-kb-upgrade、旧项目升级、知识库模板升级、upgrade knowledge base、template upgrade. Note: do not call standalone flow2spec init an "upgrade command"; **V1/V2+ are flow-branch labels inside this skill, not npm package major versions**.
 ---
 
 > Execution scope: this skill is used to "run shell for the user" to complete Flow2Spec **template and configuration-root alignment as defined by this SKILL**. One step runs **`flow2spec init`**, but **`init` is not an "upgrade command"**. **Upgrade command / knowledge-base upgrade** refers only to the **full `f2s-kb-upgrade` workflow**.
@@ -44,7 +44,7 @@ description: Knowledge-base template upgrade skill (this SKILL only): **V1 flow 
 - The meaning of `subAgent` / `switchAgentVerification` uses the unified entry as the only source of truth: **Cursor/Claude** read the configuration-root `rules/f2s-flow2spec-unified-entry.*`; **Codex** reads `.codex/topics/f2s-flow2spec-unified-entry.md` (same source, mirrored by `flow2spec init`). This section does not repeat those definitions.
 - **Sub-agent responsibility** (only when `subAgent=true`): run shell commands such as `flow2spec init`; only command execution is delegated, not knowledge-base body writing.
 - **Main agent must control** (must not delegate):
-  1. **Version branching**: **V1** runs `f2s-kb-migrate` first, then enters this skill; **current repositories (V2+)** directly enter the `init` flow (including Flow2Spec **npm v3.x** etc.; as long as step 0 "current repository" conditions are met, use this branch. **Do not** create a separate flow just because the package major version is 3).
+  1. **Version branching**: **V1 (legacy layout)** no longer supports automatic migration — on a hit, stop this skill and tell the user how to proceed (see step 0); **current repositories (V2+)** directly enter the `init` flow (including Flow2Spec **npm v3.x** etc.; as long as step 0 "current repository" conditions are met, use this branch. **Do not** create a separate flow just because the package major version is 3).
   2. **Re-read after `init`**: re-read `f2s-kb-upgrade/SKILL.md` from disk and compare whether the identifier changed.
   3. **Rerun the whole skill**: when SKILL changed, rerun from the beginning according to the new literal text until two consecutive rounds show no changes.
   4. **Step 3b merge**: preserve the maintained section of `.Knowledge/index.md` and merge with the package version; main agent performs this.
@@ -52,15 +52,20 @@ description: Knowledge-base template upgrade skill (this SKILL only): **V1 flow 
 - **Write-authority hard rule**: `.Knowledge/index.md` is **written only by the main agent**; sub-agents **must not touch it**. `manifest-routing.json` is also written by main.
 - This SKILL does not bind cross-agent verification; the writing side verifies its own work.
 
-## Why this coexists with `f2s-kb-migrate`
+## Non-topic version updates: the agent may run `init` directly (no need to enter this skill)
 
-| Skill | Problem solved |
-| --- | --- |
-| **`f2s-kb-migrate`** | **Structural move**: `docs-index.md` / `index-doc.md`, `rules/main.md(c)`, business `skills/`, scattered `stock-docs`/`req-docs` -> **migrate into `.Knowledge`**, write `migration-report.md`, and confirm deletion list with the user. It does not run npm package upgrade. |
-| **This skill `f2s-kb-upgrade`** | **Package and template alignment**: run **`flow2spec init`**, merge **`manifest-routing.json`** with **`matchers/*.json`**, refresh each agent's **`rules`/`skills`** (or Codex **`AGENTS.md`**); `init` also copies the current-language **`index.md` -> `.Knowledge/template/index.template.md`** as a comparison snapshot. **`.Knowledge/index.md`** is diff-aligned in step 3b; init **does not** automatically change its body. |
+When the version check reports "knowledge-base version is lower than the latest package version", the agent may **directly run** `flow2spec init <initialized agents>` on the user's behalf to complete the update:
 
-- **One-click closure for old projects**: **first `f2s-kb-migrate`** -> **then this skill** (`init`). Do not use only `init` as a substitute for full migration.
-- **Projects already using new `.Knowledge`**: **run only this skill**; do not repeat migrate.
+- After `init`, read the project-side `.Knowledge/manifest-routing.json`: if `projectRev` **equals** `pkgRev` (a non-topic version update) -> the update is complete, delete `.Knowledge/update-check.json`, **no need to enter this skill**;
+- If they **differ** (topic-layer changes included) -> enter this skill's full flow (judge from step 2c, without re-running `init`).
+- This path uses the same judgment as this skill's step 2c "fast path"; when the user explicitly asks for a "full flow / reset", still execute this skill in full.
+
+## Legacy layouts (V1) no longer have built-in migration
+
+`f2s-kb-migrate` has been removed from the package; automatic migration of legacy knowledge organization is no longer supported. When step 0's V1 signals hit, this skill **stops** and tells the user two ways to proceed:
+
+1. Use a historical package version that still ships `f2s-kb-migrate` (npm `@double-coding/flow2spec@3.4.x` or earlier) to perform the one-time migration, then come back to the latest version and run this skill;
+2. Manually move legacy rules, business skills, and scattered `stock-docs` / `req-docs` into the `.Knowledge` shape, then run this skill.
 
 **Why does each configured client directory have a same-named `SKILL.md`?**
 Each client only loads `skills/` under **its own configuration root**. `flow2spec init` writes the current-language skill content into the selected agent directories.
@@ -130,13 +135,13 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 
 > **Naming note**: **"V1"** and **"current repository (V2+)"** below are **flow-branch labels inside this skill**. If the **npm package is v3.x, v4.x, ...** and the repository is already in `.Knowledge` + `manifest-routing` shape, still use the **"current repository (V2+)"** branch (only `init` alignment). **Do not** interpret the npm major version number as the literal "V2" here.
 
-**V1 - Legacy knowledge organization (must migrate before init)**  
+**V1 - Legacy knowledge organization (built-in migration no longer available)**  
 Hit **any** strong signal:
 
 - The configuration root still has **`docs-index.md` or `index-doc.md`**, and mostly still closes through **`rules/main.md` / `rules/main.mdc`**; or
 - Business **`stock-docs` / `req-docs`, rules, and business skills** are still mainly in the old configuration-root tree and are **not** stably under `.Knowledge`.
 
-**Action**: first execute the full **`f2s-kb-migrate`** workflow (including `migration-report` and deletion-list confirmation), **then** enter steps 1-5 to execute `flow2spec init`.
+**Action**: **stop this skill** and tell the user the two ways to proceed per "Legacy layouts (V1) no longer have built-in migration" above (one-time migration with a historical package version / manual move into `.Knowledge`); **do not** continue steps 1-5 on a V1 layout.
 
 **Current repository (V2+) - Already on `.Knowledge` + new routing (package/shape alignment only)**  
 Both conditions are met:
@@ -146,7 +151,7 @@ Both conditions are met:
 
 **Historical wording**: if the repository still has legacy single-file **`manifest.json`**, **do not** use it as the machine-readable source of truth; machine reading uses **`manifest-routing.json` + `matchers/*.json` pointed to by `matcherPath`**. `init` handles merge/backfill of shards with the template.
 
-**Action**: directly enter steps 1-5; **no** migrate is needed unless the user explicitly asks to redo migration.
+**Action**: directly enter steps 1-5.
 
 ### Step 1: Confirm `init` Mode Inside This Skill (Required)
 
@@ -347,7 +352,7 @@ Output:
 ## Completion Self-Check
 
 1. **Step -1** was performed: before entering step 0, **3 foreground probes** were run sequentially (`flow2spec --version` / `npm view ... version` / `npx` availability) and one of the A/B/C branches was determined. Only under B/C did an **independent sub-agent** get dispatched to run `npm i -g @double-coding/flow2spec@latest` in the background (fire-and-forget); under A **no upgrade action** was dispatched. Step 2's default command form was chosen accordingly (A → `flow2spec init`, B/C → `npx @latest init`); the summary clearly states the branch and version comparison.
-2. **Step 0** was performed: V1 did not skip migrate, and **current repositories (V2+)** did not incorrectly run migrate.
+2. **Step 0** was performed: on V1 the skill stopped and told the user how to proceed, and **current repositories (V2+)** entered the `init` flow normally.
 3. **Before step 2** recorded the project-side `projectRev` (`projectRev`), and **after step 2 `init`** re-read `pkgRev` and executed **step 2c** judgment.
 4. After **step 2 `init`**, **`f2s-kb-upgrade/SKILL.md`** was re-read: on full flow, a change must trigger **a rerun from step 2c per the new literal text** (**no second `init`**); on fast path, the loop can be skipped (see "init and skill self-update" / "fast-path exception").
 5. A shell command was actually executed, not only suggested.
