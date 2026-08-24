@@ -1,0 +1,28 @@
+package.json
+  s_4aa8b6fa31b85e::t_a7dec50fbe7804 14,19-20,23
+packages/cli/package.json
+  s_4aa8b6fa31b85e::t_a7dec50fbe7804 25-27
+scripts/sync-versions.js
+  s_4aa8b6fa31b85e::t_0884fe202a935e 1-89
+scripts/git-tag-version.js
+  s_4aa8b6fa31b85e::t_d71ed8c76d44ed 61
+  s_4aa8b6fa31b85e::t_a7dec50fbe7804 3-14,18,20-21,23-24,27-33,36-50,54-60,62-67,69,74,76,79,82-84
+packages/core/package.json
+  s_4aa8b6fa31b85e::t_a7dec50fbe7804 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "94a58b769467f0a2ec48c1e6cfa1c50e614ddb2c",
+  "prompts": {},
+  "sessions": {
+    "s_4aa8b6fa31b85e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9d0f3f8-03b1-4afd-8b76-c938276dfe88",
+        "model": "arn:aws:bedrock:us-west-2:296122126678:application-inference-profile/uxc50ltr1528"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
