@@ -18,6 +18,25 @@ description: Flow2Spec 项目开发纪律（仅本仓适用）：修改本仓时
 >
 > 三端配置根内容为同源手写副本；本仓内改动须**三端同步落盘**。
 
+## 模板双份关系（重要背景）
+
+本仓有两份 templates 目录，职责不同，**不能手工双写**：
+
+| 位置 | 角色 | 谁写 |
+| --- | --- | --- |
+| workspace 根 `templates/` | **唯一手写事实源**；日常改模板只改这里 | **人** / Agent |
+| `packages/core/templates/` | **npm 发布物副本**；`@double-coding/flow2spec-core` 打包时带上，运行时被 `packages/core/index.js` 用 `path.join(__dirname, "templates", ...)` 读取；不进 git | **`scripts/sync-core-templates.js` 自动生成** |
+
+为什么 core 必须有独立副本：`npm install @double-coding/flow2spec-core` 装到用户机器上时，只有 `packages/core/` 目录进入 tarball——workspace 根 templates 不在其中。core 包内必须自带一份 templates，否则用户 `flow2spec init` 会 `ENOENT` 崩溃。
+
+自动同步链路：
+
+- `packages/core/templates/` 已加入 `.gitignore`，不进 git。
+- `packages/core/package.json.scripts.prepack` 调用 `sync-core-templates.js`——`npm pack` / `npm publish` 前自动从根 templates 同步到 core templates，保证 tarball 完整。
+- 根 `package.json` 中 `sync:agents` / `test` / `pack:check` 都先跑一次同步（`--quiet` 静默模式），本地 dev 也不会碰到"core/templates 找不到"的启动错。
+- 想快速核对是否漂移：`npm run sync:core-templates:check`（不写盘，纯校验，退出码非零即有漂移）。
+- 想手动重新同步：`npm run sync:core-templates`。
+
 ## 硬约束一览
 
 | 约束 | 内容 |
@@ -117,6 +136,7 @@ flow2spec init codex claude cursor
 - `@double-coding/flow2spec-core` 面向 CLI 与原生插件开发者，维护独立的 `packages/core/README.md`，不复制主包的用户文档。
 - Core、CLI 与 workspace 根版本保持一致，CLI 对 Core 的依赖固定为同一版本。
 - 发布前执行 `npm run pack:check` 与 `node scripts/test-package-install.js`；安装测试必须从 CLI tarball 解出 `package/README.md` 并与根 README 比较，防止 npm 页面退化为占位说明。
+- **core templates 门禁**：`packages/core/templates/` 是 npm 发布物副本，由 `scripts/sync-core-templates.js` 从根 `templates/` 生成，进入 `.gitignore` 不入库。`packages/core/package.json.scripts.prepack` 会在 `npm pack` / `npm publish` 前自动同步；`npm run sync:core-templates:check` 可用来手动核对是否漂移（CI 也建议跑一遍）。**禁止**在 `packages/core/templates/` 里直接手改文件——下次同步会覆盖；改模板一律回到根 `templates/`。
 
 ## 与其他规则的关系
 
@@ -129,3 +149,4 @@ flow2spec init codex claude cursor
 - 禁止把**本仓专属**规则 / 技能 / 主题写入 `templates/`（下游用不到，会造成噪音）。
 - 禁止 Agent 主动跑 `flow2spec init` / `npm run sync:agents` 分发；须由用户明确得令。
 - 禁止把本纪律当作「使用 flow2spec 的下游项目」的通用约束——**本文件仅针对 Flow2Spec 本仓自身的开发**。
+- **禁止手改 `packages/core/templates/`**——它是 `scripts/sync-core-templates.js` 从根 `templates/` 生成的副本，下次同步会被覆盖；改模板只改根 `templates/`。
