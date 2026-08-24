@@ -14,7 +14,7 @@ description: Flow2Spec 主题创作准则：topic 命名 / 骨架 / topicMetadat
 - 新增、删除或调整 `manifest-routing.topicMetadata`；
 - 在 `manifest-routing.topicDependencies` 中新增、删除或调整依赖边；
 - 在 `taskToTopicRules[].topics` 中新增引用某个 topic id；
-- 删除或迁移 topic（`f2s-kb-rm` / `f2s-kb-migrate` / `f2s-kb-upgrade`）。
+- 删除或迁移 topic（`f2s-kb-rm` / `f2s-kb-upgrade`）。
 
 ## 1. topic 命名
 

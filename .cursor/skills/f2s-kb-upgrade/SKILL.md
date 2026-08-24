@@ -1,6 +1,6 @@
 ---
 name: f2s-kb-upgrade
-description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V1** 须先 f2s-kb-migrate 再在流程内代跑 flow2spec init；**现行库（流程代号 V2+，含已用 .Knowledge 的 Flow2Spec npm v3.x 等项目）** 则代跑 init 以对齐 manifest-routing + matchers 分片（包内 `manifest-matchers.json` 仅作 init 合并种子，不落盘 .Knowledge）。触发：f2s-kb-upgrade、一键升级迁移、旧项目升级、知识库模板升级。注意：不要把单独的 flow2spec init 称作「升级命令」；**V1/V2+ 为技能内分流代号，不等于 npm 包主版本号**。
+description: 知识库模板升级技能（仅指本 SKILL）：**现行库（流程代号 V2+，含已用 .Knowledge 的 Flow2Spec npm v3.x 等项目）** 代跑 init 以对齐 manifest-routing + matchers 分片（包内 `manifest-matchers.json` 仅作 init 合并种子，不落盘 .Knowledge）；**非主题版本更新**（init 后 projectRev == pkgRev）可由 agent 直接代跑 flow2spec init 完成，无需进入本技能完整流程；**旧版布局（流程分流 V1）已不再内置迁移支持**（f2s-kb-migrate 已随包移除）。触发：f2s-kb-upgrade、旧项目升级、知识库模板升级。注意：不要把单独的 flow2spec init 称作「升级命令」；**V1/V2+ 为技能内分流代号，不等于 npm 包主版本号**。
 ---
 
 > 执行口径：本技能用于「代替用户跑 shell」完成 **按本 SKILL 定义的** Flow2Spec **模板与配置根对齐**；其中一步会代跑 **`flow2spec init`**，但 **`init` 不是「升级命令」**，**升级命令 / 知识库升级** 仅指 **`f2s-kb-upgrade` 本技能全流程**。
@@ -44,7 +44,7 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 - 两字段（`subAgent` / `switchAgentVerification`）语义以统一入口为唯一事实源：**Cursor/Claude** 读配置根 `rules/f2s-flow2spec-unified-entry.*`；**Codex** 读 `.codex/topics/f2s-flow2spec-unified-entry.md`（与上同源，`flow2spec init` 镜像）。本节不复述。
 - **子 agent 职责**（仅当 `subAgent=true`）：代跑 `flow2spec init` 等 shell 命令；仅承接命令执行，不承担知识库正文落盘。
 - **主必控**（主 agent 不可下放）：
-  1. **版本分流**：**V1** 先走 `f2s-kb-migrate` 再进入本技能；**现行库（V2+）** 直接进入 `init` 流程（含 Flow2Spec **npm v3.x** 等，只要已满足步骤 0 中「现行库」条件，均走此支，**勿**因主版本为 3 再单独设一套流程）。
+  1. **版本分流**：**V1（旧版布局）** 已不再支持自动迁移，命中即停止本技能并告知用户处理方式（见步骤 0）；**现行库（V2+）** 直接进入 `init` 流程（含 Flow2Spec **npm v3.x** 等，只要已满足步骤 0 中「现行库」条件，均走此支，**勿**因主版本为 3 再单独设一套流程）。
   2. **`init` 后重读**：从磁盘重读 `f2s-kb-upgrade/SKILL.md`，对比标识是否变化。
   3. **整技能重跑**：SKILL 有变化时，按新版字面从头再跑一轮，直至连续两轮无变化。
   4. **步骤 3b 融合**：`.Knowledge/index.md` 的维护区保留 + 包版对齐融合由主 agent 执行。
@@ -52,18 +52,23 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 - **写权硬约束**：`.Knowledge/index.md` **只由主 agent 落盘**，子 agent **不得触碰**；`manifest-routing.json` 同属主落盘。
 - 本 SKILL 不绑定交叉校验；落盘侧自验。
 
-## 与 `f2s-kb-migrate` 为何并存
+## 非主题版本更新：agent 可直接代跑 `init`（无需进入本技能）
 
-| 技能 | 解决的问题 |
-| --- | --- |
-| **`f2s-kb-migrate`** | **结构搬家**：`docs-index.md` / `index-doc.md`、`rules/main.md(c)`、业务 `skills/`、散落 `stock-docs`/`req-docs` → **迁入 `.Knowledge`**，落盘 `migration-report.md`、删除清单需用户确认。不代跑 npm 包升级。 |
-| **本技能 `f2s-kb-upgrade`** | **包与模板对齐**：代跑 **`flow2spec init`**，合并 **`manifest-routing.json`** 与 **`matchers/*.json`**，刷新各 agent **`rules`/`skills`**（或 Codex **`AGENTS.md`**）；`init` 另将当前语言的 **`index.md` → `.Knowledge/template/index.template.md`** 作对照快照，**`.Knowledge/index.md`** 由步骤 3b **diff 对齐**，init **不**自动改其正文。 |
+版本检查提示「知识库版本低于最新包版本」时，agent 可**直接替用户执行** `flow2spec init <已初始化的 agents>` 完成更新：
 
-- **旧项目一键闭环**：**先 `f2s-kb-migrate`** → **再本技能**（`init`）。禁止仅用 `init` 代替完整迁移。
-- **已是新版 `.Knowledge` 的项目**：**只跑本技能**，勿重复 migrate。
+- `init` 后读项目侧 `.Knowledge/manifest-routing.json`：`projectRev` 与 `pkgRev` **相等**（非主题版本更新）→ 更新完成，删除 `.Knowledge/update-check.json`，**无需进入本技能**；
+- 两者**不等**（包含主题层变更）→ 进入本技能完整流程（从步骤 2c 起判定，不重复 `init`）。
+- 该路径与本技能步骤 2c「快速路径」同一判定口径；用户显式要求「完整流程 / 覆盖重置」时仍按本技能全文执行。
 
-**为何 Cursor / Claude / Codex 下各有一份同名 `SKILL.md`？**  
-各工具只加载**本配置根**下的 `skills/`（例如 Codex 仅 `.codex/skills/`）。`flow2spec init` 会向所选 agent 目录**同步落盘**当前语言对应的技能内容。
+## 旧版布局（V1）不再内置迁移
+
+`f2s-kb-migrate` 已随包移除，旧版知识组织的自动迁移不再兼容。命中步骤 0 的 V1 信号时，本技能**停止执行**并告知用户两种处理方式：
+
+1. 使用仍内置 `f2s-kb-migrate` 的历史版本包（npm `@double-coding/flow2spec@3.4.x` 及更早）完成一次性迁移，再回到最新版本跑本技能；
+2. 手动将旧版规则、业务 skills、散落的 `stock-docs` / `req-docs` 迁入 `.Knowledge` 形态后，再跑本技能。
+
+**为何每个已配置客户端目录下都有一份同名 `SKILL.md`？**
+各客户端只加载**自身配置根**下的 `skills/`。`flow2spec init` 会向所选 agent 目录**同步落盘**当前语言对应的技能内容。
 
 ## 目标
 
@@ -73,7 +78,7 @@ description: 知识库模板升级技能（仅指本 SKILL）：**流程分流 V
 
 1. 本技能步骤 2 代跑 **`flow2spec init`** 时，默认 **增量落盘**（不带 `--reset-knowledge`）。
 2. 仅当用户明确要求「覆盖重置」时，才在 `init` 末尾追加 `--reset-knowledge`。
-3. 优先写入用户指定的 agent；未指定时默认 `cursor claude codex`。
+3. 优先写入用户指定的 agent；未指定时使用包的默认客户端选择。
 
 ## init 与技能自更新（必须）
 
@@ -130,13 +135,13 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 
 > **命名说明**：下文 **「V1」「现行库（V2+）」** 为本技能**流程分流代号**。**npm 包为 v3.x、v4.x…** 且仓库**已**是 `.Knowledge` + `manifest-routing` 形态时，仍走 **「现行库（V2+）」** 支（仅 `init` 对齐），**不要**把 npm 主版本数字当成这里的「V2」字面限制。
 
-**V1 — 旧版知识组织（须先迁移再 init）**  
+**V1 — 旧版知识组织（不再内置迁移）**  
 命中**任一**强信号则按 V1：
 
 - 配置根仍有 **`docs-index.md` 或 `index-doc.md`**，且主要仍经 **`rules/main.md` / `rules/main.mdc`** 收口；或  
 - 业务 **`stock-docs` / `req-docs` 与规则、业务 skills** 仍以配置根旧树为主，**未**稳定落在 `.Knowledge`。
 
-**动作**：先按 **`f2s-kb-migrate`** 全流程执行（含 `migration-report`、删除清单确认），**再**进入步骤 1–5 执行 `flow2spec init`。
+**动作**：**停止本技能**，按上文「旧版布局（V1）不再内置迁移」告知用户两种处理方式（历史版本包一次性迁移 / 手动迁入 `.Knowledge`）；**不得**在 V1 布局上继续步骤 1–5。
 
 **现行库（V2+）— 已上 `.Knowledge` + 新版路由（仅包级 / 形态对齐）**  
 同时满足：
@@ -146,7 +151,7 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 
 **历史口径**：若仓库里仍有遗留 **单文件 `manifest.json`**，**不得**再当作机读事实源；机读以 **`manifest-routing.json` + `matcherPath` 指向的 `matchers/*.json`** 为准，`init` 负责与模板**合并 / 回填分片**。
 
-**动作**：直接进入步骤 1–5；**无需** migrate，除非用户明确要求重做迁移。
+**动作**：直接进入步骤 1–5。
 
 ### 步骤 1：确认本技能内 `init` 模式（必须）
 
@@ -347,7 +352,7 @@ command -v npx >/dev/null 2>&1 && echo __NPX_OK__ || echo __NPX_MISSING__
 ## 完成后自检
 
 1. 是否已做 **步骤 -1**：在进入步骤 0 前**已顺序前台执行 3 条探测**（`flow2spec --version` / `npm view ... version` / `npx` 可用性），并按 A/B/C 分支得出结论；仅在 B/C 时才**派独立子 agent**后台跑 `npm i -g @double-coding/flow2spec@latest`（不等待），A 分支**未派**任何升级动作；步骤 2 命令默认形态是否随分支选定（A→`flow2spec init`，B/C→`npx @latest init`）；摘要中已写清分支与版本对比。
-2. 是否已做 **步骤 0**：V1 未跳过 migrate、**现行库（V2+）** 未误跑 migrate。
+2. 是否已做 **步骤 0**：V1 已停止执行并告知用户处理方式、**现行库（V2+）** 正常进入 `init` 流程。
 3. 是否在 **步骤 2 开始前** 记录了项目侧 `projectRev`（`projectRev`），并在 **步骤 2 的 `init` 之后** 重读 `pkgRev`、执行 **步骤 2c** 判定。
 4. 是否在 **步骤 2 的 `init` 之后**重读过 **`f2s-kb-upgrade/SKILL.md`**：完整流程下有变化必须**按新版字面从步骤 2c 起重跑**（**不再次 init**）；快速路径下可跳过该闭环（见「init 与技能自更新」「快速路径例外」）。
 5. 是否已实际执行 shell 命令（而非只给建议）。
