@@ -87,8 +87,8 @@
 | 全局同步已实现能力 | `f2s-kb-sync` |
 | 从 stock-docs 生成主题路由（含拆分评估） | `f2s-kb-build`（stock-doc > 300–500 行或覆盖 3+ 职责域时提示拆分） |
 | 解决合并后上下文冲突 | `f2s-kb-merge` |
-| 知识库模板升级 | `f2s-kb-upgrade`（其中一步代跑 `npx @double-coding/flow2spec@latest init`，或已全局安装时的 `flow2spec init`） |
-| 旧版一次性迁移 | `f2s-kb-migrate` |
+| 知识库模板升级 | `f2s-kb-upgrade`（其中一步代跑 `npx @double-coding/flow2spec@latest init`，或已全局安装时的 `flow2spec init`）；非主题版本更新（init 后 `projectRev == pkgRev`）可由 agent 直接代跑 `flow2spec init` 完成，无需进入该技能完整流程 |
+| 旧版一次性迁移 | 不再内置（`f2s-kb-migrate` 已随包移除）；用历史版本包（`@3.4.x` 及更早）一次性迁移或手动迁入 `.Knowledge` |
 
 ### 流程五：任务路由与执行（`match → expand → verify → act`）
 

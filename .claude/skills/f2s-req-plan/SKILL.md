@@ -18,13 +18,7 @@ description: 根据技术方案/需求描述/变更描述规划并实现任务�
 | **本技能职责** | 规划草稿、实现代码、子 agent 编排；**不得**自定 `.task/` 结构或弱化打钩/归档 |
 | **与 changeTracking** | `f2s-req-plan` **不受** `changeTracking.feat/fix/implement` 约束，**始终**走任务清单；见 `f2s-task`「生效条件」 |
 
-**三端读取 `f2s-task` 全文（步骤 0 必做，先于下文任何步骤）**：
-
-| 端 | 路径 |
-| --- | --- |
-| **Cursor** | 配置根 `rules/f2s-task.mdc`；或已 init 的 `.cursor/rules/f2s-task.mdc` |
-| **Claude Code** | `.claude/rules/f2s-task.md` |
-| **Codex** | `.codex/topics/f2s-task.md` |
+**所有已为项目初始化的客户端都必须读取 `f2s-task` 全文（步骤 0 必做，先于下文任何步骤）**。请从当前客户端生成的 rules、`AGENTS.md` 或 topics 入口读取，不得用本技能摘要代替全文。
 
 ## 编排（主 / 子 agent）
 
@@ -46,7 +40,7 @@ description: 根据技术方案/需求描述/变更描述规划并实现任务�
 ### 步骤 0：前置（强制，任何步骤之前）
 
 1. **`Read("flow2spec.config.json")`**（项目根；缺失字段视为 `false`）。
-2. **`Read` 上表三端之一的 `f2s-task` 全文**（不得跳过；不得仅用本 SKILL 摘要代替）。
+2. **`Read` 当前客户端生成入口中的 `f2s-task` 全文**（不得跳过；不得仅用本 SKILL 摘要代替）。
 3. 按读到的 `subAgent` / `switchAgentVerification` 决定下文是否拆子 agent、是否交叉校验。
 
 ### 步骤 1：续作分诊 + 解析输入
@@ -140,7 +134,7 @@ description: 根据技术方案/需求描述/变更描述规划并实现任务�
 
 ## 约束
 
-- **步骤 0**：必须先 `Read` `flow2spec.config.json` + **`f2s-task` 全文**（三端路径见上表）
+- **步骤 0**：必须先 `Read` `flow2spec.config.json` + 当前客户端入口中的 **`f2s-task` 全文**
 - **`.task/`**：一律服从 `f2s-task`；本 SKILL 不得与之冲突
 - 不依赖 `changeTracking`，但**始终**创建并维护任务清单（除非续作已有 active 任务）
 - 步骤 2 必须主 agent；未确认禁止落盘

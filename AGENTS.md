@@ -106,10 +106,9 @@
 - `f2s-kb-feat`：新增能力时补全实现与知识库；已实现则仅同步知识库；触发：f2s-kb-feat、新增能力
 - `f2s-kb-fix`：根据用户指出的实现或规则错误修正代码，并默认同步知识库；触发：f2s-kb-fix、修正实现规则
 - `f2s-kb-merge`：解决 Git 合并后编辑器上下文冲突；可选传入冲突文件；实现侧冲突仅罗列待用户确认；触发：合并上下文冲突、f2s-kb-merge
-- `f2s-kb-migrate`：旧版知识库一次性迁到 `.Knowledge`：以配置根 `docs-index.md` + 规则统一入口（旧版 `rules/main.md(c)` 或新版包 `rules/f2s-flow2spec-unified-entry.md(c)`）为主索引线索，全量处理业务 `rules/` 与业务 `skills/`（排除 `f2s-*` 包技能），并全量迁移 `stock-docs`/`req-docs`；**迁移验收后必选**落盘 `.Knowledge/migration-report.md`（迁移对照表 + 拟删除路径列表）；**收尾必选**删除已迁旧的 `rules/`、已迁业务 `skills/`、旧版 `docs-index.md`/`index-doc.md`；用户只**核对/修订删除清单（排除项）**；触发：f2s-kb-migrate、知识库迁移、旧版迁移
 - `f2s-kb-rm`：删除某 stock-docs 文档对应的知识主题与索引映射；触发：删除项目上下文、f2s-kb-rm
 - `f2s-kb-sync`：可显式给出能力或零输入推断；先输出知识库更新大纲，确认后写入 topics/index/manifest；触发：f2s-kb-sync、全局同步、知识库同步、已实现能力
-- `f2s-kb-upgrade`：知识库模板升级技能（仅指本 SKILL）：**流程分流 V1** 须先 f2s-kb-migrate 再在流程内代跑 flow2spec init；**现行库（流程代号 V2+，含已用 .Knowledge 的 Flow2Spec npm v3.x 等项目）** 则代跑 init 以对齐 manifest-routing + matchers 分片（包内 `manifest-matchers.json` 仅作 init 合并种子，不落盘 .Knowledge）。触发：f2s-kb-upgrade、一键升级迁移、旧项目升级、知识库模板升级。注意：不要把单独的 flow2spec init 称作「升级命令」；**V1/V2+ 为技能内分流代号，不等于 npm 包主版本号**。
+- `f2s-kb-upgrade`：知识库模板升级技能（仅指本 SKILL）：**现行库（流程代号 V2+，含已用 .Knowledge 的 Flow2Spec npm v3.x 等项目）** 代跑 init 以对齐 manifest-routing + matchers 分片（包内 `manifest-matchers.json` 仅作 init 合并种子，不落盘 .Knowledge）；**非主题版本更新**（init 后 projectRev == pkgRev）可由 agent 直接代跑 flow2spec init 完成，无需进入本技能完整流程；**旧版布局（流程分流 V1）已不再内置迁移支持**（f2s-kb-migrate 已随包移除）。触发：f2s-kb-upgrade、旧项目升级、知识库模板升级。注意：不要把单独的 flow2spec init 称作「升级命令」；**V1/V2+ 为技能内分流代号，不等于 npm 包主版本号**。
 - `f2s-req-clarify`：针对 PRD/需求反问直到清楚，再可用 f2s-req-tech 出技术方案；触发：需求澄清、PRD 澄清
 - `f2s-req-plan`：根据技术方案/需求描述/变更描述规划并实现任务；始终按 f2s-task 维护 .task/；支持子 agent 并行实现；触发：f2s-req-plan、创建任务、任务规划、我需要任务清单
 - `f2s-req-tech`：根据澄清后的需求基于项目知识库/Skills/Rules 生成技术方案文档；触发：生成技术方案、技术方案、f2s-req-tech

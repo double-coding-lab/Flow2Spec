@@ -130,11 +130,12 @@ f2s-kb-merge     # Resolve context conflicts after Git merges
 ### Cross-Version Knowledge Base Upgrade
 
 ```
-f2s-kb-migrate (Legacy V1: old knowledge base) → f2s-kb-upgrade
-f2s-kb-upgrade (Current V2+: already has .Knowledge; includes npm v3.x projects, etc.; see skill step 0)
+Non-topic version update (projectRev == pkgRev after init): the agent runs flow2spec init directly — done
+Topic-layer changes (projectRev != pkgRev): full f2s-kb-upgrade flow (Current V2+: already has .Knowledge; includes npm v3.x projects, etc.; see skill step 0)
+Legacy layout (V1): built-in migration removed; use a historical package version (@3.4.x or earlier) for a one-time migration, or move into .Knowledge manually
 ```
 
-In interactive terminals, the Flow2Spec CLI checks the latest npm version with a cache when running `flow2spec version` / `flow2spec init`. If a newer version exists, it prompts you to run `flow2spec update`, then execute `f2s-kb-upgrade` in the Agent conversation to align the project knowledge templates, manifest/matchers, and agent config roots. Failed update checks are skipped silently and do not affect the current command; checks are disabled in `CI`, non-TTY sessions, or when `FLOW2SPEC_SKIP_UPDATE_CHECK=1` is set.
+In interactive terminals, the Flow2Spec CLI checks the latest npm version with a cache when running `flow2spec version` / `flow2spec init`. If a newer version exists, it prompts you to run `flow2spec update`; for non-topic version updates the agent may directly run `flow2spec init` to complete the alignment, and only when the update includes topic-layer changes execute `f2s-kb-upgrade` in the Agent conversation to align the project knowledge templates, manifest/matchers, and agent config roots. Failed update checks are skipped silently and do not affect the current command; checks are disabled in `CI`, non-TTY sessions, or when `FLOW2SPEC_SKIP_UPDATE_CHECK=1` is set.
 
 After `flow2spec init codex`, Codex projects include `.codex/hooks.json`, `.codex/hooks/f2s-config-session.js`, and `.codex/hooks/f2s-update-check.js`. On Codex `SessionStart` for `startup|resume`, the first script injects one configuration summary and the second checks the knowledge-base version automatically. When the hook is first generated or changed, trust it through `/hooks` in Codex. Set `updateCheck.enabled=false` in `flow2spec.config.json` to skip only the version check.
 

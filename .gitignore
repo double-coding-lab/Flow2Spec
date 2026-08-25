@@ -8,3 +8,7 @@ output/playwright/
 node_modules/
 .astro/
 .Knowledge/.last-sync.json
+
+# Core npm 发布物副本:由 scripts/sync-core-templates.js 从根 templates/ 生成
+# 唯一手写事实源是 workspace 根 templates/
+packages/core/templates/

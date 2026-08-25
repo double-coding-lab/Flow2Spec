@@ -4,7 +4,7 @@
  * flow2spec SessionStart hook — 每天第一次对话时检查版本更新。
  * 比较本地知识库 manifest-routing.json 的 version 与 npm 最新版本：
  *   - 一致或本地更新 → 静默退出
- *   - 落后 → 向 Agent 上下文注入一行提示（建议执行 f2s-kb-upgrade）
+ *   - 落后 → 向 Agent 上下文注入提示（agent 可直接代跑 flow2spec init；主题层变更再走 f2s-kb-upgrade）
  * 已检查过且无需升级则静默；已检查且仍需升级时，每个新会话继续注入提醒。
  * 由 flow2spec init 写入对应 agent 的 hooks/f2s-update-check.js。
  */
@@ -16,7 +16,7 @@ const MANIFEST_PATH = path.join(process.cwd(), '.Knowledge', 'manifest-routing.j
 const CACHE_DIR    = path.join(process.cwd(), '.Knowledge');
 const CACHE_FILE   = path.join(CACHE_DIR, 'update-check.json');
 const PACKAGE_NAME_PLACEHOLDER = '__FLOW2SPEC_' + 'PACKAGE_NAME__';
-const PACKAGE_NAME = '@double-coding/flow2spec';
+const PACKAGE_NAME = '@double-coding/flow2spec-core';
 
 // ── 缓存 ────────────────────────────────────────────────────────────────────
 
@@ -41,11 +41,13 @@ function getProjectName() {
 }
 
 function buildNotice(latestNpm, manifestVersion) {
-  const userMsg = `📦 [flow2spec] 当前项目「${getProjectName()}」知识库版本 v${manifestVersion}，低于最新包版本 v${latestNpm}。可执行 f2s-kb-upgrade skill 对齐模板与路由。`;
+  const userMsg = `📦 [flow2spec] 当前项目「${getProjectName()}」知识库版本 v${manifestVersion}，低于最新包版本 v${latestNpm}。我可以直接代跑 flow2spec init 完成更新；若本次更新包含主题层变更，再走 f2s-kb-upgrade 完整流程。`;
   return [
     `[flow2spec/agent-instruction] 你必须在本轮回复开头将下列升级提示原文转告用户，不得省略、不得仅在内部判断后跳过：`,
     ``,
     userMsg,
+    ``,
+    `[flow2spec/agent-instruction] 转告后可直接替用户执行 \`flow2spec init <已初始化的 agents，如 claude cursor codex>\` 完成更新，无需用户手动执行 f2s-kb-upgrade。init 成功后读取 .Knowledge/manifest-routing.json：若 projectRev 与 pkgRev 相等（非主题版本更新），更新已完成，删除 .Knowledge/update-check.json；若两者不等（包含主题层变更），继续执行 f2s-kb-upgrade skill 完整流程（可从其步骤 2c 起，不必重复 init）。`,
   ].join('\n');
 }
 

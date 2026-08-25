@@ -53,6 +53,7 @@ description: 在 Flow2Spec 本仓自身开发时自查「写盘边界 + 分发�
 | `.claude/skills/<其它>/**` / `.cursor/skills/<其它>/**` / `.codex/skills/<其它>/**` | ❌ 违规 | 有 templates 对应源 → 应改 `templates/{zh-CN,en-US}/skills/<其它>/SKILL.md` |
 | 根 `AGENTS.md` | ❌ 违规 | 由 `buildCodexAgentsMd(templatesDir, ...)` 从 templates 拼装 → 应改 `templates/{zh-CN,en-US}/AGENTS.md` |
 | `.claude/hooks/**` / `.cursor/hooks/**` / `.codex/hooks/**` / `.claude/settings.json` / `.cursor/hooks.json` / `.codex/hooks.json` | ❌ 违规 | init 产物 → 需求要改的话改 `lib/init.js` 或 `templates/` |
+| `packages/core/templates/**` | ❌ 违规 | 由 `scripts/sync-core-templates.js` 从根 `templates/` 自动生成,已进 `.gitignore` → 想改模板应改根 `templates/`,同步靠脚本 |
 | `.claude/memory/**` / `LOCAL_CONTEXT.md` | ⚠️ 本地态 | 不入库，不受约束（但提醒别 commit） |
 
 **判定捷径**：**在 `templates/{zh-CN,en-US}/` 里能找到对应源** ⇒ 属「下游会用到的 init 产物」，禁止手改配置根。否则属本仓专属手写内容，配置根版本就是原始版本。

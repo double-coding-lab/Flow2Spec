@@ -60,9 +60,9 @@ function projectName(cwd) {
 
 function buildNotice({ cwd, locale, manifestVersion, latestVersion }) {
   if (locale === "en-US") {
-    return `[flow2spec] The project "${projectName(cwd)}" knowledge version is v${manifestVersion}; Core v${latestVersion} is available. Run the f2s-kb-upgrade skill to align templates and routing.`;
+    return `[flow2spec] The project "${projectName(cwd)}" knowledge version is v${manifestVersion}; Core v${latestVersion} is available. The agent may run flow2spec init directly to complete the update; run the f2s-kb-upgrade skill only when the update includes topic-layer changes (projectRev != pkgRev after init).`;
   }
-  return `[flow2spec] 当前项目「${projectName(cwd)}」知识版本为 v${manifestVersion}，Core 最新版本为 v${latestVersion}。可执行 f2s-kb-upgrade skill 对齐模板与路由。`;
+  return `[flow2spec] 当前项目「${projectName(cwd)}」知识版本为 v${manifestVersion}，Core 最新版本为 v${latestVersion}。可由 agent 直接代跑 flow2spec init 完成更新；仅当更新包含主题层变更（init 后 projectRev 与 pkgRev 不等）时再执行 f2s-kb-upgrade skill。`;
 }
 
 function queryLatestVersion(packageName, options = {}) {

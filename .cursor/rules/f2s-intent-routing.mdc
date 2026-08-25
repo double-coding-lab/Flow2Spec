@@ -39,7 +39,6 @@ alwaysApply: true
 | 新增规则、口述规则、把这条记到知识库 | `f2s-kb-addRules` |
 | 生成项目上下文、终稿生成上下文 | `f2s-kb-build` |
 | 合并上下文冲突、解决知识库冲突 | `f2s-kb-merge` |
-| 知识库迁移、旧版迁移 | `f2s-kb-migrate` |
 | 删除项目上下文 | `f2s-kb-rm` |
 | 知识库模板升级、知识库升级、一键升级迁移 | `f2s-kb-upgrade` |
 | 项目架构说明、架构初稿 | `f2s-doc-arch` |
