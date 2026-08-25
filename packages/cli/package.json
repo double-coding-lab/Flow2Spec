@@ -16,11 +16,10 @@
   },
   "files": [
     "cli.js",
-    "lib",
     "README.md"
   ],
   "dependencies": {
-    "@double-coding/flow2spec-core": "3.5.0"
+    "@double-coding/flow2spec-core": "^3.5.0"
   },
   "publishConfig": {
     "access": "public",

@@ -169,16 +169,17 @@ function copyHookScript(claudeRoot, templatesDir, scriptName) {
   if (!fs.existsSync(hooksDir)) fs.mkdirSync(hooksDir, { recursive: true });
 
   let body = fs.readFileSync(src, 'utf8');
-  if (body.includes('__FLOW2SPEC_PACKAGE_NAME__')) {
-    let packageName = '@double-coding/flow2spec';
-    try {
-      const packageDir = findPackageJsonDir(templatesDir);
-      packageName = JSON.parse(
-        fs.readFileSync(path.join(packageDir || path.join(templatesDir, '..'), 'package.json'), 'utf8'),
-      ).name || packageName;
-    } catch (_) {}
-    body = body.replace(/__FLOW2SPEC_PACKAGE_NAME__/g, packageName);
-  }
+  let packageMetadata = {};
+  try {
+    const packageDir = findPackageJsonDir(templatesDir);
+    packageMetadata = JSON.parse(
+      fs.readFileSync(path.join(packageDir || path.join(templatesDir, '..'), 'package.json'), 'utf8'),
+    );
+  } catch (_) {}
+  body = body
+    .replace(/__FLOW2SPEC_PACKAGE_NAME__/g, packageMetadata.name || '@double-coding/flow2spec-core')
+    .replace(/__FLOW2SPEC_CORE_VERSION__/g, packageMetadata.version || '0.0.0')
+    .replace(/__FLOW2SPEC_TEMPLATE_VERSION__/g, packageMetadata.templateVersion || '0.0.0');
   fs.writeFileSync(path.join(hooksDir, scriptName), body, 'utf8');
   return { written: true };
 }

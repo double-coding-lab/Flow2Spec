@@ -1,7 +1,7 @@
 ---
 id: flow2spec-core-package
-revision: 0
-summary: "@double-coding/flow2spec-core 的职责边界：核心实现、发包模板真源与原生插件 API"
+revision: 2
+summary: "Core/CLI 所有权、公共 API、独立版本、独立发布与更新兼容契约"
 primary: module
 confidence: inferred
 ---
@@ -9,19 +9,47 @@ confidence: inferred
 
 ## 适用场景
 
-回答或维护 npm workspace 包结构、`flow2spec-core` 的职责、CLI 与 core 的依赖关系、原生插件 API、发包模板真源位置、根目录 legacy shim。
+维护 npm workspace 包结构、Core 公共 API、CLI/Core 依赖、模板真源、独立版本、发布 tag、更新检测与兼容范围。
 
-## 核心事实
+## 所有权
 
-- workspace 三层：根 `flow2spec-workspace`（private）+ `packages/core`（`@double-coding/flow2spec-core`）+ `packages/cli`（`@double-coding/flow2spec`）；三者版本保持一致，CLI 对 core 的依赖固定为同一版本。
-- **core 承载全部核心实现**（`packages/core/lib/`）：`init` 落盘引擎、各端适配器（`claudeRulesAdapter` / `claudeSettingsAdapter` / `codexAgentsAdapter` / `dshAgentsAdapter`）、知识库引擎与路由（`knowledgeEngine` / `routing`）、`updateCheck`、`doctor`、`developerId`、`flow2specConfig`、`resources`。
-- **npm 发布的模板真源**在 `packages/core/templates/{zh-CN,en-US}/`（`package.json` 的 `files` 含 `templates`）；根 `templates/` 是本仓同步副本，模板改动须双根同步（写盘边界见 `f2s-dev-workflow-constraints`）。
-- **原生插件 API**：`createFlow2Spec({ cwd })` 暴露 `resources.skillCatalog()`（宿主适配的结构化 Skill 清单）、`resources.unifiedEntry()`（宿主适配的统一入口）、`update.check()`（复用 `.Knowledge/update-check.json` 每日缓存）；`capabilities.json` 的 `protocolVersion` 供插件启动时做兼容校验；`index.d.ts` 导出完整公共契约类型。
-- **CLI 是薄壳**：`packages/cli/cli.js` 只做命令行解析并转调 core；根 `cli.js` 一行转发 `require("./packages/cli/cli.js")`。
-- **根 `lib/*.js` 为 legacy shim**：逐文件 `module.exports = require("@double-coding/flow2spec-core").legacy.<name>`，仅保留拆包前旧引用路径的兼容。
-- 普通用户只装 CLI 或原生插件（如 DeepSeek Harness 的 `@double-coding/flow2spec-deepseek-harness`），core 作为依赖按锁定版本自动带上。
+- 根 private workspace 只负责开发编排，不作为 Core 运行时依赖声明位置。
+- `packages/core/lib/` 承载核心实现；`packages/core/templates/{zh-CN,en-US}/` 是受 Git 管理的唯一模板真源并随 Core tarball 发布。
+- 根 `lib/`、根 `templates/` 与 `scripts/sync-core-templates.js` 均不存在。
+- CLI 是薄壳，只通过 `@double-coding/flow2spec-core` 的公共 API 工作；当前运行时范围为 `^3.5.0`。
 
-## 边界与注意
+## 公共 API
 
-- 本仓开发态下 `packages/cli` → core 的模块解析依赖根 `node_modules/@double-coding/` 的 workspace 软链；fresh clone 或拆包合入后未执行 `npm install` 时会报 `Cannot find module '@double-coding/flow2spec-core'`。下游 npm 安装不受影响（`scripts/test-package-install.js` 从 tarball 真装验证）。
-- `packages/core/README.md` 面向 CLI 与原生插件开发者独立维护；`packages/cli/README.md` 必须与根 `README.md` 完全一致（发布门禁见 `f2s-dev-workflow-constraints`）。
+- `createFlow2Spec({ cwd })` 暴露项目初始化、配置、路由、知识库、协作、doctor、resources 与 update API。
+- `getVersions()` 返回 `coreVersion`、`templateVersion`、`protocolVersion`。
+- `capabilities.json.protocolVersion` 表示公共协议兼容级别，不表示包版本或模板版本。
+- `legacy` 暂时保留 Core 包内的旧消费兼容面；CLI 和仓库测试不再依赖根 shim。
+
+## 独立版本
+
+```text
+CLI Version       packages/cli/package.json
+Core Version      packages/core/package.json
+Template Version  packages/core/package.json.templateVersion
+Protocol Version  packages/core/capabilities.json.protocolVersion
+```
+
+- `version:set:cli` 只更新 CLI，可显式提高 `--core-range`。
+- `version:set:core` 只更新 Core，并拒绝落到当前 CLI 范围之外。
+- `version:set:template` 更新 Core 元数据及中英文 `manifest-routing.json.version`。
+- `version:check` 校验 semver range、lockfile、双语 Template Version、Protocol Version 与 release tag。
+
+## 发布与更新
+
+- `core-vX.Y.Z` 只发布 Core；`cli-vX.Y.Z` 只发布 CLI。同时发布时先 Core 后 CLI。
+- `flow2spec version` 展示 CLI/Core/Core Range/Template/Protocol。
+- `flow2spec update --check|--cli|--core` 分别检查、更新 CLI、更新兼容 Core。
+- Hook 与 `update.check()` 同时返回 Core 与 Template 状态。
+- Core-only 更新：更新 Core 后幂等 init 刷新 Hook，不进入 `f2s-kb-upgrade`。
+- Template 更新：更新 Core、执行 init，再由 `projectRev` / `pkgRev` 决定是否进入完整知识库升级。
+
+## 边界
+
+- Core 新版必须落在 CLI caret range 内；超出范围先升级 CLI。
+- `.Knowledge/manifest-routing.json.version` 表示 Template Version，不能与 Core Version 混用。
+- 包安装验收使用两包 tarball，并验证 Core templates、类型声明、CLI README 与启动行为。

@@ -4,29 +4,34 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const readline = require("readline");
-const runInit = require("./lib/init");
-const { AGENTS } = require("./lib/agents");
 const {
-  loadFlow2specConfig,
-  CONFIG_FILENAME,
-  CONFIG_FIELDS,
-  getMissingConfigFields,
-  SUPPORTED_LOCALES,
-  normalizeLocale,
-} = require("./lib/flow2specConfig");
-const knowledgeEngine = require("./lib/knowledgeEngine");
-const { runDoctor, formatDoctorReport } = require("./lib/doctor");
+  createFlow2Spec,
+  getCapabilities,
+  getVersions,
+} = require("@double-coding/flow2spec-core");
 
 const { execFileSync } = require("child_process");
 
 const args = process.argv.slice(2);
 const sub = args[0];
 
+const CONFIG_FILENAME = "flow2spec.config.json";
+const CORE_PACKAGE = "@double-coding/flow2spec-core";
+const flow2specForMetadata = createFlow2Spec({ cwd: process.cwd() });
+const AGENTS = flow2specForMetadata.project.agents();
+const SUPPORTED_LOCALES = flow2specForMetadata.config.supportedLocales();
+
+function createApi(cwd = process.cwd()) {
+  return createFlow2Spec({ cwd });
+}
+
 const agentList = Object.entries(AGENTS)
   .map(([id, { label }]) => `${id}(${label})`)
   .join(", ");
 
 const pkg = require("./package.json");
+const coreVersions = getVersions();
+const coreRange = pkg.dependencies?.[CORE_PACKAGE] || "<missing>";
 
 const UPDATE_CHECK_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -49,6 +54,41 @@ function compareVersions(a, b) {
     if (diff !== 0) return diff;
   }
   return 0;
+}
+
+function satisfiesCoreRange(version, range) {
+  const match = /^\^(\d+)\.(\d+)\.(\d+)/.exec(String(range || ""));
+  if (!match || compareVersions(version, `${match[1]}.${match[2]}.${match[3]}`) < 0) return false;
+  const [major, minor, patch] = match.slice(1).map(Number);
+  const upper = major > 0
+    ? `${major + 1}.0.0`
+    : minor > 0
+      ? `0.${minor + 1}.0`
+      : `0.0.${patch + 1}`;
+  return compareVersions(version, upper) < 0;
+}
+
+function runCommandSync(command, commandArgs, options = {}) {
+  return execFileSync(command, commandArgs, {
+    windowsHide: true,
+    shell: process.platform === "win32",
+    ...options,
+  });
+}
+
+function queryLatestCoreMetadata() {
+  const output = runCommandSync(
+    "npm",
+    ["view", CORE_PACKAGE, "version", "templateVersion", "--json", "--registry=https://registry.npmjs.org"],
+    { encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] },
+  );
+  const metadata = JSON.parse(output);
+  return {
+    version: typeof metadata === "string" ? metadata : metadata.version,
+    templateVersion: typeof metadata === "string"
+      ? metadata
+      : metadata.templateVersion || metadata.version,
+  };
 }
 
 function updateCheckCacheFile() {
@@ -88,7 +128,7 @@ function writeUpdateCheckCache(latest) {
 function queryLatestPackageVersion() {
   const cached = readUpdateCheckCache();
   if (cached?.latest) return cached.latest;
-  const latest = execFileSync("npm", ["view", pkg.name, "version"], {
+  const latest = runCommandSync("npm", ["view", pkg.name, "version"], {
     encoding: "utf8",
     timeout: 2000,
     stdio: ["ignore", "pipe", "ignore"],
@@ -116,7 +156,7 @@ function getGlobalInstalledVersion() {
   if (!pkg.name) return null;
   let globalRoot;
   try {
-    globalRoot = execFileSync("npm", ["root", "-g"], {
+    globalRoot = runCommandSync("npm", ["root", "-g"], {
       encoding: "utf8",
       timeout: 2000,
       stdio: ["ignore", "pipe", "ignore"],
@@ -166,27 +206,21 @@ function maybeAutoUpdateGlobalInstall() {
   console.log(`
 ↻ 检测到全局 ${pkg.name}@${installed}，正在升级到 v${latest}...`);
   try {
-    execFileSync("npm", ["install", "-g", `${pkg.name}@latest`], {
+    runCommandSync("npm", ["install", "-g", `${pkg.name}@latest`], {
       stdio: "inherit",
     });
     console.log(`✓ 全局 ${pkg.name} 已升级到 v${latest}`);
   } catch (e) {
     console.error(`
 ⚠ 全局升级失败：${e.message || e}
-  可手动执行：  flow2spec update`);
+  可手动执行：  flow2spec update --cli`);
   }
 }
 
-function printKnowledgeUpgradeHint(latest) {
+function printCliUpdateHint(latest) {
   console.log(`
-⚠ Flow2Spec 有新版本 v${latest}（当前 v${pkg.version}）
-建议先更新包：
-  flow2spec update
-
-更新后请在 Agent 对话中执行：
-  f2s-kb-upgrade
-
-用于对齐项目知识库模板、manifest/matchers 与配置根产物；不要把单独 flow2spec init 当作知识库升级。
+⚠ Flow2Spec CLI 有新版本 v${latest}（当前 v${pkg.version}）
+执行：flow2spec update --cli
 `);
 }
 
@@ -195,7 +229,7 @@ function maybePrintUpdateNotice() {
   try {
     const latest = queryLatestPackageVersion();
     if (latest && compareVersions(latest, pkg.version) > 0) {
-      printKnowledgeUpgradeHint(latest);
+      printCliUpdateHint(latest);
     }
   } catch {
     // 静默跳过，不能因为网络或 npm registry 影响主命令。
@@ -204,6 +238,24 @@ function maybePrintUpdateNotice() {
 
 function printJson(data) {
   console.log(`${JSON.stringify(data, null, 2)}\n`);
+}
+
+function formatDoctorReport(report) {
+  const marker = { pass: "[PASS]", warning: "[WARN]", error: "[FAIL]" };
+  const lines = [
+    `Flow2Spec Doctor v${report.package.version}`,
+    `项目: ${report.cwd}`,
+    "",
+  ];
+  for (const check of report.checks) {
+    lines.push(`${marker[check.status]} ${check.label}: ${check.message}`);
+    if (check.repair) lines.push(`       建议: ${check.repair}`);
+  }
+  lines.push(
+    "",
+    `结果: ${report.summary.passed} 通过，${report.summary.warnings} 警告，${report.summary.errors} 错误。`,
+  );
+  return lines.join("\n");
 }
 
 function printKnowledgeHelp() {
@@ -237,8 +289,10 @@ Flow2Spec - 统一知识库工作流（AI 配置入口）  v${pkg.version}
   flow2spec config              打印项目根 ${CONFIG_FILENAME} 的解析结果（缺省值合并后）
   flow2spec doctor [--json]     只读检查运行环境、项目初始化、协作上下文与知识库健康
   flow2spec kb                  知识库协作引擎：status / check / plan / apply / build
-  flow2spec version             显示当前 flow2spec 版本
-  flow2spec update              更新 flow2spec 到最新版本；更新后提示执行 f2s-kb-upgrade
+  flow2spec version             显示 CLI / Core / Template / Protocol 版本
+  flow2spec update --check      检查 CLI 与 Core 更新
+  flow2spec update --cli        更新 CLI
+  flow2spec update --core       在兼容范围内更新 Core
   flow2spec --help              显示本说明
 
 agent（可多个，空格分隔；省略时交互选择）：
@@ -274,34 +328,82 @@ if (sub === "--help" || sub === "-h" || !sub) {
 }
 
 if (sub === "version" || sub === "--version" || sub === "-v") {
-  console.log(`flow2spec v${pkg.version}`);
+  console.log([
+    `Flow2Spec CLI:       ${pkg.version}`,
+    `Flow2Spec Core:      ${coreVersions.coreVersion}`,
+    `Core Range:          ${coreRange}`,
+    `Template Version:    ${coreVersions.templateVersion}`,
+    `Protocol Version:    ${getCapabilities().protocolVersion}`,
+  ].join("\n"));
   maybePrintUpdateNotice();
   process.exit(0);
 }
 
 if (sub === "update") {
-  console.log(`当前版本: v${pkg.version}`);
-  console.log("正在检查最新版本...");
+  const updateFlags = args.slice(1);
+  const allowedUpdateFlags = new Set(["--check", "--cli", "--core"]);
+  if (updateFlags.length > 1 || updateFlags.some((flag) => !allowedUpdateFlags.has(flag))) {
+    console.error("用法: flow2spec update --check|--cli|--core");
+    process.exit(1);
+  }
+  const mode = updateFlags[0] || "--check";
   try {
-    const latest = execFileSync("npm", ["view", pkg.name, "version"], {
+    const latestCli = runCommandSync("npm", ["view", pkg.name, "version"], {
       encoding: "utf8",
+      timeout: 5000,
+      stdio: ["ignore", "pipe", "ignore"],
     }).trim();
-    if (compareVersions(latest, pkg.version) <= 0) {
-      console.log(`当前版本不低于 npm 最新版本 v${latest}`);
+    const latestCore = queryLatestCoreMetadata();
+    const coreCompatible = satisfiesCoreRange(latestCore.version, coreRange);
+
+    if (mode === "--check") {
+      console.log([
+        `CLI:      ${pkg.version} -> ${latestCli}`,
+        `Core:     ${coreVersions.coreVersion} -> ${latestCore.version}`,
+        `Template: ${coreVersions.templateVersion} -> ${latestCore.templateVersion}`,
+        `Range:    ${coreRange} (${coreCompatible ? "compatible" : "incompatible"})`,
+      ].join("\n"));
       process.exit(0);
     }
-    console.log(`发现新版本: v${latest}`);
-    console.log("正在更新...");
-    execFileSync("npm", ["install", "-g", `${pkg.name}@latest`], {
-      stdio: "inherit",
-    });
-    console.log(`\n✓ 已更新到 v${latest}`);
-    console.log(`
-下一步：请在需要升级的项目 Agent 对话中执行：
-  f2s-kb-upgrade
 
-用于对齐项目知识库模板、manifest/matchers 与配置根产物；不要把单独 flow2spec init 当作知识库升级。
-`);
+    if (mode === "--cli") {
+      if (compareVersions(latestCli, pkg.version) <= 0) {
+        console.log(`CLI 已是最新版本 v${pkg.version}`);
+        process.exit(0);
+      }
+      if (getGlobalInstalledVersion()) {
+        runCommandSync("npm", ["install", "-g", `${pkg.name}@latest`], { stdio: "inherit" });
+        console.log(`\n✓ CLI 已更新到 v${latestCli}`);
+      } else {
+        runCommandSync("npx", ["--yes", `${pkg.name}@latest`, "version"], { stdio: "inherit" });
+        console.log("\n✓ 当前为 npx 场景；已用 latest CLI 启动并验证，无需写入全局安装。");
+      }
+      process.exit(0);
+    }
+
+    if (!coreCompatible) {
+      console.error(`Core v${latestCore.version} 超出当前 CLI 兼容范围 ${coreRange}；请先更新支持该 Core 的 CLI。`);
+      process.exit(1);
+    }
+    if (compareVersions(latestCore.version, coreVersions.coreVersion) <= 0) {
+      console.log(`Core 已是最新兼容版本 v${coreVersions.coreVersion}`);
+      process.exit(0);
+    }
+    if (getGlobalInstalledVersion()) {
+      runCommandSync("npm", ["install", "-g", `${CORE_PACKAGE}@${latestCore.version}`], { stdio: "inherit" });
+      console.log(`\n✓ Core 已更新到 v${latestCore.version}`);
+    } else {
+      runCommandSync(
+        "npx",
+        ["--yes", "--package", `${pkg.name}@${pkg.version}`, "--package", `${CORE_PACKAGE}@${latestCore.version}`, "flow2spec", "version"],
+        { stdio: "inherit" },
+      );
+      console.log("\n✓ 当前为 npx 场景；已显式安装并验证 CLI/Core 组合，后续 init 请继续使用相同的 --package 组合。");
+    }
+    console.log(latestCore.templateVersion === coreVersions.templateVersion
+      ? "Template Version 未变化，无需执行 f2s-kb-upgrade。"
+      : "Template Version 已变化；请运行 init，并仅在 projectRev 与 pkgRev 不等时进入 f2s-kb-upgrade。"
+    );
   } catch (e) {
     console.error("更新失败:", e.message || e);
     process.exit(1);
@@ -313,7 +415,7 @@ if (sub === "config") {
   const cwd = process.cwd();
   const abs = path.join(cwd, CONFIG_FILENAME);
   try {
-    const cfg = loadFlow2specConfig(cwd);
+    const cfg = createApi(cwd).config.load();
     console.log(JSON.stringify({ configPath: abs, ...cfg }, null, 2));
   } catch (e) {
     console.error(e.message || e);
@@ -339,7 +441,7 @@ if (sub === "doctor") {
     console.error(`doctor 不支持参数：${unknown.join(" ")}`);
     process.exit(1);
   }
-  const report = runDoctor(process.cwd());
+  const report = createApi(process.cwd()).doctor.run();
   if (doctorArgs.includes("--json")) {
     printJson(report);
   } else {
@@ -354,6 +456,7 @@ if (sub === "kb") {
   const kbPositionals = args.slice(2).filter((arg) => !String(arg || "").startsWith("--"));
   const cwd = process.cwd();
   const jsonOut = kbFlags.has("--json");
+  const flow2spec = createApi(cwd);
 
   try {
     if (!kbSub || kbSub === "--help" || kbSub === "-h") {
@@ -362,7 +465,7 @@ if (sub === "kb") {
     }
 
     if (kbSub === "status") {
-      const report = knowledgeEngine.summarizeKnowledgeState(cwd);
+      const report = flow2spec.knowledge.status();
       if (jsonOut) {
         printJson(report);
       } else {
@@ -390,17 +493,11 @@ if (sub === "kb") {
 
     if (kbSub === "check") {
       const strict = kbFlags.has("--strict");
-      const graph = knowledgeEngine.loadKnowledgeGraph(cwd);
-      const validation = knowledgeEngine.validateKnowledgeGraph(graph, {
+      const validation = flow2spec.knowledge.check({
         strictRevision: strict,
       });
-      const normalized = knowledgeEngine.normalizeRoutingWithGraph(
-        graph,
-      );
-      const routingDrift =
-        knowledgeEngine.stableStringify(normalized.routing) !==
-        knowledgeEngine.stableStringify(graph.routing);
-      const report = knowledgeEngine.summarizeKnowledgeState(cwd);
+      const report = flow2spec.knowledge.status();
+      const routingDrift = report.routingDrift;
       const ok =
         validation.issues.length === 0 &&
         !routingDrift &&
@@ -441,10 +538,8 @@ if (sub === "kb") {
       }
       const deltaPath = path.resolve(cwd, deltaArg);
       const dryRun = kbFlags.has("--dry-run") || kbSub === "plan";
-      const graph = knowledgeEngine.loadKnowledgeGraph(cwd);
-      const delta = knowledgeEngine.parseKnowledgeDelta(deltaPath);
-      const plan = knowledgeEngine.planKnowledgeDelta(graph, delta);
       if (kbSub === "plan") {
+        const plan = flow2spec.knowledge.plan({ deltaFile: deltaPath });
         const result = {
           ok: plan.mergeable,
           deltaPath,
@@ -466,7 +561,8 @@ if (sub === "kb") {
         }
         process.exit(result.ok ? 0 : 1);
       }
-      const result = knowledgeEngine.applyKnowledgeDelta(cwd, deltaPath, {
+      const result = flow2spec.knowledge.apply({
+        deltaFile: deltaPath,
         dryRun,
       });
       if (jsonOut) {
@@ -481,7 +577,7 @@ if (sub === "kb") {
     }
 
     if (kbSub === "build") {
-      const result = knowledgeEngine.buildKnowledgeGraph(cwd, {
+      const result = flow2spec.knowledge.build({
         writeTopicFrontmatter: kbFlags.has("--fix-topics"),
       });
       if (jsonOut) {
@@ -539,7 +635,6 @@ if (sub === "init") {
     console.error(`不支持的 locale：${cliLocale}。可选：${SUPPORTED_LOCALES.join(", ")}`);
     process.exit(1);
   }
-  if (cliLocale) cliLocale = normalizeLocale(cliLocale);
 
   const cwd = process.cwd();
 
@@ -706,7 +801,7 @@ if (sub === "init") {
 
   async function collectInitOptions() {
     const needAgentPrompt = agentArgs.length === 0 && !skipPrompts;
-    const missingFields = getMissingConfigFields(cwd);
+    const missingFields = createApi(cwd).config.missingFields();
     const needConfigPrompt = missingFields.length > 0;
 
     // 没有任何需要处理的事情
@@ -750,7 +845,7 @@ if (sub === "init") {
 
       if (needConfigPrompt) {
         if (needAgentPrompt) process.stdout.write("\n");
-        const isFirstTime = missingFields.length === CONFIG_FIELDS.length;
+        const isFirstTime = !fs.existsSync(path.join(cwd, CONFIG_FILENAME));
         process.stdout.write(
           `  配置 ${CONFIG_FILENAME}${isFirstTime ? "（首次创建）" : "（补充新增字段）"}：\n\n`,
         );
@@ -783,7 +878,12 @@ if (sub === "init") {
 
   collectInitOptions()
     .then(({ configValues, chosenAgents }) =>
-      runInit(cwd, chosenAgents, { overwriteKnowledge, configValues, locale: cliLocale }),
+      createApi(cwd).project.init({
+        integrations: chosenAgents,
+        overwriteKnowledge,
+        configValues,
+        locale: cliLocale,
+      }),
     )
     .then(({ ids, knowledgeResult, routingUpgrade, indexSnapshot, gitignoreResult, projectConfig, locale, claudeHooksResult }) => {
       const lines = ids.map((id) => {

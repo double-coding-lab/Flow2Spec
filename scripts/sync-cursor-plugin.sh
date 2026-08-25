@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ─────────────────────────────────────────────────────────────────────────────
 # sync-cursor-plugin.sh
-# 将当前分支（main / dev_v3 等）的 templates/ 内容同步到
+# 将当前分支（main / dev_v3 等）的 packages/core/templates/ 内容同步到
 # feat/cursor-directory-plugin 分支的插件根结构。
 #
 # 用法:
@@ -49,15 +49,15 @@ echo "🔧 创建 worktree → $WORKTREE_DIR"
 git worktree add "$WORKTREE_DIR" "$PLUGIN_BRANCH" --quiet
 
 # ─── 同步映射 ──────────────────────────────────────────────────────────────
-# 源 (templates/)           → 目标 (插件根)
-# templates/rules/          → rules/
-# templates/skills/         → skills/
-# templates/hooks/          → scripts/
-# templates/knowledge/      → knowledge/
-# templates/flow2spec.config.json → flow2spec.config.json
+# 源 (packages/core/templates/)           → 目标 (插件根)
+# packages/core/templates/rules/          → rules/
+# packages/core/templates/skills/         → skills/
+# packages/core/templates/hooks/          → scripts/
+# packages/core/templates/knowledge/      → knowledge/
+# packages/core/templates/flow2spec.config.json → flow2spec.config.json
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-SRC="$REPO_ROOT/templates"
+SRC="$REPO_ROOT/packages/core/templates"
 
 sync_dir() {
   local src="$1" dest="$2"

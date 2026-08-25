@@ -505,12 +505,12 @@ The table above lists conversation-triggered `/f2s-*` skills. The repository als
 
 **Purpose**: Knowledge base template upgrade. Aligns manifest-routing and matchers shards.
 
-**How It Works**: Uses "version branching + delegated init" — detect whether the current knowledge base is V1 (legacy structure) or V2+ (already has `.Knowledge`): V1 no longer has built-in migration support — the skill stops and tells the user how to proceed (one-time migration with a historical package version, or manual move into `.Knowledge`); V2+ runs `flow2spec init` directly for incremental package alignment (new templates, manifest schema upgrades, matcher shard format alignment). After upgrade, re-read SKILL.md to see if certain steps must be re-run. Unlike a standalone `init`, `kb-upgrade` includes version routing and re-run logic; `init` alone is a one-shot structural fill-in. For **non-topic version updates** (`projectRev == pkgRev` after init), the agent may directly run `flow2spec init` on the user's behalf without entering this skill's full flow.
+**How It Works**: First use `flow2spec version` / `flow2spec update --check` to judge Core and Template independently, then detect whether the knowledge base is V1 (legacy) or V2+ (`.Knowledge`). Core-only updates refresh Core and the Hook; Template updates run init and use `projectRev` / `pkgRev` to choose the fast path or full flow. V1 no longer has built-in migration support.
 
 **Use Cases**:
-- After a `flow2spec` package version upgrade, upgrade the project knowledge base template
+- After Template Version changes, align the project knowledge-base templates
 - Upgrade an old project to the latest structure
-- When interactive `flow2spec version` / `flow2spec init` detects a newer npm version, the CLI prompts you to run `flow2spec update`, then execute this skill in the Agent conversation
+- When the Hook reports `templateUpdateAvailable=true`, execute this skill in the Agent conversation; Core-only updates do not enter it
 - When Cursor detects an older knowledge-base version through `.cursor/hooks.json` on `sessionStart`, it prompts you to execute this skill
 - When Codex detects an older knowledge-base version through `.codex/hooks.json` on `SessionStart`, it prompts you to execute this skill (new or changed hooks must be trusted through `/hooks` first)
 

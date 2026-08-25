@@ -1,6 +1,6 @@
 ---
 id: flow2spec-init-defaults
-revision: 0
+revision: 1
 summary: "flow2spec-init-defaults（路由摘要）"
 primary: config
 confidence: inferred
@@ -18,10 +18,10 @@ tags: [policy]
 
 | 落点 | 角色 | 路径 |
 | --- | --- | --- |
-| `DEFAULTS` 常量 | `loadFlow2specConfig` 兜底值，缺字段时回填 | `lib/flow2specConfig.js` |
-| `CONFIG_FIELDS[].default` | init 交互问答按回车的默认值 | `lib/flow2specConfig.js` |
-| 包模板 `flow2spec.config.json` | 新项目首次落盘的整文件模板（按 `locale` 选择） | `templates/{zh-CN,en-US}/flow2spec.config.json` |
-| `renderProjectConfigBlock()` | Codex `AGENTS.md` 中字段语义表的「init 默认」列 | `lib/codexAgentsAdapter.js` |
+| `DEFAULTS` 常量 | `loadFlow2specConfig` 兜底值，缺字段时回填 | `packages/core/lib/flow2specConfig.js` |
+| `CONFIG_FIELDS[].default` | init 交互问答按回车的默认值 | `packages/core/lib/flow2specConfig.js` |
+| 包模板 `flow2spec.config.json` | 新项目首次落盘的整文件模板（按 `locale` 选择） | `packages/core/templates/{zh-CN,en-US}/flow2spec.config.json` |
+| `renderProjectConfigBlock()` | Codex `AGENTS.md` 中字段语义表的「init 默认」列 | `packages/core/lib/codexAgentsAdapter.js` |
 
 不一致的后果：
 
@@ -35,7 +35,7 @@ tags: [policy]
 
 | 字段 | 类型 | 当前默认值 | 语义 |
 | --- | --- | --- | --- |
-| `locale` | `"zh-CN"` / `"en-US"` | `"zh-CN"` | 模板语言；决定首次落盘读哪份 `templates/<locale>/` |
+| `locale` | `"zh-CN"` / `"en-US"` | `"zh-CN"` | 模板语言；决定首次落盘读哪份 Core package template |
 | `subAgent` | boolean | `true` | 是否允许技能拆子 agent；`false` 时主 agent 全流程；详见 `f2s-flow2spec-unified-entry` |
 | `switchAgentVerification` | boolean | `true` | 切换 agent 校验；`true` 且技能正文绑定时启用交叉校验；旧键 `subAgentVerification` 仍兼容 |
 | `intentRecognition` | boolean | `true` | 高置信操作意图是否按 `f2s-intent-routing` 自动进入对应 `f2s-*` 技能 |
@@ -44,7 +44,7 @@ tags: [policy]
 | `changeTracking.implement` | boolean | `true` | `f2s-implement-tech-design` 是否走 `.task/` 变更追踪 |
 | `updateCheck.enabled` | boolean | `true` | 是否启用每日版本更新提示 |
 
-「当前默认值」一栏以包模板 `templates/zh-CN/flow2spec.config.json` 为锚，作变更前先核对该文件。
+「当前默认值」一栏以包模板 `packages/core/templates/zh-CN/flow2spec.config.json` 为锚，作变更前先核对该文件。
 
 ### 默认值变更记录
 
@@ -69,20 +69,14 @@ tags: [policy]
 
 含义：升级 npm 包后新增的字段，会以「当前 `CONFIG_FIELDS` 默认值」补齐到老项目；如新版本默认值翻面（例如某字段由 `false` 改为 `true`），**只影响**升级时**仍缺该字段**的老项目，已写过该字段的项目不变。
 
-### 跑 `f2s-kb-upgrade` 时怎么让全局 flow2spec 保持最新
+### 跑 `f2s-kb-upgrade` 时的版本预检
 
-`f2s-kb-upgrade` SKILL 的「步骤 -1」（先于一切）**先做前台探测再决定是否升级**：主 agent 顺序跑 `flow2spec --version` + `npm view @double-coding/flow2spec version` + `command -v npx`，按 3 分支处理：
+步骤 -1 执行 `flow2spec version` 与 `flow2spec update --check`，分别读取 CLI、Core、Core Range、Template、Protocol 和 npm 最新 Core/Template：
 
-- **A. 已装且是 latest** → **完全跳过**升级；步骤 2 命令首选 `flow2spec init <agents...>`。
-- **B. 已装但落后** → 派**独立子 agent** 后台跑 `npm i -g @double-coding/flow2spec@latest`（fire-and-forget，不等待，不阻塞主流程）；步骤 2 命令用 `npx @double-coding/flow2spec@latest init <agents...>` 保证本次拿到 latest 模板。
-- **C. 未装 / latest 未知** → 同 B 处理；探测全部失败时可放弃步骤 -1，由 cli.js 兜底。
-
-口径：
-
-- **仅** B/C 时才派子 agent；派子**不受** `flow2spec.config.json.subAgent` 字段约束（全局 npm 装包不属业务拆分范畴）；
-- 派子是 fire-and-forget，结果不进入 SKILL 结论摘要——失败也只是"下次再升一次"；
-- 与 `cli.js` 内 `maybeAutoUpdateGlobalInstall()` 不冲突：前者是 SKILL 入口按需异步派工，后者是 `init` 收尾兜底；两次都成功就是 no-op。
-- 用户自查用 `flow2spec --version`（当前全局版本）和 `flow2spec update`（CLI 内置自更新）。
+- Core-only 更新：`flow2spec update --core` 后幂等 init 刷新 Hook，不进入完整知识库升级。
+- Template 更新且 Core 兼容：更新 Core 后继续 init 与 `projectRev` / `pkgRev` 分流。
+- 本地版本不可用或 Core 超出范围：显式组合 latest CLI/Core 执行 init，避免 npx 复用旧 Core。
+- `manifest-routing.json.version` 表示 Template Version，不能与 Core Version 混用。
 
 ## init 不动哪些目录
 

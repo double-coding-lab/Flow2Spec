@@ -8,7 +8,7 @@ const {
   runDoctor,
   formatDoctorReport,
   satisfiesNodeEngine,
-} = require("../lib/doctor");
+} = require("../packages/core/lib/doctor");
 
 function write(file, content = "") {
   fs.mkdirSync(path.dirname(file), { recursive: true });

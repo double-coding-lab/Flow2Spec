@@ -141,7 +141,7 @@ function adaptNativeDshEntry(content, locale) {
       "## Topic Authoring Pointer",
       `## Knowledge Base Version Check
 
-The native host calls Core \`update.check()\` on session start. The API respects the project \`updateCheck.enabled\` switch and the daily \`.Knowledge/update-check.json\` cache. A notice is displayed when the published Core is newer than the project knowledge version. This check only detects and reports updates; it does not replace the configuration-read or knowledge-routing gates.`,
+The native host calls Core \`update.check()\` on session start. The API respects the project \`updateCheck.enabled\` switch and the daily \`.Knowledge/update-check.json\` cache. It reports Core Version and Template Version independently: Core-only updates refresh the runtime and Hook without entering knowledge upgrade, while Template updates continue through init and the projectRev/pkgRev gate. This check does not replace configuration-read or knowledge-routing gates.`,
     );
   }
   return replaceSection(
@@ -150,7 +150,7 @@ The native host calls Core \`update.check()\` on session start. The API respects
     "## 主题创作",
     `## 知识库版本自检
 
-原生宿主在会话启动时调用 Core \`update.check()\`。该 API 服从项目的 \`updateCheck.enabled\` 开关并复用每日 \`.Knowledge/update-check.json\` 缓存；Core 发布版本高于项目知识版本时，由宿主展示升级提示。版本检查只负责检测与提醒，不替代配置前置读取和知识路由门禁。`,
+原生宿主在会话启动时调用 Core \`update.check()\`。该 API 服从项目的 \`updateCheck.enabled\` 开关并复用每日 \`.Knowledge/update-check.json\` 缓存，分别报告 Core Version 与 Template Version：Core-only 更新只刷新运行时与 Hook，Template 更新再进入 init 和 projectRev/pkgRev 门禁。版本检查不替代配置前置读取和知识路由门禁。`,
   );
 }
 

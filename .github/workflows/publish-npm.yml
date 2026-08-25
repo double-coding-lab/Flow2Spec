@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   publish:
-    name: Publish Flow2Spec workspace packages
+    name: Publish tagged Flow2Spec package
     runs-on: ubuntu-latest
     steps:
       - name: Check out release commit
@@ -42,25 +42,8 @@ jobs:
       - name: Install workspace dependencies
         run: npm ci --ignore-scripts
 
-      - name: Verify tag matches package version
-        shell: bash
-        run: |
-          package_version="$(node -p "require('./packages/core/package.json').version")"
-          cli_version="$(node -p "require('./packages/cli/package.json').version")"
-          root_version="$(node -p "require('./package.json').version")"
-          tag_version="${GITHUB_REF_NAME#[vV]}"
-          if [[ "$package_version" != "$cli_version" || "$package_version" != "$root_version" ]]; then
-            echo "Root, Core, and CLI workspace versions must match." >&2
-            exit 1
-          fi
-          if [[ "$(node -p "require('./packages/cli/package.json').dependencies['@double-coding/flow2spec-core']")" != "$package_version" ]]; then
-            echo "CLI Core dependency must match the release version $package_version." >&2
-            exit 1
-          fi
-          if [[ "$tag_version" != "$package_version" ]]; then
-            echo "Release tag $GITHUB_REF_NAME does not match workspace package version $package_version." >&2
-            exit 1
-          fi
+      - name: Verify workspace and release tag versions
+        run: npm run version:check -- --tag "$GITHUB_REF_NAME"
 
       - name: Run tests
         run: npm test
@@ -69,7 +52,9 @@ jobs:
         run: npm run pack:check
 
       - name: Publish Core package with provenance
+        if: startsWith(github.event.release.tag_name, 'core-v')
         run: npm publish --workspace @double-coding/flow2spec-core --access public --provenance
 
       - name: Publish CLI package with provenance
+        if: startsWith(github.event.release.tag_name, 'cli-v')
         run: npm publish --workspace @double-coding/flow2spec --access public --provenance

@@ -5,7 +5,9 @@
   "capabilities": [
     { "id": "project.init", "api": "project.init", "since": "3.3.0" },
     { "id": "project.inspect", "api": "project.inspect", "since": "3.3.0" },
+    { "id": "project.agents", "api": "project.agents", "since": "3.5.0" },
     { "id": "config.load", "api": "config.load", "since": "3.3.0" },
+    { "id": "config.supported-locales", "api": "config.supportedLocales", "since": "3.5.0" },
     { "id": "routing.graph", "api": "routing.graph", "since": "3.3.0" },
     { "id": "routing.state", "api": "routing.state", "since": "3.3.0" },
     { "id": "routing.match", "api": "routing.match", "since": "3.3.0" },

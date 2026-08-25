@@ -16,6 +16,7 @@ const routing = require("./lib/routing");
 const hostResources = require("./lib/resources");
 const updateCheck = require("./lib/updateCheck");
 const capabilities = require("./capabilities.json");
+const packageMetadata = require("./package.json");
 
 class Flow2SpecError extends Error {
   constructor(code, message, details = {}, options = {}) {
@@ -113,10 +114,14 @@ function createFlow2Spec(options = {}) {
     project: {
       init: (initOptions = {}) => init(cwd, initOptions.integrations || [], initOptions),
       inspect: () => ({ cwd, config: config.loadFlow2specConfig(cwd) }),
+      agents: () => Object.fromEntries(
+        Object.entries(agents.AGENTS).map(([id, metadata]) => [id, { ...metadata }]),
+      ),
     },
     config: {
       load: () => config.loadFlow2specConfig(cwd),
       missingFields: () => config.getMissingConfigFields(cwd),
+      supportedLocales: () => [...config.SUPPORTED_LOCALES],
     },
     routing: {
       graph: () => knowledgeEngine.loadKnowledgeGraph(cwd),
@@ -177,6 +182,11 @@ module.exports = {
   Flow2SpecError,
   createFlow2Spec,
   getCapabilities: () => capabilities,
+  getVersions: () => ({
+    coreVersion: packageMetadata.version,
+    templateVersion: packageMetadata.templateVersion,
+    protocolVersion: capabilities.protocolVersion,
+  }),
   resourcesRoot: __dirname,
   legacy: {
     AGENTS: agents.AGENTS,

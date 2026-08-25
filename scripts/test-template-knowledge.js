@@ -3,7 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const engine = require("../lib/knowledgeEngine");
+const engine = require("../packages/core/lib/knowledgeEngine");
 
 const repoRoot = path.resolve(__dirname, "..");
 const locales = ["zh-CN", "en-US"];
@@ -11,7 +11,7 @@ const locales = ["zh-CN", "en-US"];
 for (const locale of locales) {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), `flow2spec-template-${locale}-`));
   try {
-    const source = path.join(repoRoot, "templates", locale, "knowledge");
+    const source = path.join(repoRoot, "packages", "core", "templates", locale, "knowledge");
     const target = path.join(tmpRoot, ".Knowledge");
     fs.cpSync(source, target, { recursive: true });
 

@@ -46,8 +46,9 @@ run("npm", [
 const coreProbe = path.join(tempDir, "core-probe.js");
 fs.writeFileSync(
   coreProbe,
-  "const core = require('@double-coding/flow2spec-core');\n" +
+    "const core = require('@double-coding/flow2spec-core');\n" +
     "if (core.getCapabilities().protocolVersion !== 2) process.exit(1);\n" +
+    "if (core.getVersions().templateVersion !== '3.5.0') process.exit(1);\n" +
     "if (typeof core.createFlow2Spec({ cwd: process.cwd() }).resources.skillCatalog !== 'function') process.exit(1);\n",
   "utf8",
 );
