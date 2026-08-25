@@ -55,6 +55,11 @@ export interface ProjectInspection {
   config: Flow2SpecProjectConfig;
 }
 
+export interface Flow2SpecAgent {
+  root: string;
+  label: string;
+}
+
 export interface RoutingRule {
   task?: string;
   matcherId?: string;
@@ -200,6 +205,12 @@ export interface CapabilityManifest {
   capabilities: CapabilityDefinition[];
 }
 
+export interface Flow2SpecVersions {
+  coreVersion: string;
+  templateVersion: string;
+  protocolVersion: number;
+}
+
 export interface HostResourceOptions {
   host: Flow2SpecHost;
   locale?: Flow2SpecLocale;
@@ -239,8 +250,14 @@ export interface UpdateCheckResult {
   checked: boolean;
   fromCache: boolean;
   packageName: string;
+  currentCoreVersion: string;
+  currentTemplateVersion: string;
   manifestVersion: string | null;
+  latestCoreVersion: string | null;
+  latestTemplateVersion: string | null;
   latestVersion: string | null;
+  coreUpdateAvailable: boolean;
+  templateUpdateAvailable: boolean;
   needsUpgrade: boolean;
   notice: string;
   checkedAt: number | null;
@@ -256,10 +273,12 @@ export interface Flow2SpecApi {
   project: {
     init(options?: ProjectInitOptions): Promise<ProjectInitResult>;
     inspect(): ProjectInspection;
+    agents(): Record<string, Flow2SpecAgent>;
   };
   config: {
     load(): Flow2SpecProjectConfig;
     missingFields(): unknown[];
+    supportedLocales(): Flow2SpecLocale[];
   };
   routing: {
     graph(): unknown;
@@ -323,5 +342,6 @@ export class Flow2SpecError extends Error {
 
 export function createFlow2Spec(options?: CreateFlow2SpecOptions): Flow2SpecApi;
 export function getCapabilities(): CapabilityManifest;
+export function getVersions(): Flow2SpecVersions;
 export const resourcesRoot: string;
 export const legacy: Record<string, unknown>;

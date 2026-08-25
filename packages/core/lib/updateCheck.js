@@ -3,20 +3,16 @@
 const fs = require("fs");
 const path = require("path");
 const { execFile } = require("child_process");
+const packageMetadata = require("../package.json");
 
 const DEFAULT_PACKAGE_NAME = "@double-coding/flow2spec-core";
-const KNOWLEDGE_ROOT = ".Knowledge";
 const CACHE_FILENAME = "update-check.json";
 
 function parseVersion(version) {
-  return String(version || "")
-    .replace(/^v/, "")
-    .split(/[.-]/)
-    .slice(0, 3)
-    .map((part) => {
-      const number = Number.parseInt(part, 10);
-      return Number.isFinite(number) ? number : 0;
-    });
+  return String(version || "").replace(/^v/, "").split(/[.-]/).slice(0, 3).map((part) => {
+    const number = Number.parseInt(part, 10);
+    return Number.isFinite(number) ? number : 0;
+  });
 }
 
 function compareVersions(left, right) {
@@ -41,11 +37,7 @@ function assertNotAborted(signal) {
 }
 
 function readJson(filePath) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8"));
-  } catch (_) {
-    return null;
-  }
+  try { return JSON.parse(fs.readFileSync(filePath, "utf8")); } catch (_) { return null; }
 }
 
 function sameLocalDay(timestamp, now) {
@@ -54,23 +46,27 @@ function sameLocalDay(timestamp, now) {
 }
 
 function projectName(cwd) {
-  const pkg = readJson(path.join(cwd, "package.json"));
-  return pkg?.name ? String(pkg.name) : path.basename(cwd);
+  return readJson(path.join(cwd, "package.json"))?.name || path.basename(cwd);
 }
 
-function buildNotice({ cwd, locale, manifestVersion, latestVersion }) {
-  if (locale === "en-US") {
-    return `[flow2spec] The project "${projectName(cwd)}" knowledge version is v${manifestVersion}; Core v${latestVersion} is available. The agent may run flow2spec init directly to complete the update; run the f2s-kb-upgrade skill only when the update includes topic-layer changes (projectRev != pkgRev after init).`;
+function buildNotice({ cwd, locale, state }) {
+  const summary = `Core v${state.currentCoreVersion} -> v${state.latestCoreVersion}, Template v${state.manifestVersion} -> v${state.latestTemplateVersion}`;
+  if (state.templateUpdateAvailable) {
+    return locale === "en-US"
+      ? `[flow2spec] Project "${projectName(cwd)}" has a template update (${summary}). Update Core, run flow2spec init, then use f2s-kb-upgrade only if projectRev differs from pkgRev.`
+      : `[flow2spec] 当前项目「${projectName(cwd)}」有模板更新（${summary}）。请更新 Core 后执行 flow2spec init；仅当 projectRev 与 pkgRev 不等时再执行 f2s-kb-upgrade。`;
   }
-  return `[flow2spec] 当前项目「${projectName(cwd)}」知识版本为 v${manifestVersion}，Core 最新版本为 v${latestVersion}。可由 agent 直接代跑 flow2spec init 完成更新；仅当更新包含主题层变更（init 后 projectRev 与 pkgRev 不等）时再执行 f2s-kb-upgrade skill。`;
+  return locale === "en-US"
+    ? `[flow2spec] Project "${projectName(cwd)}" has a Core-only update (${summary}). Update Core and run one idempotent flow2spec init; do not run f2s-kb-upgrade.`
+    : `[flow2spec] 当前项目「${projectName(cwd)}」仅有 Core 程序更新（${summary}）。请更新 Core 并执行一次幂等 flow2spec init；无需执行 f2s-kb-upgrade。`;
 }
 
-function queryLatestVersion(packageName, options = {}) {
+function queryLatestMetadata(packageName, options = {}) {
   const npmExecutable = process.platform === "win32" ? "npm.cmd" : "npm";
   return new Promise((resolve, reject) => {
     execFile(
       npmExecutable,
-      ["view", packageName, "version", "--registry=https://registry.npmjs.org"],
+      ["view", packageName, "version", "templateVersion", "--json", "--registry=https://registry.npmjs.org"],
       {
         encoding: "utf8",
         timeout: options.timeout || 5000,
@@ -87,10 +83,36 @@ function queryLatestVersion(packageName, options = {}) {
           reject(error);
           return;
         }
-        resolve(String(stdout || "").trim());
+        try {
+          const metadata = JSON.parse(String(stdout || "").trim());
+          const latestCoreVersion = typeof metadata === "string" ? metadata : metadata.version;
+          const latestTemplateVersion = typeof metadata === "string"
+            ? metadata
+            : metadata.templateVersion || metadata.version;
+          resolve({ latestCoreVersion, latestTemplateVersion });
+        } catch (parseError) {
+          reject(parseError);
+        }
       },
     );
   });
+}
+
+function buildState(manifestVersion, metadata) {
+  const currentCoreVersion = packageMetadata.version;
+  const currentTemplateVersion = packageMetadata.templateVersion;
+  const coreUpdateAvailable = compareVersions(currentCoreVersion, metadata.latestCoreVersion) < 0;
+  const templateUpdateAvailable = compareVersions(manifestVersion, metadata.latestTemplateVersion) < 0;
+  return {
+    currentCoreVersion,
+    currentTemplateVersion,
+    manifestVersion,
+    latestCoreVersion: metadata.latestCoreVersion,
+    latestTemplateVersion: metadata.latestTemplateVersion,
+    coreUpdateAvailable,
+    templateUpdateAvailable,
+    needsUpgrade: coreUpdateAvailable || templateUpdateAvailable,
+  };
 }
 
 function result(status, values = {}) {
@@ -99,8 +121,14 @@ function result(status, values = {}) {
     checked: false,
     fromCache: false,
     packageName: values.packageName || DEFAULT_PACKAGE_NAME,
+    currentCoreVersion: values.currentCoreVersion || packageMetadata.version,
+    currentTemplateVersion: values.currentTemplateVersion || packageMetadata.templateVersion,
     manifestVersion: values.manifestVersion || null,
-    latestVersion: values.latestVersion || null,
+    latestCoreVersion: values.latestCoreVersion || null,
+    latestTemplateVersion: values.latestTemplateVersion || null,
+    latestVersion: values.latestCoreVersion || values.latestVersion || null,
+    coreUpdateAvailable: false,
+    templateUpdateAvailable: false,
     needsUpgrade: status === "upgrade-available",
     notice: values.notice || "",
     checkedAt: values.checkedAt || null,
@@ -120,105 +148,57 @@ async function checkUpdate(cwd, config, options = {}) {
     return result("skipped", { packageName, reason: "continuous-integration" });
   }
 
-  const knowledgeDir = path.join(cwd, KNOWLEDGE_ROOT);
-  const manifestPath = path.join(knowledgeDir, "manifest-routing.json");
+  const knowledgeDir = path.join(cwd, ".Knowledge");
   const cachePath = path.join(knowledgeDir, CACHE_FILENAME);
-  const manifestVersion = readJson(manifestPath)?.version || null;
-  if (!manifestVersion) {
-    return result("skipped", { packageName, reason: "manifest-missing" });
-  }
+  const manifestVersion = readJson(path.join(knowledgeDir, "manifest-routing.json"))?.version || null;
+  if (!manifestVersion) return result("skipped", { packageName, reason: "manifest-missing" });
 
-  const now = Date.now();
   const cache = readJson(cachePath);
-  const cachePackageMatches = cache?.packageName
-    ? cache.packageName === packageName
-    : packageName === DEFAULT_PACKAGE_NAME;
-  if (!options.force && cache && cachePackageMatches && sameLocalDay(cache.checkedAt, now)) {
-    const latestVersion = cache.latestVersion || cache.latestNpm || null;
-    if (latestVersion && compareVersions(manifestVersion, latestVersion) >= 0) {
-      try {
-        fs.rmSync(cachePath, { force: true });
-      } catch (_) {}
-      return result("current", {
-        checked: true,
-        fromCache: true,
-        packageName,
-        manifestVersion,
-        latestVersion,
-        checkedAt: Number(cache.checkedAt),
-      });
+  let metadata;
+  let fromCache = false;
+  if (!options.force && cache && sameLocalDay(cache.checkedAt, Date.now())) {
+    metadata = {
+      latestCoreVersion: cache.latestCoreVersion || cache.latestVersion || cache.latestNpm,
+      latestTemplateVersion: cache.latestTemplateVersion || cache.latestNpm || cache.latestVersion,
+    };
+    fromCache = true;
+  } else {
+    try {
+      metadata = await queryLatestMetadata(packageName, options);
+    } catch (error) {
+      if (error?.code === "F2S_ABORTED") throw error;
+      return result("unavailable", { packageName, manifestVersion, reason: "registry-unavailable" });
     }
-    const needsUpgrade =
-      Boolean(latestVersion) &&
-      (cache.needsUpgrade === true || compareVersions(manifestVersion, latestVersion) < 0);
-    return result(needsUpgrade ? "upgrade-available" : "current", {
-      checked: true,
-      fromCache: true,
-      packageName,
-      manifestVersion,
-      latestVersion,
-      needsUpgrade,
-      notice: needsUpgrade
-        ? buildNotice({ cwd, locale, manifestVersion, latestVersion })
-        : "",
-      checkedAt: Number(cache.checkedAt),
-    });
-  }
-
-  let latestVersion;
-  try {
-    latestVersion = await queryLatestVersion(packageName, {
-      signal: options.signal,
-      timeout: options.timeout,
-    });
-  } catch (error) {
-    if (error?.code === "F2S_ABORTED") throw error;
-    return result("unavailable", {
-      packageName,
-      manifestVersion,
-      reason: "registry-unavailable",
-    });
   }
   assertNotAborted(options.signal);
-  if (!latestVersion) {
-    return result("unavailable", {
-      packageName,
-      manifestVersion,
-      reason: "empty-registry-version",
-    });
+  if (!metadata.latestCoreVersion || !metadata.latestTemplateVersion) {
+    return result("unavailable", { packageName, manifestVersion, reason: "empty-registry-version" });
   }
 
-  const needsUpgrade = compareVersions(manifestVersion, latestVersion) < 0;
-  const notice = needsUpgrade
-    ? buildNotice({ cwd, locale, manifestVersion, latestVersion })
-    : "";
-  const checkedAt = Date.now();
-  try {
-    fs.mkdirSync(knowledgeDir, { recursive: true });
-    fs.writeFileSync(
-      cachePath,
-      `${JSON.stringify(
-        {
-          packageName,
-          latestVersion,
-          latestNpm: latestVersion,
-          manifestVersion,
-          needsUpgrade,
-          notice,
-          checkedAt,
-        },
-        null,
-        2,
-      )}\n`,
-      "utf8",
-    );
-  } catch (_) {}
-  return result(needsUpgrade ? "upgrade-available" : "current", {
+  const state = buildState(manifestVersion, metadata);
+  const notice = state.needsUpgrade ? buildNotice({ cwd, locale, state }) : "";
+  const checkedAt = fromCache ? Number(cache.checkedAt) : Date.now();
+  if (!fromCache) {
+    try {
+      fs.mkdirSync(knowledgeDir, { recursive: true });
+      fs.writeFileSync(cachePath, `${JSON.stringify({
+        packageName,
+        ...state,
+        latestNpm: state.latestTemplateVersion,
+        notice,
+        checkedAt,
+      }, null, 2)}\n`, "utf8");
+    } catch (_) {}
+  }
+  if (!state.needsUpgrade) {
+    try { fs.rmSync(cachePath, { force: true }); } catch (_) {}
+  }
+  return result(state.needsUpgrade ? "upgrade-available" : "current", {
     checked: true,
+    fromCache,
     packageName,
-    manifestVersion,
-    latestVersion,
-    needsUpgrade,
+    ...state,
+    latestVersion: state.latestCoreVersion,
     notice,
     checkedAt,
   });
@@ -228,4 +208,5 @@ module.exports = {
   DEFAULT_PACKAGE_NAME,
   compareVersions,
   checkUpdate,
+  queryLatestMetadata,
 };

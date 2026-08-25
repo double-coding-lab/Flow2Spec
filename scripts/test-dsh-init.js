@@ -3,7 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const runInit = require("../lib/init");
+const runInit = require("../packages/core/lib/init");
 
 (async () => {
   for (const locale of ["zh-CN", "en-US"]) {

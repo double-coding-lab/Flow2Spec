@@ -130,12 +130,12 @@ f2s-kb-merge     # Resolve context conflicts after Git merges
 ### Cross-Version Knowledge Base Upgrade
 
 ```
-Non-topic version update (projectRev == pkgRev after init): the agent runs flow2spec init directly — done
-Topic-layer changes (projectRev != pkgRev): full f2s-kb-upgrade flow (Current V2+: already has .Knowledge; includes npm v3.x projects, etc.; see skill step 0)
+Core-only update (Template Version unchanged): update Core and run one idempotent init to refresh the Hook; do not enter f2s-kb-upgrade
+Template update: after init, projectRev == pkgRev takes the fast path; a difference enters the full f2s-kb-upgrade flow
 Legacy layout (V1): built-in migration removed; use a historical package version (@3.4.x or earlier) for a one-time migration, or move into .Knowledge manually
 ```
 
-In interactive terminals, the Flow2Spec CLI checks the latest npm version with a cache when running `flow2spec version` / `flow2spec init`. If a newer version exists, it prompts you to run `flow2spec update`; for non-topic version updates the agent may directly run `flow2spec init` to complete the alignment, and only when the update includes topic-layer changes execute `f2s-kb-upgrade` in the Agent conversation to align the project knowledge templates, manifest/matchers, and agent config roots. Failed update checks are skipped silently and do not affect the current command; checks are disabled in `CI`, non-TTY sessions, or when `FLOW2SPEC_SKIP_UPDATE_CHECK=1` is set.
+`flow2spec version` shows CLI, Core, Core Range, Template, and Protocol. `flow2spec update --check|--cli|--core` checks updates, updates CLI, or updates a compatible Core. SessionStart Hooks compare Core and Template independently: Core-only updates do not trigger knowledge upgrade; Template updates use `projectRev` / `pkgRev` after init to decide whether to run `f2s-kb-upgrade`. Failed checks are skipped silently; CLI self-checks do not interrupt `CI` or runs with `FLOW2SPEC_SKIP_UPDATE_CHECK=1`.
 
 After `flow2spec init codex`, Codex projects include `.codex/hooks.json`, `.codex/hooks/f2s-config-session.js`, and `.codex/hooks/f2s-update-check.js`. On Codex `SessionStart` for `startup|resume`, the first script injects one configuration summary and the second checks the knowledge-base version automatically. When the hook is first generated or changed, trust it through `/hooks` in Codex. Set `updateCheck.enabled=false` in `flow2spec.config.json` to skip only the version check.
 
@@ -143,7 +143,7 @@ Prefer the native Cordis plugin `@double-coding/flow2spec-deepseek-harness` from
 
 After `flow2spec init cursor`, Cursor projects include `.cursor/hooks.json` and `.cursor/hooks/f2s-update-check.js`. The hook runs on Cursor `sessionStart` and injects upgrade reminders through `additional_context`. Set `updateCheck.enabled=false` in `flow2spec.config.json` to skip the check.
 
-After `flow2spec init claude`, Claude projects include `.claude/settings.json`, `.claude/hooks/f2s-config-session.js`, `.claude/hooks/f2s-config-inject.js`, and `.claude/hooks/f2s-update-check.js`: `SessionStart` injects the configuration summary and checks the knowledge-base version, while `PreToolUse Skill` only guards `f2s-*` Skill calls. The version-check script injects an agent-instruction notice through `additional_context`, requiring the agent to relay the message verbatim to the user. The notice format is: "Current project `<project>` knowledge-base version v<current>, lower than latest package version v<latest>. Run the f2s-kb-upgrade skill to align templates and routing." If today's cache still flags a needed upgrade, every new session re-injects the reminder; after a successful upgrade, `f2s-kb-upgrade` clears `.Knowledge/update-check.json` so stale reminders disappear.
+After `flow2spec init claude`, Claude projects include `.claude/settings.json`, `.claude/hooks/f2s-config-session.js`, `.claude/hooks/f2s-config-inject.js`, and `.claude/hooks/f2s-update-check.js`: `SessionStart` injects the configuration summary and checks Core/Template independently, while `PreToolUse Skill` only guards `f2s-*` Skill calls. The Hook injects the relevant Core-only or Template-update action through `additional_context`; an unresolved same-day cache is reminded again, and completion clears `.Knowledge/update-check.json`.
 
 ---
 

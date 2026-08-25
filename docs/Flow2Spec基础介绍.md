@@ -256,7 +256,7 @@ flowchart TD
 
 **提交前知识覆盖检查**：`f2s-git-commit` 会在提交前检查 diff、冲突标记、暂存范围，也会检查本轮变更是否需要同步知识库，让"改代码后忘记更新知识"在提交前能被发现。
 
-**模板与路由升级检测**：Flow2Spec 启动时会检测 `.Knowledge/` 结构版本，如果落后于 npm 包版本，Agent 会提示执行 `f2s-kb-upgrade`，确保项目知识结构与工具版本保持同步。
+**模板与路由升级检测**：Flow2Spec 启动时分别检测 Core Version 与 Template Version。Core-only 更新只刷新运行时与 Hook；Template Version 落后时，Agent 才在 init 后按 `projectRev` / `pkgRev` 决定是否执行 `f2s-kb-upgrade`。
 
 ---
 

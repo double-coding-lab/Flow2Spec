@@ -15,9 +15,23 @@ async function main() {
   });
 
   assert.strictEqual(typeof api.project.init, "function");
+  assert.deepStrictEqual(Object.keys(api.project.agents()), ["cursor", "claude", "codex", "dsh"]);
+  assert.deepStrictEqual(api.config.supportedLocales(), ["zh-CN", "en-US"]);
   assert.strictEqual(typeof api.knowledge.check, "function");
   assert.strictEqual(core.getCapabilities().schema, "flow2spec.capabilities.v1");
   assert.strictEqual(core.getCapabilities().protocolVersion, 2);
+  assert.deepStrictEqual(core.getVersions(), {
+    coreVersion: "3.5.0",
+    templateVersion: "3.5.0",
+    protocolVersion: 2,
+  });
+  assert.deepStrictEqual(
+    core
+      .getCapabilities()
+      .capabilities.filter((capability) => capability.since === "3.5.0")
+      .map((capability) => capability.id),
+    ["project.agents", "config.supported-locales"],
+  );
   assert.deepStrictEqual(
     core
       .getCapabilities()
@@ -96,7 +110,22 @@ async function main() {
     assert.strictEqual(update.status, "upgrade-available");
     assert.strictEqual(update.fromCache, true);
     assert.strictEqual(update.latestVersion, "9.0.0");
+    assert.strictEqual(update.templateUpdateAvailable, true);
     assert.ok(update.notice.includes("f2s-kb-upgrade"));
+
+    fs.writeFileSync(
+      cachePath,
+      `${JSON.stringify({
+        latestCoreVersion: "3.6.0",
+        latestTemplateVersion: "1.0.0",
+        checkedAt: Date.now(),
+      })}\n`,
+      "utf8",
+    );
+    const coreOnlyUpdate = await api.update.check();
+    assert.strictEqual(coreOnlyUpdate.coreUpdateAvailable, true);
+    assert.strictEqual(coreOnlyUpdate.templateUpdateAvailable, false);
+    assert.ok(coreOnlyUpdate.notice.includes("无需执行 f2s-kb-upgrade"));
   } finally {
     if (originalCI === undefined) delete process.env.CI;
     else process.env.CI = originalCI;

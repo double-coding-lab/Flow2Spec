@@ -3,7 +3,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const engine = require("../lib/knowledgeEngine");
+const engine = require("../packages/core/lib/knowledgeEngine");
 
 function writeJson(filePath, data) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });

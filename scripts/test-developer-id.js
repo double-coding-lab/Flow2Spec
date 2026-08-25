@@ -6,7 +6,7 @@ const {
   resolveDeveloperContext,
   taskRootFor,
   HASH_FALLBACK_PREFIX,
-} = require("../lib/developerId");
+} = require("../packages/core/lib/developerId");
 
 // ---------- sanitizeDeveloperId ----------
 assert.strictEqual(sanitizeDeveloperId("Alice"), "alice");

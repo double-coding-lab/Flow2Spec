@@ -1,6 +1,7 @@
 {
   "name": "@double-coding/flow2spec-core",
   "version": "3.5.0",
+  "templateVersion": "3.5.0",
   "description": "Flow2Spec Core APIs, knowledge engine, project initialization and shared resources",
   "homepage": "https://github.com/double-coding-lab/Flow2Spec#readme",
   "repository": {
@@ -21,9 +22,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "scripts": {
-    "prepack": "node ../../scripts/sync-core-templates.js --quiet"
   },
   "engines": {
     "node": ">=16"

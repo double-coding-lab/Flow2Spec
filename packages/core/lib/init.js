@@ -172,12 +172,12 @@ function findPackageJsonDir(startDir) {
   return null;
 }
 
-function readPackageName(templatesDir) {
+function readPackageMetadata(templatesDir) {
   try {
     const packageDir = findPackageJsonDir(templatesDir);
-    return readJson(path.join(packageDir || path.join(templatesDir, ".."), "package.json")).name;
+    return readJson(path.join(packageDir || path.join(templatesDir, ".."), "package.json"));
   } catch (_) {
-    return "@double-coding/flow2spec";
+    return {};
   }
 }
 
@@ -199,7 +199,11 @@ function writeHookScriptWithPackageName(destDir, templatesDir, scriptName) {
   if (!fs.existsSync(src)) return { written: false, reason: "missing-template" };
   ensureDir(destDir);
   let body = fs.readFileSync(src, "utf8");
-  body = body.replace(/__FLOW2SPEC_PACKAGE_NAME__/g, readPackageName(templatesDir));
+  const packageMetadata = readPackageMetadata(templatesDir);
+  body = body
+    .replace(/__FLOW2SPEC_PACKAGE_NAME__/g, packageMetadata.name || "@double-coding/flow2spec-core")
+    .replace(/__FLOW2SPEC_CORE_VERSION__/g, packageMetadata.version || "0.0.0")
+    .replace(/__FLOW2SPEC_TEMPLATE_VERSION__/g, packageMetadata.templateVersion || "0.0.0");
   fs.writeFileSync(path.join(destDir, scriptName), body, "utf8");
   return { written: true };
 }
@@ -462,7 +466,7 @@ function mergeTopicMetadata(templateMetadata, existingMetadata, topicPaths) {
   return out;
 }
 
-function buildMergedRouting(templateRouting, existingRouting, pkgVersion, isFirstInit = false) {
+function buildMergedRouting(templateRouting, existingRouting, templateVersion, isFirstInit = false) {
   const mergedTaskRules = unionByKey(
     templateRouting.taskToTopicRules,
     existingRouting.taskToTopicRules,
@@ -487,7 +491,7 @@ function buildMergedRouting(templateRouting, existingRouting, pkgVersion, isFirs
   );
 
   const knownMerged = {
-    version: pkgVersion || templateRouting.version || existingRouting.version,
+    version: templateVersion || templateRouting.version || existingRouting.version,
     knowledgeRoot:
       existingRouting.knowledgeRoot || templateRouting.knowledgeRoot,
     generatedFrom:
@@ -731,14 +735,14 @@ function finalizePkgRev(cwd, templatesDir) {
   } catch {
     return { written: false, pkgRev: null };
   }
-  // 顺便用本包版本号覆盖 manifest.version——reset 路径直接 cp 模板会留下模板里的占位版本号
+  // reset 路径直接复制模板时，用 Core 包内独立模板版本覆盖 manifest.version。
   let changed = false;
   try {
     const pkgJsonPath = path.join(__dirname, "..", "package.json");
     if (fs.existsSync(pkgJsonPath)) {
-      const pkgVersion = JSON.parse(fs.readFileSync(pkgJsonPath, "utf8")).version;
-      if (typeof pkgVersion === "string" && routing.version !== pkgVersion) {
-        routing.version = pkgVersion;
+      const templateVersion = JSON.parse(fs.readFileSync(pkgJsonPath, "utf8")).templateVersion;
+      if (typeof templateVersion === "string" && routing.version !== templateVersion) {
+        routing.version = templateVersion;
         changed = true;
       }
     }
@@ -803,14 +807,14 @@ function upgradeKnowledgeRoutingAndMatchers(cwd, templatesDir, options = {}) {
   const existingRouting = hadRouting ? readJson(routingPath) : {};
   const existingMatchers = hadMatchers ? readJson(matchersPath) : {};
 
-  // 读包版本号，用于写入 manifest-routing.json 的 version 字段
-  let pkgVersion;
+  // 读取 Core 包内独立模板版本，用于写入 manifest-routing.json.version。
+  let templateVersion;
   try {
     const packageDir = findPackageJsonDir(templatesDir);
-    pkgVersion = readJson(path.join(packageDir || path.join(templatesDir, ".."), "package.json")).version;
+    templateVersion = readJson(path.join(packageDir || path.join(templatesDir, ".."), "package.json")).templateVersion;
   } catch (_) {}
 
-  const mergedRouting = buildMergedRouting(templateRouting, existingRouting, pkgVersion, !hadRouting);
+  const mergedRouting = buildMergedRouting(templateRouting, existingRouting, templateVersion, !hadRouting);
   const mergedMatchers = buildMergedMatchers(
     templateMatchers,
     existingMatchers,

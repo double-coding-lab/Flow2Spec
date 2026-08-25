@@ -256,7 +256,7 @@ Every step in this chain leaves a trackable asset: requirements in `req-docs/`, 
 
 **Pre-commit knowledge coverage check**: `f2s-git-commit` checks the diff, conflict markers, and staging scope before committing, and checks whether the round's changes require a knowledge base sync — catching "changed code, forgot to update knowledge" before the commit lands.
 
-**Template and routing upgrade detection**: At startup, Flow2Spec checks whether `.Knowledge/` is behind the npm package version and, if so, prompts `f2s-kb-upgrade` to keep the project's knowledge structure aligned with the tool version.
+**Template and routing upgrade detection**: At startup, Flow2Spec checks Core Version and Template Version independently. Core-only updates refresh the runtime and Hook; when Template Version is behind, the Agent uses `projectRev` / `pkgRev` after init to decide whether `f2s-kb-upgrade` is required.
 
 ---
 

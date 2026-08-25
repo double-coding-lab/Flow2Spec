@@ -2,29 +2,16 @@
 'use strict';
 
 const { execFileSync } = require('child_process');
-const path = require('path');
+const { checkWorkspaceVersion } = require('./workspace-version');
 
-const rootPkg = require(path.join(process.cwd(), 'package.json'));
-const corePkg = require(path.join(process.cwd(), 'packages', 'core', 'package.json'));
-const cliPkg = require(path.join(process.cwd(), 'packages', 'cli', 'package.json'));
-const version = String(corePkg.version || '').trim();
-
-if (!version) {
-  console.error('packages/core/package.json version is empty');
+const target = process.argv[2];
+if (!['cli', 'core'].includes(target)) {
+  console.error('usage: git-tag-version.js <cli|core>');
   process.exit(1);
 }
-
-if (String(rootPkg.version || '').trim() !== version || String(cliPkg.version || '').trim() !== version) {
-  console.error('workspace package versions must match before tagging');
-  process.exit(1);
-}
-
-if (cliPkg.dependencies?.['@double-coding/flow2spec-core'] !== version) {
-  console.error('CLI Core dependency must match the release version before tagging');
-  process.exit(1);
-}
-
-const tag = version.startsWith('v') ? version : `v${version}`;
+const versions = checkWorkspaceVersion({ rootDir: process.cwd() });
+const version = target === 'cli' ? versions.cliVersion : versions.coreVersion;
+const tag = `${target}-v${version}`;
 
 try {
   execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${tag}`], {

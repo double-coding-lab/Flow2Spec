@@ -11,17 +11,17 @@
     "node": ">=16"
   },
   "scripts": {
-    "test": "node scripts/sync-core-templates.js --quiet && node cli.js --help && node cli.js kb check && node scripts/sync-package-readme.js --check && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-doctor.js && node scripts/test-core-api.js && node scripts/test-package-install.js",
-    "test:core": "node scripts/sync-core-templates.js --quiet && node scripts/test-core-api.js",
-    "test:cli": "node scripts/sync-core-templates.js --quiet && node cli.js --help && node cli.js doctor --json",
-    "sync:core-templates": "node scripts/sync-core-templates.js",
-    "sync:core-templates:check": "node scripts/sync-core-templates.js --check",
-    "sync:agents": "node scripts/sync-core-templates.js --quiet && node cli.js init cursor claude codex",
+    "test": "node cli.js --help && node cli.js kb check && node scripts/sync-package-readme.js --check && node scripts/test-workspace-version.js && node scripts/test-cli-update.js && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-doctor.js && node scripts/test-core-api.js && node scripts/test-package-install.js",
+    "test:core": "node scripts/test-core-api.js",
+    "test:cli": "node cli.js --help && node cli.js doctor --json",
+    "sync:agents": "node cli.js init cursor claude codex",
     "sync:package-readme": "node scripts/sync-package-readme.js",
-    "pack:check": "node scripts/sync-core-templates.js --quiet && node scripts/sync-package-readme.js --check && npm pack --workspace @double-coding/flow2spec-core --dry-run && npm pack --workspace @double-coding/flow2spec --dry-run",
-    "tag:version": "node scripts/git-tag-version.js"
-  },
-  "dependencies": {
-    "@double-coding/flow2spec-core": "^3.5.0"
+    "pack:check": "npm run version:check && node scripts/sync-package-readme.js --check && npm pack --workspace @double-coding/flow2spec-core --dry-run && npm pack --workspace @double-coding/flow2spec --dry-run",
+    "tag:version:cli": "node scripts/git-tag-version.js cli",
+    "tag:version:core": "node scripts/git-tag-version.js core",
+    "version:set:cli": "node scripts/workspace-version.js set-cli",
+    "version:set:core": "node scripts/workspace-version.js set-core",
+    "version:set:template": "node scripts/workspace-version.js set-template",
+    "version:check": "node scripts/workspace-version.js check"
   }
 }
