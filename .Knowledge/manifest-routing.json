@@ -33,7 +33,8 @@
     "flow2spec-init-defaults": ".Knowledge/topics/f2s-init-defaults.md",
     "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md",
     "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md",
-    "flow2spec-core-package": ".Knowledge/topics/flow2spec-core-package.md"
+    "flow2spec-core-package": ".Knowledge/topics/flow2spec-core-package.md",
+    "flow2spec-qoder-plugin": ".Knowledge/topics/flow2spec-qoder-plugin.md"
   },
   "taskToTopicRules": [
     {
@@ -172,6 +173,14 @@
       "topics": [
         "flow2spec-core-package"
       ]
+    },
+    {
+      "task": "flow2spec-qoder-plugin",
+      "matcherId": "m-flow2spec-qoder-plugin",
+      "matcherPath": ".Knowledge/matchers/m-flow2spec-qoder-plugin.json",
+      "topics": [
+        "flow2spec-qoder-plugin"
+      ]
     }
   ],
   "projectRev": 2,
@@ -263,6 +272,13 @@
     "flow2spec-core-package": {
       "primary": "module",
       "confidence": "inferred"
+    },
+    "flow2spec-qoder-plugin": {
+      "primary": "feature",
+      "confidence": "inferred",
+      "tags": [
+        "module"
+      ]
     }
   }
 }
