@@ -15,6 +15,7 @@
     "test:core": "node scripts/test-core-api.js",
     "test:cli": "node cli.js --help && node cli.js doctor --json",
     "sync:agents": "node cli.js init cursor claude codex",
+    "build:qoder-plugin": "node scripts/build-qoder-plugin.js",
     "sync:package-readme": "node scripts/sync-package-readme.js",
     "pack:check": "npm run version:check && node scripts/sync-package-readme.js --check && npm pack --workspace @double-coding/flow2spec-core --dry-run && npm pack --workspace @double-coding/flow2spec --dry-run",
     "tag:version:cli": "node scripts/git-tag-version.js cli",
