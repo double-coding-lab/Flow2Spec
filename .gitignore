@@ -5,6 +5,7 @@ docs/*.json
 .Knowledge/update-check.json
 .playwright-cli/
 output/playwright/
+output/qoder-plugin/
 node_modules/
 .astro/
 .Knowledge/.last-sync.json
