@@ -1,0 +1,14 @@
+{
+  "includeAny": [
+    "Qoder 插件",
+    "qoder plugin",
+    "qoder-plugin",
+    "插件构建",
+    "build:qoder-plugin",
+    "插件打包",
+    "插件市场"
+  ],
+  "id": "m-flow2spec-qoder-plugin",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1"
+}
