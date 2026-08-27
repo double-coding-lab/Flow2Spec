@@ -175,15 +175,20 @@ function runDoctor(cwd = process.cwd(), options = {}) {
   }
 
   const agentsPath = path.join(cwd, "AGENTS.md");
+  const needsAgentsEntry = [".codex", ".dsh"].some((root) =>
+    fs.existsSync(path.join(cwd, root)),
+  );
   checks.push(
     fs.existsSync(agentsPath)
       ? makeCheck("agents-entry", "项目入口", STATUS.pass, "根 AGENTS.md 已就绪。")
       : makeCheck(
           "agents-entry",
           "项目入口",
-          STATUS.error,
-          "缺少根 AGENTS.md。",
-          "运行 flow2spec init codex 或 flow2spec init dsh，或重新初始化所需 Agent。",
+          needsAgentsEntry ? STATUS.error : STATUS.warning,
+          needsAgentsEntry
+            ? "缺少根 AGENTS.md。"
+            : "未检测到根 AGENTS.md（插件模式项目属正常）。",
+          "Codex/DSH 用户运行 flow2spec init codex 或 flow2spec init dsh；插件模式（flow2spec init plugin）无需此文件。",
         ),
   );
 
@@ -211,8 +216,8 @@ function runDoctor(cwd = process.cwd(), options = {}) {
     claude: ["settings.json"],
     cursor: ["hooks.json"],
   };
-  const initializedAgents = Object.entries(AGENTS).filter(([, agent]) =>
-    fs.existsSync(path.join(cwd, agent.root)),
+  const initializedAgents = Object.entries(AGENTS).filter(
+    ([, agent]) => agent.root && fs.existsSync(path.join(cwd, agent.root)),
   );
   if (initializedAgents.length === 0) {
     checks.push(
@@ -220,8 +225,8 @@ function runDoctor(cwd = process.cwd(), options = {}) {
         "agent-roots",
         "Agent 配置",
         STATUS.warning,
-        "未检测到 .codex、.claude、.cursor 或 .dsh 配置根。",
-        "运行 flow2spec init <agent> 初始化实际使用的 Agent。",
+        "未检测到 .codex、.claude、.cursor 或 .dsh 配置根（插件模式项目属正常）。",
+        "使用本地客户端时运行 flow2spec init <agent>；插件模式（flow2spec init plugin）无需配置根。",
       ),
     );
   } else {

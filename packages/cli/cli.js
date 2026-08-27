@@ -304,6 +304,7 @@ agent（可多个，空格分隔；省略时交互选择）：
   flow2spec init <agent> <agent>  # 同时初始化多个客户端
   flow2spec init <agent> --locale en-US  # 使用英文模板初始化指定客户端
   flow2spec init dsh                  # 初始化 DeepSeek Harness 项目技能
+  flow2spec init plugin               # 插件模式客户端（如 Qoder 插件）：仅初始化知识库与配置
   flow2spec init --yes            # 跳过所有问答，使用默认值（适合 CI）
   flow2spec init --reset-knowledge  # 强制用模板覆盖 .Knowledge（谨慎）
 
@@ -888,6 +889,8 @@ if (sub === "init") {
     .then(({ ids, knowledgeResult, routingUpgrade, indexSnapshot, gitignoreResult, projectConfig, locale, claudeHooksResult }) => {
       const lines = ids.map((id) => {
         const { root, label } = AGENTS[id];
+        if (!root)
+          return `  - ${label}：仅 .Knowledge/ 与 ${CONFIG_FILENAME}（skills/rules/hooks 由客户端插件提供）`;
         if (id === "codex")
           return `  - ${root}/：（${label}）skills/、topics/、hooks/、hooks.json、AGENTS.md（指针）；仓库根 AGENTS.md（完整）`;
         if (id === "dsh")

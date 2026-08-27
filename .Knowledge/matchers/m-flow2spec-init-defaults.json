@@ -23,7 +23,9 @@
     "codexAgentsAdapter",
     "renderProjectConfigBlock",
     "init 默认翻面",
-    "AGENTS init 默认列"
+    "AGENTS init 默认列",
+    "init plugin",
+    "插件模式初始化"
   ],
   "id": "m-flow2spec-init-defaults",
   "version": "1.0.0",

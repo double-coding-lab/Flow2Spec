@@ -1277,6 +1277,8 @@ async function run(cwd, agentIds, options = {}) {
 
   const claudeHooksResult = {};
   for (const id of ids) {
+    // 虚拟目标（root: null，如 plugin 插件模式）：能力由客户端插件提供，不写配置根。
+    if (!AGENTS[id].root) continue;
     ensureAgentDirs(cwd, id);
     writeAgentArtifacts(cwd, id, templatesDir, projectConfig);
     if (id === "claude") {

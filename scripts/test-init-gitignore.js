@@ -4,6 +4,7 @@ const os = require("os");
 const path = require("path");
 
 const runInit = require("../packages/core/lib/init");
+const corePkg = require("../packages/core/package.json");
 
 (async () => {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-init-"));
@@ -32,8 +33,8 @@ const runInit = require("../packages/core/lib/init");
         path.join(tmpRoot, agentRoot, "hooks", "f2s-update-check.js"),
         "utf8",
       );
-      assert(hook.includes("const GENERATED_CORE_VERSION = '3.5.0';"));
-      assert(hook.includes("const GENERATED_TEMPLATE_VERSION = '3.5.0';"));
+      assert(hook.includes(`const GENERATED_CORE_VERSION = '${corePkg.version}';`));
+      assert(hook.includes(`const GENERATED_TEMPLATE_VERSION = '${corePkg.templateVersion}';`));
       assert(!hook.includes("__FLOW2SPEC_PACKAGE_NAME__"));
       assert(!hook.includes("__FLOW2SPEC_CORE_VERSION__"));
       assert(!hook.includes("__FLOW2SPEC_TEMPLATE_VERSION__"));

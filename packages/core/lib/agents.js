@@ -1,12 +1,15 @@
 /**
  * flow2spec init 支持的 AI 工具配置目录。
  * 知识库统一写入项目根 `.Knowledge/`（含 template），rules/skills 保留在各配置根。
+ * `root: null` 表示虚拟目标（如 plugin 插件模式）：不写任何配置根，
+ * skills/rules/hooks 由客户端插件提供，项目侧仅落 .Knowledge 与 flow2spec.config.json。
  */
 const AGENTS = {
   cursor: { root: ".cursor", label: "Cursor" },
   claude: { root: ".claude", label: "Claude" },
   codex: { root: ".codex", label: "Codex" },
   dsh: { root: ".dsh", label: "DeepSeek Harness" },
+  plugin: { root: null, label: "插件模式（仅知识库，能力由客户端插件提供）" },
 };
 
 const KNOWLEDGE_ROOT = ".Knowledge";
@@ -16,6 +19,7 @@ const AGENT_SUBDIRS = {
   claude: ["rules", "skills"],
   codex: ["skills"],
   dsh: ["skills", "topics"],
+  plugin: [],
 };
 
 /**
