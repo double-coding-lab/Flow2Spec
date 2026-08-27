@@ -1,6 +1,6 @@
 ---
 id: flow2spec-init-defaults
-revision: 1
+revision: 2
 summary: "flow2spec-init-defaults（路由摘要）"
 primary: config
 confidence: inferred
@@ -45,6 +45,16 @@ tags: [policy]
 | `updateCheck.enabled` | boolean | `true` | 是否启用每日版本更新提示 |
 
 「当前默认值」一栏以包模板 `packages/core/templates/zh-CN/flow2spec.config.json` 为锚，作变更前先核对该文件。
+
+## init 目标与插件模式（plugin）
+
+`AGENTS` 注册表（`packages/core/lib/agents.js`）含五个 init 目标：`cursor` / `claude` / `codex` / `dsh` / `plugin`。
+
+- **`plugin` 是 `root: null` 的虚拟目标**：面向能力由客户端插件提供的场景（如 Qoder 插件市场用户），skills/rules/hooks 随插件安装在用户级，项目侧无需镜像。
+- **`flow2spec init plugin` 行为**：仅落 `.Knowledge/` 模板 + 路由骨架 + `pkgRev`、`flow2spec.config.json` 缺失字段问答与 `.gitignore` 补齐；不创建任何配置根目录，不生成根 `AGENTS.md`，不写 hooks。
+- **实现形态**：`init.js` 主循环对 `root: null` 的 id 直接跳过 agent 专属动作；未来新的插件化客户端复用同一路径，不需新增专属目标。
+- **doctor 配套判定**：无任何配置根时，缺根 `AGENTS.md` 与缺配置根均为 **warning**（提示插件模式属正常）；存在 `.codex` / `.dsh` 时缺根 `AGENTS.md` 仍为 error。
+- 回归：`scripts/test-plugin-init.js`。
 
 ### 默认值变更记录
 

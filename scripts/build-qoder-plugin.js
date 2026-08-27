@@ -248,7 +248,7 @@ ${hookList}
 
 ## 使用前提（重要）
 
-1. **目标项目须先初始化 Flow2Spec**：项目根执行 \`npx @double-coding/flow2spec init\`，生成 \`.Knowledge/\`（知识路由）与 \`flow2spec.config.json\`（编排开关）；未初始化时技能会提示先执行 init。
+1. **目标项目须先初始化 Flow2Spec**：项目根执行 \`npx @double-coding/flow2spec init plugin\`（插件模式：仅生成 \`.Knowledge/\` 知识路由与 \`flow2spec.config.json\` 编排开关，不写任何客户端配置根）；未初始化时技能会提示先执行 init。
 2. **Hooks 依赖 Node.js**（>=16）在 PATH 中可用；hooks 仅做提醒/检测，不替代技能正文的 \`Read("flow2spec.config.json")\` 门禁。
 
 ## 来源与说明

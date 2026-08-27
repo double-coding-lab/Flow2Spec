@@ -5,6 +5,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const core = require("@double-coding/flow2spec-core");
+const corePkg = require("../packages/core/package.json");
 
 async function main() {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-core-"));
@@ -15,14 +16,14 @@ async function main() {
   });
 
   assert.strictEqual(typeof api.project.init, "function");
-  assert.deepStrictEqual(Object.keys(api.project.agents()), ["cursor", "claude", "codex", "dsh"]);
+  assert.deepStrictEqual(Object.keys(api.project.agents()), ["cursor", "claude", "codex", "dsh", "plugin"]);
   assert.deepStrictEqual(api.config.supportedLocales(), ["zh-CN", "en-US"]);
   assert.strictEqual(typeof api.knowledge.check, "function");
   assert.strictEqual(core.getCapabilities().schema, "flow2spec.capabilities.v1");
   assert.strictEqual(core.getCapabilities().protocolVersion, 2);
   assert.deepStrictEqual(core.getVersions(), {
-    coreVersion: "3.5.0",
-    templateVersion: "3.5.0",
+    coreVersion: corePkg.version,
+    templateVersion: corePkg.templateVersion,
     protocolVersion: 2,
   });
   assert.deepStrictEqual(
@@ -113,10 +114,12 @@ async function main() {
     assert.strictEqual(update.templateUpdateAvailable, true);
     assert.ok(update.notice.includes("f2s-kb-upgrade"));
 
+    // 模拟「Core-only 更新」：最新 Core 比当前高一个补丁号，模板不变
+    const [coreMajor, coreMinor, corePatch] = corePkg.version.split(".").map(Number);
     fs.writeFileSync(
       cachePath,
       `${JSON.stringify({
-        latestCoreVersion: "3.6.0",
+        latestCoreVersion: `${coreMajor}.${coreMinor}.${corePatch + 1}`,
         latestTemplateVersion: "1.0.0",
         checkedAt: Date.now(),
       })}\n`,

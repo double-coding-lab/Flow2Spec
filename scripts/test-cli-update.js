@@ -13,9 +13,9 @@ if (process.platform === "win32") {
   fs.writeFileSync(path.join(tempDir, "npm.cmd"), [
     "@echo off",
     "if \"%2\"==\"@double-coding/flow2spec-core\" (",
-    "  echo {\"version\":\"3.6.0\",\"templateVersion\":\"3.5.0\"}",
+    "  echo {\"version\":\"3.6.1\",\"templateVersion\":\"3.5.0\"}",
     ") else (",
-    "  echo 3.5.1",
+    "  echo 3.6.1",
     ")",
     "",
   ].join("\r\n"), "utf8");
@@ -24,9 +24,9 @@ if (process.platform === "win32") {
   fs.writeFileSync(npmPath, [
     "#!/usr/bin/env sh",
     "if [ \"$2\" = \"@double-coding/flow2spec-core\" ]; then",
-    "  echo '{\"version\":\"3.6.0\",\"templateVersion\":\"3.5.0\"}'",
+    "  echo '{\"version\":\"3.6.1\",\"templateVersion\":\"3.5.0\"}'",
     "else",
-    "  echo '3.5.1'",
+    "  echo '3.6.1'",
     "fi",
     "",
   ].join("\n"), { encoding: "utf8", mode: 0o755 });
@@ -43,10 +43,10 @@ const check = spawnSync(process.execPath, [cliPath, "update", "--check"], {
   encoding: "utf8",
 });
 assert.strictEqual(check.status, 0, check.stderr);
-assert.match(check.stdout, /CLI:\s+3\.5\.0 -> 3\.5\.1/);
-assert.match(check.stdout, /Core:\s+3\.5\.0 -> 3\.6\.0/);
+assert.match(check.stdout, /CLI:\s+3\.6\.0 -> 3\.6\.1/);
+assert.match(check.stdout, /Core:\s+3\.6\.0 -> 3\.6\.1/);
 assert.match(check.stdout, /Template:\s+3\.5\.0 -> 3\.5\.0/);
-assert.match(check.stdout, /\^3\.5\.0 \(compatible\)/);
+assert.match(check.stdout, /\^3\.6\.0 \(compatible\)/);
 
 const invalid = spawnSync(process.execPath, [cliPath, "update", "--unknown"], {
   cwd: path.resolve(__dirname, ".."),

@@ -1,6 +1,6 @@
 ---
 id: flow2spec-qoder-plugin
-revision: 1
+revision: 2
 summary: "Qoder 原生插件构建：从 Core 全量生成 skills/rules/hooks 并打包 zip"
 primary: feature
 confidence: inferred
@@ -25,7 +25,7 @@ tags: [module]
 - 构建脚本：`scripts/build-qoder-plugin.js`（npm script `build:qoder-plugin`）
 - 内容事实源：`packages/core/index.js` 的 `resources` API 与 `packages/core/templates/`（包边界与版本契约见 `flow2spec-core-package` 主题）
 - 产物目录：`output/qoder-plugin/`（已 gitignore；每次构建先清空重建）
-- 插件使用前提：目标项目须先 `npx @double-coding/flow2spec init` 生成 `.Knowledge/` 与 `flow2spec.config.json`
+- 插件使用前提：目标项目须先 `npx @double-coding/flow2spec init plugin`（插件模式：仅生成 `.Knowledge/` 与 `flow2spec.config.json`，不写客户端配置根；目标语义见 `flow2spec-init-defaults` 主题）
 
 ## 禁止项
 

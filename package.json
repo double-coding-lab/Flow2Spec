@@ -11,7 +11,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "test": "node cli.js --help && node cli.js kb check && node scripts/sync-package-readme.js --check && node scripts/test-workspace-version.js && node scripts/test-cli-update.js && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-doctor.js && node scripts/test-core-api.js && node scripts/test-package-install.js",
+    "test": "node cli.js --help && node cli.js kb check && node scripts/sync-package-readme.js --check && node scripts/test-workspace-version.js && node scripts/test-cli-update.js && node scripts/test-knowledge-engine.js && node scripts/test-developer-id.js && node scripts/test-template-knowledge.js && node scripts/test-init-gitignore.js && node scripts/test-dsh-init.js && node scripts/test-plugin-init.js && node scripts/test-doctor.js && node scripts/test-core-api.js && node scripts/test-package-install.js",
     "test:core": "node scripts/test-core-api.js",
     "test:cli": "node cli.js --help && node cli.js doctor --json",
     "sync:agents": "node cli.js init cursor claude codex",
