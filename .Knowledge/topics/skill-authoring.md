@@ -1,7 +1,7 @@
 ---
 id: skill-authoring
 revision: 0
-summary: "skill-authoring（路由摘要）"
+summary: "本仓 f2s-* SKILL 的小标题命名与排列顺序规范"
 primary: policy
 confidence: inferred
 ---

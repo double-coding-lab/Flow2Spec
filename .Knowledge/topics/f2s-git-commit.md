@@ -1,7 +1,7 @@
 ---
 id: f2s-git-commit
 revision: 0
-summary: "f2s-git-commit（路由摘要）"
+summary: "Git 提交流程：变更检查、提交信息生成与知识库覆盖检查"
 primary: policy
 confidence: manual
 ---

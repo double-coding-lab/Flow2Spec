@@ -1,7 +1,7 @@
 ---
 id: f2s-req-tech
 revision: 0
-summary: "f2s-req-tech（路由摘要）"
+summary: "基于需求与知识库生成技术方案文档，落盘 req-docs"
 primary: policy
 confidence: inferred
 ---

@@ -229,7 +229,8 @@ After this skill's step 2 `flow2spec init` succeeds, first perform "old file cle
    - `includeAny` has more than **12 terms**.
    - The topic body contains second-level headings covering more than **3 unrelated responsibility domains**.
    - The topic is frequently matched by multiple unrelated task types (can be judged from `taskToTopicRules` and matcher term breadth).
-7. **Automatic old-topic frontmatter repair**: in the full flow, the agent must run `flow2spec kb build --fix-topics` (or the equivalent internal capability) to add `id`, `revision`, and `summary` to existing topics that lack frontmatter / `revision`, and to fill `dependsOn` / `primary` / `confidence` / `tags` from `manifest-routing.json`. Then run `flow2spec kb check --strict`; if strict validation fails, stop and list the concrete topic / reason in the summary. Do not ask the user to manually add topic headers one by one.
+7. **Automatic old-topic frontmatter repair**: in the full flow, the agent must run `flow2spec kb build --fix-topics` (or the equivalent internal capability) to add `id`, `revision`, and `summary` to existing topics that lack frontmatter / `revision`, and to fill `dependsOn` / `primary` / `confidence` / `tags` from `manifest-routing.json`. Then run `flow2spec kb check --strict`; if the failing items are **summary quality warnings** (missing / placeholder / too long), go to item 8 to rewrite them; for any other failure, stop and list the concrete topic / reason in the summary. Do not ask the user to manually add topic headers one by one.
+8. **Summary first-pass anchor rewrite (required; only the agent can write semantic summaries)**: for each summary quality warning reported by `kb check --strict`, Read the corresponding `.Knowledge/topics/<id>.md` body one by one and write the frontmatter `summary` per the "first-pass recall" rules in `f2s-topic-authoring` (responsibility + core nouns the user would ask about; soft limit 15 words / hard limit 20 words). After all are written, run `flow2spec kb build` to sync them into `rule.summary`, then rerun `flow2spec kb check --strict` until no summary warnings remain. Do not pass with placeholder text (`<topicId> (routing summary)` / TODO).
 
 ### Step 3b: `index.md` Merge and `template/index.template.md` (Required)
 
@@ -317,6 +318,7 @@ Output:
 - **index (snapshot + merge)**: `snapshot copied` / `index.md merged` / `not executed on fast path` / `pending (see notes)`
 - **topicMetadata (existing audit)**: `filled` / `pending user confirmation` / `not executed on fast path`; list added / fixed / deleted topicIds
 - **topic frontmatter**: `auto-filled N topics` / `already complete` / `strict validation failed` / `not executed on fast path`
+- **summary first-pass anchor**: `rewrote N summaries (synced into rule.summary via kb build)` / `already compliant` / `not executed on fast path`
 - **f2s-kb-upgrade SKILL**: `unchanged after init` / `reran N rounds from step 2c per new SKILL (no second init)` / `loop skipped on fast path` / `pending confirmation`
 - **`projectRev` write-back**: `written to project manifest (value=pkgRev)` / `not executed on fast path` / `pkgRev=null, field untouched`
 - manifest-routing / matcher shards: `aligned with template` / `already latest` / `reset overwrite`
@@ -345,7 +347,7 @@ Output:
 6. Incremental or reset mode was clearly labeled.
 7. **On full flow**: old topic-file cleanup and `index/manifest` reference fixes were handled (step 3).
 8. **On full flow**: **Step 3a** was executed: `topicMetadata` audited, with no orphan keys / illegal primary / illegal confidence; missing old topics were filled with `inferred` based on evidence or listed as pending confirmation.
-9. **On full flow**: `flow2spec kb build --fix-topics` or an equivalent internal capability was executed, followed by `flow2spec kb check --strict`, ensuring existing topics have `revision`.
+9. **On full flow**: `flow2spec kb build --fix-topics` or an equivalent internal capability was executed, followed by `flow2spec kb check --strict`, ensuring existing topics have `revision`; summary quality warnings were rewritten to zero per step 3a.8 and synced into `rule.summary` via `kb build`.
 10. **On full flow**: **Step 3b** was executed: `index.md` was **merged** (from **`Topic Overview`** section through before "Match and Execute" is project-maintained; the rest matches the package version), and `topicPaths` were checked; **at the end of full flow**, the project-side `projectRev` was **written back** to `pkgRev` (if `pkgRev=null`, the field was left unchanged).
 11. **On fast path**: steps 3 / 3a / 3b were actually skipped (no unrelated scans), and the summary explicitly labels "not executed on fast path".
 12. Manifest and key-path verification results were output.

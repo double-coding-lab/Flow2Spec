@@ -1,7 +1,7 @@
 ---
 id: f2s-req-plan
 revision: 0
-summary: "f2s-req-plan (routing summary)"
+summary: "Task planning breakdown and parallel implementation for requirements and changes"
 dependsOn: [f2s-task]
 primary: policy
 confidence: manual

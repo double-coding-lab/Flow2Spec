@@ -1,7 +1,7 @@
 ---
 id: flow2spec-milestones
 revision: 1
-summary: flow2spec-milestones
+summary: "Flow2Spec 产品自身的版本演进与里程碑时间线"
 primary: feature
 confidence: inferred
 ---

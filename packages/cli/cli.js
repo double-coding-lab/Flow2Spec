@@ -526,6 +526,9 @@ if (sub === "kb") {
         }
         if (result.warnings.length) {
           console.log(`warnings: ${result.warnings.length}`);
+          for (const warning of result.warnings.slice(0, 10)) {
+            console.log(`- ${warning}`);
+          }
         }
       }
       process.exit(result.ok ? 0 : 1);

@@ -19,6 +19,29 @@ const ALLOWED_TOPIC_PRIMARY = new Set(["policy", "config", "feature", "module"])
 const ALLOWED_TOPIC_CONFIDENCE = new Set(["manual", "inferred"]);
 const TOPIC_ID_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
 const MATCHER_ID_RE = /^m-[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
+// topic summary 作为初筛召回字段的质量约束：含 CJK 按字符数上限 40，纯英文按词数上限 20。
+const SUMMARY_CJK_RE = /[\u3400-\u9fff\uf900-\ufaff]/;
+const SUMMARY_MAX_CJK_CHARS = 40;
+const SUMMARY_MAX_WORDS = 20;
+const SUMMARY_PLACEHOLDER_RE = /^(todo|tbd|待补充|占位)/i;
+
+function isPlaceholderSummary(summary, topicId) {
+  const value = String(summary || "").trim();
+  if (!value) return false;
+  if (value === topicId) return true;
+  if (value.includes("路由摘要")) return true;
+  if (/routing summary/i.test(value)) return true;
+  return SUMMARY_PLACEHOLDER_RE.test(value);
+}
+
+function isSummaryTooLong(summary) {
+  const value = String(summary || "").trim();
+  if (!value) return false;
+  if (SUMMARY_CJK_RE.test(value)) {
+    return Array.from(value).length > SUMMARY_MAX_CJK_CHARS;
+  }
+  return value.split(/\s+/).filter(Boolean).length > SUMMARY_MAX_WORDS;
+}
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -333,9 +356,15 @@ function loadKnowledgeGraph(cwd) {
 function deriveRoutingOverlayFromGraph(graph) {
   const topicMetadata = {};
   const topicDependencies = {};
+  const topicSummaries = {};
   for (const topic of graph.topics) {
     if (!topic.exists) continue;
     const fm = topic.frontmatter || {};
+    const summary =
+      typeof fm.summary === "string" ? fm.summary.trim() : "";
+    if (summary) {
+      topicSummaries[topic.topicId] = summary;
+    }
     const entry = {};
     if (Object.prototype.hasOwnProperty.call(fm, "primary")) {
       const primary = String(fm.primary || "").trim();
@@ -364,7 +393,7 @@ function deriveRoutingOverlayFromGraph(graph) {
       topicDependencies[topic.topicId] = normalizeStringArray(fm.dependsOn);
     }
   }
-  return { topicMetadata, topicDependencies };
+  return { topicMetadata, topicDependencies, topicSummaries };
 }
 
 function normalizeRoutingWithGraph(graph) {
@@ -408,6 +437,23 @@ function normalizeRoutingWithGraph(graph) {
       delete next.topicDependencies[topicId];
       changed = true;
     }
+  }
+  // taskToTopicRules[].summary：初筛召回字段，唯一手写源为 topic frontmatter summary，
+  // 此处机械同步（多 topic 规则按“；”拼接）；topic 无 summary 时保留规则既有值不清空。
+  if (Array.isArray(next.taskToTopicRules)) {
+    next.taskToTopicRules = next.taskToTopicRules.map((rule) => {
+      if (!rule || typeof rule !== "object" || !Array.isArray(rule.topics)) {
+        return rule;
+      }
+      const parts = rule.topics
+        .map((topicId) => overlay.topicSummaries[topicId])
+        .filter(Boolean);
+      if (parts.length === 0) return rule;
+      const summary = parts.join("；");
+      if (rule.summary === summary) return rule;
+      changed = true;
+      return { ...rule, summary };
+    });
   }
   return { routing: next, changed };
 }
@@ -472,6 +518,25 @@ function validateKnowledgeGraph(graph, options = {}) {
         if (!routing.topicPaths?.[depId]) {
           issues.push(`topic dependsOn references missing topic: ${topic.topicId} -> ${depId}`);
         }
+      }
+    }
+    // summary 质量：仅 warning（不阻断旧项目）；--strict 时才影响 check 结果。
+    const summaryValue =
+      typeof fm.summary === "string" ? fm.summary.trim() : "";
+    if (!summaryValue) {
+      warnings.push(
+        `topic summary missing (初筛召回依赖此字段，建议补写): ${topic.topicId}`,
+      );
+    } else {
+      if (isPlaceholderSummary(summaryValue, topic.topicId)) {
+        warnings.push(
+          `topic summary placeholder (需改写为含核心名词的一句话): ${topic.topicId} -> ${summaryValue}`,
+        );
+      }
+      if (isSummaryTooLong(summaryValue)) {
+        warnings.push(
+          `topic summary too long (上限 ${SUMMARY_MAX_CJK_CHARS} 字 / ${SUMMARY_MAX_WORDS} 词): ${topic.topicId}`,
+        );
       }
     }
   }
@@ -557,6 +622,14 @@ function validateKnowledgeGraph(graph, options = {}) {
       }
       if (!rule.task || typeof rule.task !== "string") {
         issues.push("taskToTopicRules entry missing task");
+      }
+      if (
+        Object.prototype.hasOwnProperty.call(rule, "summary") &&
+        typeof rule.summary !== "string"
+      ) {
+        issues.push(
+          `taskToTopicRules(${rule.task || "unknown"}) summary must be a string`,
+        );
       }
       if (!Array.isArray(rule.topics) || rule.topics.length === 0) {
         issues.push(`taskToTopicRules(${rule.task || "unknown"}) must contain topics`);

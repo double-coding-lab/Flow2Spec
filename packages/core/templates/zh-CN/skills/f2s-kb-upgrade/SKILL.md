@@ -229,7 +229,8 @@ flow2spec update --check
    - `includeAny` 词数超过 **12 个**；
    - topic 正文包含超过 **3 个不相干职责域**的二级标题；
    - 该 topic 同时被多种不相干任务类型频繁命中（可从 `taskToTopicRules` 和 matcher 词宽度判断）。
-7. **旧 topic frontmatter 自动补齐**：完整流程中必须由 agent 自行执行 `flow2spec kb build --fix-topics`（或等价内部能力），为缺少 frontmatter / `revision` 的存量 topic 补 `id`、`revision`、`summary`，并按 `manifest-routing.json` 补 `dependsOn` / `primary` / `confidence` / `tags`。随后执行 `flow2spec kb check --strict`；若 strict 失败，停止并在摘要中列出具体 topic / reason。不得要求用户手动逐个 topic 添加头部。
+7. **旧 topic frontmatter 自动补齐**：完整流程中必须由 agent 自行执行 `flow2spec kb build --fix-topics`（或等价内部能力），为缺少 frontmatter / `revision` 的存量 topic 补 `id`、`revision`、`summary`，并按 `manifest-routing.json` 补 `dependsOn` / `primary` / `confidence` / `tags`。随后执行 `flow2spec kb check --strict`；若失败项为 **summary 质量 warning**（缺失 / 占位 / 超长），转第 8 条补写；其余失败停止并在摘要中列出具体 topic / reason。不得要求用户手动逐个 topic 添加头部。
+8. **summary 初筛锚补写（必须，agent 才能写出语义摘要）**：对 `kb check --strict` 报出的每个 summary 质量 warning，逐个 Read 对应 `.Knowledge/topics/<id>.md` 正文，按 `f2s-topic-authoring`「初筛召回规范」补写 frontmatter `summary`（职责 + 用户会问的核心名词，软 30 字 / 硬 40 字）；全部补完后执行 `flow2spec kb build` 同步进 `rule.summary`，再跑 `flow2spec kb check --strict` 直至无 summary warning。禁止用占位文案（`<topicId>（路由摘要）` / TODO）敷衍通过。
 
 ### 步骤 3b：`index.md` 融合与 `template/index.template.md`（必须执行）
 
@@ -317,6 +318,7 @@ flow2spec update --check
 - **index（快照 + 融合）**：`快照已复制` / `index.md 已融合` / `快速路径下未执行` / `待处理（见备注）`
 - **topicMetadata（存量审计）**：`已补齐` / `待用户确认` / `快速路径下未执行`；列出新增 / 修正 / 删除的 topicId
 - **topic frontmatter**：`已自动补齐 N 个` / `已完整无需补齐` / `strict 校验失败` / `快速路径下未执行`
+- **summary 初筛锚**：`已补写 N 个（已 kb build 同步 rule.summary）` / `已合规无需补写` / `快速路径下未执行`
 - **f2s-kb-upgrade SKILL**：`init 后无变化` / `已按新版从 2c 起重跑 N 轮（不再次 init）` / `快速路径下跳过该闭环` / `待确认`
 - **`projectRev` 回写**：`已写入项目 manifest（值=pkgRev）` / `快速路径下未执行` / `pkgRev=null 未动`
 - manifest-routing / matchers 分片：`已与模板对齐` / `已是最新` / `reset 覆盖`
@@ -345,7 +347,7 @@ flow2spec update --check
 6. 是否明确标注增量 or reset 模式。
 7. **完整流程时**：是否已处理旧主题文件清理与 `index/manifest` 引用修复（步骤 3）。
 8. **完整流程时**：是否已执行 **步骤 3a**：审计 `topicMetadata`，确保无孤儿 key / 非法 primary / 非法 confidence；缺失旧主题已按证据补 `inferred` 或列为待确认。
-9. **完整流程时**：是否已执行 `flow2spec kb build --fix-topics` 或等价内部能力，并随后执行 `flow2spec kb check --strict`，确保存量 topic 已具备 `revision`。
+9. **完整流程时**：是否已执行 `flow2spec kb build --fix-topics` 或等价内部能力，并随后执行 `flow2spec kb check --strict`，确保存量 topic 已具备 `revision`；summary 质量 warning 是否已按步骤 3a.8 补写清零并 `kb build` 同步 `rule.summary`。
 10. **完整流程时**：是否已执行 **步骤 3b**：**融合** `index.md`（**主题一览**节起至命中与执行前为项目维护区，其余同包版），并核对 `topicPaths`；**完整流程末尾**是否已**回写** 项目侧 `projectRev = pkgRev`（`pkgRev=null` 则保留原值）。
 11. **快速路径时**：步骤 3 / 3a / 3b 是否真的跳过（未做无关扫描），摘要中明确标注「快速路径下未执行」。
 12. 是否输出了 manifest 与关键路径校验结果。

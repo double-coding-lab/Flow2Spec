@@ -1,7 +1,7 @@
 ---
 id: flow2spec-presentations
 revision: 0
-summary: flow2spec-presentations
+summary: "对外网站与 HTML 演示稿的位置、预览与维护边界"
 primary: feature
 confidence: inferred
 ---

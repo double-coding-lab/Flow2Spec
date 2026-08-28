@@ -34,7 +34,8 @@
     "flow2spec-collaboration": ".Knowledge/topics/flow2spec-collaboration.md",
     "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md",
     "flow2spec-core-package": ".Knowledge/topics/flow2spec-core-package.md",
-    "flow2spec-qoder-plugin": ".Knowledge/topics/flow2spec-qoder-plugin.md"
+    "flow2spec-qoder-plugin": ".Knowledge/topics/flow2spec-qoder-plugin.md",
+    "kb-routing-summary": ".Knowledge/topics/kb-routing-summary.md"
   },
   "taskToTopicRules": [
     {
@@ -43,7 +44,8 @@
       "matcherPath": ".Knowledge/matchers/m-f2s-config-precheck.json",
       "topics": [
         "config-precheck"
-      ]
+      ],
+      "summary": "f2s 技能执行前必读 flow2spec.config.json 的开关口径"
     },
     {
       "task": "implement-from-spec",
@@ -52,7 +54,8 @@
       "topics": [
         "f2s-doc-routing",
         "implement-tech-design"
-      ]
+      ],
+      "summary": "stock-docs 与 req-docs 目录分工：需求、方案、沉淀文档放哪；按技术方案/需求文档实现代码的流程与门禁"
     },
     {
       "task": "doc-routing",
@@ -60,7 +63,8 @@
       "matcherPath": ".Knowledge/matchers/m-doc-routing.json",
       "topics": [
         "f2s-doc-routing"
-      ]
+      ],
+      "summary": "stock-docs 与 req-docs 目录分工：需求、方案、沉淀文档放哪"
     },
     {
       "task": "change-tracking",
@@ -68,7 +72,8 @@
       "matcherPath": ".Knowledge/matchers/m-change-tracking.json",
       "topics": [
         "f2s-task"
-      ]
+      ],
+      "summary": "任务清单 .task 目录的创建、续作与归档规则"
     },
     {
       "task": "req-plan",
@@ -76,7 +81,8 @@
       "matcherPath": ".Knowledge/matchers/m-req-plan.json",
       "topics": [
         "f2s-req-plan"
-      ]
+      ],
+      "summary": "需求/变更的任务规划拆解与并行实现流程"
     },
     {
       "task": "flow2spec-dsh-adapter",
@@ -84,7 +90,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-dsh-adapter.json",
       "topics": [
         "flow2spec-dsh-adapter"
-      ]
+      ],
+      "summary": "DeepSeek Harness 项目级技能初始化与目录适配"
     },
     {
       "task": "git-commit",
@@ -92,7 +99,8 @@
       "matcherPath": ".Knowledge/matchers/m-f2s-git-commit.json",
       "topics": [
         "f2s-git-commit"
-      ]
+      ],
+      "summary": "Git 提交流程：变更检查、提交信息生成与知识库覆盖检查"
     },
     {
       "task": "flow2spec-presentations",
@@ -100,7 +108,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-presentations.json",
       "topics": [
         "flow2spec-presentations"
-      ]
+      ],
+      "summary": "对外网站与 HTML 演示稿的位置、预览与维护边界"
     },
     {
       "task": "flow2spec-milestones",
@@ -108,7 +117,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-milestones.json",
       "topics": [
         "flow2spec-milestones"
-      ]
+      ],
+      "summary": "Flow2Spec 产品自身的版本演进与里程碑时间线"
     },
     {
       "task": "skill-authoring",
@@ -116,7 +126,8 @@
       "matcherPath": ".Knowledge/matchers/m-skill-authoring.json",
       "topics": [
         "skill-authoring"
-      ]
+      ],
+      "summary": "本仓 f2s-* SKILL 的小标题命名与排列顺序规范"
     },
     {
       "task": "req-tech",
@@ -124,7 +135,8 @@
       "matcherPath": ".Knowledge/matchers/m-req-tech.json",
       "topics": [
         "f2s-req-tech"
-      ]
+      ],
+      "summary": "基于需求与知识库生成技术方案文档，落盘 req-docs"
     },
     {
       "task": "dev-workflow-constraints",
@@ -132,7 +144,8 @@
       "matcherPath": ".Knowledge/matchers/m-f2s-dev-workflow-constraints.json",
       "topics": [
         "f2s-dev-workflow-constraints"
-      ]
+      ],
+      "summary": "Flow2Spec 本仓的模板真源、配置根、版本发布与分发边界"
     },
     {
       "task": "kb-distill",
@@ -140,7 +153,8 @@
       "matcherPath": ".Knowledge/matchers/m-f2s-kb-distill.json",
       "topics": [
         "f2s-kb-distill"
-      ]
+      ],
+      "summary": "f2s-kb-distill：Q&A 驱动知识提取与入库"
     },
     {
       "task": "flow2spec-init-defaults",
@@ -148,7 +162,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-init-defaults.json",
       "topics": [
         "flow2spec-init-defaults"
-      ]
+      ],
+      "summary": "init 写入 flow2spec.config.json 的默认值与字段语义"
     },
     {
       "task": "flow2spec-collaboration",
@@ -156,7 +171,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-collaboration.json",
       "topics": [
         "flow2spec-collaboration"
-      ]
+      ],
+      "summary": "任务状态本地隔离、共享知识 delta 合入与 revision 冲突处理"
     },
     {
       "task": "flow2spec-doctor",
@@ -164,7 +180,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-doctor.json",
       "topics": [
         "flow2spec-doctor"
-      ]
+      ],
+      "summary": "只读检查 Flow2Spec 环境、初始化、协作上下文与知识库健康"
     },
     {
       "task": "flow2spec-core-package",
@@ -172,7 +189,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-core-package.json",
       "topics": [
         "flow2spec-core-package"
-      ]
+      ],
+      "summary": "Core/CLI 所有权、公共 API、独立版本、独立发布与更新兼容契约"
     },
     {
       "task": "flow2spec-qoder-plugin",
@@ -180,7 +198,17 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-qoder-plugin.json",
       "topics": [
         "flow2spec-qoder-plugin"
-      ]
+      ],
+      "summary": "Qoder 插件的构建、zip 打包与插件市场分发"
+    },
+    {
+      "task": "kb-routing-summary",
+      "matcherId": "m-kb-routing-summary",
+      "matcherPath": ".Knowledge/matchers/m-kb-routing-summary.json",
+      "topics": [
+        "kb-routing-summary"
+      ],
+      "summary": "初筛召回 summary 字段的同步、校验与创作规范"
     }
   ],
   "projectRev": 2,
@@ -279,6 +307,10 @@
       "tags": [
         "module"
       ]
+    },
+    "kb-routing-summary": {
+      "primary": "feature",
+      "confidence": "manual"
     }
   }
 }

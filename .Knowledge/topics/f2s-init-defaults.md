@@ -1,7 +1,7 @@
 ---
 id: flow2spec-init-defaults
 revision: 2
-summary: "flow2spec-init-defaults（路由摘要）"
+summary: "init 写入 flow2spec.config.json 的默认值与字段语义"
 primary: config
 confidence: inferred
 tags: [policy]
