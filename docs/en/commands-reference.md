@@ -89,7 +89,7 @@ The table above lists conversation-triggered `/f2s-*` skills. The repository als
 
 **Purpose**: Synchronizes documents from `stock-docs/` (architecture, final drafts) into the knowledge base routing system, generating/updating topic files, the index, manifest-routing, and matchers.
 
-**How It Works**: Starting from a final-draft document, it runs a three-step "document → routing" mapping: (1) extract capability topics and keywords from the draft; (2) generate `topics/<topic>.md` (routing summary with execution boundaries and next-step pointers) and `matchers/<id>.json` (machine-readable `includeAny` terms); (3) register task→topic rules in `manifest-routing.json` and update the human-readable `index.md`. After that, the task routing engine can hit the topic via keywords.
+**How It Works**: Starting from a final-draft document, it runs a three-step "document → routing" mapping: (1) extract capability topics and keywords from the draft; (2) generate `topics/<topic>.md` (routing summary with execution boundaries and next-step pointers) and `matchers/<id>.json` (machine-readable `includeAny`/`includeAll`/`excludeAny`/`excludeAll` terms); (3) register task→topic rules in `manifest-routing.json` and update the human-readable `index.md`. After that, the task routing engine can hit the topic via keywords.
 
 **Use Cases**:
 - After a final draft is complete, the knowledge base needs to "know about" these documents
