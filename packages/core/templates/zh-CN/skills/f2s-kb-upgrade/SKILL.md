@@ -111,11 +111,17 @@ flow2spec update --check
 
 | 情况 | 行动 | 步骤 2 默认命令 |
 | --- | --- | --- |
-| **A. Template 已是最新** | 若只有 Core 更新，执行 `flow2spec update --core` 后幂等 init 刷新 Hook，删除缓存并**停止本技能**；Core 也最新则直接停止 | `flow2spec init <agents...>` |
+| **A. Template 已是最新** | 若只有 Core 更新，执行 `flow2spec update --core` 后幂等 init 刷新 Hook；随后**不得直接停止**，必须先做下方「**项目侧对齐检查**」，通过后才删除缓存并停止本技能 | `flow2spec init <agents...>` |
 | **B. Template 有更新且最新 Core 落在当前 Core Range** | 执行 `flow2spec update --core`，继续步骤 0；CLI 无需因 Core 兼容更新而发版或升级 | `flow2spec init <agents...>` |
 | **C. 未安装、版本未知或最新 Core 超出范围** | 使用显式 latest CLI/Core 组合，避免 npx 复用旧 Core；若最新 Core 仍不兼容，先升级支持它的 CLI | `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>` |
 
 预检失败时允许回退 C，但不得把 Core Version 当作 Template Version。此步骤不强制创建子 agent，也不后台安装全局包。
+
+**项目侧对齐检查（A 分支停止前必须）**：`flow2spec version` / `update --check` 对比的是**本机包 vs npm 最新**，不反映**本项目 `.Knowledge` 是否已对齐当前包模板**（典型误判：刚升级完 CLI/Core 后首次在老项目跑本技能，包侧「均为最新」但项目侧模板仍是旧版，直接停止会跳过全部升级动作）。停止前逐项确认：
+
+1. Read 项目侧 `.Knowledge/manifest-routing.json`：若 `version`（项目侧 Template Version）**低于**本机包 Template Version，或 `pkgRev` / `projectRev` 字段缺失 → 项目侧未对齐，**视同 Template 更新**：继续步骤 0 → 2（init）→ 2c 判定，不得停止；
+2. 字段一致时再执行 `flow2spec kb check --strict`：若报 summary 质量 warning 或结构问题 → 转步骤 3a.7 / 3a.8 处理完再收尾；
+3. 以上均通过才允许按 A 分支停止，并在摘要中写明「项目侧已对齐（version=X，strict 通过）」。
 
 ### 步骤 0：版本判定与分流（必须，先于 init）
 
@@ -287,7 +293,8 @@ flow2spec update --check
 
 输出以下信息：
 
-- **步骤 -1 全局版本预检**：分支结论（`A 已装且是 latest（跳过升级） / B 已装但落后（已派子 agent 后台升级） / C 未装或 latest 未知（已派或提示）`）+ 当前全局版本 + npm latest 版本（若拿到）
+- **步骤 -1 全局版本预检**：分支结论（`A 已装且是 latest（需附项目侧对齐结论） / B 已装但落后（已派子 agent 后台升级） / C 未装或 latest 未知（已派或提示）`）+ 当前全局版本 + npm latest 版本（若拿到）
+- **项目侧对齐检查**（A 分支时必填）：`已对齐（version=X，strict 通过，已停止）` / `未对齐（version X < 包 Y，已转完整流程）` / `strict 报 warning（已转 3a.7/3a.8）`
 - 执行命令（含 agent 与是否 reset）
 - 是否成功
 - **`projectRev` 判定**：`projectRev` X vs `pkgRev` Y → 快速路径 / 完整流程 / 字段缺失走兜底（步骤 2c）
@@ -306,7 +313,7 @@ flow2spec update --check
 ```markdown
 ## f2s-kb-upgrade 执行结果
 
-- **步骤 -1 全局版本预检**：`A 已装且是 latest（跳过升级） / B 已装但落后（已派子 agent 后台升级 npm i -g） / C 未装或 latest 未知（已派 / 保守用 npx）`；当前版本=`<V>`，latest=`<L 或 未知>`
+- **步骤 -1 全局版本预检**：`A 已装且是 latest（项目侧对齐：<结论>） / B 已装但落后（已派子 agent 后台升级 npm i -g） / C 未装或 latest 未知（已派 / 保守用 npx）`；当前版本=`<V>`，latest=`<L 或 未知>`
 - 本技能内代跑命令：`<实际执行的 flow2spec init ... 或显式 latest CLI/Core 组合 init ...>`
 - init 模式：`增量` / `覆盖重置（--reset-knowledge）`
 - 执行结果：`成功` / `失败`
@@ -339,7 +346,7 @@ flow2spec update --check
 
 ## 完成后自检
 
-1. 是否已做 **步骤 -1**：执行 `flow2spec version` 与 `flow2spec update --check`，记录 CLI/Core/Core Range/Template/Protocol；Core-only 更新是否直接刷新 Core/Hook 并停止，Template 更新是否按 A/B/C 选择当前 CLI 或显式 latest CLI/Core 组合。
+1. 是否已做 **步骤 -1**：执行 `flow2spec version` 与 `flow2spec update --check`，记录 CLI/Core/Core Range/Template/Protocol；Core-only 更新是否直接刷新 Core/Hook，Template 更新是否按 A/B/C 选择当前 CLI 或显式 latest CLI/Core 组合；**A 分支停止前是否完成「项目侧对齐检查」**（manifest `version`/`pkgRev` 对比 + `kb check --strict`），未对齐时是否已转完整流程而非直接停止。
 2. 是否已做 **步骤 0**：V1 已停止执行并告知用户处理方式、**现行库（V2+）** 正常进入 `init` 流程。
 3. 是否在 **步骤 2 开始前** 记录了项目侧 `projectRev`（`projectRev`），并在 **步骤 2 的 `init` 之后** 重读 `pkgRev`、执行 **步骤 2c** 判定。
 4. 是否在 **步骤 2 的 `init` 之后**重读过 **`f2s-kb-upgrade/SKILL.md`**：完整流程下有变化必须**按新版字面从步骤 2c 起重跑**（**不再次 init**）；快速路径下可跳过该闭环（见「init 与技能自更新」「快速路径例外」）。

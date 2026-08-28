@@ -111,11 +111,17 @@ Record CLI Version, Core Version, Core Range, Template Version, Protocol Version
 
 | Case | Action | Default step 2 command |
 | --- | --- | --- |
-| **A. Template is current** | If only Core changed, run `flow2spec update --core`, then one idempotent init to refresh the Hook, clear the cache, and **stop this skill**. If Core is also current, stop immediately. | `flow2spec init <agents...>` |
+| **A. Template is current** | If only Core changed, run `flow2spec update --core`, then one idempotent init to refresh the Hook. Afterwards **do not stop immediately**: first run the "**project-side alignment check**" below, and only stop this skill (clearing the cache) after it passes. | `flow2spec init <agents...>` |
 | **B. Template changed and latest Core is inside Core Range** | Run `flow2spec update --core`, then continue to step 0. A compatible Core update does not require a CLI release or upgrade. | `flow2spec init <agents...>` |
 | **C. Not installed, unknown, or latest Core is outside the range** | Use an explicit latest CLI/Core combination so npx cannot reuse an old Core. If latest Core still is not compatible, upgrade to a CLI that supports it first. | `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>` |
 
 If the preflight fails, case C is allowed as fallback, but never treat Core Version as Template Version. This step does not mandate a sub-agent or a background global install.
+
+**Project-side alignment check (required before stopping on branch A)**: `flow2spec version` / `update --check` compare the **installed packages vs npm latest**; they do not reflect **whether this project's `.Knowledge` is aligned with the current package templates** (typical misjudgment: running this skill in an old project right after upgrading the CLI/Core — the packages are "all current" but the project-side templates are still old, and stopping here would skip the entire upgrade). Confirm item by item before stopping:
+
+1. Read the project-side `.Knowledge/manifest-routing.json`: if `version` (project-side Template Version) is **lower than** the installed package Template Version, or the `pkgRev` / `projectRev` fields are missing → the project side is not aligned; **treat it as a Template update**: continue with step 0 → 2 (init) → 2c judgment, do not stop;
+2. If the fields match, run `flow2spec kb check --strict`: on summary quality warnings or structural problems → handle them via steps 3a.7 / 3a.8 before wrapping up;
+3. Only when all of the above pass may branch A stop, and the summary must state "project side aligned (version=X, strict passed)".
 
 ### Step 0: Version Judgment and Branching (Required, Before init)
 
@@ -287,7 +293,8 @@ Verify at least:
 
 Output:
 
-- **Step -1 global version preflight**: branch (`A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to upgrade) / C Missing or latest unknown (dispatched / advised)`) + current global version + npm latest (if obtained)
+- **Step -1 global version preflight**: branch (`A Installed & on latest (must include project-side alignment conclusion) / B Installed but behind (sub-agent dispatched to upgrade) / C Missing or latest unknown (dispatched / advised)`) + current global version + npm latest (if obtained)
+- **Project-side alignment check** (required on branch A): `aligned (version=X, strict passed, stopped)` / `not aligned (version X < package Y, switched to full flow)` / `strict warnings (handled via 3a.7/3a.8)`
 - Executed command (including agents and whether reset was used)
 - Whether it succeeded
 - **`projectRev` judgment**: project `X` vs package `Y` -> fast path / full flow / field-missing fallback (step 2c)
@@ -306,7 +313,7 @@ Output:
 ```markdown
 ## f2s-kb-upgrade Execution Result
 
-- **Step -1 global version preflight**: `A Installed & on latest (upgrade skipped) / B Installed but behind (sub-agent dispatched to run npm i -g in background) / C Missing or latest unknown (dispatched / conservative npx)`; current version=`<V>`, latest=`<L or unknown>`
+- **Step -1 global version preflight**: `A Installed & on latest (project-side alignment: <conclusion>) / B Installed but behind (sub-agent dispatched to run npm i -g in background) / C Missing or latest unknown (dispatched / conservative npx)`; current version=`<V>`, latest=`<L or unknown>`
 - Command run inside this skill: `<actual flow2spec init ... or explicit latest CLI/Core combination init ...>`
 - init mode: `incremental` / `overwrite reset (--reset-knowledge)`
 - Result: `success` / `failure`
@@ -339,7 +346,7 @@ Output:
 
 ## Completion Self-Check
 
-1. **Step -1** was performed: `flow2spec version` and `flow2spec update --check` recorded CLI/Core/Core Range/Template/Protocol; Core-only updates refreshed Core/Hook and stopped, while Template updates selected the current CLI or an explicit latest CLI/Core combination through A/B/C.
+1. **Step -1** was performed: `flow2spec version` and `flow2spec update --check` recorded CLI/Core/Core Range/Template/Protocol; Core-only updates refreshed Core/Hook, while Template updates selected the current CLI or an explicit latest CLI/Core combination through A/B/C; **before stopping on branch A, the "project-side alignment check" was completed** (manifest `version`/`pkgRev` comparison + `kb check --strict`), and when not aligned the skill switched to the full flow instead of stopping.
 2. **Step 0** was performed: on V1 the skill stopped and told the user how to proceed, and **current repositories (V2+)** entered the `init` flow normally.
 3. **Before step 2** recorded the project-side `projectRev` (`projectRev`), and **after step 2 `init`** re-read `pkgRev` and executed **step 2c** judgment.
 4. After **step 2 `init`**, **`f2s-kb-upgrade/SKILL.md`** was re-read: on full flow, a change must trigger **a rerun from step 2c per the new literal text** (**no second `init`**); on fast path, the loop can be skipped (see "init and skill self-update" / "fast-path exception").

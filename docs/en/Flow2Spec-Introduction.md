@@ -438,7 +438,8 @@ In short: **single Q&A → distill (auto), new module bulk import → add, perio
 **5-minute quick start**:
 
 ```Plain Text
-npx @double-coding/flow2spec@latest init
+npm install -g @double-coding/flow2spec
+flow2spec init
 
 ```
 
@@ -475,7 +476,8 @@ If your project already has these problems, try it in one repository first:
 - documentation and code have started to drift apart.
 
 ```Plain Text
-npx @double-coding/flow2spec@latest init
+npm install -g @double-coding/flow2spec
+flow2spec init
 ```
 
 Repository: `https://github.com/double-coding-lab/Flow2Spec`

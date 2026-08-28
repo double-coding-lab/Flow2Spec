@@ -27,4 +27,4 @@ const versions = getVersions();
 - `update.check()` 复用 `.Knowledge/update-check.json` 的每日缓存，分别返回 Core 与 Template 更新状态；网络不可用时返回 `unavailable`，不会阻断宿主。
 - `capabilities.json` 的 `protocolVersion` 用于插件启动时执行能力兼容校验。
 
-包通过 `index.d.ts` 导出完整公共契约类型。普通 CLI 用户继续使用 `npx @double-coding/flow2spec init`，无需直接调用这些 API。
+包通过 `index.d.ts` 导出完整公共契约类型。普通 CLI 用户继续使用 `flow2spec init`（全局安装 `@double-coding/flow2spec` 后），无需直接调用这些 API。

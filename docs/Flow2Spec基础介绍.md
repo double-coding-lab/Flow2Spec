@@ -422,7 +422,8 @@ Flow2Spec 提供三个互补命令，按触发方式与粒度区分：
 **5 分钟快速体验**：
 
 ```Plain Text
-npx @double-coding/flow2spec@latest init
+npm install -g @double-coding/flow2spec
+flow2spec init
 
 ```
 
@@ -459,7 +460,8 @@ Flow2Spec 做的事，是把项目知识整理成可路由、可依赖、可验�
 - 文档和代码开始不同步。
 
 ```Plain Text
-npx @double-coding/flow2spec@latest init
+npm install -g @double-coding/flow2spec
+flow2spec init
 ```
 
 开源地址：`https://github.com/double-coding-lab/Flow2Spec`
