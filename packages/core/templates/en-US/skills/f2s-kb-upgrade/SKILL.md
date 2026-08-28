@@ -107,13 +107,13 @@ flow2spec version
 flow2spec update --check
 ```
 
-Record CLI Version, Core Version, Core Range, Template Version, Protocol Version, and the latest npm Core/Template values:
+Record CLI Version, Core Version, Core Pinned, Template Version, Protocol Version, and the latest npm Core/Template values (the CLI pins Core to an exact version; the two packages release in lockstep):
 
 | Case | Action | Default step 2 command |
 | --- | --- | --- |
-| **A. Template is current** | If only Core changed, run `flow2spec update --core`, then one idempotent init to refresh the Hook. Afterwards **do not stop immediately**: first run the "**project-side alignment check**" below, and only stop this skill (clearing the cache) after it passes. | `flow2spec init <agents...>` |
-| **B. Template changed and latest Core is inside Core Range** | Run `flow2spec update --core`, then continue to step 0. A compatible Core update does not require a CLI release or upgrade. | `flow2spec init <agents...>` |
-| **C. Not installed, unknown, or latest Core is outside the range** | Use an explicit latest CLI/Core combination so npx cannot reuse an old Core. If latest Core still is not compatible, upgrade to a CLI that supports it first. | `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>` |
+| **A. Template is current** | If the CLI/Core has an update, run `flow2spec update --cli` (CLI and its pinned Core update together), then one idempotent init to refresh the Hook. Afterwards **do not stop immediately**: first run the "**project-side alignment check**" below, and only stop this skill (clearing the cache) after it passes. | `flow2spec init <agents...>` |
+| **B. Template changed** | Run `flow2spec update --cli` (CLI and its pinned Core arrive together), then continue to step 0. | `flow2spec init <agents...>` |
+| **C. Not installed or unknown** | Use the latest CLI (it carries its pinned Core), avoiding stale npx caches. | `npx --yes <cli-package>@latest init <agents...>` |
 
 If the preflight fails, case C is allowed as fallback, but never treat Core Version as Template Version. This step does not mandate a sub-agent or a background global install.
 
@@ -159,8 +159,8 @@ Run one of the following in the target project root (**choose the default form b
 
 1. **Step -1 returned A/B (local CLI/Core is usable)**: use the current CLI:
    - `flow2spec init <agents...>`
-2. **Step -1 returned C**: explicitly combine latest CLI/Core so this session gets the latest Core and templates:
-   - `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>`
+2. **Step -1 returned C**: use the latest CLI (it carries its pinned Core and templates):
+   - `npx --yes <cli-package>@latest init <agents...>`
 3. For overwrite reset:
    - Append `--reset-knowledge` to the above command.
 4. If the user explicitly requests a template-language switch:
@@ -169,7 +169,7 @@ Run one of the following in the target project root (**choose the default form b
 
 > `<agents...>` example: `cursor claude codex`.
 
-> **Helper commands (user self-inspection)**: `flow2spec version` shows the five version dimensions; `flow2spec update --check|--cli|--core` checks updates, updates CLI, or updates a compatible Core. These commands do not replace this skill's full flow after Template Version changes.
+> **Helper commands (user self-inspection)**: `flow2spec version` shows the five version dimensions; `flow2spec update --check` checks updates, and `flow2spec update --cli` performs the lockstep update (CLI plus its pinned Core; `--core` is an equivalent alias). These commands do not replace this skill's full flow after Template Version changes.
 
 **After step 2 completes**: immediately execute the above **"init and skill self-update"** loop: re-read **`skills/f2s-kb-upgrade/SKILL.md`**. If updated, **rerun from step 2c per the new literal text** (**do not run `init` a second time**; avoid using the old SKILL for subsequent verification).
 
@@ -346,7 +346,7 @@ Output:
 
 ## Completion Self-Check
 
-1. **Step -1** was performed: `flow2spec version` and `flow2spec update --check` recorded CLI/Core/Core Range/Template/Protocol; Core-only updates refreshed Core/Hook, while Template updates selected the current CLI or an explicit latest CLI/Core combination through A/B/C; **before stopping on branch A, the "project-side alignment check" was completed** (manifest `version`/`pkgRev` comparison + `kb check --strict`), and when not aligned the skill switched to the full flow instead of stopping.
+1. **Step -1** was performed: `flow2spec version` and `flow2spec update --check` recorded CLI/Core/Core Pinned/Template/Protocol; when updates existed, `flow2spec update --cli` refreshed the CLI and its pinned Core in lockstep, and Template updates selected the current CLI or the latest CLI through A/B/C; **before stopping on branch A, the "project-side alignment check" was completed** (manifest `version`/`pkgRev` comparison + `kb check --strict`), and when not aligned the skill switched to the full flow instead of stopping.
 2. **Step 0** was performed: on V1 the skill stopped and told the user how to proceed, and **current repositories (V2+)** entered the `init` flow normally.
 3. **Before step 2** recorded the project-side `projectRev` (`projectRev`), and **after step 2 `init`** re-read `pkgRev` and executed **step 2c** judgment.
 4. After **step 2 `init`**, **`f2s-kb-upgrade/SKILL.md`** was re-read: on full flow, a change must trigger **a rerun from step 2c per the new literal text** (**no second `init`**); on fast path, the loop can be skipped (see "init and skill self-update" / "fast-path exception").

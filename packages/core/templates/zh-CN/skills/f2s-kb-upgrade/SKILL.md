@@ -107,13 +107,13 @@ flow2spec version
 flow2spec update --check
 ```
 
-按输出记录 CLI Version、Core Version、Core Range、Template Version、Protocol Version，以及 npm 最新 Core/Template：
+按输出记录 CLI Version、Core Version、Core Pinned、Template Version、Protocol Version，以及 npm 最新 Core/Template（CLI 对 Core 为精确 pin，两包联动发布）：
 
 | 情况 | 行动 | 步骤 2 默认命令 |
 | --- | --- | --- |
-| **A. Template 已是最新** | 若只有 Core 更新，执行 `flow2spec update --core` 后幂等 init 刷新 Hook；随后**不得直接停止**，必须先做下方「**项目侧对齐检查**」，通过后才删除缓存并停止本技能 | `flow2spec init <agents...>` |
-| **B. Template 有更新且最新 Core 落在当前 Core Range** | 执行 `flow2spec update --core`，继续步骤 0；CLI 无需因 Core 兼容更新而发版或升级 | `flow2spec init <agents...>` |
-| **C. 未安装、版本未知或最新 Core 超出范围** | 使用显式 latest CLI/Core 组合，避免 npx 复用旧 Core；若最新 Core 仍不兼容，先升级支持它的 CLI | `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>` |
+| **A. Template 已是最新** | 若 CLI/Core 有更新，执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新）后幂等 init 刷新 Hook；随后**不得直接停止**，必须先做下方「**项目侧对齐检查**」，通过后才删除缓存并停止本技能 | `flow2spec init <agents...>` |
+| **B. Template 有更新** | 执行 `flow2spec update --cli`（CLI 与配套 Core 一起到位），继续步骤 0 | `flow2spec init <agents...>` |
+| **C. 未安装或版本未知** | 使用 latest CLI（自带 pin 的配套 Core），避免 npx 复用旧版缓存 | `npx --yes <cli-package>@latest init <agents...>` |
 
 预检失败时允许回退 C，但不得把 Core Version 当作 Template Version。此步骤不强制创建子 agent，也不后台安装全局包。
 
@@ -159,8 +159,8 @@ flow2spec update --check
 
 1. **步骤 -1 判定为 A/B（本地 CLI/Core 可用）**：直接使用当前 CLI：
    - `flow2spec init <agents...>`
-2. **步骤 -1 判定为 C**：显式组合 latest CLI/Core，保证本次拿到最新 Core 与模板：
-   - `npx --yes --package <cli-package>@latest --package <core-package>@latest flow2spec init <agents...>`
+2. **步骤 -1 判定为 C**：用 latest CLI（自带 pin 的配套 Core 与模板）：
+   - `npx --yes <cli-package>@latest init <agents...>`
 3. 覆盖重置时：
    - 在上述命令末尾追加 `--reset-knowledge`
 4. 用户显式要求切换模板语言时：
@@ -169,7 +169,7 @@ flow2spec update --check
 
 > `<agents...>` 示例：`cursor claude codex`。
 
-> **辅助命令（用户可自查）**：`flow2spec version` 查看五维版本；`flow2spec update --check|--cli|--core` 分别检查、更新 CLI、更新兼容 Core。这些命令不替代 Template Version 变化后的本技能完整流程。
+> **辅助命令（用户可自查）**：`flow2spec version` 查看五维版本；`flow2spec update --check` 检查更新，`flow2spec update --cli` 整体更新（CLI 与配套 Core 联动，`--core` 为其等价别名）。这些命令不替代 Template Version 变化后的本技能完整流程。
 
 **步骤 2 完成后**：立刻执行上文 **「init 与技能自更新」**：重读 **`skills/f2s-kb-upgrade/SKILL.md`**；若有更新则**按新版字面从步骤 2c 起重跑**（**不再次 init**；避免用旧版 SKILL 做后续校验）。
 
@@ -346,7 +346,7 @@ flow2spec update --check
 
 ## 完成后自检
 
-1. 是否已做 **步骤 -1**：执行 `flow2spec version` 与 `flow2spec update --check`，记录 CLI/Core/Core Range/Template/Protocol；Core-only 更新是否直接刷新 Core/Hook，Template 更新是否按 A/B/C 选择当前 CLI 或显式 latest CLI/Core 组合；**A 分支停止前是否完成「项目侧对齐检查」**（manifest `version`/`pkgRev` 对比 + `kb check --strict`），未对齐时是否已转完整流程而非直接停止。
+1. 是否已做 **步骤 -1**：执行 `flow2spec version` 与 `flow2spec update --check`，记录 CLI/Core/Core Pinned/Template/Protocol；有更新时是否执行 `flow2spec update --cli` 联动刷新 CLI 与配套 Core，Template 更新是否按 A/B/C 选择当前 CLI 或 latest CLI；**A 分支停止前是否完成「项目侧对齐检查」**（manifest `version`/`pkgRev` 对比 + `kb check --strict`），未对齐时是否已转完整流程而非直接停止。
 2. 是否已做 **步骤 0**：V1 已停止执行并告知用户处理方式、**现行库（V2+）** 正常进入 `init` 流程。
 3. 是否在 **步骤 2 开始前** 记录了项目侧 `projectRev`（`projectRev`），并在 **步骤 2 的 `init` 之后** 重读 `pkgRev`、执行 **步骤 2c** 判定。
 4. 是否在 **步骤 2 的 `init` 之后**重读过 **`f2s-kb-upgrade/SKILL.md`**：完整流程下有变化必须**按新版字面从步骤 2c 起重跑**（**不再次 init**）；快速路径下可跳过该闭环（见「init 与技能自更新」「快速路径例外」）。

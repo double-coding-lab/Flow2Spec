@@ -34,22 +34,22 @@ Template Version  packages/core/package.json.templateVersion
 Protocol Version  packages/core/capabilities.json.protocolVersion
 ```
 
-- `version:set:cli` 只更新 CLI，可显式提高 `--core-range`。
-- `version:set:core` 只更新 Core，并拒绝落到当前 CLI 范围之外。
+- `version:set:cli` 只更新 CLI，Core pin 自动同步为当前 Core 版本。
+- `version:set:core` 更新 Core 并联动把 CLI 依赖 pin 到同版本（需配套 bump CLI patch 联动发布）。
 - `version:set:template` 更新 Core 元数据及中英文 `manifest-routing.json.version`。
-- `version:check` 校验 semver range、lockfile、双语 Template Version、Protocol Version 与 release tag。
+- `version:check` 强制校验 CLI pin 与 Core 版本精确一致，另校验 lockfile、双语 Template Version、Protocol Version 与 release tag。
 
 ## 发布与更新
 
-- `core-vX.Y.Z` 只发布 Core；`cli-vX.Y.Z` 只发布 CLI。同时发布时先 Core 后 CLI。
-- `flow2spec version` 展示 CLI/Core/Core Range/Template/Protocol。
-- `flow2spec update --check|--cli|--core` 分别检查、更新 CLI、更新兼容 Core。
+- `core-vX.Y.Z` 只发布 Core；`cli-vX.Y.Z` 只发布 CLI。Core/Template 发版必带 CLI patch 联动发布，顺序先 Core 后 CLI。
+- `flow2spec version` 展示 CLI/Core/Core Pinned/Template/Protocol。
+- `flow2spec update --check|--cli|--core` 均以 CLI 为入口整体更新（`--core` 为别名），安装后校验全局生效 Core 版本，失败时提示手动重装命令。
 - Hook 与 `update.check()` 同时返回 Core 与 Template 状态。
-- Core-only 更新：更新 Core 后幂等 init 刷新 Hook，不进入 `f2s-kb-upgrade`。
-- Template 更新：更新 Core、执行 init，再由 `projectRev` / `pkgRev` 决定是否进入完整知识库升级。
+- CLI/Core 更新：`update --cli` 联动到位后幂等 init 刷新 Hook。
+- Template 更新：`update --cli` 后执行 init，再由 `projectRev` / `pkgRev` 决定是否进入完整知识库升级。
 
 ## 边界
 
-- Core 新版必须落在 CLI caret range 内；超出范围先升级 CLI。
+- CLI 对 Core 为精确 pin；用户只需关心 CLI 一个包，`npm i -g <cli>@latest` 即得配套 Core。
 - `.Knowledge/manifest-routing.json.version` 表示 Template Version，不能与 Core Version 混用。
 - 包安装验收使用两包 tarball，并验证 Core templates、类型声明、CLI README 与启动行为。

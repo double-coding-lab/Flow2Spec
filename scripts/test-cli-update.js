@@ -61,7 +61,8 @@ assert.strictEqual(check.status, 0, check.stderr);
 assert.match(check.stdout, new RegExp(`CLI:\\s+${escapeRe(cliVersion)} -> ${escapeRe(latestCli)}`));
 assert.match(check.stdout, new RegExp(`Core:\\s+${escapeRe(coreVersion)} -> ${escapeRe(latestCore)}`));
 assert.match(check.stdout, new RegExp(`Template:\\s+${escapeRe(templateVersion)} -> ${escapeRe(templateVersion)}`));
-assert.match(check.stdout, new RegExp(`${escapeRe(coreRange)} \\(compatible\\)`));
+assert.match(check.stdout, new RegExp(`pin Core ${escapeRe(coreRange)}`));
+assert.match(check.stdout, /update --cli 一键更新/);
 
 const invalid = spawnSync(process.execPath, [cliPath, "update", "--unknown"], {
   cwd: path.resolve(__dirname, ".."),

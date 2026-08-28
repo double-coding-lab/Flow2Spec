@@ -95,7 +95,7 @@ function buildNotice(state) {
       '',
       `📦 [flow2spec] Project "${project}" has a template update (${versionSummary}).`,
       '',
-      '[flow2spec/agent-instruction] You may run `flow2spec update --core`, then `flow2spec init <initialized agents>`. After init, read `.Knowledge/manifest-routing.json`: if projectRev equals pkgRev, delete `.Knowledge/update-check.json`; otherwise continue with f2s-kb-upgrade from step 2c.',
+      '[flow2spec/agent-instruction] You may run `flow2spec update --cli` (CLI and its pinned Core update in lockstep), then `flow2spec init <initialized agents>`. After init, read `.Knowledge/manifest-routing.json`: if projectRev equals pkgRev, delete `.Knowledge/update-check.json`; otherwise continue with f2s-kb-upgrade from step 2c.',
     ].join('\n');
   }
   return [
@@ -103,7 +103,7 @@ function buildNotice(state) {
     '',
     `📦 [flow2spec] Project "${project}" has a Core-only update (${versionSummary}); the template version is unchanged.`,
     '',
-    '[flow2spec/agent-instruction] You may run `flow2spec update --core`, then one idempotent `flow2spec init <initialized agents>` to refresh the Hook. Do not enter f2s-kb-upgrade when Template Version is unchanged; delete `.Knowledge/update-check.json` afterwards.',
+    '[flow2spec/agent-instruction] You may run `flow2spec update --cli` (CLI and its pinned Core update in lockstep), then one idempotent `flow2spec init <initialized agents>` to refresh the Hook. Do not enter f2s-kb-upgrade when Template Version is unchanged; delete `.Knowledge/update-check.json` afterwards.',
   ].join('\n');
 }
 
