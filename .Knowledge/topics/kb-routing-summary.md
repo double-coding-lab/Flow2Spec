@@ -27,6 +27,7 @@ confidence: manual
 
 - 写法规范（软 30 字 / 硬 40 字、职责 + 用户会问的核心名词、`includeAny` 单概念词优先、落盘前模拟问句自测）以 `f2s-topic-authoring`「初筛召回规范」为准，本 topic 不复述。
 - 存量修复走 `f2s-kb-upgrade` 完整流程步骤 3a.7 / 3a.8：`kb build --fix-topics` 补占位头部 → `kb check --strict` 报 summary warning → agent 逐个 Read 正文补写语义摘要 → `kb build` 同步进 `rule.summary`。
+- `f2s-kb-upgrade` 步骤 -1 的 A 分支（包侧均为最新）**不得直接停止**：须先做项目侧对齐检查（manifest `version`/`pkgRev` 对比包 Template Version + `kb check --strict`），未对齐视同 Template 更新转完整流程；否则刚升完包的老项目会被误判「无事可做」跳过 summary 补写。
 
 ## 边界
 

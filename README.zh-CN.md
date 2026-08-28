@@ -26,7 +26,13 @@
 Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在项目里建立小而可路由的 `.Knowledge/` 知识库，安装面向 agent 的 `f2s-*` 技能，并把可选的本地任务状态和产品知识分开保存。新的会话可以按需求加载相关事实，而不是重新翻完整个仓库。
 
 ```bash
-npx @double-coding/flow2spec@latest init
+# 推荐：全局安装后初始化（保留 flow2spec 命令，便于后续知识库维护与升级）
+npm install -g @double-coding/flow2spec
+flow2spec init
+
+# 免安装一次性体验（始终解析最新版）：
+# npx @double-coding/flow2spec@latest init
+
 # DeepSeek Harness 原生插件：
 # https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness
 # 未装插件时的项目级适配：

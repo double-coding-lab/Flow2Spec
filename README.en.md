@@ -26,7 +26,14 @@
 Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a small, routable `.Knowledge/` knowledge base, installs agent-specific `f2s-*` skills, and keeps optional local task state separate from product knowledge. A new session can load the facts relevant to a request instead of rediscovering the repository.
 
 ```bash
-npx @double-coding/flow2spec@latest init
+# Recommended: install globally, then initialize
+# (keeps the `flow2spec` command available for kb maintenance and upgrades)
+npm install -g @double-coding/flow2spec
+flow2spec init
+
+# One-off trial without installing (always resolves the latest version):
+# npx @double-coding/flow2spec@latest init
+
 # Native DeepSeek Harness plugin:
 # https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness
 # Project-level adapter without the plugin:

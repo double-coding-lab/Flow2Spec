@@ -6,6 +6,7 @@ export const docs = [
   { id: 'design', header: true, zh: { title: '设计说明', source: '设计说明' }, en: { title: 'Design', source: 'en/design-principles' } },
   { id: 'collaboration', header: true, zh: { title: '团队协作', source: '团队协作' }, en: { title: 'Collaboration', source: 'en/team-collaboration' } },
   { id: 'milestones', header: true, zh: { title: '项目里程碑', source: '项目里程碑' }, en: { title: 'Milestones', source: 'en/milestones' } },
+  { id: 'upgrade', header: false, zh: { title: '升级指南', source: '升级指南' }, en: { title: 'Upgrade guide', source: 'en/upgrade-guide' } },
   { id: 'directories', header: false, zh: { title: '目录与路径约定', source: '目录与路径约定' }, en: { title: 'Directory conventions', source: 'en/directory-conventions' } },
   { id: 'scenarios', header: false, zh: { title: '使用案例', source: '使用案例-模拟对话' }, en: { title: 'Usage scenarios', source: 'en/usage-scenarios' } }
 ];
