@@ -1,7 +1,7 @@
 ---
 id: fallback-triage
 revision: 0
-summary: fallback-triage
+summary: "Fallback triage and recall recovery when task routing misses"
 primary: policy
 confidence: manual
 ---

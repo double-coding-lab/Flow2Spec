@@ -1,7 +1,7 @@
 ---
 id: config-precheck
 revision: 0
-summary: "config-precheck (routing summary)"
+summary: "Read flow2spec.config.json switches before running any f2s skill"
 primary: config
 confidence: manual
 tags: [policy]

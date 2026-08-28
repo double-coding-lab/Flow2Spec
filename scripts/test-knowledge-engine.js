@@ -79,6 +79,7 @@ try {
       "---",
       "id: topic-a",
       "revision: 0",
+      "summary: test capability rules and boundaries",
       "primary: policy",
       "confidence: manual",
       "---",
@@ -94,6 +95,7 @@ try {
       "---",
       "id: topic-b",
       "revision: 0",
+      "summary: helper topic for dependency checks",
       "primary: feature",
       "confidence: manual",
       "---",
@@ -163,6 +165,10 @@ try {
     fs.readFileSync(path.join(tmpRoot, ".Knowledge", "manifest-routing.json"), "utf8"),
   );
   assert.deepStrictEqual(routing.topicDependencies["topic-a"], ["topic-b"]);
+  assert.strictEqual(
+    routing.taskToTopicRules[0].summary,
+    "test capability rules and boundaries",
+  );
 
   const staleDelta = {
     taskId: "task-2",

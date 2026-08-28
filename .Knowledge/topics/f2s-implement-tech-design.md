@@ -1,7 +1,7 @@
 ---
 id: implement-tech-design
 revision: 0
-summary: "implement-tech-design（路由摘要）"
+summary: "按技术方案/需求文档实现代码的流程与门禁"
 dependsOn: [f2s-doc-routing]
 primary: policy
 confidence: manual

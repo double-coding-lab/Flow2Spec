@@ -1,0 +1,16 @@
+{
+  "id": "m-kb-routing-summary",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1",
+  "includeAny": [
+    "summary",
+    "初筛",
+    "召回",
+    "路由摘要",
+    "命中率",
+    "路由 miss",
+    "matcher",
+    "includeAny",
+    "语义锚"
+  ]
+}

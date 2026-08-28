@@ -1,7 +1,7 @@
 ---
 id: f2s-req-plan
 revision: 0
-summary: "f2s-req-plan（路由摘要）"
+summary: "需求/变更的任务规划拆解与并行实现流程"
 dependsOn: [f2s-task]
 primary: policy
 confidence: manual

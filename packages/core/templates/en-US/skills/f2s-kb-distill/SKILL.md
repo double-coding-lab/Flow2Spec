@@ -278,12 +278,14 @@ If strategy is "create independent module topic":
   - Create corresponding `matchers/<id>.json`, including:
     - Keywords extracted from user question
     - Terms extracted from answer
-    - Suggested `includeAny`: 5-10 trigger words
+    - Suggested `includeAny`: 5-10 trigger words (single-concept core terms first, compound terms only as supplements; see the "first-pass recall" rules in `f2s-topic-authoring`)
   - Add routing rule in `taskToTopicRules`
+  - Write topic frontmatter `summary` per the "first-pass recall" rules (responsibility + core nouns the user would ask about; kb build syncs it into `rule.summary`)
 
 - If updating existing topic:
   - Check if matcher needs new trigger words
   - Extract uncovered keywords from user question, append to `includeAny`
+  - If this turn's phrasing is not covered by the topic's `summary`, revise the frontmatter `summary` to add the core nouns
 
 #### 5.2 Update index.md
 
@@ -366,7 +368,7 @@ Self-check list:
 - No user confirmation needed (Q&A already verified knowledge correctness)
 - Keep lightweight, single Q&A knowledge extraction complete within 30 seconds
 - Avoid over-splitting: unless drill-down depth ≥ deep and knowledge description depth ≥ detailed level, prioritize appending to existing topic
-- Generated matcher includeAny should cover expressions users actually use, not just technical terms
+- Generated matcher includeAny should cover expressions users actually use, not just technical terms; the topic frontmatter `summary` should likewise cover the core nouns of this turn's phrasing
 
 ## Self-Check After Completion
 

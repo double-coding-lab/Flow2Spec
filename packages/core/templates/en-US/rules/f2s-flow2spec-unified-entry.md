@@ -29,7 +29,7 @@ Some environments create an **independent `git worktree`** or equivalent isolate
 
 ## Read Order (Mandatory)
 
-1. First read `.Knowledge/manifest-routing.json`, prefer routing by `taskToTopicRules`; as needed, read the matcher shard from `matcherPath` to obtain `includeAny` keywords. If nothing matches, enter fallback recall.
+1. First read `.Knowledge/manifest-routing.json`, prefer routing by `taskToTopicRules`; first-pass evidence is each rule's `task` name and `summary` (one-line intent digest); as needed, read the matcher shard from `matcherPath` to obtain `includeAny` keywords. If nothing matches, enter fallback recall.
    - If the matched topic has dependencies in `topicDependencies`, read dependency topics first, then the main topic.
    - Routing manifests are maintained only by `f2s-*` skill flows and do not depend on extra CLI subcommands.
 2. Read `.Knowledge/index.md` only as needed to confirm topic semantics and boundaries.
@@ -37,9 +37,9 @@ Some environments create an **independent `git worktree`** or equivalent isolate
 4. If background is needed, read `.Knowledge/stock-docs/<doc>.md`.
 5. Drill into business source code only when the first four steps are insufficient.
 6. After a match, always run `match -> expand -> verify -> act`:
-   - `match`: take the primary candidate first;
+   - `match`: pick the primary candidate by semantic matching against each rule's `task` name and `summary`; both `summary` and `includeAny` are semantic anchors, not literal allowlists—near-synonym hits are allowed;
    - `expand`: expand `topicDependencies` and keep the next-highest candidate for supplementary verification;
-   - `verify`: check gaps before acting (missing key topics, boundaries, or context);
+   - `verify`: check gaps before acting (missing key topics, boundaries, or context); **if the matched topic body does not cover the core nouns of the user's question, you must also read the next-highest candidate's `summary` and matcher shard before deciding—do not answer directly**;
    - `act`: act only when confidence is sufficient; clarify first when confidence is low.
 7. A full cross-matcher supplemental search (top-k) is allowed only when one of these conditions is true:
    - `taskToTopicRules` has no match;
@@ -55,6 +55,7 @@ Some environments create an **independent `git worktree`** or equivalent isolate
 ## Machine-Readable Source-of-Truth Semantics (Rule Layer)
 
 - `taskToTopicRules`: first-priority task routing.
+- `taskToTopicRules[].summary`: first-pass recall field (one-line intent digest), mechanically synced by `flow2spec kb build` from the topic frontmatter `summary`; never handwritten on the manifest side; participates in `match` as a semantic anchor.
 - `taskToTopicRules[].matcherPath`: direct path to the matcher-word shard; read a single matcher file as needed.
 - `taskToTopicRules[].matcherId`: stable matcher identifier; must match `id` inside the matcher shard.
 - `topicDependencies`: load dependency topics first after the main topic matches.

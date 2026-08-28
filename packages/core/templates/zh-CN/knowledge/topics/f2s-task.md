@@ -1,7 +1,7 @@
 ---
 id: f2s-task
 revision: 0
-summary: "f2s-task（路由摘要）"
+summary: "任务清单 .task 目录的创建、续作与归档规则"
 primary: policy
 confidence: manual
 ---

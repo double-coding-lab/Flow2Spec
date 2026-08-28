@@ -1,7 +1,7 @@
 ---
 id: fallback-triage
 revision: 0
-summary: fallback-triage
+summary: "路由未命中时的兜底分诊与补召回流程"
 primary: policy
 confidence: manual
 ---

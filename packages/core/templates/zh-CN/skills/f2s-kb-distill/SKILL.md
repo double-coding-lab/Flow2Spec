@@ -285,12 +285,14 @@ description: 从问答过程中提取可复用知识事实并自动入库；根�
   - 创建对应的 `matchers/<id>.json`，包含：
     - 从用户问题中提取的关键词
     - 从回答中提取的术语
-    - 建议 `includeAny`：5-10 个触发词
+    - 建议 `includeAny`：5-10 个触发词（单概念核心词优先，复合词仅作补充；见 `f2s-topic-authoring`「初筛召回规范」）
   - 在 `taskToTopicRules` 中添加路由规则
+  - topic frontmatter `summary` 按「初筛召回规范」写（职责 + 用户会问的核心名词；kb build 会同步进 rule.summary）
 
 - 如果更新既有 topic：
   - 检查 matcher 是否需要补充新的触发词
   - 从用户问题中提取未覆盖的关键词，追加到 `includeAny`
+  - 若本轮问法未被该 topic 的 `summary` 覆盖，回改 frontmatter `summary` 补上核心名词
 
 #### 5.2 更新 index.md
 
@@ -373,7 +375,7 @@ description: 从问答过程中提取可复用知识事实并自动入库；根�
 - 不需要用户确认（问答已验证知识的正确性）
 - 保持轻量，单次问答的知识提取在 30 秒内完成
 - 避免过度拆分：除非下钻深度 ≥ 深且知识描述深度 ≥ 详细级，否则优先补充既有 topic
-- 生成的 matcher includeAny 应覆盖用户实际会用的表述，不只是技术术语
+- 生成的 matcher includeAny 应覆盖用户实际会用的表述，不只是技术术语；topic frontmatter `summary` 同步覆盖本轮问法的核心名词
 
 ## 完成后自检
 

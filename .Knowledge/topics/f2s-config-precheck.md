@@ -1,7 +1,7 @@
 ---
 id: config-precheck
 revision: 0
-summary: "config-precheck（路由摘要）"
+summary: "f2s 技能执行前必读 flow2spec.config.json 的开关口径"
 primary: config
 confidence: manual
 tags: [policy]

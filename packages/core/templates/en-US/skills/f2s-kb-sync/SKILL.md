@@ -87,7 +87,7 @@ Update according to the outline, item by item:
 
 - `.Knowledge/topics/*.md`
 - `.Knowledge/index.md` (sync the "Associated documents (summary)" column in the topic routing table)
-- Routing manifest (as needed). When creating a new topic, also sync `topicPaths` and necessary `taskToTopicRules` / matcher shards. Write `topicMetadata` only when evidence is clear; classification is only for governance, audit, and reading expectations, does not participate in route matching or execution requirements, and must not be used to create, rename, or split topics.
+- Routing manifest (as needed). When creating a new topic, also sync `topicPaths` and necessary `taskToTopicRules` / matcher shards; write the frontmatter `summary` and matcher `includeAny` of new/updated topics per the "first-pass recall" rules in `f2s-topic-authoring` (`summary` is synced into `rule.summary` by kb build). Write `topicMetadata` only when evidence is clear; classification is only for governance, audit, and reading expectations, does not participate in route matching or execution requirements, and must not be used to create, rename, or split topics.
 - `.Knowledge/stock-docs/*.md` (add source documents as needed)
 
 ### Step 4: Closing Summary

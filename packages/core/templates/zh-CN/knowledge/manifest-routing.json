@@ -1,6 +1,6 @@
 {
-  "version": "3.5.0",
-  "projectRev": 2,
+  "version": "3.6.0",
+  "projectRev": 3,
   "knowledgeRoot": ".Knowledge",
   "matcherKey": "matcherId",
   "sourceOfTruth": ".Knowledge/manifest-routing.json",
@@ -44,7 +44,9 @@
     "flow2spec-dsh-adapter": {
       "primary": "feature",
       "confidence": "inferred",
-      "tags": ["module"]
+      "tags": [
+        "module"
+      ]
     }
   },
   "topicPaths": {
@@ -63,7 +65,8 @@
       "matcherPath": ".Knowledge/matchers/m-f2s-config-precheck.json",
       "topics": [
         "config-precheck"
-      ]
+      ],
+      "summary": "f2s 技能执行前必读 flow2spec.config.json 的开关口径"
     },
     {
       "task": "implement-from-spec",
@@ -72,7 +75,8 @@
       "topics": [
         "f2s-doc-routing",
         "implement-tech-design"
-      ]
+      ],
+      "summary": "stock-docs 与 req-docs 目录分工：需求、方案、沉淀文档放哪；按技术方案/需求文档实现代码的流程与门禁"
     },
     {
       "task": "doc-routing",
@@ -80,7 +84,8 @@
       "matcherPath": ".Knowledge/matchers/m-doc-routing.json",
       "topics": [
         "f2s-doc-routing"
-      ]
+      ],
+      "summary": "stock-docs 与 req-docs 目录分工：需求、方案、沉淀文档放哪"
     },
     {
       "task": "change-tracking",
@@ -88,7 +93,8 @@
       "matcherPath": ".Knowledge/matchers/m-change-tracking.json",
       "topics": [
         "f2s-task"
-      ]
+      ],
+      "summary": "任务清单 .task 目录的创建、续作与归档规则"
     },
     {
       "task": "req-plan",
@@ -96,7 +102,8 @@
       "matcherPath": ".Knowledge/matchers/m-req-plan.json",
       "topics": [
         "f2s-req-plan"
-      ]
+      ],
+      "summary": "需求/变更的任务规划拆解与并行实现流程"
     },
     {
       "task": "flow2spec-dsh-adapter",
@@ -104,7 +111,8 @@
       "matcherPath": ".Knowledge/matchers/m-flow2spec-dsh-adapter.json",
       "topics": [
         "flow2spec-dsh-adapter"
-      ]
+      ],
+      "summary": "DeepSeek Harness 项目级技能初始化与目录适配"
     }
   ]
 }

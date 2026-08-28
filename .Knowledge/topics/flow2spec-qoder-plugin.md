@@ -1,7 +1,7 @@
 ---
 id: flow2spec-qoder-plugin
 revision: 2
-summary: "Qoder 原生插件构建：从 Core 全量生成 skills/rules/hooks 并打包 zip"
+summary: "Qoder 插件的构建、zip 打包与插件市场分发"
 primary: feature
 confidence: inferred
 tags: [module]

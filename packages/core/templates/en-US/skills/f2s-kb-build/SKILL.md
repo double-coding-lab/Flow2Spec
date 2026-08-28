@@ -47,9 +47,10 @@ description: Generate knowledge-routing topics and indexes from `.Knowledge/stoc
 Extract from the document:
 
 - Topic name and topic intent (can form a topic id)
+- Frontmatter `summary` (first-pass recall anchor: responsibility + core nouns the user would ask about, written per the "first-pass recall" rules in `f2s-topic-authoring`; kb build syncs it into manifest `rule.summary`)
 - Core concepts and key flows
 - Business rules and boundary conditions
-- Task trigger terms (write to the corresponding `matchers/<matcherId>.json` `includeAny`)
+- Task trigger terms (write to the corresponding `matchers/<matcherId>.json` `includeAny`; single-concept core terms first, compound terms only as supplements)
 - Dependencies on existing topics (for `topicDependencies`)
 
 > **Authoring-side guideline**: this step involves adding/modifying topics and `topicDependencies`, so first Read the full `rules/f2s-topic-authoring.*` (**Cursor/Claude**: `rules/f2s-topic-authoring.mdc`; **Codex**: `.codex/topics/f2s-topic-authoring.md`) before continuing to step 3 / step 5. Naming, skeleton, dependency judgment, DAG minimization, and judgment timing all follow that guideline; this SKILL does not repeat them.

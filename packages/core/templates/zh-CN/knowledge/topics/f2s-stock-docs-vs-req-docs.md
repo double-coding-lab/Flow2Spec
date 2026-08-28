@@ -1,7 +1,7 @@
 ---
 id: f2s-doc-routing
 revision: 0
-summary: "f2s-doc-routing（路由摘要）"
+summary: "stock-docs 与 req-docs 目录分工：需求、方案、沉淀文档放哪"
 primary: policy
 confidence: manual
 ---

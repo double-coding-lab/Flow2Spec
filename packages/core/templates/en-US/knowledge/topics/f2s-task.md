@@ -1,7 +1,7 @@
 ---
 id: f2s-task
 revision: 0
-summary: "f2s-task (routing summary)"
+summary: "Rules for creating, resuming, and archiving .task checklists"
 primary: policy
 confidence: manual
 ---

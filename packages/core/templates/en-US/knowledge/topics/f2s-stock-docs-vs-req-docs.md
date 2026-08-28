@@ -1,7 +1,7 @@
 ---
 id: f2s-doc-routing
 revision: 0
-summary: "f2s-doc-routing (routing summary)"
+summary: "Directory split between stock-docs and req-docs: where requirements, designs, and distilled docs live"
 primary: policy
 confidence: manual
 ---

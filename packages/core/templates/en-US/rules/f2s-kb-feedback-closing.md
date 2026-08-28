@@ -109,6 +109,12 @@ Other `f2s-kb-*` skills (e.g., `f2s-kb-feat` / `f2s-kb-fix` / `f2s-kb-sync`) **s
 
 This avoids misjudging "already has a topic but still suggests add".
 
+## Routing-Miss Backfill (Mandatory)
+
+- **Judgment**: the core facts of this turn's answer were provided by some topic, but that topic was **not the first-pass primary match** (it was found only via a full supplemental search, by co-reading the next-highest candidate, or because the user named it) → count this as a routing miss.
+- **Action**: in addition to the four-case closing, backfill the user's original phrasing into that topic's recall anchors — per the "first-pass recall" rules in `f2s-topic-authoring`, add the core nouns to the frontmatter `summary` or single-concept terms to the matcher `includeAny`, then run `flow2spec kb build` to sync `rule.summary`. This is a minimal fix written directly to disk; it does not depend on the user running distill.
+- Even when the closing uses case 4 (KB already covers it), if the hit path was a post-miss rescue, this backfill must still run, and append one line after the closing block: `Routing backfilled: <topicId> summary/includeAny added "<term>"`.
+
 ## Output Format
 
 - Cases 1-3: output one Markdown blockquote containing, in order, the `f2s-kb-distill` command + one blank line + the **This turn will ingest** summary (one line, see "Summary requirement" above).

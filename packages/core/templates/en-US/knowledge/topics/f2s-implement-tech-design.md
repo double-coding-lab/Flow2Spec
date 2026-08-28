@@ -1,7 +1,7 @@
 ---
 id: implement-tech-design
 revision: 0
-summary: "implement-tech-design (routing summary)"
+summary: "Workflow and gates for implementing code from tech designs and requirement docs"
 dependsOn: [f2s-doc-routing]
 primary: policy
 confidence: manual

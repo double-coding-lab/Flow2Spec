@@ -29,7 +29,7 @@ alwaysApply: true
 
 ## 读取顺序（必须）
 
-1. 先读 `.Knowledge/manifest-routing.json`，优先按 `taskToTopicRules` 路由；按需根据 `matcherPath` 读取 matcher 分片获取 `includeAny` 关键词；无法命中时进入补召回阶段。
+1. 先读 `.Knowledge/manifest-routing.json`，优先按 `taskToTopicRules` 路由；初筛证据为每条规则的 `task` 名与 `summary`（一句话意图摘要）；按需根据 `matcherPath` 读取 matcher 分片获取 `includeAny` 关键词；无法命中时进入补召回阶段。
    - 若命中主题在 `topicDependencies` 中存在依赖，先读依赖主题，再读主主题。
    - 路由清单仅通过 `f2s-*` 技能流程维护，不依赖额外 CLI 子命令。
 2. `.Knowledge/index.md` 按需读取，仅用于确认主题语义与边界。
@@ -37,9 +37,9 @@ alwaysApply: true
 4. 若需要背景，再读 `.Knowledge/stock-docs/<doc>.md`。
 5. 仅在前四步不足时下钻业务源码。
 6. 命中后必须执行 `match -> expand -> verify -> act`：
-   - `match`：先取主候选；
+   - `match`：以规则的 `task` 名与 `summary` 做语义匹配取主候选；`summary` 与 `includeAny` 均为语义锚而非字面白名单，允许近义命中；
    - `expand`：展开 `topicDependencies`，并保留次高候选做补充校验；
-   - `verify`：执行前做缺口检查（关键主题/边界/上下文是否缺失）；
+   - `verify`：执行前做缺口检查（关键主题/边界/上下文是否缺失）；**若命中主题正文未覆盖用户问句的核心名词，必须并读次高候选的 `summary` 与 matcher 分片再定，不得直接作答**；
    - `act`：仅在置信度足够时执行；低置信度必须先澄清。
 7. 仅在以下条件之一成立时，允许执行跨 matcher 全量补检索（top-k）：
    - `taskToTopicRules` 无命中；
@@ -55,6 +55,7 @@ alwaysApply: true
 ## 机读事实源口径（规则层）
 
 - `taskToTopicRules`：任务路由第一优先级。
+- `taskToTopicRules[].summary`：初筛召回字段（一句话意图摘要），由 `flow2spec kb build` 从 topic frontmatter `summary` 机械同步，不手写 manifest 侧；作语义锚参与 match 初筛。
 - `taskToTopicRules[].matcherPath`：匹配词分片直链路径，按需读取单个 matcher 文件。
 - `taskToTopicRules[].matcherId`：matcher 的稳定标识，需与 matcher 分片内 `id` 一致。
 - `topicDependencies`：主主题命中后先加载依赖主题。

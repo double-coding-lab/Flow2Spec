@@ -38,6 +38,15 @@ alwaysApply: false
 5. **边界与禁止项**（避免膨胀到隔壁 topic）；
 6. **长文背景 / 详细资料引用**（如需承载业务背景）：只列 `.Knowledge/stock-docs/*_终稿.md` 的可点击 Markdown 链接（1–3 条即可）；**禁止**直接列 `.Knowledge/req-docs/*` 作为长文背景来源；无对应终稿时**先生成终稿**再回填此小节。
 
+### frontmatter `summary` 与 `includeAny` 创作规范（初筛召回，硬约束）
+
+topic frontmatter 的 `summary` 会被 `flow2spec kb build` 同步进 `manifest-routing.taskToTopicRules[].summary`，是 Agent 初筛的常驻语义锚——写作质量直接决定该 topic 能否被自然问法命中：
+
+- **`summary`**：一句话写清「职责 + 用户会问的核心名词」，覆盖 topic 的全部职责域（如同时承担“职责边界”与“资料入口”，两者都要出现）；软上限 30 字（英文 15 词），硬上限 40 字 / 20 词（`kb check` 校验）；禁止 `<topicId>（路由摘要）`、`TODO` 等占位写法。
+- **`includeAny`**：单概念核心词优先（自然问法中会独立出现的最小词，如「原型」「流程图」而非「原型位置」「业务流程图」）；复合词仅作补充；从用户口述沉淀时须补 1–2 个“日后自然问法”词，不只抄口述原文。
+- **自测（落盘前必做）**：模拟 2–3 个用户自然问句（凭空想“用户会怎么问”，不看词表），检查每句至少命中 `summary` 或 `includeAny` 之一；不命中则回改。
+- **`taskToTopicRules[].task`**：保持稳定 id 语义（kb 引擎按 `task` 合并），不塞长短语；召回语义由 `summary` 承载，manifest 侧由 `kb build` 生成，不手写。
+
 ## 3. topicMetadata 判定准则
 
 `topicMetadata` 是治理元数据，只影响盘点、审计和阅读预期；不参与 matcher 命中，不决定是否读取 topic，不改变执行强制性。执行强制性以 `AGENTS.md`、rules、skills 与 topic 正文明确要求为准。
