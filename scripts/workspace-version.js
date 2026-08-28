@@ -7,7 +7,7 @@ const path = require("path");
 const CORE_PACKAGE = "@double-coding/flow2spec-core";
 const SEMVER_SOURCE = "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?";
 const SEMVER_PATTERN = new RegExp(`^${SEMVER_SOURCE}$`);
-const CORE_RANGE_PATTERN = new RegExp(`^\\^(${SEMVER_SOURCE})$`);
+const CORE_PIN_PATTERN = new RegExp(`^(${SEMVER_SOURCE})$`);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -78,23 +78,11 @@ function compareVersions(left, right) {
   return a.prerelease.localeCompare(b.prerelease, "en", { numeric: true });
 }
 
-function normalizeCoreRange(input) {
+function normalizeCorePin(input) {
   const raw = String(input || "").trim();
-  const match = CORE_RANGE_PATTERN.exec(raw);
-  if (!match) throw new Error(`Core dependency must use a caret semantic range, received: ${raw || "<empty>"}`);
-  return `^${normalizeVersion(match[1])}`;
-}
-
-function satisfiesCaret(versionInput, rangeInput) {
-  const version = parseVersion(versionInput);
-  const minimum = parseVersion(normalizeCoreRange(rangeInput).slice(1));
-  if (compareVersions(version.version, minimum.version) < 0) return false;
-  const [major, minor, patch] = minimum.numbers;
-  let upper;
-  if (major > 0) upper = `${major + 1}.0.0`;
-  else if (minor > 0) upper = `0.${minor + 1}.0`;
-  else upper = `0.0.${patch + 1}`;
-  return compareVersions(version.version, upper) < 0;
+  const match = CORE_PIN_PATTERN.exec(raw);
+  if (!match) throw new Error(`Core dependency must be pinned to an exact version (release-in-lockstep policy), received: ${raw || "<empty>"}`);
+  return normalizeVersion(match[1]);
 }
 
 function collectVersionErrors(workspace, tag) {
@@ -102,7 +90,7 @@ function collectVersionErrors(workspace, tag) {
   const cliVersion = String(cli.version || "").trim();
   const coreVersion = String(core.version || "").trim();
   const templateVersion = String(core.templateVersion || "").trim();
-  const coreRange = String(cli.dependencies?.[CORE_PACKAGE] || "").trim();
+  const corePin = String(cli.dependencies?.[CORE_PACKAGE] || "").trim();
   const protocolVersion = capabilities.protocolVersion;
   const errors = [];
   const expect = (actual, wanted, label) => {
@@ -123,9 +111,10 @@ function collectVersionErrors(workspace, tag) {
   }
 
   try {
-    normalizeCoreRange(coreRange);
-    if (!satisfiesCaret(coreVersion, coreRange)) {
-      errors.push(`Core ${coreVersion} is outside the CLI dependency range ${coreRange}`);
+    normalizeCorePin(corePin);
+    // 联动发版硬约束：CLI 必须 pin 到当前 Core 版本，Core 发版必带 CLI patch。
+    if (compareVersions(corePin, coreVersion) !== 0) {
+      errors.push(`CLI must pin Core exactly: pinned ${corePin}, Core version ${coreVersion} (run version:set:core to sync, then bump CLI)`);
     }
   } catch (error) {
     errors.push(`packages/cli/package.json dependency ${CORE_PACKAGE}: ${error.message}`);
@@ -139,7 +128,7 @@ function collectVersionErrors(workspace, tag) {
   expect(String(lock.packages?.[""]?.version || "").trim(), String(root.version || "").trim(), "package-lock.json root version");
   expect(String(lock.packages?.["packages/core"]?.version || "").trim(), coreVersion, "package-lock.json Core version");
   expect(String(lock.packages?.["packages/cli"]?.version || "").trim(), cliVersion, "package-lock.json CLI version");
-  expect(String(lock.packages?.["packages/cli"]?.dependencies?.[CORE_PACKAGE] || "").trim(), coreRange, `package-lock.json CLI dependency ${CORE_PACKAGE}`);
+  expect(String(lock.packages?.["packages/cli"]?.dependencies?.[CORE_PACKAGE] || "").trim(), corePin, `package-lock.json CLI dependency ${CORE_PACKAGE}`);
   if (lock.packages?.[""]?.dependencies?.[CORE_PACKAGE]) errors.push(`package-lock.json root must not depend on ${CORE_PACKAGE}`);
   if (root.dependencies?.[CORE_PACKAGE]) errors.push(`package.json root must not depend on ${CORE_PACKAGE}`);
 
@@ -162,7 +151,7 @@ function collectVersionErrors(workspace, tag) {
     }
   }
 
-  return { errors, cliVersion, coreVersion, templateVersion, coreRange, protocolVersion };
+  return { errors, cliVersion, coreVersion, templateVersion, corePin, protocolVersion };
 }
 
 function checkWorkspaceVersion(options = {}) {
@@ -179,36 +168,32 @@ function setCliVersion(input, options = {}) {
   const rootDir = path.resolve(options.rootDir || path.join(__dirname, ".."));
   const version = normalizeVersion(input);
   const workspace = loadWorkspace(rootDir);
-  const coreRange = options.coreRange
-    ? normalizeCoreRange(options.coreRange)
-    : normalizeCoreRange(workspace.cli.dependencies?.[CORE_PACKAGE]);
-  if (!satisfiesCaret(workspace.core.version, coreRange)) {
-    throw new Error(`Core ${workspace.core.version} is outside the requested CLI dependency range ${coreRange}`);
-  }
+  // pin 自动对齐当前 Core 版本（联动发版策略）。
+  const corePin = normalizeVersion(workspace.core.version);
   workspace.cli.version = version;
-  workspace.cli.dependencies[CORE_PACKAGE] = coreRange;
+  workspace.cli.dependencies[CORE_PACKAGE] = corePin;
   workspace.lock.packages["packages/cli"].version = version;
-  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = coreRange;
+  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = corePin;
   writeJson(workspace.paths.cli, workspace.cli);
   writeJson(workspace.paths.lock, workspace.lock);
   checkWorkspaceVersion({ rootDir });
-  return { cliVersion: version, coreRange };
+  return { cliVersion: version, corePin };
 }
 
 function setCoreVersion(input, options = {}) {
   const rootDir = path.resolve(options.rootDir || path.join(__dirname, ".."));
   const version = normalizeVersion(input);
   const workspace = loadWorkspace(rootDir);
-  const coreRange = normalizeCoreRange(workspace.cli.dependencies?.[CORE_PACKAGE]);
-  if (!satisfiesCaret(version, coreRange)) {
-    throw new Error(`Core ${version} is outside the CLI dependency range ${coreRange}; update the CLI range first`);
-  }
   workspace.core.version = version;
   workspace.lock.packages["packages/core"].version = version;
+  // 联动同步 CLI 的 pin；Core 发版必须随后 bump CLI patch（check 会强制兼容校验）。
+  workspace.cli.dependencies[CORE_PACKAGE] = version;
+  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = version;
   writeJson(workspace.paths.core, workspace.core);
+  writeJson(workspace.paths.cli, workspace.cli);
   writeJson(workspace.paths.lock, workspace.lock);
   checkWorkspaceVersion({ rootDir });
-  return { coreVersion: version };
+  return { coreVersion: version, corePin: version };
 }
 
 function setTemplateVersion(input, options = {}) {
@@ -235,7 +220,7 @@ function readOption(args, name) {
 }
 
 function versionArgument(args, usage) {
-  const value = args.find((arg, index) => arg !== "--" && (index === 0 || args[index - 1] !== "--core-range"));
+  const value = args.find((arg) => arg !== "--");
   if (!value) throw new Error(usage);
   return value;
 }
@@ -249,15 +234,13 @@ function main(args = process.argv.slice(2)) {
     return;
   }
   if (command === "set-cli") {
-    const result = setCliVersion(versionArgument(rest, "usage: npm run version:set:cli -- <version> [--core-range ^x.y.z]"), {
-      coreRange: readOption(rest, "--core-range"),
-    });
-    console.log(`CLI version updated: ${result.cliVersion} (Core ${result.coreRange})`);
+    const result = setCliVersion(versionArgument(rest, "usage: npm run version:set:cli -- <version>"));
+    console.log(`CLI version updated: ${result.cliVersion} (Core pinned ${result.corePin})`);
     return;
   }
   if (command === "set-core") {
     const result = setCoreVersion(versionArgument(rest, "usage: npm run version:set:core -- <version>"));
-    console.log(`Core version updated: ${result.coreVersion}`);
+    console.log(`Core version updated: ${result.coreVersion} (CLI pin synced; remember to bump CLI patch — release in lockstep)`);
     return;
   }
   if (command === "set-template") {
@@ -281,9 +264,8 @@ module.exports = {
   checkWorkspaceVersion,
   collectVersionErrors,
   compareVersions,
-  normalizeCoreRange,
+  normalizeCorePin,
   normalizeVersion,
-  satisfiesCaret,
   setCliVersion,
   setCoreVersion,
   setTemplateVersion,

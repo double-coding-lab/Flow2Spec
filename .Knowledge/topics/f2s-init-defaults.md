@@ -81,11 +81,11 @@ tags: [policy]
 
 ### 跑 `f2s-kb-upgrade` 时的版本预检
 
-步骤 -1 执行 `flow2spec version` 与 `flow2spec update --check`，分别读取 CLI、Core、Core Range、Template、Protocol 和 npm 最新 Core/Template：
+步骤 -1 执行 `flow2spec version` 与 `flow2spec update --check`，分别读取 CLI、Core、Core Pinned、Template、Protocol 和 npm 最新 Core/Template（CLI 对 Core 为精确 pin，两包联动发布）：
 
-- Core-only 更新：`flow2spec update --core` 后幂等 init 刷新 Hook，不进入完整知识库升级。
-- Template 更新且 Core 兼容：更新 Core 后继续 init 与 `projectRev` / `pkgRev` 分流。
-- 本地版本不可用或 Core 超出范围：显式组合 latest CLI/Core 执行 init，避免 npx 复用旧 Core。
+- CLI/Core 有更新：`flow2spec update --cli`（CLI 与配套 Core 联动更新，自带生效校验）后幂等 init 刷新 Hook。
+- Template 更新：`flow2spec update --cli` 到位后继续 init 与 `projectRev` / `pkgRev` 分流。
+- 本地版本不可用：`npx --yes <cli-package>@latest init`（latest CLI 自带 pin 的配套 Core），避免 npx 复用旧版缓存。
 - `manifest-routing.json.version` 表示 Template Version，不能与 Core Version 混用。
 
 ## init 不动哪些目录

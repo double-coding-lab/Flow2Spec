@@ -95,7 +95,7 @@ function buildNotice(state) {
       '',
       `📦 [flow2spec] 当前项目「${project}」有模板更新（${versionSummary}）。`,
       '',
-      '[flow2spec/agent-instruction] 可先执行 `flow2spec update --core`，再执行 `flow2spec init <已初始化的 agents>`。init 后读取 `.Knowledge/manifest-routing.json`：projectRev 与 pkgRev 相等则更新完成并删除 `.Knowledge/update-check.json`；不等时再执行 f2s-kb-upgrade（可从步骤 2c 继续）。',
+      '[flow2spec/agent-instruction] 可先执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新），再执行 `flow2spec init <已初始化的 agents>`。init 后读取 `.Knowledge/manifest-routing.json`：projectRev 与 pkgRev 相等则更新完成并删除 `.Knowledge/update-check.json`；不等时再执行 f2s-kb-upgrade（可从步骤 2c 继续）。',
     ].join('\n');
   }
   return [
@@ -103,7 +103,7 @@ function buildNotice(state) {
     '',
     `📦 [flow2spec] 当前项目「${project}」仅有 Core 程序更新（${versionSummary}），模板版本未变化。`,
     '',
-    '[flow2spec/agent-instruction] 可执行 `flow2spec update --core`，随后执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook。Template Version 未变化，不进入 f2s-kb-upgrade；完成后删除 `.Knowledge/update-check.json`。',
+    '[flow2spec/agent-instruction] 可执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新），随后执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook。Template Version 未变化，不进入 f2s-kb-upgrade；完成后删除 `.Knowledge/update-check.json`。',
   ].join('\n');
 }
 

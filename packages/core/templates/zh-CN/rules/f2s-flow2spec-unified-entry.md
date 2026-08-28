@@ -98,7 +98,7 @@ alwaysApply: true
 **规则层双保险**（与脚本缓存互为备份）：
 
 1. 读 `flow2spec.config.json` → 若 `updateCheck.enabled` 不为 `true`，跳过，不做任何提示。
-2. 读 `.Knowledge/update-check.json` → 若文件存在且 `checkedAt` 与今日为同一自然日，不重复查 npm；`coreUpdateAvailable=true` 时可执行 `flow2spec update --core`。若 `templateUpdateAvailable=false`，随后只执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook，删除缓存，不进入 `f2s-kb-upgrade`；若 `templateUpdateAvailable=true`，更新 Core 后执行 init，再以 `projectRev` / `pkgRev` 判定快速路径或完整流程。`.Knowledge/manifest-routing.json.version` 表示 Template Version，禁止与 Core Version 直接比较。
+2. 读 `.Knowledge/update-check.json` → 若文件存在且 `checkedAt` 与今日为同一自然日，不重复查 npm；`coreUpdateAvailable=true` 时可执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新）。若 `templateUpdateAvailable=false`，随后只执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook，删除缓存，不进入 `f2s-kb-upgrade`；若 `templateUpdateAvailable=true`，更新后执行 init，再以 `projectRev` / `pkgRev` 判定快速路径或完整流程。`.Knowledge/manifest-routing.json.version` 表示 Template Version，禁止与 Core Version 直接比较。
 3. 上述两步均未跳过时：执行当前 agent 配置根下的更新检测脚本（Claude：`node .claude/hooks/f2s-update-check.js`；Cursor：`node .cursor/hooks/f2s-update-check.js`；Codex：`node .codex/hooks/f2s-update-check.js`），解析标准输出的 JSON：
    - 若含 `hookSpecificOutput.additionalContext`：**告知用户**该内容，并按其中 agent-instruction 分别处理 Core-only 与 Template 更新。
    - 无输出或解析失败：静默，不提示。

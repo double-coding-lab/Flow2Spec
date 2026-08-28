@@ -56,18 +56,6 @@ function compareVersions(a, b) {
   return 0;
 }
 
-function satisfiesCoreRange(version, range) {
-  const match = /^\^(\d+)\.(\d+)\.(\d+)/.exec(String(range || ""));
-  if (!match || compareVersions(version, `${match[1]}.${match[2]}.${match[3]}`) < 0) return false;
-  const [major, minor, patch] = match.slice(1).map(Number);
-  const upper = major > 0
-    ? `${major + 1}.0.0`
-    : minor > 0
-      ? `0.${minor + 1}.0`
-      : `0.0.${patch + 1}`;
-  return compareVersions(version, upper) < 0;
-}
-
 function runCommandSync(command, commandArgs, options = {}) {
   return execFileSync(command, commandArgs, {
     windowsHide: true,
@@ -173,6 +161,44 @@ function getGlobalInstalledVersion() {
   } catch {
     return null;
   }
+}
+
+/**
+ * 读取全局 CLI 实际加载到的 Core 版本（按 Node 模块解析优先级：嵌套副本优先）。
+ *
+ * npm 全局安装时 CLI 的 core 依赖位于 CLI 包自己的 node_modules（嵌套）；
+ * 单独 `npm i -g core@x` 只会装出顶级孤儿副本，不影响 CLI 加载。
+ * 因此验证时先查嵌套路径，再回退顶级路径。
+ *
+ * @returns {string|null} 全局 CLI 实际解析到的 core 版本；无法确定时返回 null
+ */
+function getGlobalEffectiveCoreVersion() {
+  if (!pkg.name) return null;
+  let globalRoot;
+  try {
+    globalRoot = runCommandSync("npm", ["root", "-g"], {
+      encoding: "utf8",
+      timeout: 2000,
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+  } catch {
+    return null;
+  }
+  if (!globalRoot) return null;
+  const candidates = [
+    path.join(globalRoot, pkg.name, "node_modules", CORE_PACKAGE, "package.json"),
+    path.join(globalRoot, CORE_PACKAGE, "package.json"),
+  ];
+  for (const candidate of candidates) {
+    try {
+      if (!fs.existsSync(candidate)) continue;
+      const data = JSON.parse(fs.readFileSync(candidate, "utf8"));
+      if (typeof data.version === "string") return data.version;
+    } catch {
+      // 继续尝试下一个候选路径。
+    }
+  }
+  return null;
 }
 
 /**
@@ -291,8 +317,8 @@ Flow2Spec - 统一知识库工作流（AI 配置入口）  v${pkg.version}
   flow2spec kb                  知识库协作引擎：status / check / plan / apply / build
   flow2spec version             显示 CLI / Core / Template / Protocol 版本
   flow2spec update --check      检查 CLI 与 Core 更新
-  flow2spec update --cli        更新 CLI
-  flow2spec update --core       在兼容范围内更新 Core
+  flow2spec update --cli        整体更新（CLI 与配套 Core 联动）
+  flow2spec update --core       同 --cli：Core 随 CLI 联动发布，执行整体更新
   flow2spec --help              显示本说明
 
 agent（可多个，空格分隔；省略时交互选择）：
@@ -332,7 +358,7 @@ if (sub === "version" || sub === "--version" || sub === "-v") {
   console.log([
     `Flow2Spec CLI:       ${pkg.version}`,
     `Flow2Spec Core:      ${coreVersions.coreVersion}`,
-    `Core Range:          ${coreRange}`,
+    `Core Pinned:         ${coreRange}`,
     `Template Version:    ${coreVersions.templateVersion}`,
     `Protocol Version:    ${getCapabilities().protocolVersion}`,
   ].join("\n"));
@@ -355,51 +381,59 @@ if (sub === "update") {
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
     const latestCore = queryLatestCoreMetadata();
-    const coreCompatible = satisfiesCoreRange(latestCore.version, coreRange);
 
     if (mode === "--check") {
       console.log([
         `CLI:      ${pkg.version} -> ${latestCli}`,
         `Core:     ${coreVersions.coreVersion} -> ${latestCore.version}`,
         `Template: ${coreVersions.templateVersion} -> ${latestCore.templateVersion}`,
-        `Range:    ${coreRange} (${coreCompatible ? "compatible" : "incompatible"})`,
+        `Policy:   Core 随 CLI 联动发布（当前 CLI pin Core ${coreRange}）`,
       ].join("\n"));
-      process.exit(0);
-    }
-
-    if (mode === "--cli") {
-      if (compareVersions(latestCli, pkg.version) <= 0) {
-        console.log(`CLI 已是最新版本 v${pkg.version}`);
-        process.exit(0);
-      }
-      if (getGlobalInstalledVersion()) {
-        runCommandSync("npm", ["install", "-g", `${pkg.name}@latest`], { stdio: "inherit" });
-        console.log(`\n✓ CLI 已更新到 v${latestCli}`);
-      } else {
-        runCommandSync("npx", ["--yes", `${pkg.name}@latest`, "version"], { stdio: "inherit" });
-        console.log("\n✓ 当前为 npx 场景；已用 latest CLI 启动并验证，无需写入全局安装。");
+      if (compareVersions(latestCli, pkg.version) > 0) {
+        console.log("\n可运行 flow2spec update --cli 一键更新（CLI 与配套 Core 一起到位）。");
       }
       process.exit(0);
     }
 
-    if (!coreCompatible) {
-      console.error(`Core v${latestCore.version} 超出当前 CLI 兼容范围 ${coreRange}；请先更新支持该 Core 的 CLI。`);
+    // --cli 与 --core 统一为整体更新：CLI pin 精确 Core 版本，更新 CLI 即同时拿到配套 Core。
+    if (mode === "--core") {
+      console.log("Core 随 CLI 联动发布；执行整体更新（等价 update --cli）。");
+    }
+    if (!getGlobalInstalledVersion()) {
+      runCommandSync("npx", ["--yes", `${pkg.name}@latest`, "version"], { stdio: "inherit" });
+      console.log("\n✓ 当前为 npx 场景；已用 latest CLI 启动并验证（自带配套 Core），无需写入全局安装。");
+      process.exit(0);
+    }
+
+    const cliUpToDate = compareVersions(latestCli, pkg.version) <= 0;
+    const effectiveBefore = getGlobalEffectiveCoreVersion();
+    const coreHealthy = Boolean(effectiveBefore) && compareVersions(effectiveBefore, latestCore.version) >= 0;
+    if (cliUpToDate && coreHealthy) {
+      console.log(`CLI v${pkg.version} 与 Core v${effectiveBefore} 均已是最新。`);
+      process.exit(0);
+    }
+    if (cliUpToDate && !coreHealthy) {
+      // CLI 已是 latest 但实际生效的 Core 落后（历史孤儿副本 / 嵌套遮蔽）：先卸再装强制重建依赖树。
+      console.log(`检测到 Core 实际生效版本 v${effectiveBefore || "未知"} 落后于 v${latestCore.version}，重装 CLI 修复依赖树…`);
+      try {
+        runCommandSync("npm", ["uninstall", "-g", pkg.name], { stdio: "inherit" });
+      } catch {
+        // 卸载失败不阻断，继续安装。
+      }
+    }
+    runCommandSync("npm", ["install", "-g", `${pkg.name}@latest`], { stdio: "inherit" });
+
+    // 生效验证：以实际解析到的 Core 为准，不再仅凭 npm 退出码报成功。
+    const installedCli = getGlobalInstalledVersion();
+    const effectiveAfter = getGlobalEffectiveCoreVersion();
+    console.log(`\n✓ CLI 已更新到 v${installedCli || latestCli}；Core 实际生效版本 v${effectiveAfter || "未知"}`);
+    if (!effectiveAfter || compareVersions(effectiveAfter, latestCore.version) < 0) {
+      console.error([
+        `⚠ Core 生效版本仍为 v${effectiveAfter || "未知"}（期望 v${latestCore.version}）。`,
+        `若刚发布新版，可能处于 CLI/Core 联动发布窗口，稍后重试；否则请手动执行：`,
+        `  npm uninstall -g ${pkg.name} && npm install -g ${pkg.name}@latest`,
+      ].join("\n"));
       process.exit(1);
-    }
-    if (compareVersions(latestCore.version, coreVersions.coreVersion) <= 0) {
-      console.log(`Core 已是最新兼容版本 v${coreVersions.coreVersion}`);
-      process.exit(0);
-    }
-    if (getGlobalInstalledVersion()) {
-      runCommandSync("npm", ["install", "-g", `${CORE_PACKAGE}@${latestCore.version}`], { stdio: "inherit" });
-      console.log(`\n✓ Core 已更新到 v${latestCore.version}`);
-    } else {
-      runCommandSync(
-        "npx",
-        ["--yes", "--package", `${pkg.name}@${pkg.version}`, "--package", `${CORE_PACKAGE}@${latestCore.version}`, "flow2spec", "version"],
-        { stdio: "inherit" },
-      );
-      console.log("\n✓ 当前为 npx 场景；已显式安装并验证 CLI/Core 组合，后续 init 请继续使用相同的 --package 组合。");
     }
     console.log(latestCore.templateVersion === coreVersions.templateVersion
       ? "Template Version 未变化，无需执行 f2s-kb-upgrade。"
