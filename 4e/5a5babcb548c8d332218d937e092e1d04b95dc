@@ -1,0 +1,29 @@
+package-lock.json
+  ai_agent 28,31,42
+packages/core/templates/en-US/knowledge/manifest-routing.json
+  s_5a89341a6e1264::t_d34cab0421407f 2
+packages/cli/package.json
+  s_5a89341a6e1264::t_d34cab0421407f 3
+  s_5a89341a6e1264::t_d2e1d25797addb 22
+packages/core/templates/zh-CN/knowledge/manifest-routing.json
+  s_5a89341a6e1264::t_d34cab0421407f 2
+packages/core/package.json
+  s_5a89341a6e1264::t_d2e1d25797addb 3
+  s_5a89341a6e1264::t_d34cab0421407f 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "4e5a5babcb548c8d332218d937e092e1d04b95dc",
+  "prompts": {},
+  "sessions": {
+    "s_5a89341a6e1264": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a47aef8e-0721-4f32-a256-c060e967dbdb",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
