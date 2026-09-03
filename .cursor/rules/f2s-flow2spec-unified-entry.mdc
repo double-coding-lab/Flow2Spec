@@ -29,7 +29,7 @@ alwaysApply: true
 
 ## 读取顺序（必须）
 
-1. 先读 `.Knowledge/manifest-routing.json`，优先按 `taskToTopicRules` 路由；按需根据 `matcherPath` 读取 matcher 分片获取 `includeAny` 关键词；无法命中时进入补召回阶段。
+1. 先读 `.Knowledge/manifest-routing.json`，优先按 `taskToTopicRules` 路由；初筛证据为每条规则的 `task` 名与 `summary`（一句话意图摘要）；按需根据 `matcherPath` 读取 matcher 分片获取词表(`includeAny` / `includeAll` 资格词、`excludeAny` / `excludeAll` 否决词;否决门恒胜,优先于 `task` 精确命中,详见 `topics/kb-routing-summary.md`);无法命中时进入补召回阶段。
    - 若命中主题在 `topicDependencies` 中存在依赖，先读依赖主题，再读主主题。
    - 路由清单仅通过 `f2s-*` 技能流程维护，不依赖额外 CLI 子命令。
 2. `.Knowledge/index.md` 按需读取，仅用于确认主题语义与边界。
@@ -37,9 +37,9 @@ alwaysApply: true
 4. 若需要背景，再读 `.Knowledge/stock-docs/<doc>.md`。
 5. 仅在前四步不足时下钻业务源码。
 6. 命中后必须执行 `match -> expand -> verify -> act`：
-   - `match`：先取主候选；
+   - `match`：以规则的 `task` 名与 `summary` 做语义匹配取主候选；`summary` 与 `includeAny` 均为语义锚而非字面白名单，允许近义命中；
    - `expand`：展开 `topicDependencies`，并保留次高候选做补充校验；
-   - `verify`：执行前做缺口检查（关键主题/边界/上下文是否缺失）；
+   - `verify`：执行前做缺口检查（关键主题/边界/上下文是否缺失）；**若命中主题正文未覆盖用户问句的核心名词，必须并读次高候选的 `summary` 与 matcher 分片再定，不得直接作答**；
    - `act`：仅在置信度足够时执行；低置信度必须先澄清。
 7. 仅在以下条件之一成立时，允许执行跨 matcher 全量补检索（top-k）：
    - `taskToTopicRules` 无命中；
@@ -55,11 +55,12 @@ alwaysApply: true
 ## 机读事实源口径（规则层）
 
 - `taskToTopicRules`：任务路由第一优先级。
+- `taskToTopicRules[].summary`：初筛召回字段（一句话意图摘要），由 `flow2spec kb build` 从 topic frontmatter `summary` 机械同步，不手写 manifest 侧；作语义锚参与 match 初筛。
 - `taskToTopicRules[].matcherPath`：匹配词分片直链路径，按需读取单个 matcher 文件。
 - `taskToTopicRules[].matcherId`：matcher 的稳定标识，需与 matcher 分片内 `id` 一致。
 - `topicDependencies`：主主题命中后先加载依赖主题。
 - `topicMetadata`：主题治理元数据，只影响阅读预期，不参与 matcher 命中，不决定是否读取 topic，不改变执行强制性；执行强制性始终以 `AGENTS.md`、rules、skills 与 topic 正文中的明确要求为准。读到 `topicMetadata[topicId].primary` / `tags` 时：`config` 关注配置项、开关、默认值、初始化参数；`policy` 优先检查正文中的必须/禁止/门禁/流程约束；`feature` 作为已落地业务/产品能力背景；`module` 作为目录、包、模块边界与工程结构背景。`confidence` 仅允许 `manual` / `inferred`；无明确分类证据时不写 metadata。
-- `matcherPath(includeAny)`：任务关键词匹配词表。
+- `matcherPath(includeAny/includeAll/excludeAny/excludeAll)`：任务关键词匹配词表(前两者为资格门,后两者为否决门;详见 `topics/kb-routing-summary.md`)。
 - `fallbackTopic`：任务与关键词都未命中时必须读取，但仅作低置信度兜底，不是最终执行依据。
 - `.Knowledge/manifest-routing.json + matcherPath 分片文件` 是机读事实源（关键词仅在 `matchers/*.json`）。
 - `.Knowledge/index.md` 不是机读事实源，仅作人读导航与语义边界校验。
@@ -69,7 +70,7 @@ alwaysApply: true
 
 | 情况 | 对策 |
 | --- | --- |
-| **1a 库里有文档但未配路由** | 用 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 补 `taskToTopicRules`、`matcherPath` 分片、`topicPaths`；扩充 `includeAny` 覆盖用户常用说法。Agent 侧：走 `fallbackTopic` 分诊并提示「需补路由」，**不**靠全仓扫文件代替配置。 |
+| **1a 库里有文档但未配路由** | 用 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 补 `taskToTopicRules`、`matcherPath` 分片、`topicPaths`；扩充 `includeAny` / `includeAll` 覆盖用户常用说法,必要时用 `excludeAny` 排除误路由。Agent 侧：走 `fallbackTopic` 分诊并提示「需补路由」，**不**靠全仓扫文件代替配置。 |
 | **1b 命中了但上下文不够** | 先 `expand`（`topicDependencies` + 次高候选），再 `verify` 点名缺哪份 `stock-docs`/`req-docs` 或哪段 topic；仍不足则 **向用户要文档或路径**，不要无门槛跨 matcher 全量补检索。**Agent 若需下钻源码**：须先对用户做**可见的缺口说明**（已读 KB、缺什么、拟读哪 1～2 个文件），见 **`f2s-knowledge-preflight`**「缺口闸门」；**禁止**无说明地连续 `Grep`/乱序探源。 |
 | **2 库里没有对应文档** | 一次读完 routing + 已命中 matcher + 相关 topic 后，在回复中 **明确承认知识库无覆盖**，再选：下钻业务代码 / 请用户补充 `req-docs` 或 PRD。**禁止**用反复读清单假装「再找一遍就会有」。**下钻源码前**同样须满足 **`f2s-knowledge-preflight`**「缺口闸门」的可见说明。 |
 | **2a 反复读清单耗 token** | **同一任务线内** `manifest-routing.json` 视为稳定快照：再次全文读取须说明理由（例如用户声明已通过 `f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 等更新路由或知识、或**手动编辑**了 manifest/matcher）。**勿将**仅执行 **`flow2spec init`** 等同于「业务知识库已更新」：`init` 以配置根落盘、目录补齐与包级路由结构对齐为主；**stock-docs / req-docs、topics 路由摘要、matchers 词条**由 **`f2s-*` 技能流程**维护；`init` 会把规则写入配置根 **`rules/*`**（或等价扩展名），并为 Codex 写入 **`.codex/topics/*.md`**。只读 **当前规则对应的单个** `matcherPath`；不要为枚举而遍历整个 `matchers/` 目录。`index.md` 仅在需核对主题语义时打开，禁止与 manifest 交替「刷清单」。 |
@@ -97,9 +98,9 @@ alwaysApply: true
 **规则层双保险**（与脚本缓存互为备份）：
 
 1. 读 `flow2spec.config.json` → 若 `updateCheck.enabled` 不为 `true`，跳过，不做任何提示。
-2. 读 `.Knowledge/update-check.json` → 若文件存在且 `checkedAt` 与今日为同一自然日（`new Date(checkedAt).toDateString() === new Date().toDateString()`），不重复查 npm；但若 `needsUpgrade=true` 或 `latestNpm > manifestVersion`，本会话首次回复用户时仍须转告升级提示，并可**直接替用户执行** `flow2spec init <已初始化的 agents>` 完成更新——init 后读 `.Knowledge/manifest-routing.json`：`projectRev` 与 `pkgRev` 相等（非主题版本更新）即完成并删除该缓存；不等（含主题层变更）再执行 `f2s-kb-upgrade` 完整流程（可从其步骤 2c 起，不重复 init）；若当前 `.Knowledge/manifest-routing.json.version` 已不低于 `latestNpm`，删除该缓存并不再提示。
+2. 读 `.Knowledge/update-check.json` → 若文件存在且 `checkedAt` 与今日为同一自然日，不重复查 npm；`coreUpdateAvailable=true` 时可执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新）。若 `templateUpdateAvailable=false`，随后只执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook，删除缓存，不进入 `f2s-kb-upgrade`；若 `templateUpdateAvailable=true`，更新后执行 init，再以 `projectRev` / `pkgRev` 判定快速路径或完整流程。`.Knowledge/manifest-routing.json.version` 表示 Template Version，禁止与 Core Version 直接比较。
 3. 上述两步均未跳过时：执行当前 agent 配置根下的更新检测脚本（Claude：`node .claude/hooks/f2s-update-check.js`；Cursor：`node .cursor/hooks/f2s-update-check.js`；Codex：`node .codex/hooks/f2s-update-check.js`），解析标准输出的 JSON：
-   - 若含 `hookSpecificOutput.additionalContext`：**告知用户**该内容，并按其中 agent-instruction 执行（非主题版本更新可直接代跑 `flow2spec init`；主题层变更再执行 `f2s-kb-upgrade` skill）。
+   - 若含 `hookSpecificOutput.additionalContext`：**告知用户**该内容，并按其中 agent-instruction 分别处理 Core-only 与 Template 更新。
    - 无输出或解析失败：静默，不提示。
 4. 以上步骤出现任何错误，静默跳过，不影响正常对话。
 

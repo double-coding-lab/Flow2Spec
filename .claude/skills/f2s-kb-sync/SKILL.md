@@ -87,7 +87,7 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 - `.Knowledge/topics/*.md`
 - `.Knowledge/index.md`（同步主题路由表的“关联文档（摘要）”列）
-- 路由清单（按需）；若创建新 topic，须同步 `topicPaths`、必要的 `taskToTopicRules` / matcher 分片；可在证据明确时写 `topicMetadata`，但分类只用于治理、审计和阅读预期，不参与路由命中或执行强制性，不得为了分类创建、重命名或拆分 topic
+- 路由清单（按需）；若创建新 topic，须同步 `topicPaths`、必要的 `taskToTopicRules` / matcher 分片；新建 / 更新 topic 的 frontmatter `summary` 与 matcher `includeAny` 按 `f2s-topic-authoring`「初筛召回规范」写（summary 由 kb build 同步进 rule.summary）；可在证据明确时写 `topicMetadata`，但分类只用于治理、审计和阅读预期，不参与路由命中或执行强制性，不得为了分类创建、重命名或拆分 topic
 - `.Knowledge/stock-docs/*.md`（按需补充索源文档）
 
 ### 步骤 4：收尾摘要

@@ -1,5 +1,5 @@
 {
-  "version": "3.5.0",
+  "version": "3.6.2",
   "knowledgeRoot": ".Knowledge",
   "matcherKey": "matcherId",
   "sourceOfTruth": ".Knowledge/manifest-routing.json",
@@ -208,11 +208,11 @@
       "topics": [
         "kb-routing-summary"
       ],
-      "summary": "初筛召回 summary 字段的同步、校验与创作规范"
+      "summary": "初筛 summary 与 matcher 分片 4 字段(资格/否决门)语义"
     }
   ],
   "projectRev": 2,
-  "pkgRev": 2,
+  "pkgRev": 3,
   "topicMetadata": {
     "implement-tech-design": {
       "primary": "policy",
