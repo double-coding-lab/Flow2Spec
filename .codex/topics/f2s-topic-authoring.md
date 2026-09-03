@@ -28,13 +28,49 @@
 每个 topic 至少包含：
 
 1. **标题与一句话意图**（一行写清"该 topic 解决什么"）；
-2. **适用场景 / 触发词**（与对应 `matchers/<id>.json` `includeAny` 语义一致）；
+2. **适用场景 / 触发词**（与对应 `matchers/<id>.json` `includeAny` / `includeAll` 语义一致）；
 3. **核心规则 / 流程**（可执行知识；步骤须可由 Agent 复现）；
 4. **依赖声明**（若 `topicDependencies` 中存在依赖项，正文须显式写一句「执行前须先读依赖主题 `<dep>`」，参考 `topics/f2s-req-plan.md` 首段写法）；
 5. **边界与禁止项**（避免膨胀到隔壁 topic）；
 6. **长文背景 / 详细资料引用**（如需承载业务背景）：只列 `.Knowledge/stock-docs/*_终稿.md` 的可点击 Markdown 链接（1–3 条即可）；**禁止**直接列 `.Knowledge/req-docs/*` 作为长文背景来源；无对应终稿时**先生成终稿**再回填此小节。
 
-## 3. topicMetadata 判定准则
+### frontmatter `summary` 与 `includeAny` 创作规范（初筛召回，硬约束）
+
+topic frontmatter 的 `summary` 会被 `flow2spec kb build` 同步进 `manifest-routing.taskToTopicRules[].summary`，是 Agent 初筛的常驻语义锚——写作质量直接决定该 topic 能否被自然问法命中：
+
+- **`summary`**：一句话写清「职责 + 用户会问的核心名词」，覆盖 topic 的全部职责域（如同时承担“职责边界”与“资料入口”，两者都要出现）；软上限 30 字（英文 15 词），硬上限 40 字 / 20 词（`kb check` 校验）；禁止 `<topicId>（路由摘要）`、`TODO` 等占位写法。
+- **`includeAny`**：单概念核心词优先（自然问法中会独立出现的最小词，如「原型」「流程图」而非「原型位置」「业务流程图」）；复合词仅作补充；从用户口述沉淀时须补 1–2 个“日后自然问法”词，不只抄口述原文。
+- **自测（落盘前必做）**：模拟 2–3 个用户自然问句（凭空想“用户会怎么问”，不看词表），检查每句至少命中 `summary` 或 `includeAny` 之一；不命中则回改。
+- **`taskToTopicRules[].task`**：保持稳定 id 语义（kb 引擎按 `task` 合并），不塞长短语；召回语义由 `summary` 承载，manifest 侧由 `kb build` 生成，不手写。
+
+## 3. matcher 分片字段语义
+
+matcher 分片(`.Knowledge/matchers/<id>.json`)有 4 个字段参与 `routing.match()` 判定,按「否决门 → 资格门」两级:
+
+- **资格门**(至少满足其一即候选):
+  - `includeAny`:任一短语命中(OR)——最常用
+  - `includeAll`:所有短语全部命中(AND)——表达组合词/上下文约束
+- **否决门**(任一门命中即整条规则出局,**恒胜,优先于 `task` 精确命中**):
+  - `excludeAny`:任一短语命中(OR)
+  - `excludeAll`:所有短语全部命中(AND);半命中不否决
+
+写作准则:
+
+1. **默认只写 `includeAny`**:大部分主题不需要否决词/AND 词;泛化的单概念核心词交给 `includeAny` 即可。
+2. **用 `excludeAny` 排除误路由**:当同一批 `includeAny` 词在**另一场景**下反复被错命中(如 "部署" 词被 "预演部署" 误命中),用 `excludeAny: ["预演", "preview"]` 精确排除,**保留召回率**——比删触发词代价小得多。
+3. **用 `includeAll` 表达组合词**:仅当**两个词单独都太泛、但同时出现才有意义**时使用(如 "数据 + 迁移");否则拆成两条 `includeAny` 更好。
+4. **用 `excludeAll` 表达"仅当同时否定"**:仅当"任一词单独出现都不应否决,但两个词同时出现明确不属于本任务域"时使用(如 "归档 + 下线");这是罕见场景,大多数否决需求用 `excludeAny` 就够。
+5. **否决优先于 `task` 精确命中**:即使调用方显式传入 `task: "deploy"`,只要 `excludeAny` 命中,该规则仍然出局——排除词表达的是「此请求不属于该任务域」,语义强于精确命中。**若你不想让 `task` 参数被否决,不要给这条 rule 写 `excludeAny`**。
+6. **打分池合并**:`includeAll` 命中的短语与 `includeAny` 命中一起进入打分池,`score` 取最高短语分,不改变 `confidence` 分档规则(exact task=high、≥30=medium、<30=low)。
+
+阈值提示:
+
+- `includeAny` 词表超过 12 个通常是主题过宽信号(见第 6 节拆分策略);若通过 `includeAll` 组合词收敛后仍多,阈值按短语数而非词数评估。
+- 排除词无阈值约束,但写超过 5 条通常意味着资格词已过泛,应回头收紧资格门。
+
+实现:`packages/core/lib/routing.js:match()`;契约测试:`scripts/test-routing-semantics.js`(10 组用例覆盖 4 字段判定门与 exact-task 交互)。
+
+## 4. topicMetadata 判定准则
 
 `topicMetadata` 是治理元数据，只影响盘点、审计和阅读预期；不参与 matcher 命中，不决定是否读取 topic，不改变执行强制性。执行强制性以 `AGENTS.md`、rules、skills 与 topic 正文明确要求为准。
 
@@ -57,7 +93,7 @@
 
 禁止：为了分类创建、重命名、拆分 topic；在 topic markdown 正文或 `index.md` 中重复写分类块。
 
-## 4. topicDependencies 判定准则
+## 5. topicDependencies 判定准则
 
 设当前主题为 A、候选依赖为 B。**四问命中任一即声明 `A → B`**：
 
@@ -77,14 +113,14 @@
 
 **判定时机**：终稿与新 / 改 topic 落盘后，扫正文中**反引号引用的其他 topic id 与规则文件名**，逐个套四问；命中即写入 `manifest-routing.topicDependencies`，**并在新 topic 正文显式写依赖声明**（见骨架第 4 条）。
 
-## 5. 大功能拆分策略
+## 6. 大功能拆分策略
 
 当一个业务功能体量较大时，推荐「主 topic + 子 topic」结构，而非单个大 topic。
 
 **何时拆分（软约束，满足任一评估是否需拆）**：
 
 - 对应 stock-doc 超过 **300–500 行**：建议评估拆分，不强制阻断；
-- matcher `includeAny` 超过 **12 个**：主题过宽信号；
+- matcher `includeAny` 超过 **12 个**：主题过宽信号（若用 `includeAll` 组合词收敛后仍多，阈值按短语数而非词数评估，详见第 3 节）；
 - topic 正文包含超过 **3 个不相干职责域**的二级标题；
 - `f2s-kb-upgrade` 审计时发现同一 topic 被多种不相干任务类型反复命中。
 
@@ -96,10 +132,10 @@
 
 **不要做的事**：
 
-- 不用 `topicDependencies` 表达"概述 → 详情"导航关系（见第 4 节反向排除）；
+- 不用 `topicDependencies` 表达"概述 → 详情"导航关系（见第 5 节反向排除）；
 - 不为拆分而强行制造子 topic，若子模块本身不会被独立路由命中，不必建 topic。
 
-## 6. rule 是否需新建对应 topic
+## 7. rule 是否需新建对应 topic
 
 判据：**该 rule 是否会作为用户任务路由命中**。
 
@@ -108,7 +144,7 @@
 
 误区：「重要的规则就该有 topic」——重要不等于"用户路由命中"；让消费方 SKILL 在正文里直接 `Read rules/<id>.*` 全文即可，无需走 manifest 路由。
 
-## 7. 写盘权属（指针）
+## 8. 写盘权属（指针）
 
 `manifest-routing.json` / `.Knowledge/index.md` / `.Knowledge/topics/*.md` 的写权约束**以 `f2s-flow2spec-unified-entry` 与各 SKILL 内「写权硬约束」为准**，本条不复述；遇分歧以统一入口与对应 SKILL 为准。
 
@@ -117,7 +153,7 @@
 - 在未读本条的情况下新增 / 修改 topic 或 `topicDependencies`。
 - 为补分类单独创建、重命名或拆分 topic。
 - 在 topic 正文或 `index.md` 中写 `## 概念分类` 等 metadata 副本。
-- 把"重要的规则"硬塞进 `taskToTopicRules`（参见第 4 条）。
+- 把"重要的规则"硬塞进 `taskToTopicRules`（参见第 7 条）。
 - 用 `topicDependencies` 表达"信息相关"（应通过 `index.md` 语义边界 + matcher 关键词补召回，而非依赖边）。
 - 在 `topicDependencies` 中写传递冗余边或形成环。
 - **在 topic 的「长文背景 / 详细资料 / 相关资料 / 长文来源 / 参考文档」等指向长文源的整节引用槽位里，列出 `.Knowledge/req-docs/*`**（含澄清 / 技术方案 / SQL / PRD）。此类槽位只允许指向 `.Knowledge/stock-docs/*_终稿.md`；无终稿时须先生成再回填。短句/佐证式的偶发点引不受此约束。

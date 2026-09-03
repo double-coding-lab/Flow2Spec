@@ -11,6 +11,15 @@
     "路由 miss",
     "matcher",
     "includeAny",
+    "includeAll",
+    "excludeAny",
+    "excludeAll",
+    "matcher 字段",
+    "matcher 4 字段",
+    "否决门",
+    "资格门",
+    "路由匹配",
+    "路由字段",
     "语义锚"
   ]
 }

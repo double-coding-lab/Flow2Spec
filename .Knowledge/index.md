@@ -10,7 +10,7 @@
 ## 推荐阅读顺序
 
 1. `.Knowledge/manifest-routing.json`（任务路由、`topicPaths`、`topicDependencies`、`fallbackTopic`）
-2. 按需：由 `matcherPath` 读取 `.Knowledge/matchers/<id>.json`（`includeAny` 关键词）
+2. 按需：由 `matcherPath` 读取 `.Knowledge/matchers/<id>.json`（`includeAny` / `includeAll` 资格词、`excludeAny` / `excludeAll` 否决词）
 3. 按需：本 `index.md`（主题语义与边界）
 4. `.Knowledge/topics/<topic>.md`（执行约束与流程）
 5. 按需：`.Knowledge/stock-docs/`、`.Knowledge/req-docs/`
@@ -41,7 +41,7 @@
 | flow2spec-dsh-adapter | `.Knowledge/topics/flow2spec-dsh-adapter.md` | `flow2spec init dsh`、DeepSeek Harness 项目技能发现与 `.dsh/` 目录适配 | 用户文档：`docs/使用说明.md` / `docs/en/usage-guide.md`；实现：`lib/dshAgentsAdapter.js` |
 | flow2spec-core-package | `.Knowledge/topics/flow2spec-core-package.md` | `@double-coding/flow2spec-core` 职责边界：核心实现、发包模板真源、原生插件 API 与 CLI/legacy shim 消费关系 | 开发者文档：`packages/core/README.md`；入口：`packages/core/index.js` |
 | flow2spec-qoder-plugin | `.Knowledge/topics/flow2spec-qoder-plugin.md` | Qoder 插件构建、`build:qoder-plugin`、zip 打包与插件市场分发 | 构建脚本：`scripts/build-qoder-plugin.js`；内容源：`packages/core/index.js`（resources API） |
-| kb-routing-summary | `.Knowledge/topics/kb-routing-summary.md` | 路由初筛 `taskToTopicRules[].summary` 字段：frontmatter 唯一手写源、kb build 机械同步、kb check 质量校验与存量修复 | 引擎：`packages/core/lib/knowledgeEngine.js`；创作规范：配置根 `rules/f2s-topic-authoring.*` |
+| kb-routing-summary | `.Knowledge/topics/kb-routing-summary.md` | 路由初筛 `taskToTopicRules[].summary` 字段与 matcher 4 字段(`includeAny`/`includeAll`/`excludeAny`/`excludeAll`)语义 | 引擎：`packages/core/lib/knowledgeEngine.js`、`packages/core/lib/routing.js`；创作规范：配置根 `rules/f2s-topic-authoring.*` |
 
 每主题保留 **1–3 条** 可点击摘要链接；全量路径对照写入 `.Knowledge/migration-report.md`（迁移场景）。  
 其中 **`implement-tech-design`**、**`f2s-doc-routing`**、**`config-precheck`**、**`f2s-task`** 在 `topics/` 内为**路由摘要**；执行长文见配置根 **`rules/f2s-*.md(c)`**；使用 Codex 时见 **`.codex/AGENTS.md`**、**`.codex/topics/f2s-*.md`**（`f2s-config-check` 与 `AGENTS` 前置同源，按需打开）。**`f2s-knowledge-preflight`** 与 **`f2s-kb-feedback-closing`** 是普通问答首读 / 源码补答收口门禁，作为配置根规则 / Codex 专题长文生效，不写入 `topicPaths` 或 `taskToTopicRules`；**`f2s-kb-feedback-closing`** 在 cases 1–3 建议执行 **`f2s-kb-distill`**。
@@ -50,7 +50,7 @@
 
 ## 命中与执行（与统一入口一致）
 
-- **路由**：`taskToTopicRules` 给出任务 → 主题集合；**关键词**在 matcher 分片的 `includeAny`。
+- **路由**：`taskToTopicRules` 给出任务 → 主题集合；**关键词**在 matcher 分片(`includeAny` / `includeAll` 资格门 + `excludeAny` / `excludeAll` 否决门；否决优先于 `task` 精确命中,详见 `topics/kb-routing-summary.md`)。
 - **依赖**：命中主主题前，按 `topicDependencies` 先读依赖主题。
 - **兜底**：`fallbackTopic` 指向分诊主题（如 `fallback-triage`），仅低置信度上下文，**不得**当作最终命中直接改代码。
 - **执行链**：`match → expand → verify → act`；`expand` 须含依赖展开，并保留次高候选做校验。
@@ -76,7 +76,7 @@
 
 | 情况 | 你怎么做 |
 | --- | --- |
-| 有文档但没配到（1a） | 维护侧：`f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 补路由与 `includeAny`。执行侧：分诊主题澄清任务类型，**不**用全仓扫替代 manifest。 |
+| 有文档但没配到（1a） | 维护侧：`f2s-kb-build` / `f2s-kb-sync` / `f2s-kb-add` 补路由与 matcher 词表(`includeAny` / `includeAll` / `excludeAny` / `excludeAll`)。执行侧：分诊主题澄清任务类型，**不**用全仓扫替代 manifest。 |
 | 配到了但不够（1b） | 走依赖与次高候选 → `verify` 点名缺哪篇文档；仍缺则向用户要路径或补 `req-docs`。 |
 | 库里没有（2） | 承认缺口 → 代码下钻或请用户补需求/方案文档。 |
 | 反复读 manifest 费 token（2a） | 同一任务线内 routing 只当快照；只读命中项的单个 matcher；不遍历整个 `matchers/` 目录枚举；`index.md` 勿与 routing 循环互刷。 |

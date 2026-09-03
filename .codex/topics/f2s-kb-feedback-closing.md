@@ -104,6 +104,12 @@
 
 这样能避免"已有 topic 还建议 add"的误判。
 
+## 路由 miss 反哺（强制）
+
+- **判定**：本轮答案的核心事实由某 topic 提供，但该 topic **不是初筛主命中**（靠全量补检索、次高候选并读或用户点名才找到）→ 计为一次路由 miss。
+- **动作**：在四 case 收口之外，把本轮用户的原始问法回填该 topic 的召回锚——按 `f2s-topic-authoring`「初筛召回规范」补 frontmatter `summary` 的核心名词或 matcher `includeAny` 的单概念词，并跑 `flow2spec kb build` 同步 rule.summary。此项是直接落盘的最小修复，不依赖用户再跑 distill。
+- 即使收口走 case 4（知识库已覆盖），只要命中路径是 miss 后补救，仍须执行本反哺，并在收口块后追加一行：`已回填路由：<topicId> 的 summary/includeAny 补「<词>」`。
+
 ## 输出格式
 
 - case 1～3：输出一个 Markdown 引用块，依次写 `f2s-kb-distill` 命令 + 一行空行 + **本轮将入库**概要（一句话，见上文「概要要求」）。

@@ -47,9 +47,10 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 从文档中提炼：
 
 - 主题名与主题意图（可形成 topic id）
+- frontmatter `summary`（初筛召回锚：职责 + 用户会问的核心名词，按 `f2s-topic-authoring`「初筛召回规范」写；kb build 会同步进 manifest rule.summary）
 - 核心概念与关键流程
 - 业务规则与边界条件
-- 任务触发词（写入对应 `matchers/<matcherId>.json` 的 `includeAny`）
+- 任务触发词（写入对应 `matchers/<matcherId>.json` 的 `includeAny`；单概念核心词优先，复合词仅作补充）
 - 与现有主题的依赖关系（用于 `topicDependencies`）
 
 > **创作侧准则**：本步骤涉及新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再继续步骤 3 / 步骤 5。命名、骨架、依赖判定、DAG 最小化、判定时机均以该条为准，本 SKILL 不复述。

@@ -5,29 +5,17 @@ summary: "初筛 summary 与 matcher 分片 4 字段(资格/否决门)语义"
 primary: feature
 confidence: manual
 ---
-# 路由初筛 summary 字段（初筛召回锚）
+# 路由初筛 summary 字段与 matcher 4 字段
 
 ## 适用场景
 
-路由初筛命中率、`taskToTopicRules[].summary` 字段语义、rule.summary 同步机制、路由 miss 排查、summary/includeAny 创作与校验问题。
+路由初筛命中率、`taskToTopicRules[].summary` 字段语义、rule.summary 同步机制、路由 miss 排查、matcher 分片的 `includeAny` / `includeAll` / `excludeAny` / `excludeAll` 4 字段判定规则、summary/matcher 创作与校验问题。
 
 ## 机制
 
-- `taskToTopicRules[].summary` 是初筛阶段的常驻语义锚；初筛证据 = `task` 名 + `summary` + topic id + 依赖 + metadata（`includeAny` 仅在命中后打开的 matcher 分片中）。
+- `taskToTopicRules[].summary` 是初筛阶段的常驻语义锚；初筛证据 = `task` 名 + `summary` + topic id + 依赖 + metadata（`includeAny` 等词表仅在命中后打开的 matcher 分片中）。
 - **唯一手写源 = topic frontmatter `summary`**；manifest 侧由 `kb build` 经 `normalizeRoutingWithGraph` 机械同步：多 topic 规则按全角「；」拼接，topic 无 summary 时保留规则既有值不清空。
 - 同步点位复用：`kb build` / `kb apply` / `kb status`（drift 检测）三点位走同一函数；手改 manifest 的 `rule.summary` 会被判 routing drift。
-
-## 质量校验（kb check）
-
-- **warning**（`--strict` 才影响结果）：summary 缺失；占位（`<topicId>（路由摘要）` / `routing summary` / TODO / TBD / 待补充 / 占位 / 与 topicId 相同）；超长（含 CJK 时 > 40 字符，纯英文 > 20 词）。
-- **issue**（直接失败）：`rule.summary` 非字符串。
-- CLI `kb check` 文本输出打印前 10 条 warning 明细。
-
-## 创作与存量修复
-
-- 写法规范（软 30 字 / 硬 40 字、职责 + 用户会问的核心名词、`includeAny` 单概念词优先、落盘前模拟问句自测）以 `f2s-topic-authoring`「初筛召回规范」为准，本 topic 不复述。
-- 存量修复走 `f2s-kb-upgrade` 完整流程步骤 3a.7 / 3a.8：`kb build --fix-topics` 补占位头部 → `kb check --strict` 报 summary warning → agent 逐个 Read 正文补写语义摘要 → `kb build` 同步进 `rule.summary`。
-- `f2s-kb-upgrade` 步骤 -1 的 A 分支（包侧均为最新）**不得直接停止**：须先做项目侧对齐检查（manifest `version`/`pkgRev` 对比包 Template Version + `kb check --strict`），未对齐视同 Template 更新转完整流程；否则刚升完包的老项目会被误判「无事可做」跳过 summary 补写。
 
 ## matcher 分片字段语义
 
@@ -49,8 +37,18 @@ matcher 分片(`.Knowledge/matchers/<id>.json`)有 4 个字段参与路由匹配
 - `includeAll` / `excludeAny` / `excludeAll` **无自动填充**——引擎只做透传:`normalizeDeltaMatcher` 在 `kb apply` 写盘时保留 delta 已带字段,`kb build` 不动 matcher 分片,`flow2spec init` 分发的默认分片模板也只有 `includeAny`。
 - 赋值的**唯一路径**:用户遇到误路由 / AND 组合词需求 → Agent 依 `f2s-topic-authoring` §3 写作准则手写进对应 `matchers/<id>.json`(或用户直接手工编辑)。
 - **无 skill 会主动生成这 3 个字段**——即便用户描述含"排除/避免命中"语义,也需 Agent 观察 + 判断 + 手写,不是自动流程。
-- 定位:**逃生舱,不是默认装备**——大部分主题只用 `includeAny` 就够,git 全历史至本次同步前,生产分片对这 3 字段的赋值次数为 **0**。
-- 后续演进见 [issue #56](https://github.com/double-coding-lab/Flow2Spec/issues/56)(半自动填充能力备忘)。
+- 定位:**逃生舱,不是默认装备**——大部分主题只用 `includeAny` 就够。
+
+## 质量校验（kb check）
+
+- **warning**（`--strict` 才影响结果）：summary 缺失；占位（`<topicId>（路由摘要）` / `routing summary` / TODO / TBD / 待补充 / 占位 / 与 topicId 相同）；超长（含 CJK 时 > 40 字符，纯英文 > 20 词）。
+- **issue**（直接失败）：`rule.summary` 非字符串。
+- CLI `kb check` 文本输出打印前 10 条 warning 明细。
+
+## 创作与存量修复
+
+- 写法规范（软 30 字 / 硬 40 字、职责 + 用户会问的核心名词、`includeAny` 单概念词优先、落盘前模拟问句自测）以 `f2s-topic-authoring`「初筛召回规范」为准，本 topic 不复述。
+- 存量修复走 `f2s-kb-upgrade` 完整流程步骤 3a.7 / 3a.8：`kb build --fix-topics` 补占位头部 → `kb check --strict` 报 summary warning → agent 逐个 Read 正文补写语义摘要 → `kb build` 同步进 `rule.summary`。
 
 ## 边界
 
@@ -60,6 +58,7 @@ matcher 分片(`.Knowledge/matchers/<id>.json`)有 4 个字段参与路由匹配
 
 ## 实现位置
 
-- 引擎：`packages/core/lib/knowledgeEngine.js`（`deriveRoutingOverlayFromGraph.topicSummaries`、`normalizeRoutingWithGraph`、`validateKnowledgeGraph` 的 summary 校验）。
-- CLI：`packages/cli/cli.js` kb check 的 warning 明细输出。
-- 模板：Template 3.6.0 / projectRev 3 起，双语言 manifest 与 7 个 topic 均带定稿 summary。
+- 路由引擎:`packages/core/lib/routing.js`(`match` 函数的 4 字段判定 + 打分池合并 + `fallbackTopic` 兜底)。
+- 知识引擎:`packages/core/lib/knowledgeEngine.js`(`deriveRoutingOverlayFromGraph.topicSummaries`、`normalizeRoutingWithGraph`、`validateKnowledgeGraph` 的 summary 校验、`normalizeDeltaMatcher` 的 4 字段归一化)。
+- CLI:`packages/cli/cli.js` kb check 的 warning 明细输出。
+- 契约测试:`scripts/test-routing-semantics.js`(10 组 seam 测试)。
