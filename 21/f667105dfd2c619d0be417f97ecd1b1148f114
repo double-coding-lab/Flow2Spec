@@ -1,0 +1,163 @@
+.claude/skills/f2s-kb-addRules/SKILL.md
+  ai_agent 86
+.cursor/rules/f2s-flow2spec-unified-entry.mdc
+  s_5a89341a6e1264::t_35efa43c6b3b85 63
+  s_5a89341a6e1264::t_eb29d14b4fc802 32
+  s_5a89341a6e1264::t_bca6ec46d60f5a 73
+.claude/skills/f2s-kb-upgrade/SKILL.md
+  ai_agent 15,20,30-33,37-38,57,62,101,103,106-107,110,112-116,118,120,122-124,160,162-163,172,238-239,296-297,316-317,328,349,357
+.codex/skills/f2s-kb-sync/SKILL.md
+  ai_agent 90
+.cursor/hooks/f2s-update-check.js
+  ai_agent 3-4,9,12-13,15-16,19-23,26-32,35-36,39-40,43-46,49-51,54-57,60-72,74-86,89-99,101-107,110-114,117,119-125,128-130,133,135-145,148-153
+.cursor/skills/f2s-kb-upgrade/SKILL.md
+  ai_agent 15,20,30-33,37-38,57,62,101,103,106-107,110,112-116,118,120,122-124,160,162-163,172,238-239,296-297,316-317,328,349,357
+.cursor/rules/f2s-kb-feedback-closing.mdc
+  ai_agent 110-115
+.codex/skills/f2s-kb-distill/SKILL.md
+  ai_agent 288,290,295,378
+.cursor/skills/f2s-kb-sync/SKILL.md
+  ai_agent 90
+packages/core/templates/en-US/knowledge/topics/kb-routing-summary.md
+  s_5a89341a6e1264::t_f7330233eba505 1-2,4-34,42-64
+  s_5a89341a6e1264::t_72de07bbae7c22 3
+  s_5a89341a6e1264::t_29cef2207834b1 35-41
+.claude/rules/f2s-kb-feedback-closing.md
+  ai_agent 110-115
+.Knowledge/template/index.template.md
+  ai_agent 13,40,66
+packages/core/templates/en-US/rules/f2s-flow2spec-unified-entry.md
+  s_5a89341a6e1264::t_d240af77474352 32
+  s_5a89341a6e1264::t_2337e3e799f017 73
+  s_5a89341a6e1264::t_f1c21b845ede2c 63
+.cursor/skills/f2s-kb-build/SKILL.md
+  ai_agent 50,53
+.Knowledge/manifest-routing.json
+  s_5a89341a6e1264::t_5fdf0f4aa8f75a 2,211,215
+.cursor/skills/f2s-kb-addRules/SKILL.md
+  ai_agent 86
+packages/core/templates/zh-CN/rules/f2s-topic-authoring.md
+  s_5a89341a6e1264::t_b10ba4b6529ad8 139
+  s_5a89341a6e1264::t_74b7fd2ee81765 160
+  s_5a89341a6e1264::t_c074db2f556251 151
+  s_5a89341a6e1264::t_bd3c56e7d4b2df 100
+  s_5a89341a6e1264::t_e64a6be9ad04c8 35
+  s_5a89341a6e1264::t_a74367b537a8b1 142
+  s_5a89341a6e1264::t_a656d88b2c14c6 50-77
+  s_5a89341a6e1264::t_c773df734e3525 120
+  s_5a89341a6e1264::t_0169084c6ee97f 127
+.codex/topics/f2s-kb-feedback-closing.md
+  ai_agent 107-112
+.claude/rules/f2s-topic-authoring.md
+  s_5a89341a6e1264::t_bad61502e64871 34
+  s_5a89341a6e1264::t_ccaa766b0e7ea4 141
+  s_5a89341a6e1264::t_e63fa434662cd8 49-75
+  s_5a89341a6e1264::t_409124518880ec 99
+  s_5a89341a6e1264::t_173ef300622900 138
+  s_5a89341a6e1264::t_28f18aa7c2bdea 119
+  s_5a89341a6e1264::t_4e14c583e056b9 150
+  s_5a89341a6e1264::t_f387e7095b402c 159
+  s_5a89341a6e1264::t_6e3302eb299432 76
+  s_5a89341a6e1264::t_59b982ab23364e 126
+packages/core/templates/zh-CN/rules/f2s-flow2spec-unified-entry.md
+  s_5a89341a6e1264::t_6690886987d6dd 32
+  s_5a89341a6e1264::t_08a8f36d0f44e7 63
+  s_5a89341a6e1264::t_cd86cc5fec3ee4 73
+.codex/topics/f2s-flow2spec-unified-entry.md
+  s_5a89341a6e1264::t_72d047d16fde95 58
+  s_5a89341a6e1264::t_c8903f5a915f1e 27
+  s_5a89341a6e1264::t_f4be5dbad319bb 68
+packages/core/templates/en-US/knowledge/index.md
+  s_5a89341a6e1264::t_44bb2bdbbe7f02 13
+  s_5a89341a6e1264::t_8a42bb724a2e0f 66
+  s_5a89341a6e1264::t_581e020c2d5b9b 40
+.cursor/rules/f2s-topic-authoring.mdc
+  s_5a89341a6e1264::t_4c7b1ef8c75a85 160
+  s_5a89341a6e1264::t_5afef0da160cd0 50-77
+  s_5a89341a6e1264::t_34fa4032b30b7c 35
+  s_5a89341a6e1264::t_fb028feb763729 151
+  s_5a89341a6e1264::t_e16c9a90774aec 139
+  s_5a89341a6e1264::t_3c77d280c3e650 100
+  s_5a89341a6e1264::t_279538b5460633 120
+  s_5a89341a6e1264::t_b281957d04e13e 142
+  s_5a89341a6e1264::t_1adb500901179b 127
+packages/core/templates/zh-CN/knowledge/topics/kb-routing-summary.md
+  s_5a89341a6e1264::t_7f8ea5e1b2fdbf 35-41
+  s_5a89341a6e1264::t_7794060b44a8d7 3
+  s_5a89341a6e1264::t_0b7131c990a239 4
+  s_5a89341a6e1264::t_ff70df0c987a5b 1-2,5-34,42-64
+.Knowledge/index.md
+  s_5a89341a6e1264::t_0efae7963d2d2a 13
+  s_5a89341a6e1264::t_91ff8126c6ec8c 53
+  s_5a89341a6e1264::t_f58cf475f8a106 44
+  s_5a89341a6e1264::t_930b3eb2e23aa8 79
+.claude/skills/f2s-kb-distill/SKILL.md
+  ai_agent 288,290,295,378
+.codex/skills/f2s-kb-upgrade/SKILL.md
+  ai_agent 15,20,30-33,37-38,57,62,101,103,106-107,110,112-116,118,120,122-124,160,162-163,172,238-239,296-297,316-317,328,349,357
+packages/core/templates/en-US/rules/f2s-topic-authoring.md
+  s_5a89341a6e1264::t_3dae50ad762589 152
+  s_5a89341a6e1264::t_2bd8286c653eb0 128
+  s_5a89341a6e1264::t_a19850d8ecf389 161
+  s_5a89341a6e1264::t_baccdb35aace79 101
+  s_5a89341a6e1264::t_dc3d2c2330cb26 51-78
+  s_5a89341a6e1264::t_9d11074061c2b0 36
+  s_5a89341a6e1264::t_c757eec37dbd31 121
+  s_5a89341a6e1264::t_2ca883315883ef 143
+  s_5a89341a6e1264::t_05874e10a116e4 140
+.claude/rules/f2s-flow2spec-unified-entry.md
+  s_5a89341a6e1264::t_ca6ddb989c9450 72
+  s_5a89341a6e1264::t_888d4b68990e3f 62
+  s_5a89341a6e1264::t_f21903b573960c 31
+.codex/skills/f2s-kb-build/SKILL.md
+  ai_agent 50,53
+packages/core/templates/zh-CN/knowledge/index.md
+  s_5a89341a6e1264::t_c1ed9db3709bfb 40
+  s_5a89341a6e1264::t_df0d5526130183 66
+  s_5a89341a6e1264::t_7295708a18841d 13
+.claude/hooks/f2s-update-check.js
+  ai_agent 3-4,9,12-13,15-16,19-23,26-32,35-36,39-40,43-46,49-51,54-57,60-72,74-86,89-99,101-107,110-114,117,119-125,128-130,133,135-145,148-153
+.codex/skills/f2s-kb-addRules/SKILL.md
+  ai_agent 86
+.codex/topics/f2s-topic-authoring.md
+  s_5a89341a6e1264::t_325c3a888e949d 138
+  s_5a89341a6e1264::t_9cfe01fec5a340 116
+  s_5a89341a6e1264::t_5656e8d2316081 31
+  s_5a89341a6e1264::t_0893a9325bb253 135
+  s_5a89341a6e1264::t_b1b087fe15adf3 123
+  s_5a89341a6e1264::t_8ccc29a6a6d4fe 46-73
+  s_5a89341a6e1264::t_18bfc4d3ff587f 147
+  s_5a89341a6e1264::t_2348fce0025d25 96
+  s_5a89341a6e1264::t_e6a6fe8d6919d6 156
+.Knowledge/topics/kb-routing-summary.md
+  s_5a89341a6e1264::t_8cbb0d290dea6e 47-54
+  s_5a89341a6e1264::t_10fe40a2d20b27 4
+  s_5a89341a6e1264::t_e4fdce65cee3d6 3
+  s_5a89341a6e1264::t_9f778cc558b8eb 32-46
+.Knowledge/matchers/m-kb-routing-summary.json
+  s_5a89341a6e1264::t_356336a2a200ce 14-22
+.claude/skills/f2s-kb-sync/SKILL.md
+  ai_agent 90
+.claude/skills/f2s-kb-build/SKILL.md
+  ai_agent 50,53
+.cursor/skills/f2s-kb-distill/SKILL.md
+  ai_agent 288,290,295,378
+.codex/hooks/f2s-update-check.js
+  ai_agent 3-4,9,12-13,15-16,19-23,26-32,35-36,39-40,43-46,49-51,54-57,60-72,74-86,89-99,101-107,110-114,117,119-125,128-130,133,135-145,148-153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "21f667105dfd2c619d0be417f97ecd1b1148f114",
+  "prompts": {},
+  "sessions": {
+    "s_5a89341a6e1264": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a47aef8e-0721-4f32-a256-c060e967dbdb",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
