@@ -47,10 +47,10 @@ Template Version  packages/core/package.json.templateVersion
 Protocol Version  packages/core/capabilities.json.protocolVersion
 ```
 
-- CLI 对 Core 使用运行时依赖 caret range（当前为 `^3.5.0`）；Core 必须落在该范围内。
-- Core 兼容修复/新增 API 可只升 Core；Template Version 不变，不触发知识库升级。
-- Rule、Skill、Hook、知识模板变化时升 Core，并显式执行 `version:set:template`。
-- CLI 开始调用新版 Core API 时，升 CLI 并显式提高最低 Core range。
+- CLI 对 Core 使用运行时依赖**精确 pin**（`packages/cli/package.json` 里写死 Core 版本号,不是 caret range）；`scripts/workspace-version.js` 会自动同步。
+- Core 兼容修复/新增 API 也**必须 CLI 锁步 patch bump 并同发**——CLI 精确 pin 决定的:Core 一升,CLI 依赖字段就变,CLI 版本号必须跟着走(`version:set:core` 回执会提示 `remember to bump CLI patch — release in lockstep`)。仅改 CLI 自身代码(不动 Core)时才允许 CLI 单独发。
+- Rule、Skill、Hook、知识模板变化时升 Core,并显式执行 `version:set:template`（同样锁步 CLI patch）。
+- CLI 开始调用新版 Core API 时,升 CLI 并同步 Core 精确 pin。
 - Protocol Version 只在公共协议不兼容时调整。
 - 根 private workspace version 不参与 npm 发布匹配。
 
@@ -67,10 +67,23 @@ npm run version:check
 
 - `core-vX.Y.Z` 只测试、打包并发布 `@double-coding/flow2spec-core`。
 - `cli-vX.Y.Z` 只测试、打包并发布 `@double-coding/flow2spec`。
-- 同时发布时先 Core 后 CLI；禁止发布没有版本变化的包。
-- CLI README 与根 README 保持一致；Core README 独立维护。
+- 同时发布时先 Core 后 CLI(CLI 精确 pin Core);禁止发布没有版本变化的包。
+- CLI README 与根 README 保持一致;Core README 独立维护。
 - 发布前运行 `npm run version:check`、`npm run pack:check`、`node scripts/test-package-install.js`。
-- `packages/core/templates/` 必须直接进入 Core tarball；不存在模板复制或漂移检查步骤。
+- `packages/core/templates/` 必须直接进入 Core tarball;不存在模板复制或漂移检查步骤。
+
+## 发版执行步骤(CI 触发,不本地 npm publish)
+
+`.github/workflows/publish-npm.yml` 通过 GitHub OIDC + npm trusted publishing 自动发包并带 provenance。**只有走 CI 才能拿到 npm 详情页的 provenance 勾**;本地 `npm publish` 发出的版本会缺失该证明,已发出去无法补签,只能下版本再发时用 CI 拿回。
+
+标准流程:
+
+1. 在版本 PR(如 `chore/release-core-3.8.0`) merge 到 main 后,本地 `git checkout main && git pull`;
+2. 打两个 tag 并推送:`git tag core-vX.Y.Z && git tag cli-vX.Y.Z && git push --tags`;
+3. **到 GitHub Releases 页面**为每个 tag **创建 Release**(标题 `core-vX.Y.Z` / `cli-vX.Y.Z`);Release published 事件触发 `publish-npm.yml`;
+4. workflow 内已包含 `npm run version:check --tag`、`npm test`、`pack:check`、`npm publish --provenance`,失败即中止。
+
+**禁止本地跑 `npm publish`**——即便临时需要 hotfix,也应通过 workflow 走。若确因意外走了本地发布(如本次 3.8.0 / 3.6.3),须在发版 PR / Release notes 中显式记录「本次发布无 provenance」。
 
 ## 更新语义
 
