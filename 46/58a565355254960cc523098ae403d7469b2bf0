@@ -1,0 +1,31 @@
+.codex/topics/repo-dev-workflow-constraints.md
+  s_5a89341a6e1264::t_f18216af175142 50-53
+  s_5a89341a6e1264::t_361ea7fecffa4d 70-71,73-86
+.claude/rules/repo-dev-workflow-constraints.md
+  s_5a89341a6e1264::t_91d8a95653cd86 70-71,73-86
+  s_5a89341a6e1264::t_4d37c38108856c 50-53
+.cursor/rules/repo-dev-workflow-constraints.mdc
+  s_5a89341a6e1264::t_7c8d3519aa54ae 50-53
+  s_5a89341a6e1264::t_ebf26bc36d4d11 70-71,73-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "4658a565355254960cc523098ae403d7469b2bf0",
+  "prompts": {},
+  "humans": {
+    "h_4b6eab238eaf87": {
+      "author": "兰涛 <550947002@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_5a89341a6e1264": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a47aef8e-0721-4f32-a256-c060e967dbdb",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
