@@ -35,10 +35,12 @@ Four rings in the repo (do not collapse rules + skills into a single "third ring
 | Layer | Path / mechanism | Stores | Typical read |
 | --- | --- | --- | --- |
 | **L0 routing** | `manifest-routing.json` | task→topic, `topicDependencies`, `topicPaths`, `topicMetadata` | First read (machine source of truth) |
-| **L1 matcher shard** | `matchers/<id>.json` | `includeAny` triggers | **match**: one shard only |
+| **L1 matcher shard** | `matchers/<id>.json` | `includeAny`/`includeAll` qualifiers, `excludeAny`/`excludeAll` vetoes | **match**: one shard only |
 | **L2 topic summary** | `topics/<topic>.md` | Hard constraints, boundaries, pointers | **expand**: pull dependency topics |
 | **L3 long docs** | `stock-docs/`, `req-docs/` | Architecture finals, tech specs | Drill down on demand |
 | **Vertical chain** | `topicDependencies` | Common → subdomain → whitelist → domain rules | **expand** stacks layers |
+
+**L1 shard semantics**: a task rule qualifies when any `includeAny` phrase hits or all `includeAll` phrases hit (an exact task match exempts phrase requirements); the rule is vetoed when any `excludeAny` phrase hits or all `excludeAll` phrases hit, and **the veto takes precedence over an exact task match**.
 
 The pipeline `match → expand → verify → act` operates on L0–L2 (and L3 when needed). Topic-level dependencies are declared once and shared by all tasks.
 

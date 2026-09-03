@@ -51,21 +51,35 @@ function match(cwd, input = {}) {
   for (let index = 0; index < rules.length; index += 1) {
     const rule = rules[index];
     const exactTask = task && normalizeText(rule.task) === task;
-    let phrases = [];
+    let matcher = null;
     const matcherFile = matcherPathFor(cwd, rule);
     if (fs.existsSync(matcherFile)) {
       try {
-        const matcher = readJson(matcherFile);
-        phrases = Array.isArray(matcher.includeAny) ? matcher.includeAny : [];
+        matcher = readJson(matcherFile);
       } catch {
-        phrases = [];
+        matcher = null;
       }
     }
-    const phraseHits = phrases
-      .map((phrase) => ({ phrase, score: phraseScore(request, phrase) }))
-      .filter((hit) => hit.score > 0)
-      .sort((a, b) => b.score - a.score);
-    if (!exactTask && phraseHits.length === 0) continue;
+    const phraseList = (key) => (Array.isArray(matcher?.[key]) ? matcher[key] : []);
+    const includeAny = phraseList("includeAny");
+    const includeAll = phraseList("includeAll");
+    const excludeAny = phraseList("excludeAny");
+    const excludeAll = phraseList("excludeAll");
+    const hits = (phrases) =>
+      phrases
+        .map((phrase) => ({ phrase, score: phraseScore(request, phrase) }))
+        .filter((hit) => hit.score > 0);
+    const excludeAnyHits = hits(excludeAny);
+    const excludeAllHits = hits(excludeAll);
+    // 否决门恒胜：排除词命中即整条规则出局，task 精确命中也不例外
+    const excluded =
+      excludeAnyHits.length > 0 || (excludeAll.length > 0 && excludeAllHits.length === excludeAll.length);
+    if (excluded) continue;
+    const includeAnyHits = hits(includeAny);
+    const includeAllHits = hits(includeAll);
+    const allIncludeAll = includeAll.length > 0 && includeAllHits.length === includeAll.length;
+    const phraseHits = [...includeAnyHits, ...includeAllHits].sort((a, b) => b.score - a.score);
+    if (!exactTask && includeAnyHits.length === 0 && !allIncludeAll) continue;
     const score = exactTask ? 10000 : phraseHits[0].score;
     candidates.push({
       rule,
