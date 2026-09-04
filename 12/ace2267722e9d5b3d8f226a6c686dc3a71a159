@@ -1,0 +1,33 @@
+.codex/hooks/f2s-update-check.js
+  s_13a1440f16e420::t_6b1536d1a4c63e 12-13
+.claude/hooks/f2s-update-check.js
+  s_13a1440f16e420::t_6b1536d1a4c63e 12-13
+.cursor/hooks/f2s-update-check.js
+  s_13a1440f16e420::t_6b1536d1a4c63e 12-13
+.Knowledge/index.md
+  s_13a1440f16e420::t_cd354a8f04f690 53
+.Knowledge/manifest-routing.json
+  s_13a1440f16e420::t_6b1536d1a4c63e 2
+  s_13a1440f16e420::t_ca15d6fa9b5941 214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "12ace2267722e9d5b3d8f226a6c686dc3a71a159",
+  "prompts": {},
+  "humans": {
+    "h_4b6eab238eaf87": {
+      "author": "兰涛 <550947002@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_13a1440f16e420": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "53713b76-f514-48d3-814e-54c46afe9b81",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
