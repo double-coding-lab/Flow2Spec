@@ -94,9 +94,19 @@ If `changeTracking.implement: true`, after outputting the task list, write this 
 - Whenever work corresponding to an implementation task-list item is completed, use `Edit` **in the same session** to update the corresponding `[ ]` -> `[x]` in `.task/active/<task-name>/task.md`. Do not defer this to closing, and do not replace disk updates with verbal completion claims (see `f2s-task` "During execution" and "Interruption and session end").
 - Whenever an item appears during execution that **must be done by the user** (database changes, environment configuration, etc.), append it **in the same session** to `.task/active/<task-name>/user-todos.md` (see `f2s-task` "user-todos.md").
 
-### Step 3: Ask Pre-Implementation Questions (Mandatory; Do Not Skip)
+### Step 3: Ask Pre-Implementation Questions (Conditional; Skipped by Default)
 
-Before coding, list all unclear items at once and ask the user to confirm. Common questions:
+**Default**: do not stop to ask; proceed directly to Step 4. Items not clearly defined in the design are implemented with reasonable defaults or placeholders and marked as "requires user confirmation" in the Step 5 pending list.
+
+**Trigger conditions** (any one match causes a single stop to list open questions and wait for the user before continuing):
+
+- The design text contains **≥ 3** explicit "undecided" markers such as `待定 / 待确认 / TBD / \?\?\?`;
+- Key contract sections of the design are **entirely missing** (not merely "insufficiently detailed") — for example, the design references APIs but has no API-signature section at all, references data but has no data-model section at all, or references a state machine but has no state list at all;
+- The user explicitly says a stop phrase such as "only list the tasks / don't rush the implementation / let me review the list first / discuss the plan first".
+
+When triggered, list 3–6 open questions that most affect where implementation lands (draw from the common items below), and ask the user to confirm all of them at once. When not triggered, **do NOT ask** — proceed directly to Step 4.
+
+**Common question items** (pick from these when a trigger condition is met):
 
 - **Scope and acceptance**: what must be delivered in this turn, and what is explicitly out of scope;
 - **Technical boundary**: which module/side to implement in (frontend, backend, script, data task, etc.);
@@ -104,8 +114,6 @@ Before coding, list all unclear items at once and ask the user to confirm. Commo
 - **Configuration and environment**: configuration key, environment differences, defaults, and rollout strategy;
 - **Flowchart gaps**: branch conditions, failure fallback, timeout and retry strategy;
 - **Release constraints**: whether routing, permissions, scheduling, and deployment steps are ready.
-
-If the user does not answer an item, implement using a reasonable default or placeholder and mark it as "requires user confirmation" in the pending list.
 
 ### Step 4: Implement According to the Task List
 
@@ -139,7 +147,7 @@ Requirements: reuse existing dependencies and wrappers; match project naming, di
 ## 5. Constraints and Summary
 
 - PDFs must be converted to MD before entering the implementation flow.
-- Do not skip step 2.5 (task list) or step 3 (pre-implementation questions) and code directly.
+- Do not skip step 2.5 (task list); step 3 is conditional (skipped by default, and only triggers a single stop when an ambiguity threshold is hit).
 - If `changeTracking.implement: true`: do not skip step 2.6 (write back `task.md` checkboxes as implementation progresses and append `user-todos.md`); archiving must satisfy the `f2s-task` archive gate.
 - The output must include a pending list and post-implementation reminder list. If `changeTracking.implement: true`, user-side items in those lists must be synced into `user-todos.md`.
 - Keep the content general. Do not assume a "backend only" scenario; trim implementation objects according to the design's actual scope.

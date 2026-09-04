@@ -50,7 +50,7 @@
 
 ## 命中与执行（与统一入口一致）
 
-- **路由**：`taskToTopicRules` 给出任务 → 主题集合；**关键词**在 matcher 分片(`includeAny` / `includeAll` 资格门 + `excludeAny` / `excludeAll` 否决门；否决优先于 `task` 精确命中,详见 `topics/kb-routing-summary.md`)。
+- **路由**：`taskToTopicRules` 给出任务 → 主题集合；**关键词**在 matcher 分片(`includeAny` / `includeAll` 资格门 + `excludeAny` / `excludeAll` 否决门；否决优先于 `task` 精确命中)。
 - **依赖**：命中主主题前，按 `topicDependencies` 先读依赖主题。
 - **兜底**：`fallbackTopic` 指向分诊主题（如 `fallback-triage`），仅低置信度上下文，**不得**当作最终命中直接改代码。
 - **执行链**：`match → expand → verify → act`；`expand` 须含依赖展开，并保留次高候选做校验。

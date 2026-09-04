@@ -1,5 +1,5 @@
 {
-  "version": "3.6.2",
+  "version": "3.7.0",
   "knowledgeRoot": ".Knowledge",
   "matcherKey": "matcherId",
   "sourceOfTruth": ".Knowledge/manifest-routing.json",
@@ -211,7 +211,7 @@
       "summary": "初筛 summary 与 matcher 分片 4 字段(资格/否决门)语义"
     }
   ],
-  "projectRev": 2,
+  "projectRev": 3,
   "pkgRev": 3,
   "topicMetadata": {
     "implement-tech-design": {

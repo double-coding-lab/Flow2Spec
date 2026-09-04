@@ -93,17 +93,24 @@ function buildNotice(state) {
     return [
       '[flow2spec/agent-instruction] 你必须在本轮回复开头转告用户以下更新提示：',
       '',
-      `📦 [flow2spec] 当前项目「${project}」有模板更新（${versionSummary}）。`,
+      `📦 [flow2spec] 当前项目「${project}」有模板更新（${versionSummary}）。Template 变更会影响知识库主题结构，须征询用户后再动。`,
       '',
-      '[flow2spec/agent-instruction] 可先执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新），再执行 `flow2spec init <已初始化的 agents>`。init 后读取 `.Knowledge/manifest-routing.json`：projectRev 与 pkgRev 相等则更新完成并删除 `.Knowledge/update-check.json`；不等时再执行 f2s-kb-upgrade（可从步骤 2c 继续）。',
+      '[flow2spec/agent-instruction] 建议流程（不得跳过用户询问）：',
+      '1. 询问用户是否代跑 `flow2spec update --cli` + `flow2spec init <已初始化的 agents>`（若全局 CLI 缺失，fallback `npx @double-coding/flow2spec update --cli`）；',
+      '2. 用户同意 → 代跑；init 后读 `.Knowledge/manifest-routing.json`：projectRev 与 pkgRev 相等则删除 `.Knowledge/update-check.json` 结束；不等则调用 f2s-kb-upgrade skill（可从其步骤 2c 起继续）；',
+      '3. 用户拒绝 → 保留缓存不动，继续本轮任务。',
     ].join('\n');
   }
   return [
-    '[flow2spec/agent-instruction] 你必须在本轮回复开头转告用户以下更新提示：',
+    '[flow2spec/agent-instruction] 你必须在本轮回复开头执行以下动作，**无需征询用户**（Core-only 更新不影响知识库主题）：',
     '',
-    `📦 [flow2spec] 当前项目「${project}」仅有 Core 程序更新（${versionSummary}），模板版本未变化。`,
+    `1. 用一行告知用户："正在自动更新 CLI/Core（${versionSummary}），不涉及知识库主题变更"；`,
+    '2. 调用 Bash 执行 `flow2spec update --cli`；若因全局 CLI 缺失失败，fallback 到 `npx @double-coding/flow2spec update --cli`；仍失败则一行报告命令原文与错误摘要后继续本轮任务，不阻塞；',
+    '3. 成功后调用 `flow2spec init <已初始化的 agents>`（幂等）刷新配置根 Hook；',
+    '4. 完成后删除 `.Knowledge/update-check.json`；',
+    `5. 一行报告完成："CLI/Core 更新完成，Template Version 未变（v${state.manifestVersion}），继续本轮任务。"`,
     '',
-    '[flow2spec/agent-instruction] 可执行 `flow2spec update --cli`（CLI 与配套 Core 联动更新），随后执行一次幂等 `flow2spec init <已初始化的 agents>` 刷新 Hook。Template Version 未变化，不进入 f2s-kb-upgrade；完成后删除 `.Knowledge/update-check.json`。',
+    `📦 [flow2spec] 当前项目「${project}」仅有 Core 程序更新（${versionSummary}），模板版本未变化。Template Version 未变，**不**进入 f2s-kb-upgrade。`,
   ].join('\n');
 }
 
