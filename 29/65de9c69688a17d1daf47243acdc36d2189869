@@ -1,0 +1,27 @@
+packages/core/templates/zh-CN/knowledge/manifest-routing.json
+  s_10c079905d38e7::t_31f71465eb6a7d 2
+packages/cli/package.json
+  s_10c079905d38e7::t_d2ef685809a6ab 3
+  s_10c079905d38e7::t_5aa7f384aff503 22
+packages/core/package.json
+  s_10c079905d38e7::t_31f71465eb6a7d 4
+  s_10c079905d38e7::t_5aa7f384aff503 3
+packages/core/templates/en-US/knowledge/manifest-routing.json
+  s_10c079905d38e7::t_31f71465eb6a7d 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "2965de9c69688a17d1daf47243acdc36d2189869",
+  "prompts": {},
+  "sessions": {
+    "s_10c079905d38e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b6cce20-2630-4d1e-a581-542a72f1e9a3",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
