@@ -1,0 +1,60 @@
+packages/core/templates/zh-CN/rules/f2s-flow2spec-unified-entry.md
+  s_10c079905d38e7::t_a951d473b83a4f 101-104
+packages/core/templates/zh-CN/hooks/f2s-update-check.js
+  s_10c079905d38e7::t_876d2aff71f273 96,98-101,105,107-111,113
+packages/core/templates/en-US/skills/f2s-req-clarify/SKILL.md
+  s_10c079905d38e7::t_08e80352406c67 22-27
+.Knowledge/req-docs/流程无二次确认与自动更新_技术方案.md
+  s_10c079905d38e7::t_76078dec15397e 1-374
+packages/core/templates/zh-CN/rules/f2s-implement-tech-design.md
+  s_10c079905d38e7::t_c08d7d1cdd6e80 97,99-109
+  s_10c079905d38e7::t_caa908b21ed198 150
+packages/core/templates/en-US/hooks/f2s-update-check.js
+  s_10c079905d38e7::t_31afa67812803a 96,98-101,105,107-111,113
+packages/core/templates/zh-CN/skills/f2s-req-clarify/SKILL.md
+  s_10c079905d38e7::t_8922021ecc3468 22-27
+packages/core/templates/en-US/skills/f2s-req-plan/SKILL.md
+  s_10c079905d38e7::t_2727771474ca0e 68,70,72-78,80-86
+  s_10c079905d38e7::t_73776efd5f230e 90
+  s_10c079905d38e7::t_82734ad5b97ba8 148
+  s_10c079905d38e7::t_f57078e1f0b676 27
+packages/core/templates/en-US/rules/f2s-flow2spec-unified-entry.md
+  s_10c079905d38e7::t_a0d365bdbf3044 101-104
+packages/core/templates/zh-CN/skills/f2s-req-plan/SKILL.md
+  s_10c079905d38e7::t_7d98d9fe216d0b 68,70,72-78,80-86
+  s_10c079905d38e7::t_4b01669580acf1 27
+  s_10c079905d38e7::t_2294a163270444 90
+  s_10c079905d38e7::t_720544f983bd93 148
+packages/core/templates/en-US/skills/f2s-kb-sync/SKILL.md
+  s_10c079905d38e7::t_00e2762130cafd 53-101
+  s_10c079905d38e7::t_d150525d883e0b 151,153-154,156-158,160,162-173
+packages/core/templates/zh-CN/skills/f2s-kb-sync/SKILL.md
+  s_10c079905d38e7::t_ca0c485e74b194 53-101
+  s_10c079905d38e7::t_fda4e5fff4466b 151-152,156-158,160,162-173
+packages/core/templates/en-US/rules/f2s-implement-tech-design.md
+  s_10c079905d38e7::t_0ff84393494b5d 97,99-109
+  s_10c079905d38e7::t_70db00b0c3743c 150
+.Knowledge/req-docs/流程无二次确认与自动更新_需求澄清.md
+  s_10c079905d38e7::t_72296166a03330 1-264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.43-trip",
+  "base_commit_sha": "2869fb4e2ba9e414b4f478e1101f395e304caaef",
+  "prompts": {},
+  "humans": {
+    "h_4b6eab238eaf87": {
+      "author": "兰涛 <550947002@qq.com>"
+    }
+  },
+  "sessions": {
+    "s_10c079905d38e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b6cce20-2630-4d1e-a581-542a72f1e9a3",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
