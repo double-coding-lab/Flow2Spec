@@ -93,17 +93,24 @@ function buildNotice(state) {
     return [
       '[flow2spec/agent-instruction] At the start of this response, relay this update notice to the user:',
       '',
-      `📦 [flow2spec] Project "${project}" has a template update (${versionSummary}).`,
+      `📦 [flow2spec] Project "${project}" has a template update (${versionSummary}). Template changes affect the knowledge-base topic layout and require user confirmation before proceeding.`,
       '',
-      '[flow2spec/agent-instruction] You may run `flow2spec update --cli` (CLI and its pinned Core update in lockstep), then `flow2spec init <initialized agents>`. After init, read `.Knowledge/manifest-routing.json`: if projectRev equals pkgRev, delete `.Knowledge/update-check.json`; otherwise continue with f2s-kb-upgrade from step 2c.',
+      '[flow2spec/agent-instruction] Recommended flow (do NOT skip user confirmation):',
+      '1. Ask the user whether to run `flow2spec update --cli` + `flow2spec init <initialized agents>` on their behalf (if the global CLI is missing, fallback to `npx @double-coding/flow2spec update --cli`).',
+      '2. On user consent: run them; after init, read `.Knowledge/manifest-routing.json` — if projectRev equals pkgRev, delete `.Knowledge/update-check.json` and stop; otherwise invoke the f2s-kb-upgrade skill (may resume from its step 2c).',
+      '3. On user decline: keep the cache untouched and continue the current task.',
     ].join('\n');
   }
   return [
-    '[flow2spec/agent-instruction] At the start of this response, relay this update notice to the user:',
+    '[flow2spec/agent-instruction] At the start of this response, execute the following actions **without asking the user** (Core-only updates do not affect knowledge-base topics):',
     '',
-    `📦 [flow2spec] Project "${project}" has a Core-only update (${versionSummary}); the template version is unchanged.`,
+    `1. Tell the user in one line: "Auto-updating CLI/Core (${versionSummary}); knowledge-base topics are unchanged.";`,
+    '2. Invoke Bash to run `flow2spec update --cli`; if it fails because the global CLI is missing, fallback to `npx @double-coding/flow2spec update --cli`; if that still fails, report the command and error summary in one line and continue the current task without blocking;',
+    '3. On success, invoke `flow2spec init <initialized agents>` (idempotent) to refresh the config-root Hook;',
+    '4. Delete `.Knowledge/update-check.json` afterwards;',
+    `5. Report completion in one line: "CLI/Core updated; Template Version unchanged (v${state.manifestVersion}); continuing the current task."`,
     '',
-    '[flow2spec/agent-instruction] You may run `flow2spec update --cli` (CLI and its pinned Core update in lockstep), then one idempotent `flow2spec init <initialized agents>` to refresh the Hook. Do not enter f2s-kb-upgrade when Template Version is unchanged; delete `.Knowledge/update-check.json` afterwards.',
+    `📦 [flow2spec] Project "${project}" has a Core-only update (${versionSummary}); the template version is unchanged. Template Version is unchanged — **do NOT** enter f2s-kb-upgrade.`,
   ].join('\n');
 }
 

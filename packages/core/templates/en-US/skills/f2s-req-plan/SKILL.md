@@ -24,7 +24,7 @@ Start from a requirement or technical design and cover the full "plan -> impleme
 
 - `subAgent` / `switchAgentVerification` use the unified entry as the only source of truth: **Cursor/Claude** -> `rules/f2s-flow2spec-unified-entry.*`; **Codex** -> `.codex/topics/f2s-flow2spec-unified-entry.md`.
 - **Step 1 (continuation triage + parsing)**: the main agent must perform `f2s-task` "Task Start" 1-2. Document parsing may be split to a sub agent (read-only).
-- **Step 2 (draft confirmation)**: must be handled by the main agent. Before confirmation, do not create `.task/` and do not write business code.
+- **Step 2 (show + write in the same turn)**: must be handled by the main agent; **does NOT wait for user confirmation by default**. Show the draft and write files within the same turn. The agent stops only when the "ambiguity exceptions" listed in Step 2 body are hit.
 - **Step 3 (write task files)**: follow `f2s-task` "Task Start" 3.a-3.f. `todo.json` is **main-agent only**. Drafts of `task.md` / `context.md` / `user-todos.md` may be created by a sub agent; additions to `user-todos.md` during execution are merged by the main agent.
 - **Step 4 (implementation)**: sub agents may write only business code. **Sub agents must not** write `todo.json` or modify `task.md` checkboxes. The main agent checks off items after merging.
 - **Step 5 (archive)**: main agent only. Execute only after the archive gates in `f2s-task` "Task Completion" are satisfied.
@@ -65,21 +65,29 @@ When `subAgent=true`, read-only parsing may be split to sub agents:
 
 Sub agents return only a "parsing summary"; when `subAgent=false`, the main agent does this work. -> **Step 2**.
 
-### Step 2: Output Draft and Confirm (Main Agent Required)
+### Step 2: Show + Write in the Same Turn (Main Agent, No Waiting)
 
-The main agent outputs:
+The main agent performs "show to user" and "write files" **within the same reply turn**, **without stopping to wait for a confirmation**:
 
-1. **Task name** (`snake_case`)
-2. **Implementation checklist draft** (each step may be a checkbox and will be written into `task.md` under `## Steps`)
-3. **Touched file list** (will be written into `context.md`)
-4. **Suggested `keywords`** (2-5 terms for continuation matching in `todo.json`)
-5. **Wait for user confirmation**
+1. **Show** (output in the reply for the user to review):
+   - Task name (`snake_case`)
+   - Implementation checklist draft (each step as `- [ ]`, to be written into `task.md` under `## Steps`)
+   - Touched file list (to be written into `context.md`)
+   - Suggested `keywords` (2-5 terms for continuation matching in `todo.json`)
+2. **Write** (execute in the same turn, immediately after showing): strictly create the full `TASK_ROOT/active/<task-name>/` set of files and update `todo.json` per Step 3 below.
+3. Show and write **must happen in the same turn** — when the user reads the Step 2 summary, the task already exists on disk. The user can adjust it by saying "rename / add a step / drop step 3".
 
-> Before confirmation, it is forbidden to create `.task/`, write `todo.json`, or write business code.
+**Ambiguity exception (the ONLY stop condition)**: only when **any** of the following is true, the main agent switches to "output draft + list open questions once + stop" and waits for user answers before proceeding to Step 3:
+
+- The user input or design document contains **≥ 3** explicit "undecided" markers such as `待定 / 待确认 / TBD / \?\?\?`;
+- The user input does not specify which module / end / files this task should touch, and the design document also lacks a scope section;
+- The user explicitly says a stop phrase such as "only list the tasks / don't rush the implementation / let me review the list first / discuss the plan first".
+
+When none of the exceptions fires, **do NOT stop and wait** — even if the user input is brief, write files with a reasonable default draft and let the user trigger adjustments after seeing the result.
 
 ### Step 3: Write Task Files (`f2s-task` "Task Start" 3.a-3.f)
 
-After the user confirms, **strictly follow `f2s-task`** (the format is defined by that rule body; do not omit files):
+Execute in the **same turn** right after Step 2 shows the draft (no user confirmation required), **strictly following `f2s-task`** (the format is defined by that rule body; do not omit files):
 
 | Sub-step | Action | Write authority |
 | --- | --- | --- |
@@ -137,7 +145,7 @@ After passing:
 - **Step 0**: must first `Read` `flow2spec.config.json` + the **full `f2s-task` text** (three-client paths above).
 - **`.task/`**: always obey `f2s-task`; this SKILL must not conflict with it.
 - Does not depend on `changeTracking`, but **always** creates and maintains a task list (unless continuing an existing active task).
-- Step 2 must be handled by the main agent; before confirmation, no disk writes.
+- Step 2 must be handled by the main agent; **does not wait for user confirmation by default** — show and write happen in the same turn; the agent stops only when an ambiguity exception is hit.
 - `todo.json` is main-agent only; sub agents must not write it.
 - No batch checkbox updates; do not skip `user-todos.md`.
 

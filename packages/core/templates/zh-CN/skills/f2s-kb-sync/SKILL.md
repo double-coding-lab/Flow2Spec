@@ -50,22 +50,55 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 ### 步骤 2：输出《更新大纲》（必须）
 
-大纲至少包含：
+大纲**采用 3 段主体 + 折叠详情**结构，让用户一眼看清"入哪 / 改什么 / 不入哪"，细节按需展开。目标是**信号密度高、视觉焦点在决策点**（Issue #38）。
 
-1. 同步目标
-2. 能力清单（用户指定 / Agent 推断 / 合并结果）
-3. 信息来源
-4. 拟改文件清单（精确到路径）
-5. 主题同步计划：说明每个能力是"更新已有主题"还是"创建新主题"，并列出 topicId、topic 文件、index 行、manifest/matcher 变更；如涉及 `topicMetadata`，列出 `primary` / `tags` / `confidence` 候选和证据；无明确证据时写"不分类 / 暂不写入"
-6. **终稿沉淀计划（硬约束）**：对每一个"新建 / 更新"的 topic，判断其「长文背景 / 详细资料」引用槽位是否已有对应 `.Knowledge/stock-docs/*_终稿.md`：
-   - **已有** → 直接引用；
-   - **没有但本次同步的能力已经代码落地** → 大纲**必须列出**"待生成 `stock-docs/<能力名>_终稿.md`"，并注明沉淀来源（对应 `req-docs/*_技术方案.md` + 已实现代码 + 澄清文档），由本 SKILL 步骤 3 之前先触发 `f2s-doc-final` 沉淀（或由用户确认后手写），**再**让 topic 指向终稿；
-   - **能力仍在 req-docs 待实现阶段、尚无代码** → topic「长文背景」小节暂写占位说明「待代码落地后由 `f2s-doc-final` 生成 stock-doc 终稿」，**禁止**在此槽位直接列 `req-docs/*`。
-   - 依据见 `rules/f2s-topic-authoring.*`「长文背景引用的目录边界（硬约束）」。
-7. 不改动范围
-8. 等待用户确认提示
+**输出骨架**（Agent 按此结构填充实际内容）：
 
-> 未确认前禁止落盘修改。
+````markdown
+## 知识库同步大纲
+
+### 📥 入库
+- `<topicId>`：<一句话说明改了什么>（→ `.Knowledge/topics/<topic>.md`）
+- **新建** `<topicId>`：<能力概述>（→ 新增 topic + matcher + 路由条目）
+
+### 🚫 不入库
+- <能力/变更>：<一句话原因>（如"仅代码重构无新语义 / 属于 fix 已在其他 topic 覆盖 / 与既有 topic 重复"）
+
+### 是否继续？(y/n)
+
+<details>
+<summary>展开查看详情</summary>
+
+**拟改文件**：
+- `.Knowledge/topics/<topic>.md`
+- `.Knowledge/index.md`
+- `.Knowledge/manifest-routing.json`
+- `.Knowledge/matchers/<id>.json`
+
+**主题元数据**（如有）：
+- `<topicId>`：primary=`<type>`，tags=`[...]`，confidence=`<manual|inferred>`
+
+**终稿沉淀**（如需）：
+- 待生成 `stock-docs/<能力名>_终稿.md`（来源：`req-docs/<方案>.md` + 已实现代码 + 澄清文档）
+  依据见 `rules/f2s-topic-authoring.*`「长文背景引用的目录边界（硬约束）」。
+
+**信息来源**：<用户指定 / Agent 推断 / git diff / 目录扫描>
+
+**不改动范围**：<列出本次刻意跳过的项与原因>
+
+</details>
+````
+
+**书写规则**：
+
+- 主体 3 段：📥 入库 / 🚫 不入库 / 是否继续？(y/n)；每段控制在 **1–5 行**；一眼可扫。
+- 详情用 `<details>` 折叠，包含：拟改文件、主题元数据、终稿沉淀计划、信息来源、不改动范围；折叠段是**可核查性**保障，不能省略但不占主视觉。
+- **入库门禁不变**：用户仍需回复 `y/n` 才落盘（本改造只改文案不改门禁）；未确认前禁止落盘修改。
+- **终稿沉淀（硬约束）**：新建 / 更新 topic 时，若「长文背景 / 详细资料」引用槽位缺对应 `.Knowledge/stock-docs/*_终稿.md`：
+  - 代码已落地 → 详情段列"待生成 `stock-docs/<能力名>_终稿.md`"，由步骤 2.5 触发 `f2s-doc-final` 沉淀；
+  - 代码尚未落地 → topic 「长文背景」小节暂写占位说明「待代码落地后由 `f2s-doc-final` 生成 stock-doc 终稿」，**禁止**在此槽位直接列 `req-docs/*`。
+
+> 未确认（y）前禁止落盘修改。
 
 ### 步骤 2.5：终稿沉淀（若步骤 2 列出待生成终稿）
 
@@ -115,22 +148,29 @@ description: 可显式给出能力或零输入推断；先输出知识库更新�
 
 ## 输出摘要格式（建议）
 
+**采用 3 段主体 + 折叠详情**，与步骤 2 大纲同构：
+
 ```markdown
 ## 知识库同步结果
 
-### 已确认能力范围
-- <能力1>
-- <能力2>
+### ✅ 已修改
+- `.Knowledge/topics/<topic>.md`：<修改说明>
+- `.Knowledge/index.md`：<修改说明>
 
-### 已修改文件
-- .Knowledge/topics/<topic>.md：<修改说明>
-- .Knowledge/index.md：<修改说明>
-- .Knowledge/manifest-routing.json：<修改说明或“未改动”>
-- .Knowledge/matchers/<id>.json：<修改说明或“未改动”>
-- .Knowledge/stock-docs/<doc>.md：<修改说明或“未改动”>
-
-### 未执行项
+### ⏭️ 未执行
 - <项>：<原因>
+
+<details>
+<summary>展开查看详情</summary>
+
+**其他改动路径**：
+- `.Knowledge/manifest-routing.json`：<修改说明或"未改动">
+- `.Knowledge/matchers/<id>.json`：<修改说明或"未改动">
+- `.Knowledge/stock-docs/<doc>.md`：<修改说明或"未改动">
+
+**能力范围**：<用户确认的能力清单>
+
+</details>
 ```
 
 ## 复杂场景示例

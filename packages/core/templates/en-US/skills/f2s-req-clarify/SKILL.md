@@ -19,7 +19,12 @@ description: Clarify a PRD or requirement through follow-up questions until it i
 
 **Completion (write clarification doc → auto-chain to technical design)**: When the information is clear enough, output a Markdown "requirement clarification document" that can be written directly to disk. The document must include at least: background and goals, scope (included / excluded), key flows, boundaries and exceptions, key concept definitions, acceptance criteria, and open questions if any. Save it under `.Knowledge/req-docs/` (recommended name: `<capability>_需求澄清.md`).
 
-**After the clarification document is written to disk, this skill auto-chains to `f2s-req-tech` within the same turn**: feed the just-written clarification path directly into technical-design generation without waiting for another user trigger. Before chaining, emit a one-line notice "Clarification document ready: `<path>`; proceeding to generate the technical design via `f2s-req-tech`", then continue.
+**After the clarification document is written to disk, this skill auto-chains to `f2s-req-tech` within the same turn (Agent does NOT ask the user for confirmation)**: feed the just-written clarification path directly into technical-design generation. After the write, **the Agent emits within the same turn** one line of **transitional notice** (example: "Clarification document ready: `<path>` → continuing to generate the technical design."), then **immediately in the same turn** invokes `f2s-req-tech`.
+
+**Transitional-line hard constraints**:
+- Use forward-arrow "→" or "continuing" style **push-forward wording**;
+- **Do NOT** use waiting or interrogative wording such as "shall I / please confirm / awaiting your reply / okay? / proceeding to generate ..." (the last one reads as a status stall);
+- After emitting the transitional line, the Agent **must NOT** stop tool calls in the same turn to wait for user input; it must immediately fire the `f2s-req-tech` invocation.
 
 **Exceptions — stay at clarification, do NOT auto-chain to technical design** (any one triggers a stop):
 - The clarification document's "open questions" section still has items that materially shape the design structure (e.g., core contracts for tables / APIs / state machines are undefined) — in that case, list the remaining questions, wait for answers, then write and chain;
