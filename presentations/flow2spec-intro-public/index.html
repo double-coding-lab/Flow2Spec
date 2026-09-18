@@ -1414,11 +1414,13 @@
               ><span class="fx-stage-dur">一个需求</span>
             </div>
             <div class="fx-stage-title">沉淀首批知识</div>
-            <pre class="fx-stage-cmd"><span class="cm"># 喂一份架构文档</span>
+            <pre class="fx-stage-cmd"><span class="cm"># 1. 全景:主要目录 / 模块边界</span>
 <span class="kw">/</span>f2s-doc-arch
-<span class="kw">/</span>f2s-kb-add</pre>
+
+<span class="cm"># 2. 命中模块提前入库</span>
+<span class="kw">/</span>f2s-kb-add src/services/product-review</pre>
             <div class="fx-stage-out">
-              AI 读存量文档<br />→ 生成首个 topic + matcher
+              全景 + 命中模块 topic<br />→ 真正开始改代码前,<b>Agent 读的就是聚焦事实</b>
             </div>
           </div>
 

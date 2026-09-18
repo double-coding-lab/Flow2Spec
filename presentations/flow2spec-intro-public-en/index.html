@@ -1315,12 +1315,13 @@
               ><span class="fx-stage-dur">One requirement</span>
             </div>
             <div class="fx-stage-title">Seed Your First Knowledge</div>
-            <pre
-              class="fx-stage-cmd"><span class="cm"># Feed an architecture doc</span>
+            <pre class="fx-stage-cmd"><span class="cm"># 1. Whole-repo view</span>
 <span class="kw">/</span>f2s-doc-arch
-<span class="kw">/</span>f2s-kb-add</pre>
+
+<span class="cm"># 2. Pre-ingest the modules you'll touch</span>
+<span class="kw">/</span>f2s-kb-add src/services/product-review</pre>
             <div class="fx-stage-out">
-              AI reads existing docs<br />→ Generates first topic + matcher
+              Whole-repo view + topics for the target modules<br />→ before real changes, <b>the agent reads focused facts</b>
             </div>
           </div>
 
