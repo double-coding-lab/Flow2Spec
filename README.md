@@ -83,6 +83,14 @@ Flow2Spec 按所有权拆分协作状态。checklist、会话上下文和用户�
 
 这一步会帮助 Agent 理解主要目录、模块边界和已有约定。它不是必选步骤；如果只是处理一个很小的修改，也可以直接从需求开始。
 
+跑完 `/f2s-doc-arch` 之后，如果你已经知道**当前需求会动到哪些模块**，可以顺手让 Agent 把这几个模块的存量说明也提前入库，例如：
+
+```text
+/f2s-kb-add src/services/product-review src/functions/batch-rescore
+```
+
+这样第一次真正开发前，`.Knowledge` 里就已经有：项目全景（`f2s-doc-arch` 出的架构文档）+ 命中模块的内部约束（`f2s-kb-add` 生成的 topic + matcher）。Agent 在后续对话里读到的是聚焦的项目事实，而不是零散的源码。
+
 ## 日常开发怎么用
 
 大多数时候，直接用自然语言说明要处理的事情即可：
