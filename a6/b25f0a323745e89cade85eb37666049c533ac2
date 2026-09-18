@@ -1,0 +1,29 @@
+README.en.md
+  s_1354e70e65d46d::t_d27b28c4b12f2d 12,14,65-73,146
+docs/en/README.md
+  s_1354e70e65d46d::t_0c5076f4ada737 3
+docs/en/Flow2Spec-Introduction.md
+  s_1354e70e65d46d::t_5ca66bf61b7798 1
+docs/Flow2Spec基础介绍.md
+  s_1354e70e65d46d::t_518b5d66b98240 1
+docs/README.md
+  s_1354e70e65d46d::t_818c141b724f1c 3
+README.md
+  s_1354e70e65d46d::t_d27b28c4b12f2d 4,8,12-18,27,30,34,37,39,43,45,47,49-52,54,56,58,60-64,66,68,70,72,74,76,78,84,86,88,91,94,96,99-104,107,109,111,113-116,118,120-123,125,127,129,131-137,139,141-147,149,151,153-155,157,159-161,163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.44-trip",
+  "base_commit_sha": "a6b25f0a323745e89cade85eb37666049c533ac2",
+  "prompts": {},
+  "sessions": {
+    "s_1354e70e65d46d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b37e47ad-2818-48f0-aa57-dffcd36ddf01",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
