@@ -1,6 +1,6 @@
 # English documentation
 
-[中文文档](../README.md) · [Project home (EN)](../../README.md) · [项目首页（中文）](../../README.zh-CN.md)
+[中文文档](../README.md) · [Project home (EN)](../../README.en.md) · [项目首页（中文）](../../README.md)
 
 ## Start here
 

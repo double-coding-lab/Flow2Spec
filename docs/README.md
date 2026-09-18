@@ -1,6 +1,6 @@
 # Flow2Spec 文档
 
-[English docs](./en/README.md) · [项目首页（中文）](../README.zh-CN.md) · [Project home (EN)](../README.md)
+[English docs](./en/README.md) · [项目首页（中文）](../README.md) · [Project home (EN)](../README.en.md)
 
 ## 从这里开始
 

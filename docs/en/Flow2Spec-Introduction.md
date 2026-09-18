@@ -1,4 +1,4 @@
-[中文](../Flow2Spec基础介绍.md) | [English](./Flow2Spec-Introduction.md) · [项目首页](../../README.zh-CN.md) | [Project home](../../README.md)
+[中文](../Flow2Spec基础介绍.md) | [English](./Flow2Spec-Introduction.md) · [项目首页](../../README.md) | [Project home](../../README.en.md)
 
 > Prefer a shorter version? Open the public intro deck: [Product deck (EN)](https://double-coding-lab.github.io/Flow2Spec/presentations/flow2spec-intro-public-en/) · [产品演示 PPT (中文)](https://double-coding-lab.github.io/Flow2Spec/presentations/flow2spec-intro-public/)
 
