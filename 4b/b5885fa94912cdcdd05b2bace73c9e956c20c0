@@ -1,0 +1,24 @@
+presentations/flow2spec-intro-public/index.html
+  s_1354e70e65d46d::t_87ccd7978cb526 1398,1410-1544
+presentations/flow2spec-intro-public/演讲稿.md
+  s_1354e70e65d46d::t_e5c044379b1d3f 284-285
+  s_1354e70e65d46d::t_e4a4e41144a507 185-205
+presentations/flow2spec-intro-public-en/index.html
+  s_1354e70e65d46d::t_87ccd7978cb526 1297,1309-1444
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.44-trip",
+  "base_commit_sha": "4bb5885fa94912cdcdd05b2bace73c9e956c20c0",
+  "prompts": {},
+  "sessions": {
+    "s_1354e70e65d46d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b37e47ad-2818-48f0-aa57-dffcd36ddf01",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
