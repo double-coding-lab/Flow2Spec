@@ -1,0 +1,21 @@
+README.en.md
+  s_1354e70e65d46d::t_e63b7697f5d8d3 87-94
+README.md
+  s_1354e70e65d46d::t_fe84beee73d8a0 86-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.44-trip",
+  "base_commit_sha": "1cc319b316ba0a4805194bf8d46a36d410d528aa",
+  "prompts": {},
+  "sessions": {
+    "s_1354e70e65d46d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b37e47ad-2818-48f0-aa57-dffcd36ddf01",
+        "model": "arn:aws:bedrock:us-west-2:456197019624:application-inference-profile/bumrjndkqzw8"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
