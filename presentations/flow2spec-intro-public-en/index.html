@@ -1132,146 +1132,6 @@
         </div>
       </section>
 
-      <!-- ======= Slide 12 · Command capability map ======= -->
-      <section class="slide is-compact">
-        <div class="fx-grid"></div>
-        <div class="fx-glow-cyan"></div>
-        <div class="fx-glow-magenta"></div>
-        <div class="fx-vignette"></div>
-        <div class="fx-scanlines"></div>
-
-        <div class="fx-chrome">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <div>skills · command-map · 4 primary + 3 secondary</div>
-        </div>
-<h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
-          Command <span class="accent">map</span>
-        </h1>
-        <p
-          class="fx-lede"
-          data-anim="fade-up"
-          style="animation-delay: 0.18s; margin-top: 4px">
-          <b style="color:var(--fx-cyan)">4 daily drivers cover ~80%</b> ·
-          the rest fire on demand. <code>flow2spec init</code> lays scaffolding;
-          day to day, name the skill in chat.
-        </p>
-
-        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
-          <div class="pcard p1">
-            <div class="ptag">daily · most frequent</div>
-            <div class="pname">f2s-kb-feat</div>
-            <div class="psub">Add feature · code + build topic</div>
-            <div class="pdesc">
-              For new features. <b>Code first</b>, then guide topic + matcher + deps;
-              <code>changeTracking.feat</code> auto-opens <code>.task/</code>.
-            </div>
-            <div class="ptrigger">"add a feature …" · "new capability …"</div>
-          </div>
-
-          <div class="pcard p2">
-            <div class="ptag">daily · most frequent</div>
-            <div class="pname">f2s-kb-fix</div>
-            <div class="psub">Fix bug · patch + prevent</div>
-            <div class="pdesc">
-              For bug fixes. After code fix, <b>encode the trap into a topic</b>;
-              AI won't step on it again nearby. Gap gate flags gaps.
-            </div>
-            <div class="ptrigger">"fix …" · "this should be …"</div>
-          </div>
-
-          <div class="pcard p3">
-            <div class="ptag">wrap-up · required</div>
-            <div class="pname">f2s-git-commit</div>
-            <div class="psub">3 gates · nothing slips</div>
-            <div class="pdesc">
-              Enforces on commit: <b>conflict scan · KB coverage · emoji + Conventional</b>.
-              No <code>add -A</code>, no hook-skip, no auto-push.
-            </div>
-            <div class="ptrigger">"commit" · "let's commit"</div>
-          </div>
-
-          <div class="pcard p4">
-            <div class="ptag">big-req entry</div>
-            <div class="pname">req-clarify → req-tech</div>
-            <div class="psub">Clarify → tech spec</div>
-            <div class="pdesc">
-              For large requests. <b>Two-batch clarify</b>, self-check KB gaps,
-              then produce tech spec + DDL if needed. Then <code>implement-tech-design</code>.
-            </div>
-            <div class="ptrigger">"clarify this …" · "make a tech spec …"</div>
-          </div>
-        </div>
-
-        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
-          <div class="stitle">// the rest, on demand</div>
-          <div class="srow">
-            <div class="sk">Bootstrap / upgrade</div>
-            <div class="sv">
-              <code>flow2spec init</code> new repo scaffold · <code>f2s-kb-upgrade</code> align legacy routes & matchers
-            </div>
-          </div>
-          <div class="srow">
-            <div class="sk">Docs in</div>
-            <div class="sv">
-              <code>f2s-doc-pdf</code> PDF→MD · <code>f2s-doc-final</code> finalize ·
-              <code>f2s-doc-arch</code> architecture · <code>f2s-doc-milestone</code> milestone
-            </div>
-          </div>
-        </div>
-
-        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
-          <div class="stitle">// KB upkeep · the trio</div>
-          <div class="tgrid">
-            <div class="tcard t1">
-              <div class="tname">f2s-kb-distill</div>
-              <div class="tsub">Extract during chat</div>
-              <div class="tdesc">
-                While debugging or Q&A, <b>capture reusable facts into KB inline</b>
-                — auto-decides "new topic" vs "extend existing"; no context switch.
-              </div>
-              <div class="ttrigger">"remember this in the KB"</div>
-            </div>
-            <div class="tcard t2">
-              <div class="tname">f2s-kb-add</div>
-              <div class="tsub">Bulk multi-file ingest</div>
-              <div class="tdesc">
-                <b>Sink existing capabilities in one pass</b> — feed N docs/files at once,
-                auto-generate draft → final → topic + matcher + routing.
-              </div>
-              <div class="ttrigger">"ingest these existing docs"</div>
-            </div>
-            <div class="tcard t3">
-              <div class="tname">f2s-kb-sync</div>
-              <div class="tsub">Global sync · catch-all safety net</div>
-              <div class="tdesc">
-                <b>Forgot to run kb-feat/fix? No problem</b> — scans shipped capabilities,
-                proposes a KB update outline; you confirm before write. Last-line-of-defense.
-              </div>
-              <div class="ttrigger">"sync the KB globally"</div>
-            </div>
-          </div>
-          <div class="tfoot">
-            <span class="tk">Rest:</span>
-            <code>f2s-kb-addRules</code> capture rules · <code>f2s-kb-build</code> finals→routing ·
-            <code>f2s-kb-merge</code> merge conflicts · <code>f2s-kb-rm</code> remove topic ·
-            <code>f2s-req-plan</code> task plan fallback
-          </div>
-        </div>
-
-        <div class="fx-footer">
-          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
-          <span class="page">12 / 16</span>
-        </div>
-        <div class="notes">
-          <ul>
-          <li>Command map — <strong>4 daily drivers, rest on demand</strong>, don't memorize twenty skills</li>
-          <li>Primary 4: kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
-          <li>Secondary 3: bootstrap / docs / upkeep — one-line skim during talk</li>
-          <li>init lays scaffolding; business KB grows through f2s flows</li>
-          </ul>
-        </div>
-      </section>
-
       <!-- ======= Slide 11 · Progressive Knowledge Base Creation (Reducing Mental Overhead) ======= -->
       <section class="slide is-scroll">
         <div class="fx-grid"></div>
@@ -1434,7 +1294,7 @@
 
         <div class="fx-footer">
           <span>progressive · pay-as-you-grow</span>
-          <span class="page">13 / 16</span>
+          <span class="page">12 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1442,6 +1302,146 @@
           <li>Minimum: one route + one matcher + one topic</li>
           <li>init in ~1 min; feat/fix daily; commit checks KB coverage</li>
           <li>Write the slice you hit next — no big-bang migration</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 12 · Command capability map ======= -->
+      <section class="slide is-compact">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-cyan"></div>
+        <div class="fx-glow-magenta"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>skills · command-map · 4 primary + 3 secondary</div>
+        </div>
+<h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          Command <span class="accent">map</span>
+        </h1>
+        <p
+          class="fx-lede"
+          data-anim="fade-up"
+          style="animation-delay: 0.18s; margin-top: 4px">
+          <b style="color:var(--fx-cyan)">4 daily drivers cover ~80%</b> ·
+          the rest fire on demand. <code>flow2spec init</code> lays scaffolding;
+          day to day, name the skill in chat.
+        </p>
+
+        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="pcard p1">
+            <div class="ptag">daily · most frequent</div>
+            <div class="pname">f2s-kb-feat</div>
+            <div class="psub">Add feature · code + build topic</div>
+            <div class="pdesc">
+              For new features. <b>Code first</b>, then guide topic + matcher + deps;
+              <code>changeTracking.feat</code> auto-opens <code>.task/</code>.
+            </div>
+            <div class="ptrigger">"add a feature …" · "new capability …"</div>
+          </div>
+
+          <div class="pcard p2">
+            <div class="ptag">daily · most frequent</div>
+            <div class="pname">f2s-kb-fix</div>
+            <div class="psub">Fix bug · patch + prevent</div>
+            <div class="pdesc">
+              For bug fixes. After code fix, <b>encode the trap into a topic</b>;
+              AI won't step on it again nearby. Gap gate flags gaps.
+            </div>
+            <div class="ptrigger">"fix …" · "this should be …"</div>
+          </div>
+
+          <div class="pcard p3">
+            <div class="ptag">wrap-up · required</div>
+            <div class="pname">f2s-git-commit</div>
+            <div class="psub">3 gates · nothing slips</div>
+            <div class="pdesc">
+              Enforces on commit: <b>conflict scan · KB coverage · emoji + Conventional</b>.
+              No <code>add -A</code>, no hook-skip, no auto-push.
+            </div>
+            <div class="ptrigger">"commit" · "let's commit"</div>
+          </div>
+
+          <div class="pcard p4">
+            <div class="ptag">big-req entry</div>
+            <div class="pname">req-clarify → req-tech</div>
+            <div class="psub">Clarify → tech spec</div>
+            <div class="pdesc">
+              For large requests. <b>Two-batch clarify</b>, self-check KB gaps,
+              then produce tech spec + DDL if needed. Then <code>implement-tech-design</code>.
+            </div>
+            <div class="ptrigger">"clarify this …" · "make a tech spec …"</div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
+          <div class="stitle">// the rest, on demand</div>
+          <div class="srow">
+            <div class="sk">Bootstrap / upgrade</div>
+            <div class="sv">
+              <code>flow2spec init</code> new repo scaffold · <code>f2s-kb-upgrade</code> align legacy routes & matchers
+            </div>
+          </div>
+          <div class="srow">
+            <div class="sk">Docs in</div>
+            <div class="sv">
+              <code>f2s-doc-pdf</code> PDF→MD · <code>f2s-doc-final</code> finalize ·
+              <code>f2s-doc-arch</code> architecture · <code>f2s-doc-milestone</code> milestone
+            </div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
+          <div class="stitle">// KB upkeep · the trio</div>
+          <div class="tgrid">
+            <div class="tcard t1">
+              <div class="tname">f2s-kb-distill</div>
+              <div class="tsub">Extract during chat</div>
+              <div class="tdesc">
+                While debugging or Q&A, <b>capture reusable facts into KB inline</b>
+                — auto-decides "new topic" vs "extend existing"; no context switch.
+              </div>
+              <div class="ttrigger">"remember this in the KB"</div>
+            </div>
+            <div class="tcard t2">
+              <div class="tname">f2s-kb-add</div>
+              <div class="tsub">Bulk multi-file ingest</div>
+              <div class="tdesc">
+                <b>Sink existing capabilities in one pass</b> — feed N docs/files at once,
+                auto-generate draft → final → topic + matcher + routing.
+              </div>
+              <div class="ttrigger">"ingest these existing docs"</div>
+            </div>
+            <div class="tcard t3">
+              <div class="tname">f2s-kb-sync</div>
+              <div class="tsub">Global sync · catch-all safety net</div>
+              <div class="tdesc">
+                <b>Forgot to run kb-feat/fix? No problem</b> — scans shipped capabilities,
+                proposes a KB update outline; you confirm before write. Last-line-of-defense.
+              </div>
+              <div class="ttrigger">"sync the KB globally"</div>
+            </div>
+          </div>
+          <div class="tfoot">
+            <span class="tk">Rest:</span>
+            <code>f2s-kb-addRules</code> capture rules · <code>f2s-kb-build</code> finals→routing ·
+            <code>f2s-kb-merge</code> merge conflicts · <code>f2s-kb-rm</code> remove topic ·
+            <code>f2s-req-plan</code> task plan fallback
+          </div>
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
+          <span class="page">13 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+          <li>Command map — <strong>4 daily drivers, rest on demand</strong>, don't memorize twenty skills</li>
+          <li>Primary 4: kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
+          <li>Secondary 3: bootstrap / docs / upkeep — one-line skim during talk</li>
+          <li>init lays scaffolding; business KB grows through f2s flows</li>
           </ul>
         </div>
       </section>

@@ -1232,145 +1232,6 @@
         </div>
       </section>
 
-      <!-- ======= Slide 12 · 命令能力总览 ======= -->
-      <section class="slide is-compact">
-        <div class="fx-grid"></div>
-        <div class="fx-glow-cyan"></div>
-        <div class="fx-glow-magenta"></div>
-        <div class="fx-vignette"></div>
-        <div class="fx-scanlines"></div>
-
-        <div class="fx-chrome">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <div>skills · command-map · 4 primary + 3 secondary</div>
-        </div>
-        <h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
-          命令能力<span class="accent">总览</span>
-        </h1>
-        <p
-          class="fx-lede"
-          data-anim="fade-up"
-          style="animation-delay: 0.18s; margin-top: 4px">
-          <b style="color:var(--fx-cyan)">4 个日常必用 · 记住就够 80%</b> ·
-          其余按需触发,不用背表。<code>flow2spec init</code> 落盘骨架,日常对话点名技能即可。
-        </p>
-
-        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
-          <div class="pcard p1">
-            <div class="ptag">日常最高频</div>
-            <div class="pname">f2s-kb-feat</div>
-            <div class="psub">加能力 · 改代码 + 建 topic</div>
-            <div class="pdesc">
-              新功能落地时用。<b>先改代码</b>,再引导写/补 topic + matcher + 依赖链;
-              <code>changeTracking.feat</code> 开启时自动开 <code>.task/</code> 追踪。
-            </div>
-            <div class="ptrigger">「加个功能 …」「新增能力 …」</div>
-          </div>
-
-          <div class="pcard p2">
-            <div class="ptag">日常最高频</div>
-            <div class="pname">f2s-kb-fix</div>
-            <div class="psub">改 bug · 修实现 + 挡未来</div>
-            <div class="pdesc">
-              修 bug 时用。修完代码 → <b>把踩过的坑写进 topic 硬约束</b>,
-              下次 AI 改到相邻代码不会再踩;缺口闸门自动喊话。
-            </div>
-            <div class="ptrigger">「修一下 …」「这里应该是 …」</div>
-          </div>
-
-          <div class="pcard p3">
-            <div class="ptag">收尾必用</div>
-            <div class="pname">f2s-git-commit</div>
-            <div class="psub">提交前 3 查 · 不放漏</div>
-            <div class="pdesc">
-              提交前强制:<b>冲突扫 · KB 覆盖查 · emoji + Conventional 首行</b>。
-              不 <code>add -A</code>、不跳 hooks、不自动 push。
-            </div>
-            <div class="ptrigger">「提交一下」「commit 一下」</div>
-          </div>
-
-          <div class="pcard p4">
-            <div class="ptag">大需求入口</div>
-            <div class="pname">req-clarify → req-tech</div>
-            <div class="psub">需求澄清 → 技术方案</div>
-            <div class="pdesc">
-              新需求太大时用。<b>两轮成批澄清</b>,自查知识库缺口,再产出技术方案 MD
-              + DDL(如需);之后走 <code>implement-tech-design</code>。
-            </div>
-            <div class="ptrigger">「帮我理清需求 …」「出个技术方案 …」</div>
-          </div>
-        </div>
-
-        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
-          <div class="stitle">// 其余按需触发</div>
-          <div class="srow">
-            <div class="sk">接入 / 升级</div>
-            <div class="sv">
-              <code>flow2spec init</code> 新仓落骨架 · <code>f2s-kb-upgrade</code> 老项目对齐路由与 matchers
-            </div>
-          </div>
-          <div class="srow">
-            <div class="sk">文档沉淀</div>
-            <div class="sv">
-              <code>f2s-doc-pdf</code> PDF 转 MD · <code>f2s-doc-final</code> 出终稿 ·
-              <code>f2s-doc-arch</code> 架构说明 · <code>f2s-doc-milestone</code> 里程碑
-            </div>
-          </div>
-        </div>
-
-        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
-          <div class="stitle">// 知识维护三剑客</div>
-          <div class="tgrid">
-            <div class="tcard t1">
-              <div class="tname">f2s-kb-distill</div>
-              <div class="tsub">对话完自动提取</div>
-              <div class="tdesc">
-                问答/排障过程中<b>顺手把可复用知识事实入库</b>——按下钻深度自动判定
-                「新建 topic」或「补进已有 topic」;不用中断思路开另一条链。
-              </div>
-              <div class="ttrigger">「把这个记到知识库」</div>
-            </div>
-            <div class="tcard t2">
-              <div class="tname">f2s-kb-add</div>
-              <div class="tsub">多文件已有能力入库</div>
-              <div class="tdesc">
-                <b>存量能力批量沉淀</b>——一次喂 N 份文档/源码,自动生成
-                初稿 → 终稿 → topic + matcher + 路由,不用一条条手写。
-              </div>
-              <div class="ttrigger">「把这几份存量文档进知识库」</div>
-            </div>
-            <div class="tcard t3">
-              <div class="tname">f2s-kb-sync</div>
-              <div class="tsub">全局同步 · 找齐漏改</div>
-              <div class="tdesc">
-                <b>忘了跑 kb-feat/fix 也没关系</b>——扫已实现能力,输出「知识库更新大纲」,
-                你确认后再写入 topics/index/manifest;是漏改的最后一道网。
-              </div>
-              <div class="ttrigger">「全局同步一下知识库」</div>
-            </div>
-          </div>
-          <div class="tfoot">
-            <span class="tk">其余:</span>
-            <code>f2s-kb-addRules</code> 口述规则 · <code>f2s-kb-build</code> 终稿转路由 ·
-            <code>f2s-kb-merge</code> 合并冲突 · <code>f2s-kb-rm</code> 删主题 ·
-            <code>f2s-req-plan</code> 任务规划兜底
-          </div>
-        </div>
-
-        <div class="fx-footer">
-          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
-          <span class="page">12 / 16</span>
-        </div>
-        <div class="notes">
-          <ul>
-            <li>命令地图 — <strong>记 4 个主力,其余按需</strong>,不背二十几个技能名</li>
-            <li>主力 4 个:kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
-            <li>按需 3 组:接入 / 文档 / 维护 —— 讲的时候一句话带过</li>
-            <li>init 只落模板,业务知识要靠 f2s 流程长出来</li>
-          </ul>
-        </div>
-      </section>
-
       <!-- ======= Slide 11 · 知识库渐进式创建（消解心智负担） ======= -->
       <section class="slide is-scroll">
         <div class="fx-grid"></div>
@@ -1534,7 +1395,7 @@
 
         <div class="fx-footer">
           <span>progressive · pay-as-you-grow</span>
-          <span class="page">13 / 16</span>
+          <span class="page">12 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1542,6 +1403,145 @@
             <li>最小集：1 条路由 + 1 个 matcher + 1 份 topic</li>
             <li>init 一分钟拉骨架；feat/fix 日常记知识；commit 前检查覆盖</li>
             <li>方向：下次需求命中哪块，写哪块</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 12 · 命令能力总览 ======= -->
+      <section class="slide is-compact">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-cyan"></div>
+        <div class="fx-glow-magenta"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>skills · command-map · 4 primary + 3 secondary</div>
+        </div>
+        <h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          命令能力<span class="accent">总览</span>
+        </h1>
+        <p
+          class="fx-lede"
+          data-anim="fade-up"
+          style="animation-delay: 0.18s; margin-top: 4px">
+          <b style="color:var(--fx-cyan)">4 个日常必用 · 记住就够 80%</b> ·
+          其余按需触发,不用背表。<code>flow2spec init</code> 落盘骨架,日常对话点名技能即可。
+        </p>
+
+        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="pcard p1">
+            <div class="ptag">日常最高频</div>
+            <div class="pname">f2s-kb-feat</div>
+            <div class="psub">加能力 · 改代码 + 建 topic</div>
+            <div class="pdesc">
+              新功能落地时用。<b>先改代码</b>,再引导写/补 topic + matcher + 依赖链;
+              <code>changeTracking.feat</code> 开启时自动开 <code>.task/</code> 追踪。
+            </div>
+            <div class="ptrigger">「加个功能 …」「新增能力 …」</div>
+          </div>
+
+          <div class="pcard p2">
+            <div class="ptag">日常最高频</div>
+            <div class="pname">f2s-kb-fix</div>
+            <div class="psub">改 bug · 修实现 + 挡未来</div>
+            <div class="pdesc">
+              修 bug 时用。修完代码 → <b>把踩过的坑写进 topic 硬约束</b>,
+              下次 AI 改到相邻代码不会再踩;缺口闸门自动喊话。
+            </div>
+            <div class="ptrigger">「修一下 …」「这里应该是 …」</div>
+          </div>
+
+          <div class="pcard p3">
+            <div class="ptag">收尾必用</div>
+            <div class="pname">f2s-git-commit</div>
+            <div class="psub">提交前 3 查 · 不放漏</div>
+            <div class="pdesc">
+              提交前强制:<b>冲突扫 · KB 覆盖查 · emoji + Conventional 首行</b>。
+              不 <code>add -A</code>、不跳 hooks、不自动 push。
+            </div>
+            <div class="ptrigger">「提交一下」「commit 一下」</div>
+          </div>
+
+          <div class="pcard p4">
+            <div class="ptag">大需求入口</div>
+            <div class="pname">req-clarify → req-tech</div>
+            <div class="psub">需求澄清 → 技术方案</div>
+            <div class="pdesc">
+              新需求太大时用。<b>两轮成批澄清</b>,自查知识库缺口,再产出技术方案 MD
+              + DDL(如需);之后走 <code>implement-tech-design</code>。
+            </div>
+            <div class="ptrigger">「帮我理清需求 …」「出个技术方案 …」</div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
+          <div class="stitle">// 其余按需触发</div>
+          <div class="srow">
+            <div class="sk">接入 / 升级</div>
+            <div class="sv">
+              <code>flow2spec init</code> 新仓落骨架 · <code>f2s-kb-upgrade</code> 老项目对齐路由与 matchers
+            </div>
+          </div>
+          <div class="srow">
+            <div class="sk">文档沉淀</div>
+            <div class="sv">
+              <code>f2s-doc-pdf</code> PDF 转 MD · <code>f2s-doc-final</code> 出终稿 ·
+              <code>f2s-doc-arch</code> 架构说明 · <code>f2s-doc-milestone</code> 里程碑
+            </div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
+          <div class="stitle">// 知识维护三剑客</div>
+          <div class="tgrid">
+            <div class="tcard t1">
+              <div class="tname">f2s-kb-distill</div>
+              <div class="tsub">对话完自动提取</div>
+              <div class="tdesc">
+                问答/排障过程中<b>顺手把可复用知识事实入库</b>——按下钻深度自动判定
+                「新建 topic」或「补进已有 topic」;不用中断思路开另一条链。
+              </div>
+              <div class="ttrigger">「把这个记到知识库」</div>
+            </div>
+            <div class="tcard t2">
+              <div class="tname">f2s-kb-add</div>
+              <div class="tsub">多文件已有能力入库</div>
+              <div class="tdesc">
+                <b>存量能力批量沉淀</b>——一次喂 N 份文档/源码,自动生成
+                初稿 → 终稿 → topic + matcher + 路由,不用一条条手写。
+              </div>
+              <div class="ttrigger">「把这几份存量文档进知识库」</div>
+            </div>
+            <div class="tcard t3">
+              <div class="tname">f2s-kb-sync</div>
+              <div class="tsub">全局同步 · 找齐漏改</div>
+              <div class="tdesc">
+                <b>忘了跑 kb-feat/fix 也没关系</b>——扫已实现能力,输出「知识库更新大纲」,
+                你确认后再写入 topics/index/manifest;是漏改的最后一道网。
+              </div>
+              <div class="ttrigger">「全局同步一下知识库」</div>
+            </div>
+          </div>
+          <div class="tfoot">
+            <span class="tk">其余:</span>
+            <code>f2s-kb-addRules</code> 口述规则 · <code>f2s-kb-build</code> 终稿转路由 ·
+            <code>f2s-kb-merge</code> 合并冲突 · <code>f2s-kb-rm</code> 删主题 ·
+            <code>f2s-req-plan</code> 任务规划兜底
+          </div>
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
+          <span class="page">13 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+            <li>命令地图 — <strong>记 4 个主力,其余按需</strong>,不背二十几个技能名</li>
+            <li>主力 4 个:kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
+            <li>按需 3 组:接入 / 文档 / 维护 —— 讲的时候一句话带过</li>
+            <li>init 只落模板,业务知识要靠 f2s 流程长出来</li>
           </ul>
         </div>
       </section>
