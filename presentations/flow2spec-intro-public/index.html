@@ -71,7 +71,7 @@
 
         <div class="fx-footer">
           <span class="brand">flow2spec-intro</span>
-          <span class="page">01 / 14</span>
+          <span class="page">01 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -101,14 +101,15 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>session · diff · product-review / batch-rescore</div>
+          <div>session · diff · image-material-library / merge</div>
         </div>
         <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           同一句需求，<span class="accent">两段对话</span>
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          真实场景：某大型互联网公司业务后端 trn-fe-ops-commerce-api · 796 文件
-          / 4.7 MB · 416 个接口
+          真实需求 · 跨 <b style="color:var(--fx-cyan)">接口层 B + 管理台 C</b> 两仓 —
+          「把图片素材 + 图片模型两块合成一个素材库」。改起来涉及 DDL、
+          service 抽取、admin 菜单合并、老数据兼容。
         </p>
 
         <div class="fx-compare">
@@ -119,14 +120,15 @@
             <div class="fx-panel-title">
               <span class="dot"></span>没有 Flow2Spec
             </div>
-            <pre><span class="user">&gt; 改一下评价模板文案库的批量重评分</span>
+            <pre><span class="user">&gt; 把图片素材库和图片模型两块合成一个「素材库」</span>
 
-<span class="ai">AI: 这个模块的表在哪？</span>
-<span class="ai">AI: batchReScore 是同步还是异步？</span>
-<span class="ai">AI: 有没有锁？幂等键是什么？</span>
-<span class="ai">AI: 返回格式是什么？错误码是多少？</span>
-<span class="ai">AI: <span class="k">（翻遍 416 个接口、796 份文件、4.7 MB 源码…）</span></span></pre>
-            <div class="fx-panel-foot">反复介绍 · 反复翻代码 · 反复踩坑</div>
+<span class="ai">AI: 两个模块分别在哪个仓？</span>
+<span class="ai">AI: 库表是分开的吗？合并要不要迁数据？</span>
+<span class="ai">AI: 老的 templateUuid 字段还有引用吗？</span>
+<span class="ai">AI: 接口是保留哪一套？前缀怎么命名？</span>
+<span class="ai">AI: admin 菜单要合并还是保留双入口？</span>
+<span class="ai">AI: <span class="k">（在 3 个仓里翻 DB / service / handler / 前端菜单…）</span></span></pre>
+            <div class="fx-panel-foot">反复问上下文 · 反复翻代码 · 老数据踩坑</div>
           </div>
 
           <div
@@ -136,29 +138,29 @@
             <div class="fx-panel-title">
               <span class="dot"></span>有 Flow2Spec
             </div>
-            <pre><span class="user">&gt; 改一下评价模板文案库的批量重评分</span>
+            <pre><span class="user">&gt; 把图片素材库和图片模型两块合成一个「素材库」</span>
 
-<span class="ai"><span class="p">[matcher 命中]</span> m-product-review-template-library</span>
-<span class="ai"><span class="p">[加载依赖]</span> 4 个 topic · 约 300 行</span>
-<span class="ai">AI: 已知 — <span class="g">fire-and-forget</span></span>
-<span class="ai">     Redis 锁 <span class="a">smp:product-review:template-library</span></span>
-<span class="ai">     <span class="a">:batch-rescore:lock</span>（TTL 10 分钟）</span>
-<span class="ai">     单次最多 <span class="g">100 条</span> · 错误码 <span class="g">101</span></span>
-<span class="ai">AI: 开始改，预计 3 处文件。</span></pre>
-            <div class="fx-panel-foot">4.7 MB → 300 行 · 秒级定位到硬约束</div>
+<span class="ai"><span class="p">[matcher 命中]</span> m-image-model-dispatcher</span>
+<span class="ai"><span class="p">[跨仓依赖]</span> B 接口层 · C 管理台 · 4 topic</span>
+<span class="ai">AI: 已知 — B: <span class="g">image_model / image_material</span> 两表要合并</span>
+<span class="ai">     C: admin 菜单 <span class="a">「模型管理」+「素材管理」</span> 合成一个</span>
+<span class="ai">     兼容: 老 <span class="a">templateUuid</span> 字段改可空 <span class="k">(见 §3.2)</span></span>
+<span class="ai">     命名: 接口沿用 <span class="g">imageMaterial*</span> · 参数保留 provider</span>
+<span class="ai">AI: 开始改 · B 侧 5 处 · C 侧 3 处 · 同一条 topic 链。</span></pre>
+            <div class="fx-panel-foot">跨仓 3 个知识库 → 300 行 topic · 硬约束和历史兼容都有据可查</div>
           </div>
         </div>
 
         <div class="fx-footer">
-          <span class="brand">flow2spec-intro</span>
-          <span class="page">02 / 14</span>
+          <span class="brand">flow2spec-intro · session-diff · image-material-library-merge</span>
+          <span class="page">02 / 16</span>
         </div>
         <div class="notes">
           <ul>
-            <li>同一句需求：评价模板文案库 · 批量重评分</li>
-            <li>左：没框架 → 问表 / 同步 / 锁，常要翻遍接口</li>
-            <li>右：matcher 命中 → Redis key、错误码、条数已在 topic</li>
-            <li>金句：不是模型变强，是<strong>上下文变准</strong></li>
+            <li>案例:图片素材库合并 · 横跨接口层 B + 管理台 C(两个真实生产仓)</li>
+            <li>没框架:问表、问库、问菜单命名、问老字段兼容 — 三仓翻代码</li>
+            <li>有框架:matcher 命中一次 → 跨仓 4 topic → DDL / 命名 / 兼容 全在 topic 里</li>
+            <li>金句:不是模型变强,是<strong>上下文变准</strong>;而且**跨仓的约束也在</strong></li>
           </ul>
         </div>
       </section>
@@ -174,24 +176,33 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>stats · trn-fe-ops-commerce-api · 2026-05-13</div>
+          <div>stats · 4 real production repos · 2026-09</div>
         </div>
         <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           这不是概念 · 是<span class="accent">日常</span>
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          在一个已经深度使用 Flow2Spec 的真实生产仓库里，这些数字每天都在生长。
+          四个真实生产仓库 · 规模跨越 40 倍 · 同一套
+          Flow2Spec，都在用。每次仍只加载
+          <span style="color: var(--fx-cyan)">≈ 300 行命中 topic</span>。
         </p>
 
         <div class="fx-kpis">
           <div class="fx-kpi" data-anim="fade-up" style="animation-delay: 0.3s">
             <div>
-              <div class="lbl">对外接口数</div>
-              <div class="num">416</div>
+              <div class="lbl">主仓 A · 前端主仓 3 年</div>
+              <div class="num">1012 核心文件 · 12.9 万行</div>
             </div>
             <div class="desc">
-              serverless.yml 注册函数 · 传统做法需要 AI 通读全仓
+              <b style="color: var(--fx-cyan)">43</b> topic ·
+              <b style="color: var(--fx-cyan)">43</b> matcher ·
+              <b style="color: var(--fx-cyan)">46</b> stock-doc ·
+              <b style="color: var(--fx-cyan)">65</b> req-doc<br />
+              <b style="color: var(--fx-magenta)">27 位作者</b> · 3 个月
+              <b style="color: var(--fx-magenta)">2786</b> commit ·
+              <b style="color: var(--fx-magenta)">43</b> 归档任务
             </div>
+            <div class="hint">➜ 12.9 万行 <span class="arr">→</span> 每次读 <b>约几百行</b> · 27 人并发 <b>零任务串戏</b></div>
           </div>
 
           <div
@@ -199,12 +210,19 @@
             data-anim="fade-up"
             style="animation-delay: 0.42s">
             <div>
-              <div class="lbl">src 文件 / 体积 / 行数</div>
-              <div class="num">796 · 4.7 MB · 10 万行</div>
+              <div class="lbl">接口项目 B · Serverless</div>
+              <div class="num">213 核心文件 · 2.6 万行</div>
             </div>
             <div class="desc">
-              Flow2Spec 每次只加载 ≈ 300 行命中 topic · 噪声切掉 99%
+              <b style="color: var(--fx-magenta)">25</b> topic ·
+              <b style="color: var(--fx-magenta)">23</b> matcher ·
+              <b style="color: var(--fx-magenta)">14</b> stock-doc ·
+              <b style="color: var(--fx-magenta)">54</b> req-doc<br />
+              单人日常 · 3 个月
+              <b style="color: var(--fx-magenta)">185</b> commit ·
+              <b style="color: var(--fx-magenta)">11</b> 归档任务
             </div>
+            <div class="hint">➜ req-doc <b>近 4×</b> stock-doc <span class="arr">→</span> 实现驱动 · <b>不用先写文档</b></div>
           </div>
 
           <div
@@ -212,12 +230,19 @@
             data-anim="fade-up"
             style="animation-delay: 0.54s">
             <div>
-              <div class="lbl">topic / matcher / 文档</div>
-              <div class="num">12 / 11 / 28</div>
+              <div class="lbl">B 端项目 C</div>
+              <div class="num">73 核心文件 · 5788 行</div>
             </div>
             <div class="desc">
-              主题分片 · 关键词分片 · 存量与需求文档双轨沉淀
+              <b style="color: var(--fx-purple)">20</b> topic ·
+              <b style="color: var(--fx-purple)">18</b> matcher ·
+              <b style="color: var(--fx-purple)">6</b> stock-doc ·
+              <b style="color: var(--fx-purple)">5</b> req-doc<br />
+              单人日常 · 3 个月
+              <b style="color: var(--fx-purple)">180</b> commit ·
+              <b style="color: var(--fx-purple)">19</b> 归档任务
             </div>
+            <div class="hint">➜ 5K 行小仓 · <b>20 topic</b> <span class="arr">→</span> 不是杀鸡用牛刀,规矩一样长</div>
           </div>
 
           <div
@@ -225,37 +250,58 @@
             data-anim="fade-up"
             style="animation-delay: 0.66s">
             <div>
-              <div class="lbl">接口 / 端 / 任务清单</div>
-              <div class="num">17/3/14</div>
+              <div class="lbl">C 端项目 D · Serverless</div>
+              <div class="num">28 核心文件 · 3174 行</div>
             </div>
             <div class="desc">
-              断续 4 天 · 跨
-              <span style="color: var(--fx-cyan)">B 端 · C 端 · 接口端</span>
-              三仓库 · 评价模板库 / 标签 / 文章改造 / AI 审核 / agent 评分体系 /
-              前端自定义评分
+              <b style="color: var(--fx-amber)">15</b> topic ·
+              <b style="color: var(--fx-amber)">14</b> matcher ·
+              <b style="color: var(--fx-amber)">2</b> stock-doc ·
+              <b style="color: var(--fx-amber)">1</b> req-doc<br />
+              2 位作者 · 3 个月
+              <b style="color: var(--fx-amber)">76</b> commit ·
+              <b style="color: var(--fx-amber)">7</b> 归档任务
             </div>
+            <div class="hint">➜ 3K 行起步仓 · 已长出 <b>15 topic</b> <span class="arr">→</span> 早接入 · 早不腐化</div>
           </div>
+        </div>
+
+        <div
+          class="fx-honest"
+          data-anim="fade-up"
+          style="animation-delay: 0.76s">
+          <span class="lbl">// 一句总结</span>
+          4 仓合计 <b style="color: var(--fx-cyan)">1326 文件 · 16.5 万行</b> ·
+          <b style="color: var(--fx-cyan)">103</b> topic ·
+          <b style="color: var(--fx-cyan)">98</b> matcher ·
+          <b style="color: var(--fx-cyan)">193</b> 沉淀文档 ·
+          <b style="color: var(--fx-cyan)">80</b> 归档任务 —— 3K
+          行到十几万行都跑得起来，**不是「大项目才能用」**。
         </div>
 
         <div class="fx-footer">
           <span class="brand"
-            >某大型互联网公司业务后端 · trn-fe-ops-commerce-api · 2026-05-09 ~
-            05-13</span
+            >stats · 4 production repos (frontend main / interface / admin /
+            function) · 2026-09</span
           >
-          <span class="page">03 / 14</span>
+          <span class="page">03 / 16</span>
         </div>
         <div class="notes">
           <ul>
-            <li>416 接口 · 796 文件 · 10 万行 — 真实规模</li>
-            <li>每次约 300 行命中 topic，噪声砍掉绝大部分</li>
-            <li>近 4 天：17 接口、14 归档任务，B/C/接口三仓并行</li>
-            <li>无知识库托住，一人难扛这个节奏</li>
+            <li>4 仓真实数字，规模从 3K 行到 12.9 万行跨 40 倍</li>
+            <li>
+              主仓 A：43 topic / 27 作者 / 3 月 2786 commit —— 团队协作实测
+            </li>
+            <li>
+              合计 103 topic · 98 matcher · 193 文档 · 80 归档任务
+            </li>
+            <li>每次仍只加载 ≈ 300 行命中 topic，噪声切掉大部分</li>
           </ul>
         </div>
       </section>
 
       <!-- ======= Slide 4 · 为什么不是 X · Y · Z ======= -->
-      <section class="slide is-compact">
+      <section class="slide is-scroll is-pain-matrix">
         <div class="fx-grid"></div>
         <div class="fx-glow-cyan"></div>
         <div class="fx-glow-magenta"></div>
@@ -269,121 +315,99 @@
           </div>
         </div>
         <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
-          不强行比 · <span class="accent">让你自己打分</span>
+          带着<span class="accent">你的痛点</span>横着看
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          上半：市面五家各做什么，不做什么。下半：Flow2Spec 自己的 5
-          条能力，映到每家的空位。
+          五类同赛道方案 × 五个真实痛点。每格写「会发生什么」，不写勾叉。哪个痛点戳中你，
+          再看哪家能接住 —— 包括 Flow2Spec 接不住的。
         </p>
 
-        <div
-          class="fx-rivals"
-          data-anim="fade-up"
-          style="animation-delay: 0.28s">
-          <div class="fx-rival">
-            <div class="n">OpenSpec</div>
-            <div class="y">spec 格式最严</div>
-            <div class="x">× 单向 · 代码漂了不反哺</div>
+        <div class="fx-matrix" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="fx-matrix-head">
+            <div class="q">// 痛点</div>
+            <div>OpenSpec</div>
+            <div>Superpowers<br/>/ ohMyClaude<br/>/ cursorrules</div>
+            <div>RAG<br/>向量知识库</div>
+            <div>Spec Kit<br/>/ Kiro / BMAD</div>
+            <div>Claude Memory<br/>模型自带记忆</div>
+            <div class="f">Flow2Spec</div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Superpowers / ohMyClaude</div>
-            <div class="y">现成技能即插即用</div>
-            <div class="x">× 绑 Claude · 无项目知识</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">spec 追得上代码?</div>
+            <div>代码漂了 spec 不知道<br/>靠人手同步</div>
+            <div>技能无项目知识<br/>谈不上准</div>
+            <div>代码变了要重新嵌入,不主动</div>
+            <div>一次性生成<br/>二次迭代 spec 停原地</div>
+            <div>换模型即归零</div>
+            <div class="f"><code>kb-feat/fix</code> 改代码带改 topic<br/><span class="hl">commit 前强制查 KB 覆盖</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">RAG 向量库</div>
-            <div class="y">全量索引 · 相似检索</div>
-            <div class="x">× 概率命中 · 硬约束拿不住</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">大仓要读多少?</div>
+            <div>spec 整段喂<br/>无机读路由</div>
+            <div>提示词全量塞<br/>缺项目知识</div>
+            <div>相似检索概率命中<br/>拿错段静默失败</div>
+            <div>spec 越写越长,越读越慢</div>
+            <div>不读代码</div>
+            <div class="f">matcher 命中 + 依赖链<br/><span class="hl">约等于几百行</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Spec Kit / Kiro / BMAD</div>
-            <div class="y">PM 友好 · 需求直出</div>
-            <div class="x">× 一次性 · 二次迭代分家</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">分层 · 精读?</div>
+            <div>单文档扁平<br/>anchor 靠人写</div>
+            <div>通用技能无项目层次<br/>关键词粗匹配</div>
+            <div>全量段位打平<br/>相似 ≠ 精确</div>
+            <div>层次生成时定死<br/>后续不长依赖</div>
+            <div>记忆条目扁平<br/>模型自选、不可控</div>
+            <div class="f">三层 <span class="nowrap"><code>topic</code> / <code>终稿</code> / <code>代码</code></span><br/><span class="hl">按需递进 · 够则停</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Claude Memory</div>
-            <div class="y">省得反复自我介绍</div>
-            <div class="x">× 绑模型 · 非 Memory Coding（未落盘仓）</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">换 IDE / 模型?</div>
+            <div>能,但仍要人手同步</div>
+            <div><span class="neg">绑一家 IDE</span><br/>Claude 或 Cursor 二选一</div>
+            <div>能,但答案仍是概率</div>
+            <div>能,但部分是 wrapper 跟 IDE 抢主导</div>
+            <div><span class="neg">绑模型</span><br/>换 Sonnet / GPT 就没了</div>
+            <div class="f">规则 + 知识 + 技能<br/>各客户端 <span class="hl">原生加载并存</span></div>
+          </div>
+
+          <div class="fx-matrix-row">
+            <div class="q">会话续作?</div>
+            <div>无任务状态</div>
+            <div>无任务状态</div>
+            <div>无任务状态</div>
+            <div>无任务状态</div>
+            <div>模型记忆<br/>换设备 / 账号即失</div>
+            <div class="f"><code>.task/</code> 关键词命中 → 剩余步骤续作<br/><span class="hl">80 归档任务</span></div>
+          </div>
+
+          <div class="fx-matrix-row">
+            <div class="q">可 diff / review?</div>
+            <div>可,spec 就是 Markdown</div>
+            <div>技能可 diff<br/>项目知识 N/A</div>
+            <div>索引不可读<br/>只能重建</div>
+            <div>spec 可 diff<br/>但不追代码</div>
+            <div><span class="neg">不可 diff</span><br/><span class="neg">不可 review</span><br/>团队不能共享</div>
+            <div class="f"><code>.Knowledge/</code> 全部落盘仓<br/>团队共同 review</div>
           </div>
         </div>
 
-        <div
-          class="fx-capabilities"
-          data-anim="fade-up"
-          style="animation-delay: 0.42s">
-          <div class="title">
-            <span class="brand">Flow2Spec</span> · 5 条能力
-          </div>
-          <div class="grid">
-            <div class="cap">
-              <div class="id">①</div>
-              <div class="k">多端复用</div>
-              <div class="v">
-                <code>.Knowledge/</code> 一份 · 任意已配置客户端
-                原生加载并存
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">②</div>
-              <div class="k">路由收窄</div>
-              <div class="v">
-                matcher 命中 + 依赖链 + <span class="hl">缺口闸门</span>强制澄清
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">③</div>
-              <div class="k">双向同步</div>
-              <div class="v">
-                <code>f2s-kb-feat/fix</code> 改代码带改知识 · 不是一次性生成
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">④</div>
-              <div class="k">原生 agent</div>
-              <div class="v">
-                只给规则+知识+技能 · 不做 wrapper · 新模型来了不卡
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">⑤</div>
-              <div class="k">变更留痕 + 收尾闸门</div>
-              <div class="v">
-                <code>.task/</code> 跨会话续作 · <code>f2s-git-commit</code>
-                <span class="hl">提交前强制查 KB 覆盖</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="fx-honest"
-          data-anim="fade-up"
-          style="animation-delay: 0.55s">
-          <span class="lbl">// 老实话</span>
-          停用 <code>f2s-kb-feat / fix</code> 一样腐化 —— 差别是会被<span
-            class="hl"
-            >缺口闸门喊出来</span
-          >，不是静默偏差。
-        </div>
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.5s">
+          <span class="lbl">// Flow2Spec 也有短板</span>
+          <b>不同步知识库 · 仍会腐化</b>——工具不能替代纪律,缺口闸门只是让你听见响声。</div>
 
         <div class="fx-footer">
-          <span class="brand">flow2spec-intro · market-diff</span>
-          <span class="page">04 / 14</span>
+          <span class="brand">flow2spec-intro · market-diff · pain-matrix</span>
+          <span class="page">04 / 16</span>
         </div>
         <div class="notes">
           <ul>
-            <li>上半：五家各做什么、不做什么（快扫即可）</li>
-            <li>
-              OpenSpec 单向不反哺；Superpowers 绑工具；RAG 概率命中；Spec Kit
-              一次性；Claude Memory 非公仓
-            </li>
-            <li>
-              下半：Flow2Spec 五条能力（多端 / 路由 / 双向同步 / 原生 agent /
-              留痕）
-            </li>
-            <li>
-              老实话：停用 f2s 库仍会腐化，但<strong>缺口闸门</strong>会喊出来
-            </li>
+            <li>不比家数，比痛点：一年后 spec 准吗、12 万行读多少、换 IDE、会话断了、可 diff</li>
+            <li>每家有多个 × 是正常的；每格写「会发生什么」，不写勾叉</li>
+            <li>F 自己短板：概念曲线陡 / 价值延迟 / 停用一样腐化</li>
+            <li>老实话：F 不是完胜，是接得住这 5 个痛点</li>
           </ul>
         </div>
       </section>
@@ -570,7 +594,7 @@
 
         <div class="fx-footer">
           <span class="brand">architecture · knowledge × rules</span>
-          <span class="page">05 / 14</span>
+          <span class="page">05 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -668,7 +692,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · progressive-load · product-review</span>
-          <span class="page">06 / 14</span>
+          <span class="page">06 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -802,7 +826,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · horizontal + vertical read</span>
-          <span class="page">07 / 14</span>
+          <span class="page">07 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -907,7 +931,7 @@
 
         <div class="fx-footer">
           <span class="brand">case · groupon × coupon · real-constraints</span>
-          <span class="page">08 / 14</span>
+          <span class="page">08 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1012,7 +1036,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · resume · article-publish-flow</span>
-          <span class="page">09 / 14</span>
+          <span class="page">09 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1029,7 +1053,186 @@
         </div>
       </section>
 
-      <!-- ======= Slide 10 · 命令能力总览 ======= -->
+      <!-- ======= Slide 10 · 多人协作实测 ======= -->
+      <section class="slide">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-cyan"></div>
+        <div class="fx-glow-magenta"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>collaboration · 27 authors · developerId isolation</div>
+        </div>
+        <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          多人协作 · <span class="accent">任务隔离，知识共享</span>
+        </h2>
+        <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
+          主仓 A · 3 个月 <span style="color: var(--fx-cyan)">27 位作者 · 2786 commit</span>。任务清单按 developerId 分目录，同事的
+          <code style="color: var(--fx-cyan)">.task/</code> 不会串戏；<code style="color: var(--fx-cyan)">.Knowledge/</code> 仍是团队共享单源。
+        </p>
+
+        <div class="fx-collab" data-anim="fade-up" style="animation-delay: 0.32s">
+          <div class="fx-collab-cfg">
+            <div class="fx-collab-cfg-title">// flow2spec.config.json（4 仓一致）</div>
+            <pre class="fx-collab-cfg-pre"><span class="c">{</span>
+  <span class="k">"subAgent"</span>: <span class="v">true</span>,
+  <span class="k">"switchAgentVerification"</span>: <span class="v">true</span>,
+  <span class="k">"intentRecognition"</span>: <span class="v">true</span>,
+  <span class="k">"changeTracking"</span>: { <span class="k">"feat"</span>: <span class="v">true</span>, <span class="k">"implement"</span>: <span class="v">true</span> },
+  <span class="k">"collaboration"</span>: { <span class="k">"enabled"</span>: <span class="v">true</span> }
+<span class="c">}</span></pre>
+          </div>
+
+          <div class="fx-collab-tree">
+            <div class="fx-collab-cfg-title">// .task/ 按 developerId 隔离</div>
+            <pre class="fx-collab-cfg-pre"><span class="cm">.task/</span>
+├── <span class="a">alice/</span>
+│   ├── todo.json
+│   ├── active/backfill_topics_for_reservation.../
+│   └── completed/  <span class="cm">← 12 个</span>
+├── <span class="a">bob/</span>
+│   ├── todo.json
+│   └── completed/  <span class="cm">← 8 个</span>
+└── <span class="a">charlie/</span>
+    └── completed/  <span class="cm">← 5 个</span>
+
+<span class="hl">.Knowledge/ 仍是团队共享单源</span></pre>
+          </div>
+        </div>
+
+        <div class="fx-collab-metrics" data-anim="fade-up" style="animation-delay: 0.48s">
+          <div class="m">
+            <div class="lbl">协作场景</div>
+            <div class="v">主仓 A · 3 个月 <b>27 作者</b></div>
+          </div>
+          <div class="m">
+            <div class="lbl">提交密度</div>
+            <div class="v"><b>2786</b> commit · <b>43</b> 归档任务</div>
+          </div>
+          <div class="m">
+            <div class="lbl">已开启</div>
+            <div class="v">
+              subAgent · switchAgentVerification · <b>4 仓 100%</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.6s">
+          <span class="lbl">// 关键点</span>
+          子 agent 落盘 → 主 agent 校验；<code>developerId</code> 隔离
+          <code>.task/</code> 目录，避免多人并发 revision 冲突；
+          <b style="color: var(--fx-cyan)">共享 topic 单源，私有任务不串戏</b>。
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">collaboration · developerId · switch-agent-verification</span>
+          <span class="page">10 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+            <li>主仓 A：27 作者、3 月 2786 commit、43 归档任务，真实多人</li>
+            <li><code>collaboration.enabled=true</code> + <code>developerId</code> 隔离 .task/</li>
+            <li><code>switchAgentVerification=true</code> 交叉验证，落盘方与验证方分离</li>
+            <li>共享的是 .Knowledge/ 单源，不是任务状态</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 11 · 4 仓一览 · 同一套体系 ======= -->
+      <section class="slide is-compact">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-purple"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>4 repos · same flow2spec stack · 40× scale span</div>
+        </div>
+        <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          4 仓一览 · <span class="accent">同一套体系</span>
+        </h2>
+        <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
+          从 <b style="color:var(--fx-cyan)">3K 行 C 端项目</b> 到
+          <b style="color:var(--fx-cyan)">12.9 万行前端主仓</b> —— topic
+          数近似线性增长，不是「大项目才能用」。
+        </p>
+
+        <div class="fx-repos" data-anim="fade-up" style="animation-delay: 0.32s">
+          <div class="fx-repos-head">
+            <div>仓库</div>
+            <div>规模</div>
+            <div>topic / matcher</div>
+            <div>文档 (stock / req)</div>
+            <div>任务归档</div>
+            <div>3 月 commit</div>
+          </div>
+          <div class="fx-repos-row r1">
+            <div class="n">主仓 A<span>前端主仓 · 3 年</span></div>
+            <div>1012 文件 · 12.9 万行</div>
+            <div>43 / 43</div>
+            <div>46 / 65</div>
+            <div>43 · 27 作者</div>
+            <div>2786</div>
+          </div>
+          <div class="fx-repos-row r2">
+            <div class="n">接口项目 B<span>Serverless</span></div>
+            <div>213 文件 · 2.6 万行</div>
+            <div>25 / 23</div>
+            <div>14 / 54</div>
+            <div>11 · 单人</div>
+            <div>185</div>
+          </div>
+          <div class="fx-repos-row r3">
+            <div class="n">B 端项目 C<span>后台管理</span></div>
+            <div>73 文件 · 5788 行</div>
+            <div>20 / 18</div>
+            <div>6 / 5</div>
+            <div>19 · 单人</div>
+            <div>180</div>
+          </div>
+          <div class="fx-repos-row r4">
+            <div class="n">C 端项目 D<span>Serverless</span></div>
+            <div>28 文件 · 3174 行</div>
+            <div>15 / 14</div>
+            <div>2 / 1</div>
+            <div>7 · 2 作者</div>
+            <div>76</div>
+          </div>
+          <div class="fx-repos-row rt">
+            <div class="n">合计</div>
+            <div>1326 文件 · 16.5 万行</div>
+            <div>103 / 98</div>
+            <div>68 / 125</div>
+            <div>80</div>
+            <div>3227</div>
+          </div>
+        </div>
+
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.5s">
+          <span class="lbl">// 观察</span>
+          规模跨 <b style="color: var(--fx-cyan)">40 倍</b>，topic 从 15 长到
+          43；req-docs 数量 <b style="color: var(--fx-magenta)">总大于
+          stock-docs</b>，说明知识库是<b>日常迭代驱动</b>长出来的，不是一次性文档。
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">4 repos · frontend / interface / admin / function · 2026-09</span>
+          <span class="page">11 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+            <li>4 仓横向对比：规模、topic、matcher、文档、任务、commit</li>
+            <li>规模跨 40 倍，topic 数近似线性</li>
+            <li>req-docs 总多于 stock-docs → 日常迭代驱动</li>
+            <li>合计 103 topic · 98 matcher · 193 文档 · 80 归档 · 3227 commit</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 12 · 命令能力总览 ======= -->
       <section class="slide is-compact">
         <div class="fx-grid"></div>
         <div class="fx-glow-cyan"></div>
@@ -1039,7 +1242,7 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>skills · command-map</div>
+          <div>skills · command-map · 4 primary + 3 secondary</div>
         </div>
         <h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           命令能力<span class="accent">总览</span>
@@ -1048,102 +1251,122 @@
           class="fx-lede"
           data-anim="fade-up"
           style="animation-delay: 0.18s; margin-top: 4px">
-          按阶段选 <code>f2s-*</code>，不必记全表；
-          <code>flow2spec init</code> 落盘模板与路由，日常在对话里点名技能即可。
+          <b style="color:var(--fx-cyan)">4 个日常必用 · 记住就够 80%</b> ·
+          其余按需触发,不用背表。<code>flow2spec init</code> 落盘骨架,日常对话点名技能即可。
         </p>
 
-        <div
-          class="fx-cmd-map"
-          data-anim="fade-up"
-          style="animation-delay: 0.28s">
-          <div class="grid">
-            <div class="dom">
-              <span class="id">① 接入</span>
-              <span class="k">落盘与迁移</span>
-              <span class="cmds"
-                >flow2spec init · f2s-kb-migrate · f2s-kb-upgrade</span
-              >
-              <span class="v">新仓对齐模板；旧库一次性迁到 .Knowledge</span>
+        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="pcard p1">
+            <div class="ptag">日常最高频</div>
+            <div class="pname">f2s-kb-feat</div>
+            <div class="psub">加能力 · 改代码 + 建 topic</div>
+            <div class="pdesc">
+              新功能落地时用。<b>先改代码</b>,再引导写/补 topic + matcher + 依赖链;
+              <code>changeTracking.feat</code> 开启时自动开 <code>.task/</code> 追踪。
             </div>
-            <div class="dom">
-              <span class="id">② 需求</span>
-              <span class="k">澄清 → 技术方案</span>
-              <span class="cmds">f2s-req-clarify · f2s-req-tech</span>
-              <span class="v">PRD 问清、出技术方案文档</span>
+            <div class="ptrigger">「加个功能 …」「新增能力 …」</div>
+          </div>
+
+          <div class="pcard p2">
+            <div class="ptag">日常最高频</div>
+            <div class="pname">f2s-kb-fix</div>
+            <div class="psub">改 bug · 修实现 + 挡未来</div>
+            <div class="pdesc">
+              修 bug 时用。修完代码 → <b>把踩过的坑写进 topic 硬约束</b>,
+              下次 AI 改到相邻代码不会再踩;缺口闸门自动喊话。
             </div>
-            <div class="dom">
-              <span class="id">③ 文档入库</span>
-              <span class="k">方案 / 终稿 / 架构 / 里程碑</span>
-              <span class="cmds"
-                >f2s-doc-pdf · f2s-doc-final · f2s-doc-arch ·
-                f2s-doc-milestone</span
-              >
-              <span class="v"
-                >req-docs 与 stock-docs 沉淀；里程碑由四源生成并落盘</span
-              >
+            <div class="ptrigger">「修一下 …」「这里应该是 …」</div>
+          </div>
+
+          <div class="pcard p3">
+            <div class="ptag">收尾必用</div>
+            <div class="pname">f2s-git-commit</div>
+            <div class="psub">提交前 3 查 · 不放漏</div>
+            <div class="pdesc">
+              提交前强制:<b>冲突扫 · KB 覆盖查 · emoji + Conventional 首行</b>。
+              不 <code>add -A</code>、不跳 hooks、不自动 push。
             </div>
-            <div class="dom">
-              <span class="id">④ 迭代</span>
-              <span class="k">实现 · 变更追踪</span>
-              <span class="cmds">f2s-kb-feat · f2s-kb-fix</span>
-              <span class="v"
-                >按技术方案改代码；<code>changeTracking</code> 开启时自动维护
-                <code>.task/</code>（关配置时可用
-                <code>f2s-req-plan</code> 兜底）</span
-              >
+            <div class="ptrigger">「提交一下」「commit 一下」</div>
+          </div>
+
+          <div class="pcard p4">
+            <div class="ptag">大需求入口</div>
+            <div class="pname">req-clarify → req-tech</div>
+            <div class="psub">需求澄清 → 技术方案</div>
+            <div class="pdesc">
+              新需求太大时用。<b>两轮成批澄清</b>,自查知识库缺口,再产出技术方案 MD
+              + DDL(如需);之后走 <code>implement-tech-design</code>。
             </div>
-            <div class="dom">
-              <span class="id">⑤ 知识维护</span>
-              <span class="k">路由 · 主题 · 已有能力</span>
-              <span class="cmds">f2s-ctx-build · f2s-ctx-rm · f2s-doc-add</span>
-              <span class="v"
-                >stock-docs ↔
-                topics/manifest；终稿进路由；多文件已有能力入库</span
-              >
+            <div class="ptrigger">「帮我理清需求 …」「出个技术方案 …」</div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
+          <div class="stitle">// 其余按需触发</div>
+          <div class="srow">
+            <div class="sk">接入 / 升级</div>
+            <div class="sv">
+              <code>flow2spec init</code> 新仓落骨架 · <code>f2s-kb-upgrade</code> 老项目对齐路由与 matchers
             </div>
-            <div class="dom">
-              <span class="id">⑥ 收尾</span>
-              <span class="k">提交 · 合并 · 同步</span>
-              <span class="cmds"
-                >f2s-git-commit · f2s-kb-merge · f2s-kb-sync</span
-              >
-              <span class="v"
-                >带知识库检查的 commit；合并后冲突处理；实现落地后 kb-sync
-                补录知识库</span
-              >
+          </div>
+          <div class="srow">
+            <div class="sk">文档沉淀</div>
+            <div class="sv">
+              <code>f2s-doc-pdf</code> PDF 转 MD · <code>f2s-doc-final</code> 出终稿 ·
+              <code>f2s-doc-arch</code> 架构说明 · <code>f2s-doc-milestone</code> 里程碑
             </div>
           </div>
         </div>
 
-        <p
-          class="fx-cmd-foot"
-          data-anim="fade-up"
-          style="animation-delay: 0.38s">
-          按技术方案写代码走规则
-          <code>implement-tech-design</code>；多文件已有能力用
-          <code>f2s-doc-add</code> 一条龙入库。
-        </p>
+        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
+          <div class="stitle">// 知识维护三剑客</div>
+          <div class="tgrid">
+            <div class="tcard t1">
+              <div class="tname">f2s-kb-distill</div>
+              <div class="tsub">对话完自动提取</div>
+              <div class="tdesc">
+                问答/排障过程中<b>顺手把可复用知识事实入库</b>——按下钻深度自动判定
+                「新建 topic」或「补进已有 topic」;不用中断思路开另一条链。
+              </div>
+              <div class="ttrigger">「把这个记到知识库」</div>
+            </div>
+            <div class="tcard t2">
+              <div class="tname">f2s-kb-add</div>
+              <div class="tsub">多文件已有能力入库</div>
+              <div class="tdesc">
+                <b>存量能力批量沉淀</b>——一次喂 N 份文档/源码,自动生成
+                初稿 → 终稿 → topic + matcher + 路由,不用一条条手写。
+              </div>
+              <div class="ttrigger">「把这几份存量文档进知识库」</div>
+            </div>
+            <div class="tcard t3">
+              <div class="tname">f2s-kb-sync</div>
+              <div class="tsub">全局同步 · 找齐漏改</div>
+              <div class="tdesc">
+                <b>忘了跑 kb-feat/fix 也没关系</b>——扫已实现能力,输出「知识库更新大纲」,
+                你确认后再写入 topics/index/manifest;是漏改的最后一道网。
+              </div>
+              <div class="ttrigger">「全局同步一下知识库」</div>
+            </div>
+          </div>
+          <div class="tfoot">
+            <span class="tk">其余:</span>
+            <code>f2s-kb-addRules</code> 口述规则 · <code>f2s-kb-build</code> 终稿转路由 ·
+            <code>f2s-kb-merge</code> 合并冲突 · <code>f2s-kb-rm</code> 删主题 ·
+            <code>f2s-req-plan</code> 任务规划兜底
+          </div>
+        </div>
 
         <div class="fx-footer">
-          <span class="brand">init · changeTracking · doc-milestone</span>
-          <span class="page">10 / 14</span>
+          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
+          <span class="page">12 / 16</span>
         </div>
         <div class="notes">
           <ul>
-            <li>命令地图 — <strong>记阶段</strong>，不背二十几个技能名</li>
-            <li>① 接入：init / migrate / upgrade</li>
-            <li>② 需求：clarify / backend</li>
-            <li>③ 文档：pdf / final / arch / milestone</li>
-            <li>
-              ④ 迭代：feat / fix + <code>changeTracking</code>；按方案走
-              <strong>implement-tech-design</strong>；<code>f2s-req-plan</code>
-              仅关配置时的兜底
-            </li>
-            <li>
-              ⑤ 维护：ctx-build / ctx-rm / doc-add · ⑥ 收尾：git-commit /
-              kb-merge / kb-sync
-            </li>
-            <li>init 只落模板，业务知识要靠 f2s 流程长出来</li>
+            <li>命令地图 — <strong>记 4 个主力,其余按需</strong>,不背二十几个技能名</li>
+            <li>主力 4 个:kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
+            <li>按需 3 组:接入 / 文档 / 维护 —— 讲的时候一句话带过</li>
+            <li>init 只落模板,业务知识要靠 f2s 流程长出来</li>
           </ul>
         </div>
       </section>
@@ -1193,7 +1416,7 @@
             <div class="fx-stage-title">沉淀首批知识</div>
             <pre class="fx-stage-cmd"><span class="cm"># 喂一份架构文档</span>
 <span class="kw">/</span>f2s-doc-arch
-<span class="kw">/</span>f2s-doc-add</pre>
+<span class="kw">/</span>f2s-kb-add</pre>
             <div class="fx-stage-out">
               AI 读存量文档<br />→ 生成首个 topic + matcher
             </div>
@@ -1309,7 +1532,7 @@
 
         <div class="fx-footer">
           <span>progressive · pay-as-you-grow</span>
-          <span class="page">11 / 14</span>
+          <span class="page">13 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1853,7 +2076,7 @@
 
         <div class="fx-footer">
           <span class="brand">live · demo · end-to-end</span>
-          <span class="page">12 / 14</span>
+          <span class="page">14 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1923,7 +2146,7 @@
 
         <div class="fx-footer">
           <span class="brand">honest · limits</span>
-          <span class="page">13 / 14</span>
+          <span class="page">15 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1972,7 +2195,7 @@
 
         <div class="fx-footer">
           <span class="brand">flow2spec · let's talk</span>
-          <span class="page">14 / 14</span>
+          <span class="page">16 / 16</span>
         </div>
         <div class="notes">
           <ul>

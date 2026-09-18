@@ -69,7 +69,7 @@
 
         <div class="fx-footer">
           <span class="brand">flow2spec-intro</span>
-          <span class="page">01 / 14</span>
+          <span class="page">01 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -91,14 +91,15 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>session · diff · product-review / batch-rescore</div>
+          <div>session · diff · image-material-library / merge</div>
         </div>
 <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           Same Request, <span class="accent">Two Conversations</span>
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          Real scenario: a major internet company's backend service trn-fe-ops-commerce-api · 796 files
-          / 4.7 MB · 416 endpoints
+          Real ask, spanning <b style="color:var(--fx-cyan)">Repo B (API) + Repo C (admin)</b> —
+          "merge the image material library with the image model management into one."
+          Touches DDL, service extraction, admin menu merge, legacy compatibility.
         </p>
 
         <div class="fx-compare">
@@ -109,14 +110,15 @@
             <div class="fx-panel-title">
               <span class="dot"></span>Without Flow2Spec
             </div>
-            <pre><span class="user">&gt; Modify the batch rescore for the review template library</span>
+            <pre><span class="user">&gt; Merge image material library and image model management into one library</span>
 
-<span class="ai">AI: Where's the table for this module?</span>
-<span class="ai">AI: Is batchReScore sync or async?</span>
-<span class="ai">AI: Is there a lock? What's the idempotency key?</span>
-<span class="ai">AI: What's the response format? What's the error code?</span>
-<span class="ai">AI: <span class="k">(Scanning all 416 endpoints, 796 files, 4.7 MB of source code...)</span></span></pre>
-            <div class="fx-panel-foot">Repeated explanations · Repeated code scanning · Repeated pitfalls</div>
+<span class="ai">AI: Which repos are these two modules in?</span>
+<span class="ai">AI: Separate tables? Any data migration needed?</span>
+<span class="ai">AI: Is the old templateUuid field still referenced anywhere?</span>
+<span class="ai">AI: Which endpoint stays? What's the naming prefix?</span>
+<span class="ai">AI: Admin menu — merge or keep both entries?</span>
+<span class="ai">AI: <span class="k">(Digging through DB / service / handler / menu across 3 repos...)</span></span></pre>
+            <div class="fx-panel-foot">Repeated context probes · Repeated code scans · Legacy pitfalls</div>
           </div>
 
           <div
@@ -126,29 +128,29 @@
             <div class="fx-panel-title">
               <span class="dot"></span>With Flow2Spec
             </div>
-            <pre><span class="user">&gt; Modify the batch rescore for the review template library</span>
+            <pre><span class="user">&gt; Merge image material library and image model management into one library</span>
 
-<span class="ai"><span class="p">[matcher hit]</span> m-product-review-template-library</span>
-<span class="ai"><span class="p">[loading deps]</span> 4 topics · ~300 lines</span>
-<span class="ai">AI: Already known — <span class="g">fire-and-forget</span></span>
-<span class="ai">     Redis lock <span class="a">smp:product-review:template-library</span></span>
-<span class="ai">     <span class="a">:batch-rescore:lock</span> (TTL 10 min)</span>
-<span class="ai">     Max <span class="g">100 items</span> per batch · error code <span class="g">101</span></span>
-<span class="ai">AI: Starting changes, estimated 3 files.</span></pre>
-            <div class="fx-panel-foot">4.7 MB → 300 lines · Instant access to hard constraints</div>
+<span class="ai"><span class="p">[matcher hit]</span> m-image-model-dispatcher</span>
+<span class="ai"><span class="p">[cross-repo deps]</span> Repo B · Repo C · 4 topics</span>
+<span class="ai">AI: Known — B: <span class="g">image_model / image_material</span> tables to merge</span>
+<span class="ai">     C: admin menu <span class="a">"Model Mgr" + "Material Mgr"</span> collapse into one</span>
+<span class="ai">     Legacy: <span class="a">templateUuid</span> field goes nullable <span class="k">(see §3.2)</span></span>
+<span class="ai">     Naming: keep <span class="g">imageMaterial*</span> endpoints · retain provider param</span>
+<span class="ai">AI: Start · 5 edits on B · 3 on C · one topic chain.</span></pre>
+            <div class="fx-panel-foot">Cross 3 KBs → 300-line topic · constraints & legacy notes ready</div>
           </div>
         </div>
 
         <div class="fx-footer">
-          <span class="brand">flow2spec-intro</span>
-          <span class="page">02 / 14</span>
+          <span class="brand">flow2spec-intro · session-diff · image-material-library-merge</span>
+          <span class="page">02 / 16</span>
         </div>
         <div class="notes">
           <ul>
-          <li>Same ask: product-review template library · batch re-score</li>
-          <li>Left: no framework → table? sync? locks? often scans the whole API surface</li>
-          <li>Right: matcher hit → Redis keys, error codes, limits already in topics</li>
-          <li>Line: not a smarter model — <strong>better context</strong></li>
+          <li>Real cross-repo ask: merge image material library + image model mgmt (Repo B + Repo C)</li>
+          <li>Without: probes tables, migration, menu naming, legacy fields — code scan across 3 repos</li>
+          <li>With: one matcher → 4 cross-repo topics → DDL / naming / legacy all in topics</li>
+          <li>Line: not a smarter model — <strong>context is right, and cross-repo</strong></li>
           </ul>
         </div>
       </section>
@@ -164,24 +166,34 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>stats · trn-fe-ops-commerce-api · 2026-05-13</div>
+          <div>stats · 4 real production repos · 2026-09</div>
         </div>
 <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           Not a Concept — It's <span class="accent">Daily Reality</span>
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          In a real production repo deeply using Flow2Spec, these numbers grow every day.
+          Four real production repos · scale spans 40× · all on the same
+          Flow2Spec stack. Still only
+          <span style="color: var(--fx-cyan)">~300 lines of matched topics</span>
+          loaded per turn.
         </p>
 
         <div class="fx-kpis">
           <div class="fx-kpi" data-anim="fade-up" style="animation-delay: 0.3s">
             <div>
-              <div class="lbl">Public Endpoints</div>
-              <div class="num">416</div>
+              <div class="lbl">Repo A · Frontend main (3 yr)</div>
+              <div class="num">1012 source files · 129K LOC</div>
             </div>
             <div class="desc">
-              Functions registered in serverless.yml · Traditional approach requires AI to read the entire repo
+              <b style="color: var(--fx-cyan)">43</b> topics ·
+              <b style="color: var(--fx-cyan)">43</b> matchers ·
+              <b style="color: var(--fx-cyan)">46</b> stock-docs ·
+              <b style="color: var(--fx-cyan)">65</b> req-docs<br />
+              <b style="color: var(--fx-magenta)">27 authors</b> · 3 mo
+              <b style="color: var(--fx-magenta)">2786</b> commits ·
+              <b style="color: var(--fx-magenta)">43</b> archived tasks
             </div>
+            <div class="hint">➜ 129K LOC <span class="arr">→</span> <b>~hundreds of lines</b> per turn · 27 devs <b>zero task collision</b></div>
           </div>
 
           <div
@@ -189,12 +201,19 @@
             data-anim="fade-up"
             style="animation-delay: 0.42s">
             <div>
-              <div class="lbl">src Files / Size / Lines</div>
-              <div class="num">796 · 4.7 MB · 100K lines</div>
+              <div class="lbl">Repo B · API service (serverless)</div>
+              <div class="num">213 source files · 26K LOC</div>
             </div>
             <div class="desc">
-              Flow2Spec loads only ~300 lines of matched topics each time · 99% noise eliminated
+              <b style="color: var(--fx-magenta)">25</b> topics ·
+              <b style="color: var(--fx-magenta)">23</b> matchers ·
+              <b style="color: var(--fx-magenta)">14</b> stock-docs ·
+              <b style="color: var(--fx-magenta)">54</b> req-docs<br />
+              solo dev · 3 mo
+              <b style="color: var(--fx-magenta)">185</b> commits ·
+              <b style="color: var(--fx-magenta)">11</b> archived tasks
             </div>
+            <div class="hint">➜ req-doc <b>~4×</b> stock-doc <span class="arr">→</span> impl-driven · <b>no docs-first ceremony</b></div>
           </div>
 
           <div
@@ -202,12 +221,19 @@
             data-anim="fade-up"
             style="animation-delay: 0.54s">
             <div>
-              <div class="lbl">Topics / Matchers / Docs</div>
-              <div class="num">12 / 11 / 28</div>
+              <div class="lbl">Repo C · B-side admin</div>
+              <div class="num">73 source files · 5788 LOC</div>
             </div>
             <div class="desc">
-              Topic shards · keyword shards · dual-track documentation for existing and requirement docs
+              <b style="color: var(--fx-purple)">20</b> topics ·
+              <b style="color: var(--fx-purple)">18</b> matchers ·
+              <b style="color: var(--fx-purple)">6</b> stock-docs ·
+              <b style="color: var(--fx-purple)">5</b> req-docs<br />
+              solo dev · 3 mo
+              <b style="color: var(--fx-purple)">180</b> commits ·
+              <b style="color: var(--fx-purple)">19</b> archived tasks
             </div>
+            <div class="hint">➜ 5K LOC · still <b>20 topics</b> <span class="arr">→</span> not overkill, discipline scales down</div>
           </div>
 
           <div
@@ -215,37 +241,54 @@
             data-anim="fade-up"
             style="animation-delay: 0.66s">
             <div>
-              <div class="lbl">Endpoints / Layers / Task Lists</div>
-              <div class="num">17/3/14</div>
+              <div class="lbl">Repo D · C-side app (serverless)</div>
+              <div class="num">28 source files · 3174 LOC</div>
             </div>
             <div class="desc">
-              4 days intermittent work · across
-              <span style="color: var(--fx-cyan)">B-side · C-side · API layer</span>
-              three repos · review template library / tags / article revamp / AI review / agent scoring system /
-              frontend custom scoring
+              <b style="color: var(--fx-amber)">15</b> topics ·
+              <b style="color: var(--fx-amber)">14</b> matchers ·
+              <b style="color: var(--fx-amber)">2</b> stock-docs ·
+              <b style="color: var(--fx-amber)">1</b> req-doc<br />
+              2 authors · 3 mo
+              <b style="color: var(--fx-amber)">76</b> commits ·
+              <b style="color: var(--fx-amber)">7</b> archived tasks
             </div>
+            <div class="hint">➜ 3K-LOC seedling · already <b>15 topics</b> <span class="arr">→</span> onboard early, decay never</div>
           </div>
+        </div>
+
+        <div
+          class="fx-honest"
+          data-anim="fade-up"
+          style="animation-delay: 0.76s">
+          <span class="lbl">// summary</span>
+          4 repos combined: <b style="color: var(--fx-cyan)">1326 files · 165K LOC</b> ·
+          <b style="color: var(--fx-cyan)">103</b> topics ·
+          <b style="color: var(--fx-cyan)">98</b> matchers ·
+          <b style="color: var(--fx-cyan)">193</b> distilled docs ·
+          <b style="color: var(--fx-cyan)">80</b> archived tasks —
+          3K to 130K lines all work. <b>Not just for big projects.</b>
         </div>
 
         <div class="fx-footer">
           <span class="brand"
-            >A major internet company backend · trn-fe-ops-commerce-api · 2026-05-09 ~
-            05-13</span
+            >stats · 4 production repos (frontend main / interface / admin /
+            function) · 2026-09</span
           >
-          <span class="page">03 / 14</span>
+          <span class="page">03 / 16</span>
         </div>
         <div class="notes">
           <ul>
-          <li>416 APIs · 796 files · ~100k LOC — real scale</li>
-          <li>~300 lines of matched topics per turn, most noise cut</li>
-          <li>Last ~4 days: 17 APIs, 14 archived tasks, three repos in parallel</li>
-          <li>Hard to sustain this pace without a KB backbone</li>
+          <li>4 real repos, scale from 3K to 129K LOC (40× span)</li>
+          <li>Repo A: 43 topics / 27 authors / 2786 commits — real team collab</li>
+          <li>Combined 103 topics · 98 matchers · 193 docs · 80 archived tasks</li>
+          <li>Still ~300 lines of matched topics per turn</li>
           </ul>
         </div>
       </section>
 
       <!-- ======= Slide 4 · Why Not X · Y · Z ======= -->
-      <section class="slide is-compact">
+      <section class="slide is-scroll is-pain-matrix">
         <div class="fx-grid"></div>
         <div class="fx-glow-cyan"></div>
         <div class="fx-glow-magenta"></div>
@@ -259,112 +302,101 @@
           </div>
         </div>
 <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
-          No Hard Sell — <span class="accent">Judge for Yourself</span>
+          Bring <span class="accent">Your Pain</span>, Read Across
         </h2>
         <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
-          Top half: what five market players do and don't do. Bottom half: Flow2Spec's 5
-          capabilities mapped to each gap.
+          Five same-lane alternatives × five real pain points. Each cell describes what
+          actually happens — no checkmarks. Match your pain to the tool that catches it,
+          including where Flow2Spec doesn't.
         </p>
 
-        <div
-          class="fx-rivals"
-          data-anim="fade-up"
-          style="animation-delay: 0.28s">
-          <div class="fx-rival">
-            <div class="n">OpenSpec</div>
-            <div class="y">Strictest spec format</div>
-            <div class="x">× One-way — code drifts, never feeds back</div>
+        <div class="fx-matrix" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="fx-matrix-head">
+            <div class="q">// pain point</div>
+            <div>OpenSpec</div>
+            <div>Superpowers<br/>/ ohMyClaude<br/>/ cursorrules</div>
+            <div>RAG<br/>vector DB</div>
+            <div>Spec Kit<br/>/ Kiro / BMAD</div>
+            <div>Claude Memory<br/>model-native</div>
+            <div class="f">Flow2Spec</div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Superpowers / ohMyClaude</div>
-            <div class="y">Plug-and-play skills</div>
-            <div class="x">× Locked to Claude · No project knowledge</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Spec keeps up?</div>
+            <div>Code drifts silently<br/>sync is manual</div>
+            <div>No project knowledge, N/A</div>
+            <div>Reindex only if you remember to</div>
+            <div>Generated once<br/>code moves on, spec doesn't</div>
+            <div>Wiped when model swaps</div>
+            <div class="f"><code>kb-feat/fix</code> ties code to topic<br/><span class="hl">commit refuses without KB update</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">RAG Vector DB</div>
-            <div class="y">Full-text indexing · similarity search</div>
-            <div class="x">× Probabilistic hits · Can't enforce hard constraints</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Read cost on big repo?</div>
+            <div>Whole spec, every turn</div>
+            <div>All prompts, no project scope</div>
+            <div>Similarity guesses<br/>fails silently</div>
+            <div>Longer spec, slower each turn</div>
+            <div>Doesn't read code</div>
+            <div class="f">Matcher + dep chain<br/><span class="hl">a few hundred lines</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Spec Kit / Kiro / BMAD</div>
-            <div class="y">PM-friendly · requirements straight to spec</div>
-            <div class="x">× One-shot · Falls apart on iteration</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Layered / precise?</div>
+            <div>Flat single doc<br/>anchors by hand</div>
+            <div>Generic skills<br/>no project layers<br/>keyword-coarse</div>
+            <div>Flat chunks<br/>similarity ≠ precision</div>
+            <div>Layers frozen at gen time<br/>no growing deps</div>
+            <div>Flat memory items<br/>model picks, uncontrolled</div>
+            <div class="f">3 layers <span class="nowrap"><code>topic</code> / <code>stock-doc</code> / <code>code</code></span><br/><span class="hl">progressive · stop when enough</span></div>
           </div>
-          <div class="fx-rival">
-            <div class="n">Claude Memory</div>
-            <div class="y">No repeated introductions</div>
-            <div class="x">× Model-locked · Not Memory Coding (not in repo)</div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Swap IDE / model?</div>
+            <div>Yes, sync still manual</div>
+            <div><span class="neg">Locked to one IDE</span><br/>Claude or Cursor</div>
+            <div>Yes, but answers stay probabilistic</div>
+            <div>Yes, some wrappers fight the IDE</div>
+            <div><span class="neg">Model-locked</span><br/>swap model, lose memory</div>
+            <div class="f">Rules + knowledge + skills<br/><span class="hl">natively load in each client</span></div>
+          </div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Resume session?</div>
+            <div>No task state</div>
+            <div>No task state</div>
+            <div>No task state</div>
+            <div>No task state</div>
+            <div>Model memory<br/>new device / account resets</div>
+            <div class="f"><code>.task/</code> keyword hit → resume checklist<br/><span class="hl">80 archived tasks</span></div>
+          </div>
+
+          <div class="fx-matrix-row">
+            <div class="q">Diffable / reviewable?</div>
+            <div>Yes, spec is Markdown</div>
+            <div>Skills diffable<br/>project knowledge N/A</div>
+            <div>Index opaque, only rebuild</div>
+            <div>Spec diffable, but doesn't chase code</div>
+            <div><span class="neg">Not diffable</span><br/><span class="neg">not reviewable</span><br/>not shareable</div>
+            <div class="f"><code>.Knowledge/</code> all in-repo<br/>full team review</div>
           </div>
         </div>
 
-        <div
-          class="fx-capabilities"
-          data-anim="fade-up"
-          style="animation-delay: 0.42s">
-          <div class="title">
-            <span class="brand">Flow2Spec</span> · 5 Capabilities
-          </div>
-          <div class="grid">
-            <div class="cap">
-              <div class="id">①</div>
-              <div class="k">Multi-Platform</div>
-              <div class="v">
-                One <code>.Knowledge/</code> · any configured client
-                natively coexists
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">②</div>
-              <div class="k">Route Narrowing</div>
-              <div class="v">
-                Matcher hit + dependency chain + <span class="hl">gap gate</span> forces clarification
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">③</div>
-              <div class="k">Two-Way Sync</div>
-              <div class="v">
-                <code>f2s-kb-feat/fix</code> updates knowledge when code changes — not one-shot generation
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">④</div>
-              <div class="k">Native Agent</div>
-              <div class="v">
-                Only rules + knowledge + skills · no wrapper · new models just work
-              </div>
-            </div>
-            <div class="cap">
-              <div class="id">⑤</div>
-              <div class="k">Change Tracking + Commit Gate</div>
-              <div class="v">
-                <code>.task/</code> cross-session resume · <code>f2s-git-commit</code>
-                <span class="hl">enforces KB coverage before commit</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="fx-honest"
-          data-anim="fade-up"
-          style="animation-delay: 0.55s">
-          <span class="lbl">// honest note</span>
-          Stop using <code>f2s-kb-feat / fix</code> and knowledge still decays — the difference is the
-          <span class="hl">gap gate calls it out</span>
-          instead of silent drift.
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.5s">
+          <span class="lbl">// where Flow2Spec falls short</span>
+          <b>Skip syncing the KB · it still decays</b> — tools can't replace discipline; the gap gate just lets you hear the crack.
         </div>
 
         <div class="fx-footer">
-          <span class="brand">flow2spec-intro · market-diff</span>
-          <span class="page">04 / 14</span>
+          <span class="brand">flow2spec-intro · market-diff · pain-matrix</span>
+          <span class="page">04 / 16</span>
         </div>
         <div class="notes">
           <ul>
-          <li>Top row: five alternatives — what each does / does not do (quick scan)</li>
-          <li>OpenSpec one-way; Superpowers tool-bound; RAG probabilistic; Spec Kit one-shot; Claude Memory not in your repo</li>
-          <li>Bottom: Flow2Spec five capabilities (multi-IDE, routing, two-way sync, native agents, traceability)</li>
-          <li>Honest: KB still rots without f2s — but <strong>gap gates</strong> surface it</li>
+          <li>Compare on pains, not vendors: spec-drift / read-cost / IDE-swap / session-drop / diff-review</li>
+          <li>Each rival has multiple × — cells describe what actually happens</li>
+          <li>F is not perfect: steep vocab, delayed payoff, still rots if you stop</li>
+          <li>Honest close: F catches these 5 pains, not "wins" against everyone</li>
           </ul>
         </div>
       </section>
@@ -524,7 +556,7 @@
 
         <div class="fx-footer">
           <span class="brand">architecture · knowledge × rules</span>
-          <span class="page">05 / 14</span>
+          <span class="page">05 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -601,7 +633,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · progressive-load · product-review</span>
-          <span class="page">06 / 14</span>
+          <span class="page">06 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -704,7 +736,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · horizontal + vertical read</span>
-          <span class="page">07 / 14</span>
+          <span class="page">07 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -804,7 +836,7 @@
 
         <div class="fx-footer">
           <span class="brand">case · groupon × coupon · real-constraints</span>
-          <span class="page">08 / 14</span>
+          <span class="page">08 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -909,7 +941,7 @@
 
         <div class="fx-footer">
           <span class="brand">feature · resume · article-publish-flow</span>
-          <span class="page">09 / 14</span>
+          <span class="page">09 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -921,7 +953,186 @@
         </div>
       </section>
 
-      <!-- ======= Slide 10 · Command capability map ======= -->
+      <!-- ======= Slide 10 · Team Collaboration ======= -->
+      <section class="slide">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-cyan"></div>
+        <div class="fx-glow-magenta"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>collaboration · 27 authors · developerId isolation</div>
+        </div>
+        <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          Team Collab · <span class="accent">Isolated Tasks, Shared Knowledge</span>
+        </h2>
+        <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
+          Repo A · <span style="color: var(--fx-cyan)">27 authors · 2786 commits in 3 months</span>. Task lists split
+          by <code style="color: var(--fx-cyan)">developerId</code>; <code style="color: var(--fx-cyan)">.Knowledge/</code> remains a single shared source.
+        </p>
+
+        <div class="fx-collab" data-anim="fade-up" style="animation-delay: 0.32s">
+          <div class="fx-collab-cfg">
+            <div class="fx-collab-cfg-title">// flow2spec.config.json (identical across 4 repos)</div>
+            <pre class="fx-collab-cfg-pre"><span class="c">{</span>
+  <span class="k">"subAgent"</span>: <span class="v">true</span>,
+  <span class="k">"switchAgentVerification"</span>: <span class="v">true</span>,
+  <span class="k">"intentRecognition"</span>: <span class="v">true</span>,
+  <span class="k">"changeTracking"</span>: { <span class="k">"feat"</span>: <span class="v">true</span>, <span class="k">"implement"</span>: <span class="v">true</span> },
+  <span class="k">"collaboration"</span>: { <span class="k">"enabled"</span>: <span class="v">true</span> }
+<span class="c">}</span></pre>
+          </div>
+
+          <div class="fx-collab-tree">
+            <div class="fx-collab-cfg-title">// .task/ isolated by developerId</div>
+            <pre class="fx-collab-cfg-pre"><span class="cm">.task/</span>
+├── <span class="a">alice/</span>
+│   ├── todo.json
+│   ├── active/backfill_topics_for_reservation.../
+│   └── completed/  <span class="cm">← 12 items</span>
+├── <span class="a">bob/</span>
+│   ├── todo.json
+│   └── completed/  <span class="cm">← 8 items</span>
+└── <span class="a">charlie/</span>
+    └── completed/  <span class="cm">← 5 items</span>
+
+<span class="hl">.Knowledge/ stays a shared team source</span></pre>
+          </div>
+        </div>
+
+        <div class="fx-collab-metrics" data-anim="fade-up" style="animation-delay: 0.48s">
+          <div class="m">
+            <div class="lbl">Collab scale</div>
+            <div class="v">Repo A · 3 mo · <b>27 authors</b></div>
+          </div>
+          <div class="m">
+            <div class="lbl">Commit density</div>
+            <div class="v"><b>2786</b> commits · <b>43</b> archived tasks</div>
+          </div>
+          <div class="m">
+            <div class="lbl">Enabled</div>
+            <div class="v">
+              subAgent · switchAgentVerification · <b>100% on 4 repos</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.6s">
+          <span class="lbl">// key point</span>
+          Sub-agent writes → main-agent verifies; <code>developerId</code> isolates
+          <code>.task/</code> so concurrent revs never clash;
+          <b style="color: var(--fx-cyan)">shared topic single-source, private tasks stay separate</b>.
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">collaboration · developerId · switch-agent-verification</span>
+          <span class="page">10 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+            <li>Repo A: 27 authors, 2786 commits, 43 archived tasks — real team</li>
+            <li><code>collaboration.enabled=true</code> + <code>developerId</code> isolates .task/</li>
+            <li><code>switchAgentVerification=true</code> — cross-agent validation</li>
+            <li>Shared source is .Knowledge/, not task state</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 11 · 4 repos at a glance ======= -->
+      <section class="slide is-compact">
+        <div class="fx-grid"></div>
+        <div class="fx-glow-purple"></div>
+        <div class="fx-vignette"></div>
+        <div class="fx-scanlines"></div>
+
+        <div class="fx-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div>4 repos · same flow2spec stack · 40× scale span</div>
+        </div>
+        <h2 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
+          4 Repos · <span class="accent">Same Stack</span>
+        </h2>
+        <p class="fx-lede" data-anim="fade-up" style="animation-delay: 0.2s">
+          From <b style="color:var(--fx-cyan)">3K-line C-side app</b> to
+          <b style="color:var(--fx-cyan)">129K-line frontend main</b> — topic
+          count grows roughly linearly. Not just for big projects.
+        </p>
+
+        <div class="fx-repos" data-anim="fade-up" style="animation-delay: 0.32s">
+          <div class="fx-repos-head">
+            <div>Repo</div>
+            <div>Scale</div>
+            <div>topic / matcher</div>
+            <div>docs (stock / req)</div>
+            <div>archived tasks</div>
+            <div>3 mo commits</div>
+          </div>
+          <div class="fx-repos-row r1">
+            <div class="n">Repo A<span>Frontend main · 3 yr</span></div>
+            <div>1012 files · 129K LOC</div>
+            <div>43 / 43</div>
+            <div>46 / 65</div>
+            <div>43 · 27 authors</div>
+            <div>2786</div>
+          </div>
+          <div class="fx-repos-row r2">
+            <div class="n">Repo B<span>API service (serverless)</span></div>
+            <div>213 files · 26K LOC</div>
+            <div>25 / 23</div>
+            <div>14 / 54</div>
+            <div>11 · solo</div>
+            <div>185</div>
+          </div>
+          <div class="fx-repos-row r3">
+            <div class="n">Repo C<span>B-side admin</span></div>
+            <div>73 files · 5788 LOC</div>
+            <div>20 / 18</div>
+            <div>6 / 5</div>
+            <div>19 · solo</div>
+            <div>180</div>
+          </div>
+          <div class="fx-repos-row r4">
+            <div class="n">Repo D<span>C-side app (serverless)</span></div>
+            <div>28 files · 3174 LOC</div>
+            <div>15 / 14</div>
+            <div>2 / 1</div>
+            <div>7 · 2 authors</div>
+            <div>76</div>
+          </div>
+          <div class="fx-repos-row rt">
+            <div class="n">Total</div>
+            <div>1326 files · 165K LOC</div>
+            <div>103 / 98</div>
+            <div>68 / 125</div>
+            <div>80</div>
+            <div>3227</div>
+          </div>
+        </div>
+
+        <div class="fx-honest" data-anim="fade-up" style="animation-delay: 0.5s">
+          <span class="lbl">// observation</span>
+          Scale spans <b style="color: var(--fx-cyan)">40×</b>; topics grow from 15 to
+          43. req-docs <b style="color: var(--fx-magenta)">always outnumber
+          stock-docs</b> — proof the KB is <b>iteration-driven</b>, not a one-shot dump.
+        </div>
+
+        <div class="fx-footer">
+          <span class="brand">4 repos · frontend / interface / admin / function · 2026-09</span>
+          <span class="page">11 / 16</span>
+        </div>
+        <div class="notes">
+          <ul>
+            <li>Cross-repo comparison: scale, topics, matchers, docs, tasks, commits</li>
+            <li>40× scale span, topic count grows roughly linearly</li>
+            <li>req-docs outnumber stock-docs → iteration-driven</li>
+            <li>Combined 103 topics · 98 matchers · 193 docs · 80 archived · 3227 commits</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= Slide 12 · Command capability map ======= -->
       <section class="slide is-compact">
         <div class="fx-grid"></div>
         <div class="fx-glow-cyan"></div>
@@ -931,7 +1142,7 @@
 
         <div class="fx-chrome">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div>skills · command-map</div>
+          <div>skills · command-map · 4 primary + 3 secondary</div>
         </div>
 <h1 class="fx-h1" data-anim="fade-up" style="animation-delay: 0.1s">
           Command <span class="accent">map</span>
@@ -940,85 +1151,122 @@
           class="fx-lede"
           data-anim="fade-up"
           style="animation-delay: 0.18s; margin-top: 4px">
-          Pick <code>f2s-*</code> by lifecycle stage — not from a flat cheat sheet.
-          <code>flow2spec init</code> lays down templates and routing; day to day, name the skill in chat.
+          <b style="color:var(--fx-cyan)">4 daily drivers cover ~80%</b> ·
+          the rest fire on demand. <code>flow2spec init</code> lays scaffolding;
+          day to day, name the skill in chat.
         </p>
 
-        <div
-          class="fx-cmd-map"
-          data-anim="fade-up"
-          style="animation-delay: 0.28s">
-          <div class="grid">
-            <div class="dom">
-              <span class="id">① Bootstrap</span>
-              <span class="k">Scaffold & migrate</span>
-              <span class="cmds"
-                >flow2spec init · f2s-kb-migrate · f2s-kb-upgrade</span
-              >
-              <span class="v">Align new repos; one-shot legacy KB → .Knowledge</span>
+        <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
+          <div class="pcard p1">
+            <div class="ptag">daily · most frequent</div>
+            <div class="pname">f2s-kb-feat</div>
+            <div class="psub">Add feature · code + build topic</div>
+            <div class="pdesc">
+              For new features. <b>Code first</b>, then guide topic + matcher + deps;
+              <code>changeTracking.feat</code> auto-opens <code>.task/</code>.
             </div>
-            <div class="dom">
-              <span class="id">② Requirements</span>
-              <span class="k">clarify → tech spec</span>
-              <span class="cmds">f2s-req-clarify · f2s-req-tech</span>
-              <span class="v">PRD Q&A and tech docs</span>
+            <div class="ptrigger">"add a feature …" · "new capability …"</div>
+          </div>
+
+          <div class="pcard p2">
+            <div class="ptag">daily · most frequent</div>
+            <div class="pname">f2s-kb-fix</div>
+            <div class="psub">Fix bug · patch + prevent</div>
+            <div class="pdesc">
+              For bug fixes. After code fix, <b>encode the trap into a topic</b>;
+              AI won't step on it again nearby. Gap gate flags gaps.
             </div>
-            <div class="dom">
-              <span class="id">③ Docs in</span>
-              <span class="k">spec / final / arch / milestone</span>
-              <span class="cmds"
-                >f2s-doc-pdf · f2s-doc-final · f2s-doc-arch ·
-                f2s-doc-milestone</span
-              >
-              <span class="v"
-                >Specs & stock-docs; milestones generated from four sources</span
-              >
+            <div class="ptrigger">"fix …" · "this should be …"</div>
+          </div>
+
+          <div class="pcard p3">
+            <div class="ptag">wrap-up · required</div>
+            <div class="pname">f2s-git-commit</div>
+            <div class="psub">3 gates · nothing slips</div>
+            <div class="pdesc">
+              Enforces on commit: <b>conflict scan · KB coverage · emoji + Conventional</b>.
+              No <code>add -A</code>, no hook-skip, no auto-push.
             </div>
-            <div class="dom">
-              <span class="id">④ Iterate</span>
-              <span class="k">ship · change tracking</span>
-              <span class="cmds">f2s-kb-feat · f2s-kb-fix</span>
-              <span class="v"
-                >Code from tech design; <code>changeTracking</code> maintains
-                <code>.task/</code> (use <code>f2s-req-plan</code> as fallback when off)</span
-              >
+            <div class="ptrigger">"commit" · "let's commit"</div>
+          </div>
+
+          <div class="pcard p4">
+            <div class="ptag">big-req entry</div>
+            <div class="pname">req-clarify → req-tech</div>
+            <div class="psub">Clarify → tech spec</div>
+            <div class="pdesc">
+              For large requests. <b>Two-batch clarify</b>, self-check KB gaps,
+              then produce tech spec + DDL if needed. Then <code>implement-tech-design</code>.
             </div>
-            <div class="dom">
-              <span class="id">⑤ Knowledge upkeep</span>
-              <span class="k">routing · topics · existing code</span>
-              <span class="cmds">f2s-ctx-build · f2s-ctx-rm · f2s-doc-add</span>
-              <span class="v">stock-docs ↔ topics/manifest; finals into routing; multi-file ingest</span>
+            <div class="ptrigger">"clarify this …" · "make a tech spec …"</div>
+          </div>
+        </div>
+
+        <div class="fx-cmd-secondary" data-anim="fade-up" style="animation-delay: 0.42s">
+          <div class="stitle">// the rest, on demand</div>
+          <div class="srow">
+            <div class="sk">Bootstrap / upgrade</div>
+            <div class="sv">
+              <code>flow2spec init</code> new repo scaffold · <code>f2s-kb-upgrade</code> align legacy routes & matchers
             </div>
-            <div class="dom">
-              <span class="id">⑥ Wrap-up</span>
-              <span class="k">commit · merge · sync</span>
-              <span class="cmds">f2s-git-commit · f2s-kb-merge · f2s-kb-sync</span>
-              <span class="v">Commit with KB checks; merge conflicts; kb-sync backfills KB after ship</span>
+          </div>
+          <div class="srow">
+            <div class="sk">Docs in</div>
+            <div class="sv">
+              <code>f2s-doc-pdf</code> PDF→MD · <code>f2s-doc-final</code> finalize ·
+              <code>f2s-doc-arch</code> architecture · <code>f2s-doc-milestone</code> milestone
             </div>
           </div>
         </div>
 
-        <p
-          class="fx-cmd-foot"
-          data-anim="fade-up"
-          style="animation-delay: 0.38s">
-          Implement from tech design via rule
-          <code>implement-tech-design</code> (not an <code>f2s-*</code> skill name); bulk existing
-          capabilities → <code>f2s-doc-add</code>.
-        </p>
+        <div class="fx-cmd-tertiary" data-anim="fade-up" style="animation-delay: 0.5s">
+          <div class="stitle">// KB upkeep · the trio</div>
+          <div class="tgrid">
+            <div class="tcard t1">
+              <div class="tname">f2s-kb-distill</div>
+              <div class="tsub">Extract during chat</div>
+              <div class="tdesc">
+                While debugging or Q&A, <b>capture reusable facts into KB inline</b>
+                — auto-decides "new topic" vs "extend existing"; no context switch.
+              </div>
+              <div class="ttrigger">"remember this in the KB"</div>
+            </div>
+            <div class="tcard t2">
+              <div class="tname">f2s-kb-add</div>
+              <div class="tsub">Bulk multi-file ingest</div>
+              <div class="tdesc">
+                <b>Sink existing capabilities in one pass</b> — feed N docs/files at once,
+                auto-generate draft → final → topic + matcher + routing.
+              </div>
+              <div class="ttrigger">"ingest these existing docs"</div>
+            </div>
+            <div class="tcard t3">
+              <div class="tname">f2s-kb-sync</div>
+              <div class="tsub">Global sync · catch-all safety net</div>
+              <div class="tdesc">
+                <b>Forgot to run kb-feat/fix? No problem</b> — scans shipped capabilities,
+                proposes a KB update outline; you confirm before write. Last-line-of-defense.
+              </div>
+              <div class="ttrigger">"sync the KB globally"</div>
+            </div>
+          </div>
+          <div class="tfoot">
+            <span class="tk">Rest:</span>
+            <code>f2s-kb-addRules</code> capture rules · <code>f2s-kb-build</code> finals→routing ·
+            <code>f2s-kb-merge</code> merge conflicts · <code>f2s-kb-rm</code> remove topic ·
+            <code>f2s-req-plan</code> task plan fallback
+          </div>
+        </div>
 
         <div class="fx-footer">
-          <span class="brand">init · changeTracking · doc-milestone</span>
-          <span class="page">10 / 14</span>
+          <span class="brand">4 primary · 3 secondary · daily-driver command map</span>
+          <span class="page">12 / 16</span>
         </div>
         <div class="notes">
           <ul>
-          <li>Command map — remember <strong>stages</strong>, not twenty skill names</li>
-          <li>① Onboard: init / migrate / upgrade</li>
-          <li>② Requirements: clarify / backend</li>
-          <li>③ Docs: pdf / final / arch / milestone</li>
-          <li>④ Iterate: feat / fix + <code>changeTracking</code>; <strong>implement-tech-design</strong>; <code>f2s-req-plan</code> only when tracking is off</li>
-          <li>⑤ Maintain: ctx-build / ctx-rm / doc-add · ⑥ Ship: git-commit / kb-merge / kb-sync</li>
+          <li>Command map — <strong>4 daily drivers, rest on demand</strong>, don't memorize twenty skills</li>
+          <li>Primary 4: kb-feat · kb-fix · git-commit · req-clarify→req-tech</li>
+          <li>Secondary 3: bootstrap / docs / upkeep — one-line skim during talk</li>
           <li>init lays scaffolding; business KB grows through f2s flows</li>
           </ul>
         </div>
@@ -1070,7 +1318,7 @@
             <pre
               class="fx-stage-cmd"><span class="cm"># Feed an architecture doc</span>
 <span class="kw">/</span>f2s-doc-arch
-<span class="kw">/</span>f2s-doc-add</pre>
+<span class="kw">/</span>f2s-kb-add</pre>
             <div class="fx-stage-out">
               AI reads existing docs<br />→ Generates first topic + matcher
             </div>
@@ -1185,7 +1433,7 @@
 
         <div class="fx-footer">
           <span>progressive · pay-as-you-grow</span>
-          <span class="page">11 / 14</span>
+          <span class="page">13 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1730,7 +1978,7 @@
 
         <div class="fx-footer">
           <span class="brand">live · demo · end-to-end</span>
-          <span class="page">12 / 14</span>
+          <span class="page">14 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1792,7 +2040,7 @@
 
         <div class="fx-footer">
           <span class="brand">honest · limits</span>
-          <span class="page">13 / 14</span>
+          <span class="page">15 / 16</span>
         </div>
         <div class="notes">
           <ul>
@@ -1840,7 +2088,7 @@
 
         <div class="fx-footer">
           <span class="brand">flow2spec · let's talk</span>
-          <span class="page">14 / 14</span>
+          <span class="page">16 / 16</span>
         </div>
         <div class="notes">
           <ul>

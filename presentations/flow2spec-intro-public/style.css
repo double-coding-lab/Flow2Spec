@@ -143,13 +143,13 @@
 .tpl-flow2spec-intro .fx-kpi:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--fx-magenta),transparent)}
 .tpl-flow2spec-intro .fx-kpi:nth-child(3)::before{background:linear-gradient(90deg,transparent,var(--fx-purple),transparent)}
 .tpl-flow2spec-intro .fx-kpi:nth-child(4)::before{background:linear-gradient(90deg,transparent,var(--fx-amber),transparent)}
-.tpl-flow2spec-intro .fx-kpi .num{font-family:'JetBrains Mono',monospace;font-size:68px;font-weight:700;line-height:1;letter-spacing:-.03em;margin:8px 0 14px}
-.tpl-flow2spec-intro .fx-kpi:nth-child(1) .num{color:var(--fx-cyan);text-shadow:0 0 28px rgba(126,246,255,.5)}
-.tpl-flow2spec-intro .fx-kpi:nth-child(2) .num{color:var(--fx-magenta);text-shadow:0 0 28px rgba(255,120,214,.5);font-size:30px;line-height:1.15;letter-spacing:-.01em}
-.tpl-flow2spec-intro .fx-kpi:nth-child(3) .num{color:var(--fx-purple);text-shadow:0 0 28px rgba(187,160,255,.5);font-size:48px}
-.tpl-flow2spec-intro .fx-kpi:nth-child(4) .num{color:var(--fx-amber);text-shadow:0 0 28px rgba(255,217,143,.5)}
+.tpl-flow2spec-intro .fx-kpi .num{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;line-height:1.15;letter-spacing:-.02em;margin:8px 0 12px;word-break:break-word}
+.tpl-flow2spec-intro .fx-kpi:nth-child(1) .num{color:var(--fx-cyan);text-shadow:0 0 22px rgba(126,246,255,.5)}
+.tpl-flow2spec-intro .fx-kpi:nth-child(2) .num{color:var(--fx-magenta);text-shadow:0 0 22px rgba(255,120,214,.5)}
+.tpl-flow2spec-intro .fx-kpi:nth-child(3) .num{color:var(--fx-purple);text-shadow:0 0 22px rgba(187,160,255,.5)}
+.tpl-flow2spec-intro .fx-kpi:nth-child(4) .num{color:var(--fx-amber);text-shadow:0 0 22px rgba(255,217,143,.5)}
 .tpl-flow2spec-intro .fx-kpi .lbl{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--fx-ink2);font-weight:500}
-.tpl-flow2spec-intro .fx-kpi .desc{font-size:12.5px;color:var(--fx-ink2);line-height:1.55;font-family:'Inter','PingFang SC',sans-serif;margin-top:8px}
+.tpl-flow2spec-intro .fx-kpi .desc{font-size:12px;color:var(--fx-ink2);line-height:1.65;font-family:'Inter','PingFang SC',sans-serif;margin-top:8px}
 
 /* footer */
 .tpl-flow2spec-intro .fx-footer{position:absolute !important;left:88px;right:88px;bottom:30px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--fx-ink2);letter-spacing:.22em;text-transform:uppercase;border-top:1px solid rgba(150,170,255,.14);padding-top:14px;z-index:5}
@@ -193,6 +193,7 @@
 .tpl-flow2spec-intro .fx-capabilities .cap .k{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--fx-ink);font-weight:600}
 .tpl-flow2spec-intro .fx-capabilities .cap .v{font-size:11.5px;color:var(--fx-ink2);line-height:1.5;font-family:'Inter','PingFang SC',sans-serif}
 .tpl-flow2spec-intro .fx-capabilities .cap .v code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fx-amber);background:rgba(255,217,143,.08);padding:1px 5px;border-radius:3px}
+.tpl-flow2spec-intro .fx-capabilities .cap .p{font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.5;color:var(--fx-cyan);margin-top:4px;padding-top:4px;border-top:1px dashed rgba(126,246,255,.24)}
 .tpl-flow2spec-intro .fx-capabilities .hl{color:var(--fx-magenta);font-weight:600}
 
 /* === 命令能力总览（Slide 10） === */
@@ -465,3 +466,131 @@
 .tpl-flow2spec-intro .fx-kb-pre .a{color:var(--fx-purple)}
 .tpl-flow2spec-intro .fx-kb-pre .x{color:var(--fx-ink2);font-style:italic}
 .tpl-flow2spec-intro .fx-kb-pre .r{color:var(--fx-green);font-weight:500}
+
+/* === Slide 10 · 多人协作实测 === */
+.tpl-flow2spec-intro .fx-collab{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.tpl-flow2spec-intro .fx-collab-cfg,
+.tpl-flow2spec-intro .fx-collab-tree{background:var(--fx-surface);border:1px solid var(--fx-border);border-radius:10px;padding:16px 20px;position:relative}
+.tpl-flow2spec-intro .fx-collab-cfg::before{content:'';position:absolute;top:-1px;left:14px;right:14px;height:2px;background:linear-gradient(90deg,transparent,var(--fx-cyan),transparent)}
+.tpl-flow2spec-intro .fx-collab-tree::before{content:'';position:absolute;top:-1px;left:14px;right:14px;height:2px;background:linear-gradient(90deg,transparent,var(--fx-magenta),transparent)}
+.tpl-flow2spec-intro .fx-collab-cfg-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fx-ink2);margin-bottom:10px}
+.tpl-flow2spec-intro .fx-collab-cfg-pre{background:rgba(10,11,22,.7);border:1px solid rgba(150,170,255,.16);border-radius:6px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.75;color:var(--fx-ink);white-space:pre;overflow-x:auto;margin:0}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .c{color:var(--fx-ink2)}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .k{color:var(--fx-cyan)}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .v{color:var(--fx-amber)}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .a{color:var(--fx-purple);font-weight:600}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .cm{color:var(--fx-ink2);opacity:.7}
+.tpl-flow2spec-intro .fx-collab-cfg-pre .hl{color:var(--fx-cyan);font-weight:600}
+.tpl-flow2spec-intro .fx-collab-metrics{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tpl-flow2spec-intro .fx-collab-metrics .m{background:var(--fx-surface);border:1px solid var(--fx-border);border-radius:10px;padding:14px 18px;position:relative}
+.tpl-flow2spec-intro .fx-collab-metrics .m::before{content:'';position:absolute;top:-1px;left:12px;right:12px;height:2px;background:linear-gradient(90deg,transparent,var(--fx-purple),transparent)}
+.tpl-flow2spec-intro .fx-collab-metrics .m .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fx-ink2);margin-bottom:6px}
+.tpl-flow2spec-intro .fx-collab-metrics .m .v{font-family:'Inter','PingFang SC',sans-serif;font-size:14px;color:var(--fx-ink);line-height:1.5}
+.tpl-flow2spec-intro .fx-collab-metrics .m .v b{color:var(--fx-cyan);font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* === Slide 11 · 4 仓一览表 === */
+.tpl-flow2spec-intro .fx-repos{margin-top:22px;border:1px solid var(--fx-border);border-radius:12px;overflow:hidden;background:var(--fx-surface)}
+.tpl-flow2spec-intro .fx-repos-head,
+.tpl-flow2spec-intro .fx-repos-row{display:grid;grid-template-columns:1.4fr 1.6fr 1fr 1fr 1.1fr .8fr;align-items:center;border-bottom:1px solid rgba(130,150,255,.08)}
+.tpl-flow2spec-intro .fx-repos-row:last-child{border-bottom:none}
+.tpl-flow2spec-intro .fx-repos-head{background:rgba(94,241,255,.05);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fx-ink2)}
+.tpl-flow2spec-intro .fx-repos-head > div{padding:10px 18px}
+.tpl-flow2spec-intro .fx-repos-row > div{padding:12px 18px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--fx-ink);line-height:1.4}
+.tpl-flow2spec-intro .fx-repos-row .n{display:flex;flex-direction:column;gap:2px;font-weight:700}
+.tpl-flow2spec-intro .fx-repos-row .n span{font-family:'Inter','PingFang SC',sans-serif;font-size:10.5px;color:var(--fx-ink2);font-weight:400;letter-spacing:.02em}
+.tpl-flow2spec-intro .fx-repos-row.r1 .n{color:var(--fx-cyan)}
+.tpl-flow2spec-intro .fx-repos-row.r2 .n{color:var(--fx-magenta)}
+.tpl-flow2spec-intro .fx-repos-row.r3 .n{color:var(--fx-purple)}
+.tpl-flow2spec-intro .fx-repos-row.r4 .n{color:var(--fx-amber)}
+.tpl-flow2spec-intro .fx-repos-row.rt{background:rgba(126,246,255,.06);border-top:1px dashed rgba(126,246,255,.3)}
+.tpl-flow2spec-intro .fx-repos-row.rt .n{color:var(--fx-cyan);font-weight:700;font-size:13px}
+.tpl-flow2spec-intro .fx-repos-row.rt > div{font-weight:700}
+
+/* === Slide 4 · 痛点矩阵（覆盖旧的 fx-rivals / fx-capabilities 已不再使用） === */
+.tpl-flow2spec-intro .fx-matrix{margin-top:16px;border:1px solid var(--fx-border);border-radius:12px;overflow:hidden;background:var(--fx-surface)}
+.tpl-flow2spec-intro .fx-matrix-head,
+.tpl-flow2spec-intro .fx-matrix-row{display:grid;grid-template-columns:.85fr 1.15fr 1.25fr 1.15fr 1.15fr 1.25fr 1.35fr;border-bottom:1px solid rgba(130,150,255,.08)}
+.tpl-flow2spec-intro .fx-matrix-row:last-child{border-bottom:none}
+.tpl-flow2spec-intro .fx-matrix-head{background:rgba(94,241,255,.05);align-items:stretch}
+.tpl-flow2spec-intro .fx-matrix-head > div{padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.35;color:var(--fx-ink);letter-spacing:.02em;border-right:1px solid rgba(130,150,255,.08);display:flex;align-items:center;justify-content:center;text-align:center}
+.tpl-flow2spec-intro .fx-matrix-head > div:last-child{border-right:none}
+.tpl-flow2spec-intro .fx-matrix-head .q{background:rgba(94,241,255,.08);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fx-ink2);justify-content:flex-start;text-align:left}
+.tpl-flow2spec-intro .fx-matrix-head .f{color:var(--fx-cyan);font-weight:700;background:rgba(94,241,255,.06)}
+.tpl-flow2spec-intro .fx-matrix-row > div{padding:10px 11px;font-family:'Inter','PingFang SC',sans-serif;font-size:11px;line-height:1.6;color:var(--fx-ink2);border-right:1px solid rgba(130,150,255,.08);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;overflow-wrap:break-word;word-break:normal}
+.tpl-flow2spec-intro .fx-matrix-row > div:last-child{border-right:none}
+.tpl-flow2spec-intro .fx-matrix-row .q{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fx-ink);font-weight:600;background:rgba(94,241,255,.03)}
+.tpl-flow2spec-intro .fx-matrix-row .f{color:var(--fx-ink);background:rgba(94,241,255,.05);font-family:'Inter','PingFang SC',sans-serif}
+.tpl-flow2spec-intro .fx-matrix-row .nowrap{white-space:nowrap}
+.tpl-flow2spec-intro .fx-matrix-row .f code{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fx-amber);background:rgba(255,217,143,.08);padding:1px 5px;border-radius:3px;white-space:nowrap}
+.tpl-flow2spec-intro .fx-matrix-row .f .hl{color:var(--fx-cyan);font-weight:600}
+.tpl-flow2spec-intro .fx-matrix-row .neg{color:var(--fx-red);font-weight:600}
+.tpl-flow2spec-intro .slide.is-compact .fx-matrix + .fx-honest{margin-top:12px}
+.tpl-flow2spec-intro .fx-honest b{color:var(--fx-cyan);font-weight:600}
+
+/* === Slide 4 · 痛点矩阵 · 可滚动优化 === */
+.tpl-flow2spec-intro .slide.is-pain-matrix{padding-bottom:80px}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-h1{font-size:48px;margin:4px 0 6px;line-height:1.1}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-lede{font-size:15px;line-height:1.55;margin-bottom:6px}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-matrix{margin-top:12px;overflow:visible;flex-shrink:0}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-matrix-row:last-child > div:first-child{border-bottom-left-radius:11px}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-matrix-row:last-child > div:last-child{border-bottom-right-radius:11px}
+.tpl-flow2spec-intro .slide.is-pain-matrix .fx-honest{margin-top:14px;margin-bottom:20px;flex-shrink:0}
+
+/* === Slide 3 · KPI 卡「这意味着」行 === */
+.tpl-flow2spec-intro .fx-kpi{padding-bottom:20px}
+.tpl-flow2spec-intro .fx-kpi .hint{margin-top:10px;padding:8px 10px;border-top:1px dashed rgba(126,246,255,.24);font-family:'Inter','PingFang SC',sans-serif;font-size:11.5px;line-height:1.55;color:var(--fx-ink)}
+.tpl-flow2spec-intro .fx-kpi .hint b{color:var(--fx-cyan);font-weight:700}
+.tpl-flow2spec-intro .fx-kpi .hint .arr{color:var(--fx-magenta);font-family:'JetBrains Mono',monospace;font-weight:700;margin:0 4px}
+
+/* === Slide 12 · 命令能力总览(4 主力 + 3 副) === */
+.tpl-flow2spec-intro .fx-cmd-primary{margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tpl-flow2spec-intro .fx-cmd-primary .pcard{background:var(--fx-surface);border:1px solid var(--fx-border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;min-height:220px}
+.tpl-flow2spec-intro .fx-cmd-primary .pcard::before{content:'';position:absolute;top:-1px;left:14px;right:14px;height:2px}
+.tpl-flow2spec-intro .fx-cmd-primary .p1{border-color:rgba(126,246,255,.4)}
+.tpl-flow2spec-intro .fx-cmd-primary .p1::before{background:linear-gradient(90deg,transparent,var(--fx-cyan),transparent)}
+.tpl-flow2spec-intro .fx-cmd-primary .p1 .pname{color:var(--fx-cyan)}
+.tpl-flow2spec-intro .fx-cmd-primary .p2{border-color:rgba(255,120,214,.4)}
+.tpl-flow2spec-intro .fx-cmd-primary .p2::before{background:linear-gradient(90deg,transparent,var(--fx-magenta),transparent)}
+.tpl-flow2spec-intro .fx-cmd-primary .p2 .pname{color:var(--fx-magenta)}
+.tpl-flow2spec-intro .fx-cmd-primary .p3{border-color:rgba(187,160,255,.4)}
+.tpl-flow2spec-intro .fx-cmd-primary .p3::before{background:linear-gradient(90deg,transparent,var(--fx-purple),transparent)}
+.tpl-flow2spec-intro .fx-cmd-primary .p3 .pname{color:var(--fx-purple)}
+.tpl-flow2spec-intro .fx-cmd-primary .p4{border-color:rgba(255,217,143,.4)}
+.tpl-flow2spec-intro .fx-cmd-primary .p4::before{background:linear-gradient(90deg,transparent,var(--fx-amber),transparent)}
+.tpl-flow2spec-intro .fx-cmd-primary .p4 .pname{color:var(--fx-amber)}
+.tpl-flow2spec-intro .fx-cmd-primary .ptag{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fx-ink2);opacity:.75}
+.tpl-flow2spec-intro .fx-cmd-primary .pname{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.15}
+.tpl-flow2spec-intro .fx-cmd-primary .psub{font-family:'Inter','PingFang SC',sans-serif;font-size:12.5px;font-weight:600;color:var(--fx-ink);margin-bottom:2px}
+.tpl-flow2spec-intro .fx-cmd-primary .pdesc{font-family:'Inter','PingFang SC',sans-serif;font-size:11.5px;line-height:1.55;color:var(--fx-ink2);flex:1}
+.tpl-flow2spec-intro .fx-cmd-primary .pdesc code{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fx-amber);background:rgba(255,217,143,.08);padding:1px 5px;border-radius:3px}
+.tpl-flow2spec-intro .fx-cmd-primary .pdesc b{color:var(--fx-cyan);font-weight:600}
+.tpl-flow2spec-intro .fx-cmd-primary .ptrigger{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fx-green);border-top:1px dashed rgba(150,170,255,.16);padding-top:6px;margin-top:2px;line-height:1.5}
+
+.tpl-flow2spec-intro .fx-cmd-secondary{margin-top:14px;border:1px solid var(--fx-border);border-radius:10px;padding:12px 16px;background:linear-gradient(180deg,rgba(126,246,255,.03),rgba(187,160,255,.02))}
+.tpl-flow2spec-intro .fx-cmd-secondary .stitle{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fx-ink2);margin-bottom:8px}
+.tpl-flow2spec-intro .fx-cmd-secondary .srow{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:5px 0;border-bottom:1px dashed rgba(150,170,255,.1)}
+.tpl-flow2spec-intro .fx-cmd-secondary .srow:last-child{border-bottom:none}
+.tpl-flow2spec-intro .fx-cmd-secondary .sk{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--fx-cyan);font-weight:600;letter-spacing:.02em;display:flex;align-items:center}
+.tpl-flow2spec-intro .fx-cmd-secondary .sv{font-family:'Inter','PingFang SC',sans-serif;font-size:11.5px;line-height:1.7;color:var(--fx-ink2)}
+.tpl-flow2spec-intro .fx-cmd-secondary .sv code{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fx-amber);background:rgba(255,217,143,.08);padding:1px 5px;border-radius:3px;margin-right:2px}
+
+/* === Slide 12 · 知识维护三剑客 · tertiary 三张中卡 === */
+.tpl-flow2spec-intro .fx-cmd-tertiary{margin-top:14px;border:1px solid rgba(187,160,255,.24);border-radius:10px;padding:12px 16px;background:linear-gradient(180deg,rgba(187,160,255,.03),rgba(126,246,255,.02))}
+.tpl-flow2spec-intro .fx-cmd-tertiary .stitle{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fx-purple);margin-bottom:10px}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tcard{background:var(--fx-surface);border:1px solid var(--fx-border);border-radius:8px;padding:11px 14px;display:flex;flex-direction:column;gap:4px;min-height:140px;position:relative;overflow:hidden}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tcard::before{content:'';position:absolute;top:-1px;left:12px;right:12px;height:1.5px}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t1::before{background:linear-gradient(90deg,transparent,var(--fx-green),transparent)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t1 .tname{color:var(--fx-green)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t2::before{background:linear-gradient(90deg,transparent,var(--fx-cyan),transparent)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t2 .tname{color:var(--fx-cyan)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t3::before{background:linear-gradient(90deg,transparent,var(--fx-magenta),transparent)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .t3 .tname{color:var(--fx-magenta)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tname{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tsub{font-family:'Inter','PingFang SC',sans-serif;font-size:11px;font-weight:600;color:var(--fx-ink);margin-bottom:2px}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tdesc{font-family:'Inter','PingFang SC',sans-serif;font-size:10.5px;line-height:1.55;color:var(--fx-ink2);flex:1}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tdesc b{color:var(--fx-cyan);font-weight:600}
+.tpl-flow2spec-intro .fx-cmd-tertiary .ttrigger{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--fx-amber);border-top:1px dashed rgba(150,170,255,.16);padding-top:5px;margin-top:2px;line-height:1.4}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tfoot{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(150,170,255,.14);font-family:'Inter','PingFang SC',sans-serif;font-size:11px;line-height:1.7;color:var(--fx-ink2)}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tfoot .tk{font-family:'JetBrains Mono',monospace;color:var(--fx-ink);font-weight:600;margin-right:4px}
+.tpl-flow2spec-intro .fx-cmd-tertiary .tfoot code{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--fx-amber);background:rgba(255,217,143,.08);padding:1px 5px;border-radius:3px}
