@@ -328,7 +328,11 @@
             <div>Reindex only if you remember to</div>
             <div>Generated once<br/>code moves on, spec doesn't</div>
             <div>Wiped when model swaps</div>
-            <div class="f"><code>kb-feat/fix</code> ties code to topic<br/><span class="hl">commit refuses without KB update</span></div>
+            <div class="f">
+              <span><code>kb-feat/fix</code> ties code to the knowledge base</span>
+              <span><code>kb-sync</code> manual full resync anytime</span>
+              <span><code>kb-add</code> ingest any module on demand</span>
+            </div>
           </div>
 
           <div class="fx-matrix-row">
@@ -358,7 +362,7 @@
             <div>Yes, but answers stay probabilistic</div>
             <div>Yes, some wrappers fight the IDE</div>
             <div><span class="neg">Model-locked</span><br/>swap model, lose memory</div>
-            <div class="f">Rules + knowledge + skills<br/><span class="hl">natively load in each client</span></div>
+            <div class="f"><code>Rules + knowledge + skills</code><span><span class="hl">natively load in each client</span> (incl. DeepSeek Harness)</span></div>
           </div>
 
           <div class="fx-matrix-row">
@@ -368,7 +372,7 @@
             <div>No task state</div>
             <div>No task state</div>
             <div>Model memory<br/>new device / account resets</div>
-            <div class="f"><code>.task/</code> keyword hit → resume checklist<br/><span class="hl">80 archived tasks</span></div>
+            <div class="f"><span><code>.task/</code> keyword hit → resume checklist <span class="hl">80 archived tasks</span></span></div>
           </div>
 
           <div class="fx-matrix-row">
@@ -378,7 +382,7 @@
             <div>Index opaque, only rebuild</div>
             <div>Spec diffable, but doesn't chase code</div>
             <div><span class="neg">Not diffable</span><br/><span class="neg">not reviewable</span><br/>not shareable</div>
-            <div class="f"><code>.Knowledge/</code> all in-repo<br/>full team review</div>
+            <div class="f"><span><code>.Knowledge/</code> all in-repo full team review</span></div>
           </div>
         </div>
 
@@ -1326,8 +1330,8 @@
           data-anim="fade-up"
           style="animation-delay: 0.18s; margin-top: 4px">
           <b style="color:var(--fx-cyan)">4 daily drivers cover ~80%</b> ·
-          the rest fire on demand. <code>flow2spec init</code> lays scaffolding;
-          day to day, name the skill in chat.
+          the rest fire on demand. <code>flow2spec init</code> lays scaffolding; with
+          <code>intentRecognition</code> on, these triggers <b style="color:var(--fx-cyan)">don't need a manual <code>/f2s-*</code></b> — plain natural language routes automatically.
         </p>
 
         <div class="fx-cmd-primary" data-anim="fade-up" style="animation-delay: 0.28s">
