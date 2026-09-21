@@ -1,0 +1,32 @@
+presentations/flow2spec-intro-public/index.html
+  s_1354e70e65d46d::t_287664adff14cb 141
+  s_1354e70e65d46d::t_2ac3e952eed9be 309,311
+presentations/flow2spec-intro-public-en/style.css
+  s_1354e70e65d46d::t_f81ee11f5b9850 30,33,57,100,102,146-150,152,196,199,206-207,215-216,227,233,248,297,469-596
+presentations/flow2spec-intro-public-en/index.html
+  s_1354e70e65d46d::t_313e5f83172f54 365
+  s_1354e70e65d46d::t_fc66d146181996 331-335
+  s_1354e70e65d46d::t_7f3eb990993ad4 385
+  s_1354e70e65d46d::t_97fd6efca547a1 375
+  s_1354e70e65d46d::t_21708e9883332b 1333-1334
+presentations/flow2spec-intro-public/演讲稿.md
+  s_1354e70e65d46d::t_147759cd7e7dc2 74
+  s_1354e70e65d46d::t_f24c3b0f04f74b 207
+  s_1354e70e65d46d::t_649d308de08746 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.44-trip",
+  "base_commit_sha": "0ae6fb82710364349bc300b9a7427db01beecf39",
+  "prompts": {},
+  "sessions": {
+    "s_1354e70e65d46d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b37e47ad-2818-48f0-aa57-dffcd36ddf01",
+        "model": "claude-fable-5"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
