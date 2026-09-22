@@ -1,0 +1,101 @@
+presentations/flow2spec-intro-pptx/outline.md
+  s_1354e70e65d46d::t_31f8fbc6852287 1-68
+presentations/flow2spec-intro-pptx/prompts/slide_05.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_08.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/deck_spec.json
+  s_1354e70e65d46d::t_a8811c2b9a8f0a 1-416
+presentations/flow2spec-intro-pptx/prompts/slide_15.json
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+presentations/flow2spec-intro-pptx/prompts/sample_slide_06_prompt.txt
+  s_1354e70e65d46d::t_32ecc1592ddac5 1-26
+presentations/flow2spec-intro-pptx/prompts/slide_14.json
+  s_1354e70e65d46d::t_de804bcb9f0f35 4
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+presentations/flow2spec-intro-pptx/slide_run_state.json
+  s_1354e70e65d46d::t_0c4060d1b2fb16 9-14
+  s_1354e70e65d46d::t_80a73a63126a2e 2,15-20,23
+  s_1354e70e65d46d::t_1888459e6618a5 1,3-8,21-22,24
+presentations/flow2spec-intro-pptx/prompts/slide_03.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_13.json
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+presentations/flow2spec-intro-pptx/prompts/slide_06.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_10.json
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_ed47446b1ae4fe 4
+presentations/flow2spec-intro-pptx/prompts/slide_01.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_ed47446b1ae4fe 4
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 44
+presentations/flow2spec-intro-pptx/prompts/slide_02.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_12.json
+  s_1354e70e65d46d::t_ed47446b1ae4fe 4
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+presentations/flow2spec-intro-pptx/prompts/slide_04.json
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+presentations/flow2spec-intro-pptx/prompts/slide_16.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_11.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/prompts/slide_09.json
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+presentations/flow2spec-intro-pptx/slide_jobs.json
+  s_1354e70e65d46d::t_dfd24496877a83 73,81-95
+  s_1354e70e65d46d::t_ad8de862b32bad 252-258,291-297,330-336,369-375,408-414
+  s_1354e70e65d46d::t_0c4060d1b2fb16 486-492,525-530,546,564-569,585,603-608,624
+  s_1354e70e65d46d::t_1f6c7457c5b96e 368,376-390
+  s_1354e70e65d46d::t_87826c64fad778 34,42-56
+  s_1354e70e65d46d::t_3821d1fc7a1353 251,259-273
+  s_1354e70e65d46d::t_b8696031dafe07 290,298-312
+  s_1354e70e65d46d::t_a22e5395ea6972 35-41,74-80,113-119,152-158,191-197
+  s_1354e70e65d46d::t_1888459e6618a5 1,3-33,57-72,96-111,135-150,174-189,213-250,274-289,313-328,352-367,391-406,430-445,469-484,508-523,547-562,586-601,625-627,629
+  s_1354e70e65d46d::t_37ac29b92dc57b 407,415-429
+  s_1354e70e65d46d::t_3b102861a59adb 190,198-212
+  s_1354e70e65d46d::t_80a73a63126a2e 2,446,453-467,524,531-545,563,570-584,602,609-623,628
+  s_1354e70e65d46d::t_1ab36b72a0711a 112,120-134
+  s_1354e70e65d46d::t_f1f11a7d50f055 329,337-351
+  s_1354e70e65d46d::t_5830d179b2acfc 447-452,468
+  s_1354e70e65d46d::t_f616eadc7952a8 485,493-507
+  s_1354e70e65d46d::t_a4592e9c4c01e2 151,159-173
+.gitignore
+  s_1354e70e65d46d::t_82b22381ed4f2b 12-15
+presentations/flow2spec-intro-pptx/speech.md
+  s_1354e70e65d46d::t_c8305ffaaae867 1-67
+presentations/flow2spec-intro-pptx/prompts/slide_07.json
+  s_1354e70e65d46d::t_b4500fd6d6e3ee 4,44
+  s_1354e70e65d46d::t_1888459e6618a5 1-3,5-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.45-trip",
+  "base_commit_sha": "0ef4851fbd83868579d349e771c99a01bbd08b71",
+  "prompts": {},
+  "sessions": {
+    "s_1354e70e65d46d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b37e47ad-2818-48f0-aa57-dffcd36ddf01",
+        "model": "claude-fable-5"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
