@@ -1,0 +1,416 @@
+{
+  "deck_name": "flow2spec-intro-pptx",
+  "language": "Chinese",
+  "goal": "向外部开发者介绍 Flow2Spec:一个让 AI 编码工具跨会话保持项目上下文的 Spec-driven 工作流层。用真实生产数据证明价值,并诚实说明边界。",
+  "deck_context": {
+    "source_summary": "Flow2Spec 在项目里建立小而可路由的 .Knowledge/ 知识库(manifest 路由 + matchers 匹配词表 + topics 主题分片 + stock/req 文档),安装 f2s-* 技能,把任务状态(.task/)与产品知识分开。新会话按需求加载相关事实,而不是重新翻整个仓库。已在 4 个真实生产仓运行:主仓 A(前端主仓 3 年,1012 核心文件 12.9 万行,43 topic,27 位作者)、接口项目 B(Serverless,213 文件,25 topic)、B 端项目 C(73 文件,20 topic)、C 端项目 D(28 文件,15 topic)。",
+    "core_claim": "不是让 AI 更聪明,是让 AI 一直知道你在做什么——上下文变准,而不是模型变强。",
+    "canonical_terms": ["Memory Coding(记忆编码进可提交的仓库,可 diff 可协作)", ".Knowledge/(知识环)", ".task/(任务环)", "manifest → matcher → topic 路由链", "match → expand → verify → act 四步", "f2s-kb-feat / f2s-kb-fix / f2s-git-commit / f2s-kb-sync / f2s-kb-add / f2s-kb-distill", "topic / 终稿 / 代码 三层递进", "intentRecognition 意图识别"]
+  },
+  "selected_image_backend": "scripts/image_gen.py",
+  "max_concurrent_slides": 5,
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "generate",
+    "prompt_source": "prompts/slide_XX.json 的 prompt 字段(样张来自 prompts/sample_slide_06_prompt.txt)",
+    "model": "gpt-image-2.5-flare via Peta gateway (OPENAI_BASE_URL + CODEX_PPT_COOKIE in ~/.codex-ppt-skill/.env)",
+    "size": "2560x1440",
+    "quality": "medium",
+    "extra_flags": "--no-augment --force",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/flow2spec-intro-pptx/origin_image/slide_06.png",
+    "input_context_preparation": "CLI fallback 模式,风格参考通过 prompt 文字描述传递(Peta generations 接口不带输入图),各 job 的 prompt 已内嵌完整风格系统",
+    "handoff_rule": "Subagents must use scripts/image_gen.py with the same model/size/quality via the runtime venv; return a blocker if unavailable."
+  },
+  "style": {
+    "name": "赛博终端风(cyberpunk terminal UI)",
+    "visual_direction": "高级开发者工具界面感:极深蓝黑背景(约 #0a0e1a),细微网格纹理与极淡水平扫描线,左上角仿终端窗口三个小圆点装饰,卡片为深色半透明底 + 细霓虹描边 + 圆角",
+    "color_palette": "主强调霓虹青色 #5ef1ff(标题发光),次强调霓虹品红 #ff78d6,辅助紫色与琥珀色用于区分并列卡片,正文白色/浅灰",
+    "typography": "大标题粗壮无衬线,关键词青色发光;代码与标签用等宽字体;中文正文现代无衬线;信息层级清晰,大量呼吸留白",
+    "texture_and_finish": "扁平 UI 平面设计,霓虹辉光,无照片素材",
+    "deck_consistency": "全 16 页同一配色/字体/描边卡片语言/终端装饰;按页面角色变化版式,不重复同一构图"
+  },
+  "approved_style_reference": {
+    "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/flow2spec-intro-pptx/origin_image/slide_06.png",
+    "role": "approved sample slide style reference",
+    "fidelity": "match style only; do not copy layout or content"
+  },
+  "slides": [
+    {
+      "number": 1,
+      "title": "Flow2Spec · 让 AI 一直知道你在做什么",
+      "role": "cover",
+      "intent": "开场情绪页:先戳「AI 失忆」痛点,再给出产品一句话定位",
+      "key_points": [
+        "你的 AI 失忆了吗?新会话不记得上一轮,不知道项目结构,团队约定接不上",
+        "跨设备会话记住项目上下文",
+        "路由清单让 AI 不翻全仓、只拿该拿的",
+        "f2s-* 技能改代码顺手更新知识,尽量不腐化",
+        "Memory Coding:记忆编码进仓库,可 diff、可协作"
+      ],
+      "layout": {
+        "composition": "居中超大主标题「Flow2Spec」霓虹青发光,下方一行副标题「让 AI 一直知道你在做什么」;上方一行小字提问「你的 AI 失忆了吗?」;底部三个小胶囊标签横排展示三个核心点;右下角 by double-coding-lab",
+        "content_zones": "顶部提问区 / 中央标题区 / 底部三标签区"
+      },
+      "visual_elements": {
+        "main_visual": "标题背后淡淡的终端窗口轮廓或数据流光效,不喧宾夺主",
+        "supporting_elements": "三个霓虹描边胶囊标签"
+      },
+      "constraints": ["文字要少而大,封面不堆信息", "页码渲染为 01 / 16 放右下角"]
+    },
+    {
+      "number": 2,
+      "title": "同一句需求 · Before / After",
+      "role": "comparison",
+      "intent": "用真实跨仓需求对比接入前后差异",
+      "key_points": [
+        "需求:把图片素材库和图片模型合成一个「素材库」——横跨接口层 B + 管理台 C 两个仓",
+        "没有 Flow2Spec:反复问「模块在哪个仓 / 库表分开吗 / 老字段还有引用吗 / 菜单合不合」,3 个仓翻代码",
+        "有 Flow2Spec:matcher 命中 m-image-model-dispatcher,跨仓 4 topic 秒出结论",
+        "结论:B 侧两表合并 · C 侧两菜单合一 · 老 templateUuid 改可空 · 接口沿用 imageMaterial* 命名",
+        "差别在上下文变准,而且跨仓的约束也在——不是模型变强"
+      ],
+      "local_context": {
+        "required_background": "左右对比布局。左列标「Before · 没有 Flow2Spec」用暗红/灰色调,内容是四个连环追问的对话气泡;右列标「After · 有 Flow2Spec」用青色调,内容是一条 matcher 命中记录 + 四条结论列表。底部一句总结金句。"
+      },
+      "layout": {
+        "composition": "左右两栏对比卡片,顶部标题区,底部横贯金句条",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "左右两张大卡片,左暗右亮形成情绪对比",
+        "supporting_elements": "对话气泡、终端记录行、结论清单勾选项"
+      },
+      "constraints": ["页码渲染为 02 / 16 放右下角"]
+    },
+    {
+      "number": 3,
+      "title": "4 仓实测数据 · 这不是概念,是日常",
+      "role": "data evidence",
+      "intent": "用真实生产数据证明各种规模都跑得起来",
+      "key_points": [
+        "主仓 A · 前端主仓 3 年:1012 核心文件 · 12.9 万行 · 43 topic · 27 位作者 · 3 个月 2786 commit → AI 每次只读约几百行,27 人并发零任务串戏",
+        "接口项目 B · Serverless:213 文件 · 2.6 万行 · 25 topic · 54 req-doc → 知识是实现驱动长出来的",
+        "B 端项目 C:73 文件 · 5788 行 · 20 topic → 小仓规矩一样长得起来",
+        "C 端项目 D · Serverless:28 文件 · 3174 行 · 15 topic → 3K 行起步项目,早接入早不腐化",
+        "合计:1326 文件 · 16.5 万行 · 103 topic · 193 沉淀文档 · 80 归档任务"
+      ],
+      "local_context": {
+        "required_background": "四张 KPI 数据卡横排或 2x2,每张卡:仓名+定位小标签、核心数字(大号等宽字体)、明细行、一行「这意味着什么」的青色注解。底部合计条。四卡分别用青/品红/紫/琥珀描边区分。"
+      },
+      "layout": {
+        "composition": "2x2 数据卡矩阵 + 底部合计横条",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "KPI 数字卡片,数字发光",
+        "supporting_elements": "小标签、分隔虚线、底部合计条"
+      },
+      "constraints": ["数字必须准确渲染:1012 / 12.9万 / 43 / 27 / 2786 / 213 / 25 / 73 / 20 / 28 / 15 / 16.5万 / 103 / 80", "页码渲染为 03 / 16 放右下角"]
+    },
+    {
+      "number": 4,
+      "title": "带着你的痛点横着看",
+      "role": "comparison matrix",
+      "intent": "竞品对比:6 个真实痛点 × 5 类方案 + Flow2Spec,诚实含自曝短板",
+      "key_points": [
+        "六个痛点:spec 追得上代码? / 大仓要读多少? / 分层·精读? / 换 IDE·模型? / 会话续作? / 可 diff·review?",
+        "五类对手:OpenSpec · Superpowers 类技能包 · RAG 向量库 · Spec Kit 类 · Claude Memory",
+        "Flow2Spec 列:kb-feat/fix 改代码带改知识库 + kb-sync 随时手动全量补 + kb-add 模块入库;matcher+依赖链每次几百行;topic/终稿/代码三层递进;各客户端原生加载(含 DeepSeek Harness);.task/ 关键词续作;.Knowledge/ 全落盘可 review",
+        "自曝短板:不同步知识库 · 仍会腐化——工具不能替代纪律"
+      ],
+      "local_context": {
+        "required_background": "画一个简化对比矩阵表格:左列 6 行痛点短语,顶行 5 家对手名 + 最右 Flow2Spec 高亮列(青色底纹)。格子里用极简短语(每格 3-8 字)示意「会发生什么」,对手列偏灰,F 列偏亮。表格下方一条琥珀色「短板自曝」横条:不同步知识库 · 仍会腐化。不需要还原全部细节文字,保持表格可读即可。"
+      },
+      "layout": {
+        "composition": "全宽 7 列对比矩阵 + 底部短板横条",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "矩阵表格,最右列霓虹青高亮",
+        "supporting_elements": "琥珀色警示条"
+      },
+      "constraints": ["表格文字宁少勿糊,每格短语必须清晰", "页码渲染为 04 / 16 放右下角"]
+    },
+    {
+      "number": 5,
+      "title": "一张图 · Memory Coding · 四环协同",
+      "role": "architecture",
+      "intent": "架构总览:知识/任务/规则/技能四环及其关系",
+      "key_points": [
+        "Memory Coding:把要记住的编码进可提交的仓,可 diff、可协作——不押在模型或聊天里",
+        "知识环 .Knowledge/:manifest 路由 + matchers + topics + stock/req 文档,多层记忆按需递进、够则停",
+        "任务环 .task/:todo 索引 + 续作清单",
+        "规则环 rules:怎么读、怎么做(路由、缺口闸门、执行约束)",
+        "技能环 f2s-*:维护知识、触发流程",
+        "环间关系:技能维护知识 · 规则路由读库 · 技能写任务留痕"
+      ],
+      "local_context": {
+        "required_background": "架构图:顶部一个大的「知识环 .Knowledge/」层块(内含 manifest/matchers/topics/stock/req 五个小胶囊),中部左右并列「规则环」「技能环」两个层块,底部「任务环 .task/」层块。层与层之间用带文字标注的青色箭头连接(技能→知识:维护;规则→知识:路由读库;技能→任务:留痕)。"
+      },
+      "layout": {
+        "composition": "纵向三层架构图(上:知识环;中:规则环+技能环并列;下:任务环),箭头带标注",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "分层架构框图",
+        "supporting_elements": "胶囊标签、箭头连接线、层间关系注释"
+      },
+      "constraints": ["四个环必须是四个,不要画成三个", "页码渲染为 05 / 16 放右下角"]
+    },
+    {
+      "number": 6,
+      "title": "渐进式读取 · 先查目录,再翻书",
+      "role": "process",
+      "intent": "已批准样张:match → expand → verify → act 四步流程",
+      "key_points": ["match 命中 matcher 只读一个分片", "expand +3 依赖 topic", "verify 缺口检查", "act 开始改代码", "4.7 MB 源码 → 300 行 topic"],
+      "sample_approved": true
+    },
+    {
+      "number": 7,
+      "title": "横读 + 纵链 · 先收窄再叠层",
+      "role": "concept explanation",
+      "intent": "知识环两道读法:横向 L0→L3 收窄 + 纵向依赖叠层",
+      "key_points": [
+        "横读:L0 manifest → L1 matchers → L2 topics → L3 stock/req,配合 match → expand → verify → act",
+        "纵链:只说「商品评价」,manifest 按 topicDependencies 自动叠四层",
+        "四层链:common-modules → social-media-platform → whitelist → product-review-template-library",
+        "横读切噪声 · 纵链挂主题级依赖——挂一次,全任务共享"
+      ],
+      "local_context": {
+        "required_background": "左右两栏:左栏「横读」画 L0→L1→L2→L3 四个横向连接的层级块(青色系);右栏「纵链」画一条自上而下的四层依赖树(紫色系),节点名依次为 common-modules / social-media-platform / whitelist / product-review-template-library。底部金句一行。"
+      },
+      "layout": {
+        "composition": "左右双栏:左横向流程链,右纵向依赖树",
+        "relationship_to_previous_slide": "continuation layout(延续第 6 页流程感但改为双栏)"
+      },
+      "visual_elements": {
+        "main_visual": "左链右树",
+        "supporting_elements": "层级标签 L0-L3、树连接线"
+      },
+      "constraints": ["页码渲染为 07 / 16 放右下角"]
+    },
+    {
+      "number": 8,
+      "title": "每一条 topic · 都是挡 AI 犯错的防线",
+      "role": "case study",
+      "intent": "硬约束密度:看代码猜不出的业务约束写在 topic 里",
+      "key_points": [
+        "案例:拼团 + 通用券——约束写在 topic 里,AI 看代码猜不出",
+        "约束 1:主表与明细表必须同事务双写",
+        "约束 2:团长上限按 type 隔离计数",
+        "约束 3:优惠券只传 activityCode,不传内部 id",
+        "约束 4:status 优先级 0>1>2>3>4,展示取最高",
+        "知识库是「改代码 → 踩坑 → 写进 topic → 后续挡错」长出来的"
+      ],
+      "local_context": {
+        "required_background": "四条约束做成四张横向长条卡片纵向排列,每条左侧一个青色盾牌/挡板小图标,右侧约束文字(等宽字体点缀关键词)。顶部标题区,底部一行「知识库的生长方式」流程小字:改代码 → 踩坑 → 写进 topic → 挡后续错。"
+      },
+      "layout": {
+        "composition": "纵向四条约束卡片列表 + 底部生长流程行",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "防线/盾牌意象的约束卡片",
+        "supporting_elements": "小图标、底部流程箭头行"
+      },
+      "constraints": ["页码渲染为 08 / 16 放右下角"]
+    },
+    {
+      "number": 9,
+      "title": "会话断了 · AI 自己接上",
+      "role": "process + case",
+      "intent": "任务续作机制:.task/ 目录 + 关键词命中 + 断点续作",
+      "key_points": [
+        "真实任务:9 步清单、跨多次会话、多个客户端;下次只说「继续」",
+        "流程:关键词命中 todo.json → 读剩余步骤 → 加载规则技能 → 断点续作",
+        "目录:todo.json 索引 · active/(task.md 步骤清单 · context.md 涉及文件 · user-todos.md 用户代办)· completed/ 归档",
+        "user-todos.md:DDL、开关、发版等必须用户线下完成的事,落盘交接不丢失"
+      ],
+      "local_context": {
+        "required_background": "左侧画一个终端风目录树(.task/ 下 todo.json、active/xxx/task.md·context.md·user-todos.md、completed/),用等宽字体;右侧画续作流程三步卡:说「继续」→ 关键词命中 → 从步骤 N 接着干,其中 task.md 卡里画几行 checkbox(前几行打勾青色,后几行未勾灰色)。"
+      },
+      "layout": {
+        "composition": "左目录树 + 右续作流程卡",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "等宽字体目录树 + checkbox 清单",
+        "supporting_elements": "「继续」对话气泡、箭头"
+      },
+      "constraints": ["页码渲染为 09 / 16 放右下角"]
+    },
+    {
+      "number": 10,
+      "title": "多人协作 · 任务隔离,知识共享",
+      "role": "concept + data",
+      "intent": "多人并发实测:developerId 隔离任务,知识库共享单源",
+      "key_points": [
+        "主仓 A 三个月:27 位作者 · 2786 commit · 43 归档任务——真实团队并发,不是单人演示",
+        "同一份 flow2spec.config.json 四仓全开:subAgent · switchAgentVerification · intentRecognition · changeTracking · collaboration",
+        ".task/ 按 developerId 分目录:alice/ bob/ charlie/ 各自 todo 与清单,任务不串戏",
+        ".Knowledge/ 仍是团队共享单源:隔离的是任务状态,共享的是知识事实"
+      ],
+      "local_context": {
+        "required_background": "上方三个 KPI 小卡(27 作者 / 2786 commit / 43 归档任务);下方左右两块:左块「.task/ 按人隔离」画 alice/bob/charlie 三个并列子目录小树;右块「.Knowledge/ 团队共享」画一个中心库图标被三个人图标环绕。底部金句:私有任务不串戏,共享知识不分家。"
+      },
+      "layout": {
+        "composition": "顶部三 KPI 卡 + 下方左右对照块 + 底部金句",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "隔离 vs 共享的左右对照图",
+        "supporting_elements": "KPI 卡、人形小图标、目录树"
+      },
+      "constraints": ["页码渲染为 10 / 16 放右下角"]
+    },
+    {
+      "number": 11,
+      "title": "4 仓一览 · 同一套体系",
+      "role": "data table",
+      "intent": "对比表让数据自证:规模跨 40 倍同一套体系",
+      "key_points": [
+        "从 3K 行 C 端 Serverless 到 12.9 万行前端主仓,规模跨 40 倍",
+        "topic 数 15 → 20 → 25 → 43 随规模近线性增长",
+        "表列:仓 / 定位 / 代码规模 / topic / matcher / 沉淀文档 / 归档任务",
+        "观察:req-docs 总数(125)大于 stock-docs(68)——知识不是一次性文档,是日常迭代驱动长出来的"
+      ],
+      "local_context": {
+        "required_background": "一个 5 行 6 列左右的数据表:行为主仓 A / 接口 B / B 端 C / C 端 D / 合计(合计行青色高亮);列为 仓·定位 / 文件·行数 / topic / matcher / 沉淀文档 / 归档任务。数据:A=1012 文件 12.9万行·43·43·46+65·43;B=213 文件 2.6万行·25·22·14+54·20;C=73 文件 5788行·20·18·6+2·9;D=28 文件 3174行·15·15·2+4·8;合计=1326 文件 16.5万行·103·98·193·80。表下一行青色观察结论。数字尽量准确,个别列可简化但合计行必须准确。"
+      },
+      "layout": {
+        "composition": "全宽数据表 + 底部观察结论行",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "终端风数据表格,行分隔细线",
+        "supporting_elements": "合计行高亮底纹"
+      },
+      "constraints": ["页码渲染为 11 / 16 放右下角"]
+    },
+    {
+      "number": 12,
+      "title": "渐进式建库 · 写着用,不用先写完",
+      "role": "timeline",
+      "intent": "消解心智负担:最小可用集 + 四阶段时间线",
+      "key_points": [
+        "最小可用集:1 条 manifest + 1 个 matcher + 1 份 topic,其余随需求长",
+        "init(约 1 分钟):拉起骨架,空 manifest 也能跑",
+        "首次接入(一个需求):/f2s-doc-arch 出全景 + /f2s-kb-add 把命中模块提前入库",
+        "日常:kb-feat · kb-fix · git-commit 开发闭环",
+        "维护(按需):kb-sync 体检 · kb-merge 对齐",
+        "下次需求命中哪块,写哪块——D 仓 15 个 topic、A 仓 43 个,都是这么长出来的"
+      ],
+      "local_context": {
+        "required_background": "横向四阶段时间线:init → 首次接入 → 日常 → 维护,每阶段一张卡(顶部阶段标签胶囊分别青/品红/紫/琥珀,中间等宽字体命令示例,底部产出一行)。卡间青色箭头。首次接入卡里写两行命令:/f2s-doc-arch 和 /f2s-kb-add src/<模块>。底部一行金句。"
+      },
+      "layout": {
+        "composition": "横向四卡时间线(与第 6 页四步流程呼应但阶段标签在卡顶,视觉上更像旅程)",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "四阶段旅程卡",
+        "supporting_elements": "阶段胶囊、命令行文本、箭头"
+      },
+      "constraints": ["命令文本必须准确:/f2s-doc-arch、/f2s-kb-add、kb-feat、kb-fix、git-commit、kb-sync、kb-merge", "页码渲染为 12 / 16 放右下角"]
+    },
+    {
+      "number": 13,
+      "title": "命令地图 · 4 个日常必用,记住就够 80%",
+      "role": "command map",
+      "intent": "降低命令记忆负担:4 主力 + 三剑客 + 意图识别兜底",
+      "key_points": [
+        "4 个主力:f2s-kb-feat 加能力 · f2s-kb-fix 修 bug 带挡错 · f2s-git-commit 提交前 3 查 · req-clarify→req-tech 大需求入口",
+        "知识维护三剑客:kb-distill 对话完提取 · kb-add 存量批量入库 · kb-sync 全局找漏",
+        "开启 intentRecognition 后:触发词不用手动敲 /f2s-*,自然语言直接说就自动路由",
+        "其余按需:init / kb-upgrade / doc-* 系列一笔带过"
+      ],
+      "local_context": {
+        "required_background": "上半区 4 张主力命令大卡(2x2 或横排,各含命令名等宽字体+一句职责+触发词示例);下半区一条「三剑客」横排三小卡;最底部一行灰色小字列其余命令。顶部副标题提 intentRecognition:自然语言直接路由。"
+      },
+      "layout": {
+        "composition": "上 4 大卡 + 下 3 小卡 + 底部小字行",
+        "relationship_to_previous_slide": "continuation layout(承接时间线讲每个命令干嘛)"
+      },
+      "visual_elements": {
+        "main_visual": "命令卡片矩阵",
+        "supporting_elements": "触发词引用气泡、等宽命令名"
+      },
+      "constraints": ["命令名必须准确无错:f2s-kb-feat / f2s-kb-fix / f2s-git-commit / f2s-req-clarify / f2s-req-tech / f2s-kb-distill / f2s-kb-add / f2s-kb-sync", "页码渲染为 13 / 16 放右下角"]
+    },
+    {
+      "number": 14,
+      "title": "真实案例 · 评价模板文案库",
+      "role": "case study roadmap",
+      "intent": "一个真实需求的六步全链路示范",
+      "key_points": [
+        "1 clarify:两轮成批澄清,AI 对知识库查缺再反问",
+        "2 req-tech:matcher 命中四层依赖,产出技术方案 MD + 5 份 DDL",
+        "3 实现:说「实现这个技术方案」,8 步 checklist 可续作",
+        "4 kb-feat:说需求 = 实现 + 入库",
+        "5 kb-fix:修实现带改 topic",
+        "6 git-commit:冲突扫 / KB 覆盖查 / 规范首行,不自动 push"
+      ],
+      "local_context": {
+        "required_background": "六步做成 S 形或两行三列的编号路书卡(01-06 大编号),每卡一个步骤名 + 一句说明。期间十余次 feat/fix 小迭代可作一条侧注。"
+      },
+      "layout": {
+        "composition": "两行三列编号路书卡,步骤间箭头引导",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "编号路书",
+        "supporting_elements": "大数字编号、连接箭头"
+      },
+      "constraints": ["页码渲染为 14 / 16 放右下角"]
+    },
+    {
+      "number": 15,
+      "title": "说实话 · 什么时候不要用",
+      "role": "honest limits",
+      "intent": "反向诚实页:三种不划算的场景",
+      "key_points": [
+        "结构投入换长期复利,下面三种不划算就别硬上:",
+        "1 一次性脚本、临时工具",
+        "2 单人小项目,一份 CLAUDE.md 已经够用",
+        "3 团队不愿同步 .Knowledge/——纪律比工具重要"
+      ],
+      "local_context": {
+        "required_background": "极简页:三张横向长条卡纵向排列,每张左侧一个大编号(1/2/3)和一个「禁止/跳过」风格图标,右侧场景描述。留白多,情绪坦诚克制,琥珀色点缀警示感。"
+      },
+      "layout": {
+        "composition": "三条横卡纵排,大量留白",
+        "relationship_to_previous_slide": "new layout"
+      },
+      "visual_elements": {
+        "main_visual": "三条场景卡",
+        "supporting_elements": "编号、警示图标"
+      },
+      "constraints": ["文字克制,不推销", "页码渲染为 15 / 16 放右下角"]
+    },
+    {
+      "number": 16,
+      "title": "不是让 AI 更聪明,是让 AI 一直知道你在做什么",
+      "role": "closing",
+      "intent": "收束呼应封面 + 行动引导",
+      "key_points": [
+        "仓库:github.com/double-coding-lab/Flow2Spec",
+        "安装:npx @double-coding/flow2spec@latest init",
+        "老项目升级:对话点名 f2s-kb-upgrade",
+        "double-coding-lab — 欢迎试用、提交 issue、交流建议"
+      ],
+      "local_context": {
+        "required_background": "居中大金句(标题即金句,「一直知道」四字青色发光),下方一个终端风命令框展示 npx 安装命令(等宽字体),再下方仓库地址与欢迎语小字。呼应封面构图但更收敛安静。"
+      },
+      "layout": {
+        "composition": "居中金句 + 终端命令框 + 底部信息行",
+        "relationship_to_previous_slide": "mirrored layout(呼应封面)"
+      },
+      "visual_elements": {
+        "main_visual": "终端命令框",
+        "supporting_elements": "GitHub 图标风格点缀(不用真实商标,用通用代码托管图标示意)"
+      },
+      "constraints": ["命令必须准确:npx @double-coding/flow2spec@latest init", "页码渲染为 16 / 16 放右下角"]
+    }
+  ]
+}

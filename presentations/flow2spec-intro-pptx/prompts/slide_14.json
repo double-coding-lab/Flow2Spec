@@ -1,0 +1,44 @@
+{
+  "slide": 14,
+  "title": "真实案例 · 评价模板文案库",
+  "prompt": "# Codex PPT Slide Image Prompt\n\n## Canvas\n{\n  \"type\": \"16:9 full-slide PowerPoint image\",\n  \"language\": \"Chinese\",\n  \"slide_number\": 14,\n  \"render_slide_number\": true\n}\n\n## Deck Goal\n向外部开发者介绍 Flow2Spec:一个让 AI 编码工具跨会话保持项目上下文的 Spec-driven 工作流层。用真实生产数据证明价值,并诚实说明边界。\n\n## Required Background\n{\n  \"deck_context\": {\n    \"source_summary\": \"Flow2Spec 在项目里建立小而可路由的 .Knowledge/ 知识库(manifest 路由 + matchers 匹配词表 + topics 主题分片 + stock/req 文档),安装 f2s-* 技能,把任务状态(.task/)与产品知识分开。新会话按需求加载相关事实,而不是重新翻整个仓库。已在 4 个真实生产仓运行:主仓 A(前端主仓 3 年,1012 核心文件 12.9 万行,43 topic,27 位作者)、接口项目 B(Serverless,213 文件,25 topic)、B 端项目 C(73 文件,20 topic)、C 端项目 D(28 文件,15 topic)。\",\n    \"core_claim\": \"不是让 AI 更聪明,是让 AI 一直知道你在做什么——上下文变准,而不是模型变强。\",\n    \"canonical_terms\": [\n      \"Memory Coding(记忆编码进可提交的仓库,可 diff 可协作)\",\n      \".Knowledge/(知识环)\",\n      \".task/(任务环)\",\n      \"manifest → matcher → topic 路由链\",\n      \"match → expand → verify → act 四步\",\n      \"f2s-kb-feat / f2s-kb-fix / f2s-git-commit / f2s-kb-sync / f2s-kb-add / f2s-kb-distill\",\n      \"topic / 终稿 / 代码 三层递进\",\n      \"intentRecognition 意图识别\"\n    ]\n  },\n  \"slide_local_context\": {\n    \"required_background\": \"六步做成 S 形或两行三列的编号路书卡(01-06 大编号),每卡一个步骤名 + 一句说明。期间十余次 feat/fix 小迭代可作一条侧注。\"\n  }\n}\n\n## Global Style\n{\n  \"name\": \"赛博终端风(cyberpunk terminal UI)\",\n  \"visual_direction\": \"高级开发者工具界面感:极深蓝黑背景(约 #0a0e1a),细微网格纹理与极淡水平扫描线,左上角仿终端窗口三个小圆点装饰,卡片为深色半透明底 + 细霓虹描边 + 圆角\",\n  \"color_palette\": \"主强调霓虹青色 #5ef1ff(标题发光),次强调霓虹品红 #ff78d6,辅助紫色与琥珀色用于区分并列卡片,正文白色/浅灰\",\n  \"typography\": \"大标题粗壮无衬线,关键词青色发光;代码与标签用等宽字体;中文正文现代无衬线;信息层级清晰,大量呼吸留白\",\n  \"texture_and_finish\": \"扁平 UI 平面设计,霓虹辉光,无照片素材\",\n  \"deck_consistency\": \"全 16 页同一配色/字体/描边卡片语言/终端装饰;按页面角色变化版式,不重复同一构图\"\n}\n\n## Input Images\n\n- Image 1: /Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/flow2spec-intro-pptx/origin_image/slide_06.png — approved sample slide style reference; match style only; do not copy layout or content\n\n\n## Slide\n{\n  \"number\": 14,\n  \"title\": \"真实案例 · 评价模板文案库\",\n  \"role\": \"case study roadmap\",\n  \"intent\": \"一个真实需求的六步全链路示范\"\n}\n\n## Text\n{\n  \"title\": \"真实案例 · 评价模板文案库\",\n  \"key_points\": [\n    \"1 clarify:两轮成批澄清,AI 对知识库查缺再反问\",\n    \"2 req-tech:matcher 命中四层依赖,产出技术方案 MD + 5 份 DDL\",\n    \"3 实现:说「实现这个技术方案」,8 步 checklist 可续作\",\n    \"4 kb-feat:说需求 = 实现 + 入库\",\n    \"5 kb-fix:修实现带改 topic\",\n    \"6 git-commit:冲突扫 / KB 覆盖查 / 规范首行,不自动 push\"\n  ],\n  \"speaker_focus\": null\n}\n\n## Layout\n{\n  \"composition\": \"两行三列编号路书卡,步骤间箭头引导\",\n  \"relationship_to_previous_slide\": \"new layout\"\n}\n\n## Visual Elements\n{\n  \"main_visual\": \"编号路书\",\n  \"supporting_elements\": \"大数字编号、连接箭头\"\n}\n\n## Constraints\n[\n  \"页码渲染为 14 / 16 放右下角\"\n]\n\n## Style Reference Rule\nUse Image 1 as the approved sample-slide style reference. Match its palette, typography mood, density, texture, and overall visual identity. Do not copy its exact layout unless this slide's layout explicitly asks for it.\n\n## Input Image Handling Rules\nFor any input image marked as a strict input asset, include it visibly and preserve its content. Do not redraw, replace, relabel, or invent a similar figure. Scale and crop only as needed for composition while keeping the important labels, arrows, data, and relationships recognizable.\n\n## Universal Constraints\n- The final image itself must contain the title and key points.\n- Render Chinese text exactly and legibly; avoid garbled characters.\n- Keep the confirmed deck style consistent while varying layout by slide role.\n- No watermark or unrelated logo. Render the page number exactly as specified in Constraints (bottom-right, e.g. 03 / 16), matching the approved sample's footer.\n\n## 本次重生成修正(最高优先级)\n- 六张编号卡内禁止出现任何带 -- 的命令行参数或伪造的 CLI 命令(如 --reask、--checklist=8、--no-push 等一律不要画);每张卡底部小字改为该步的用户触发语示例,如 01 卡写「帮我理清需求」、03 卡写「实现这个技术方案」、06 卡写「提交一下」。\n- 左下角脚注必须逐字为「期间十余次 feat/fix 小迭代」——注意是「迭代」不是「选代」。\n- 其余保持上一版优点:01-06 大编号两行三列、步骤名 clarify/req-tech/实现/kb-feat/kb-fix/git-commit、箭头、页码 14 / 16。\n\n## 逐字校对清单(生成时必须逐条核对)\n- 05 卡正文四个字必须是「修实现带改 topic」——「实现」二字,禁止「修需现」。\n- 左下脚注五个字必须是「小迭代」的「迭」——「迭代」,禁止「选代」。\n- 每张卡底部触发语保持:01 帮我理清需求 / 02 帮我生成技术方案 / 03 实现这个技术方案 / 04 帮我把这个需求入库 / 05 修一下这个实现 / 06 提交一下。\n",
+  "out": "slide_14.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/flow2spec-intro-pptx/origin_image/slide_06.png",
+      "role": "approved sample slide style reference",
+      "fidelity": "match style only; do not copy layout or content"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "generate",
+    "prompt_source": "prompts/slide_XX.json 的 prompt 字段(样张来自 prompts/sample_slide_06_prompt.txt)",
+    "model": "gpt-image-2.5-flare via Peta gateway (OPENAI_BASE_URL + CODEX_PPT_COOKIE in ~/.codex-ppt-skill/.env)",
+    "size": "2560x1440",
+    "quality": "medium",
+    "extra_flags": "--no-augment --force",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/flow2spec-intro-pptx/origin_image/slide_06.png",
+    "input_context_preparation": "CLI fallback 模式,风格参考通过 prompt 文字描述传递(Peta generations 接口不带输入图),各 job 的 prompt 已内嵌完整风格系统",
+    "handoff_rule": "Subagents must use scripts/image_gen.py with the same model/size/quality via the runtime venv; return a blocker if unavailable."
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  }
+}

@@ -9,3 +9,7 @@ output/qoder-plugin/
 node_modules/
 .astro/
 .Knowledge/.last-sync.json
+
+# PPT 生成过程产物(codex-ppt):候选草稿与 Office 锁文件
+presentations/*/drafts/
+presentations/**/~$*
