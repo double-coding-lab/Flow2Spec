@@ -1,0 +1,44 @@
+{
+  "slide": 22,
+  "title": "场景 4：普通问答也会留下可复用答案",
+  "prompt": "完整16:9图片，2560x1440。高级杂志风，暖白纸张背景、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。中文清晰、准确无乱码。无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。箭头不得穿过卡片、文字或其他箭头。可不画角色。参考图仅参考配色字体质感，不复制其内容与版式。\n标题：场景 4：普通问答也会留下可复用答案\n全部内容：\n用户提问 → AI 基于现有知识回答\nf2s-kb-distill 提示是否沉淀\n用户确认 → 新建或补充 topic\n下次直接命中\n重复 grep / 全仓找代码：同一问题反复查\n可路由事实：一次确认，多次复用\n沉淀由用户确认，不是未经确认自动写入\n布局：上半部四段横向对话流程，用户确认用珊瑚小标签突出；下半部左右对比重复查代码与直接读事实。保留大留白，所有连接仅在间隙，无交叉。",
+  "out": "slide_22.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+      "role": "approved style reference; match style only, do not copy layout or content",
+      "fidelity": "style only"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_22.json"
+}

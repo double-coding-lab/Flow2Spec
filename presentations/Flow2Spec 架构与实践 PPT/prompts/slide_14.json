@@ -1,0 +1,130 @@
+{
+  "slide": 14,
+  "out": "slide_14.png",
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium"
+  },
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/generated/slide_14_badges_retry.png",
+      "role": "strict edit input"
+    }
+  ],
+  "prompt": "Correct the text in ONLY the green implementation box in the center of the black panel at x38%-61%,y55%-60%. Replace its full text with exactly: Agent 按知识库渐进读取 → 实现代码. Render this Chinese sentence accurately: 渐进读取, not 新进获取. No other changes. Preserve all other text including f2s-git-commit 提交前检查, manifest. Preserve all arrow geometry, right side five borderless watercolor badges with white1–5, all illustrations and background. Full 2560x1440 slide. 只重写中间绿色实现框这一行：Agent 按知识库渐进读取 → 实现代码。其他内容原样保留。",
+  "original_generation_job": {
+    "slide": 14,
+    "title": "一个需求，如何变成可复用的交付？",
+    "prompt": "精确局部修改这张完整16:9幻灯片，输出2560x1440 medium。保留原图所有内容，仅替换黑色面板中右侧topics/主题摘要这一个黄色标签。不要重设计。\n必须保留黑色面板右上方原本的“req-docs/”和“需求文档”这两行黄色文字（约画面x=68%，y=34%），以及它的短虚线箭头。这处不是编辑目标！\n唯一编辑目标在其下方（约x=68%，y=48%）：“topics/”和“主题摘要”。删除这两行，换成黄色三行：\n根据命中的\n知识和\n用户描述\n三行完整含义：根据命中的知识和用户描述。把该三行放在原topics标签附近，顶端不得高于原图topics标签，只向下延展，不覆盖上方req-docs需求文档。字号可以比原标签稍小，必须清晰。虚线箭头指向f2s-req-tech右边界，保持留白。\n必须保持req-docs/需求文档、.task/任务进度、manifest路由更新、Git提交这其余4组黄色标签完全不变。其余中文/技能名/箭头/标题/图标/Yoyo/背景完全不变，不加红框，无页码。",
+    "out": "slide_14.png",
+    "input_images": [
+      {
+        "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_13.png",
+        "role": "strict localized edit input"
+      }
+    ],
+    "requires_context_images": true,
+    "expected_backend": "scripts/image_gen.py",
+    "sample_generation_method": {
+      "backend_used": "scripts/image_gen.py",
+      "tool_name": "scripts/image_gen.py",
+      "mode": "edit",
+      "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+      "model": "gpt-image-2.5-flare via Peta provider adapter",
+      "size": "2560x1440",
+      "quality": "medium",
+      "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+      "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+      "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+      "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+    },
+    "generation_contract": {
+      "must_use_selected_image_backend": true,
+      "must_match_sample_generation_method": true,
+      "forbidden_final_image_methods": [
+        "local drawing/rendering scripts",
+        "Pillow-generated slides",
+        "SVG/HTML/CSS/canvas screenshots",
+        "python-pptx/PptxGenJS/native PPT layout screenshots",
+        "manually composited text/image overlays"
+      ],
+      "must_return": [
+        "backend_used",
+        "selected_source",
+        "qa_note"
+      ]
+    },
+    "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_14.json"
+  },
+  "accepted_edit_lineage": [
+    {
+      "slide": 14,
+      "title": "一个需求，如何变成可复用的交付？",
+      "out": "slide_14.png",
+      "expected_backend": "scripts/image_gen.py",
+      "requires_context_images": true,
+      "input_images": [
+        {
+          "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-reqdocs-arrow/slide_14.png",
+          "role": "strict localized edit input; preserve everything except one arrow"
+        }
+      ],
+      "sample_generation_method": {
+        "backend_used": "scripts/image_gen.py",
+        "tool_name": "scripts/image_gen.py",
+        "mode": "edit",
+        "model": "gpt-image-2.5-flare via Peta provider adapter",
+        "size": "2560x1440",
+        "quality": "medium",
+        "input_context_preparation": "Exactly one strict image input"
+      },
+      "prompt": "精确局部编辑输入幻灯片，只修正一根黄色虚线箭头，其他全部保持原样。完整16:9，2560x1440，中文清晰无乱码，无页码。当前黑色面板右上req-docs/需求文档的短黄色虚线箭头错误地向左下指向橙色的显式f2s-* skill / intentRecognition辅助判断框。彻底擦除这根旧的短箭头，不保留任何残段。保留req-docs/需求文档两行标签原位。重新画一条黄色虚线，从这个标签左下方朝左下方延伸，箭头尖端准确停在下一行蓝色f2s-req-clarify反问到无歧义卡片的右上边界，约全图x=59%,y=43%。箭头只走右侧黑色空白区域，不穿过橙色意图判断框，不经过任何文字，不碰到下方根据命中的知识和用户描述的黄色弧线。新箭头的目标只能是蓝色f2s-req-clarify卡片，不是橙色intentRecognition框，也不是下一行f2s-req-tech卡片。两根黄色注释线必须明确分离：上面req-docs注释指向clarify；下面根据命中的知识和用户描述仍指向req-tech。除这一根req-docs的箭头外，所有文本、其余箭头、框、Yoyo、纸张背景、标题、位置、配色、线条全部原样保留。不要加红框，不要重排版。"
+    },
+    {
+      "slide": 14,
+      "out": "slide_14.png",
+      "expected_backend": "scripts/image_gen.py",
+      "sample_generation_method": {
+        "backend_used": "scripts/image_gen.py",
+        "tool_name": "scripts/image_gen.py",
+        "mode": "edit",
+        "model": "gpt-image-2.5-flare via Peta provider adapter",
+        "size": "2560x1440",
+        "quality": "medium"
+      },
+      "input_images": [
+        {
+          "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_14_reqdocs_arrow.png",
+          "role": "strict edit input"
+        }
+      ],
+      "prompt": "Only repair a small yellow dotted annotation line in this exact slide. Preserve all text, boxes, colors, illustrations, layout. Output 2560x1440. There are currently TWO yellow arrowheads below req-docs/需求文档. DELETE THE UPPER ARROWHEAD AND ITS SHORT DIAGONAL DASHES aimed at the orange intentRecognition box. Fill that old short arrow region (normalized x63.4%-65.7%, y35.8%-39%) with matching black background. There must be ZERO yellow arrowheads touching or pointing to the orange intentRecognition box. Also erase the short lower diagonal arrow segment between orange box and blue clarify box. Then draw ONE new continuous yellow dashed elbow arrow in empty black area: start just below req-docs label at normalized (65.5%,38%), go vertically down to (65.5%,41.5%), then diagonally left to (59.1%,43.2%). Only one arrowhead, at final endpoint (59.1%,43.2%), immediately outside upper-right corner of blue f2s-req-clarify box. The whole new line must remain OUTSIDE the orange box; its rightmost edge is63.2% so keep vertical part at65.5% until below orange bottom40.4%. Do not retain either old req-docs arrow segment. The separate lower yellow curved knowledge/user-description annotation stays exactly unchanged. Everything else unchanged. No red boxes, no page numbers. 核心：先删除两根旧的req-docs注释线，再画一根绕过橙色框右侧和下侧留白、只指向蓝色需求澄清框的黄色虚线。"
+    },
+    {
+      "slide": 14,
+      "out": "slide_14.png",
+      "expected_backend": "scripts/image_gen.py",
+      "sample_generation_method": {
+        "backend_used": "scripts/image_gen.py",
+        "tool_name": "scripts/image_gen.py",
+        "mode": "edit",
+        "model": "gpt-image-2.5-flare via Peta provider adapter",
+        "size": "2560x1440",
+        "quality": "medium"
+      },
+      "input_images": [
+        {
+          "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-number-borders/slide_14.png",
+          "role": "strict edit input"
+        }
+      ],
+      "prompt": "Edit ONLY the five numbered circles in the far-right column. Remove their black outlines and black fragments. Keep their existing blue, coral, green, amber, blue watercolor fills and white digits 1,2,3,4,5. They must have NO black border. Everything outside these five tiny circular regions must remain identical to the input. Especially do not redraw the central black panel or its text. Preserve exactly f2s-git-commit 提交前检查, Agent 按知识库渐进获取 → 实现代码, manifest, matcher, topic, match, expand, verify, act. Keep all yellow arrows identical. Do not change characters or words anywhere. Do not add red marks. Full-slide 16:9 at2560x1440. 仅去掉最右侧五个编号圆圈的黑色描边和黑色小碎片，圆圈保持彩色水彩底和白色数字。其他区域像素内容保持不变，尤其不要重新书写黑色面板中的中文。"
+    }
+  ],
+  "note": "最终页通过原图与顺序局部编辑形成。prompt 为最后一步；original_generation_job 和 accepted_edit_lineage 保留生成及修订提示词。历史参考图路径仅作为来源记录。"
+}

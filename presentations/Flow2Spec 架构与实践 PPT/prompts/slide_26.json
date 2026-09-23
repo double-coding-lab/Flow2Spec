@@ -1,0 +1,44 @@
+{
+  "slide": 26,
+  "title": "知识库合并冲突，用 f2s-kb-merge",
+  "prompt": "局部编辑输入幻灯片。保持所有文字颜色内容布局基本不变，只改两点：\n1. 第一张“同事 A”与第二张“同事 B”卡片之间的右箭头，替换成一个深墨色加号“+”，表示双方独立贡献而非先后顺序。后面的箭头保留。\n2. 最右“合并结果”卡片内容下方留白中新增一行小字“复核结果，再提交”，中文清晰、留出内边距，不与原文重叠。\n其余所有元素、标题、底部边界说明原样保留。2560x1440完整16:9，中文无乱码，无页码。",
+  "out": "slide_26.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/refresh_05.png",
+      "role": "strict localized edit input"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_26.json"
+}

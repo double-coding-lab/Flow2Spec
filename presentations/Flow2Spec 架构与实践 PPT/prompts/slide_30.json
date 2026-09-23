@@ -1,0 +1,44 @@
+{
+  "slide": 30,
+  "title": "冷知识：主题过长时，主动拆分",
+  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n左侧一份随业务迭代增厚的topic纸张，右侧三张边界清楚的topic纸签，中间一个短箭头。底部当前做法与未来考虑上下两行明确区分。不要给skill编造名字。用很少文字说清楚，不画代码块。\n标题：冷知识：主题过长时，主动拆分\n必需内容：\n业务持续迭代，单个 topic 可能越来越长\n已有长度、分类与职责边界约束，仍需持续维护\n当前：手动让 AI 按业务职责拆分主题\n主 topic 保留入口与业务闭环\n子 topic 承担可独立命中的职责\n同步调整 matcher、索引与 topicDependencies\n拆分后核验路由、依赖与事实是否完整\n未来考虑：提供专用拆分 skill（尚未推出）",
+  "out": "slide_30.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_29.png",
+      "role": "style reference only; replace content according to this page"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_02.json"
+}

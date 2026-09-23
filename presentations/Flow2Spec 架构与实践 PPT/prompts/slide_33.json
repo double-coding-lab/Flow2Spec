@@ -1,0 +1,44 @@
+{
+  "slide": 33,
+  "title": "一个索引 ID，串起一次需求的全部产物",
+  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n规划架构页，右上角醒目标“规划中”。左侧65%是三层竖直结构：顶部“每次需求生成一个索引 ID”，中间“独立 JSON 记录关联关系”，底部六个小纸签两行三列无相互箭头：需求澄清、技术方案、topic、终稿、初稿、task。六个纸签共用一个细线括号表明关联，不要画成这六项的固定先后流程。右侧35%单独浅框“后续 Web 展示”，仅三个大要点，左侧索引到右框一个短箭头，不能穿过文字。下方一句说明当前与未来界限。不要模拟密集dashboard。\n标题：一个索引 ID，串起一次需求的全部产物\n必需内容：\n规划中\n每次需求生成一个索引 ID\n独立 JSON 记录关联关系\n需求澄清\n技术方案\ntopic\n终稿\n初稿\ntask\n同一 ID 关联各节点与产物\n后续 Web 展示\n团队成员的工作情况\n每个节点的产物与状态\n沿需求查看完整交付过程\n先建立可追溯索引，再建设团队可视化；当前尚未实现",
+  "out": "slide_33.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_09.png",
+      "role": "style reference only; replace content according to this page"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_04.json"
+}

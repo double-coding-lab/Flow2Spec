@@ -1,0 +1,44 @@
+{
+  "slide": 2,
+  "title": "分享大纲",
+  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n七项清晰目录，两列排列前三行01到06，第七项在底部单独一行，字体清晰宽松；标题和底部收束句保留。\n标题：分享大纲\n必需内容：\n01 为什么需要\n02 体系原理\n03 如何接入和初始化\n04 五类日常使用场景\n05 团队协作\n06 其他：配置、冷知识与命令\n07 后期迭代计划\n从“AI 会忘”到“项目知识成为基础设施”",
+  "out": "slide_02.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_02.png",
+      "role": "style reference only; replace content according to this page"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_01.json"
+}

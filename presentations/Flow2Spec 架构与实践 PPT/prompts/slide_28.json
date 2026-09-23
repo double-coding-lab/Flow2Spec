@@ -1,0 +1,44 @@
+{
+  "slide": 28,
+  "title": "很多工作规范，都可以配置",
+  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n副标题“项目根目录：flow2spec.config.json”。杂志式两栏说明，左侧“Agent 如何工作”，右侧“任务如何记录”。每个配置key清晰独立一行，中文语义短行。底部窄条放其他配置和提醒。不要代码块，不需要显示JSON花括号。\n标题：很多工作规范，都可以配置\n必需文本：\nAgent 如何工作\nsubAgent · 是否允许拆子 Agent\nswitchAgentVerification · 按技能约定交叉校验\nintentRecognition · 高置信意图自动分流\n任务如何记录\nchangeTracking.feat / fix / implement\n分别控制三类变更追踪\ncollaboration.enabled / developerId\n控制个人任务目录隔离与身份\nlocale · 模板语言\nupdateCheck.enabled · 版本更新提示\n默认：feat 开启，fix 关闭，implement 开启\n开关按技能约定生效；并非所有行为都有开关",
+  "out": "slide_28.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_09.png",
+      "role": "style reference only; replace content according to this job"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_28.json"
+}

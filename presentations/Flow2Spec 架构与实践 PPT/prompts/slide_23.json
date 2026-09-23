@@ -1,0 +1,44 @@
+{
+  "slide": 23,
+  "title": "场景 5：验收清单与 UserTodo 让任务真正收口",
+  "prompt": "完整16:9图片，2560x1440。高级杂志风，暖白纸张背景、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。中文清晰、准确无乱码。无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。箭头不得穿过卡片、文字或其他箭头。可不画角色。参考图仅参考配色字体质感，不复制其内容与版式。\n标题：场景 5：验收清单与 UserTodo 让任务真正收口\n全部内容：\ntodo.json · 活跃任务索引\ntask.md · 执行 checklist\ncontext.md · 文件与上下文\nacceptance.md · 验收清单\nuser-todos.md · 用户外部待办\n例：失败重试与防重复执行通过验收；DDL / 开关 / 发版由用户完成\n步骤完成 → 验收通过 → 外部待办完成 → 归档\n说“继续”，即可恢复任务现场\n布局：左半部纸张文件清单展示 .task/ 下五类文件，各一行职责。右半部验收和外部待办两块，底部收口四步细线流程。不要终端目录窗口，使用纸张索引风格。",
+  "out": "slide_23.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+      "role": "approved style reference; match style only, do not copy layout or content",
+      "fidelity": "style only"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_23.json"
+}

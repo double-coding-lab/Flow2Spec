@@ -1,0 +1,43 @@
+{
+  "slide": 5,
+  "title": "我们的接入情况：覆盖不同体量项目",
+  "prompt": "对输入的完整幻灯片局部编辑，保持暖白高级杂志风、原图表格、数字、配色和版式。输出完整2560x1440，16:9，medium，中文准确清晰，无页码。\n只修改以下文字：\n1. 大标题替换为“我们的接入情况：覆盖不同体量项目”。\n2. 标题下方空白处新增一行较小但清晰的统计范围说明：“已统计 4 个生产仓库；另有多个活动页项目已接入，暂未纳入统计”。适当调整标题高度和字号以留出说明，不得覆盖表格。\n3. 顶部合计蓝色标签“合计：”改为“四仓合计”，必要时分两行，不得影响后面数字。\n4. 表格下方底部左侧“规模跨 40 倍；”替换为“已应用于不同体量的项目”，保留右侧“每次只加载约几百行命中 topic”。可按宽度重新分配底部左右两区，不拥挤。\n5. 底部来源“来源：flow2spec-intro-public · 2026-09”保留。\n以下数字与对应含义严禁变化：四仓合计1326文件、16.5万行、103 topic、98 matcher、193沉淀文档、80归档任务。主仓A 1012文件、12.9万行、43 topic、43 matcher、2786 commit、43归档任务，27位作者、3个月2786commit。接口仓B 213、2.6万、25、23、185、11。管理后台C 73、5788、20、18、180、19。客户端D 28、3174、15、14、76、7。四仓所有表格行列原样保留。不要虚构活动页数量或将其计入已有统计，不再出现40倍。",
+  "out": "slide_05.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-adoption-scope-20260922-170434/slide_05.png",
+      "role": "strict localized edit input; preserve all table values"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/origin_image/slide_09.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_05.json"
+}

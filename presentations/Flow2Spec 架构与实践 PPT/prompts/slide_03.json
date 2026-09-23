@@ -1,0 +1,45 @@
+{
+  "slide": 3,
+  "title": "为什么需要",
+  "prompt": "# Codex PPT Slide Image Prompt\n\n## Canvas\n{\n  \"type\": \"16:9 full-slide PowerPoint image\",\n  \"language\": \"Chinese\",\n  \"slide_number\": 1,\n  \"render_slide_number\": false\n}\n\n## Deck Goal\n向技术团队解释 Flow2Spec 如何将可路由知识、Agent 执行约束、任务状态与团队协作组合成可演进的工程系统。\n\n## Required Background\n{\n  \"deck_context\": {\n    \"source_summary\": \"Flow2Spec 是面向 AI 编程客户端的 Spec-driven 工作流层。它在项目中建立 .Knowledge/ 多层知识库，并以 rules/AGENTS、f2s-* skills 和 .task/ 把知识、执行与续作状态连接起来。CLI 是薄壳，@double-coding/flow2spec-core 承担初始化、路由、协作、doctor、资源和更新 API。\",\n    \"core_claim\": \"不是让 AI 更聪明，而是让 AI 在每次任务中按需读到正确、可验证、能持续演进的项目事实。\",\n    \"canonical_terms\": [\n      \"Memory Coding\",\n      \".Knowledge/\",\n      \".task/\",\n      \"manifest → matcher → topic\",\n      \"match → expand → verify → act\",\n      \"topicDependencies\",\n      \"kb-delta.json\",\n      \"topic revision\",\n      \"f2s-*\"\n    ],\n    \"mascot_policy\": \"携程 Yoyo 是小尺寸讲解陪伴角色，只出现在留白充足的角落或章节转场；不遮挡标题、关键图、文本、页码或严格输入素材；不添加携程 Logo 或品牌文字。\"\n  },\n  \"slide_local_context\": {\n    \"required_background\": \"这是章节标题页，不是内容说明页。只包含章节标签、中文大标题和一句副标题。\"\n  }\n}\n\n## Global Style\n{\n  \"name\": \"Flow2Spec editorial architecture with Yoyo mascot\",\n  \"visual_direction\": \"高级杂志风的专业架构说明：暖白纸张背景、深墨色大标题、钴蓝与珊瑚色强调、精致几何标记、轻微纸张肌理和大量留白。\",\n  \"color_palette\": \"warm off-white, ink black, cobalt blue, muted coral, occasional sage green and amber\",\n  \"typography\": \"oversized bold Chinese sans-serif headline, compact editorial captions, small monospace English technical labels\",\n  \"texture_and_finish\": \"editorial paper finish, thin rules, restrained hand-ink edge texture; no neon, no terminal chrome, no dense dashboards\",\n  \"deck_consistency\": \"vary cover, architecture, process, evidence, timeline and closing layouts; add small Yoyo only where suitable\"\n}\n\n## Input Images\n\n- Image 1: /Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png — approved style reference; match style only, do not copy layout or content; style only\n\n\n## Slide\n{\n  \"number\": 1,\n  \"title\": \"为什么需要\",\n  \"role\": \"section divider\",\n  \"intent\": \"章节转场，提供叙事停顿\"\n}\n\n## Text\n{\n  \"title\": \"为什么需要\",\n  \"key_points\": [\n    \"CHAPTER 01\",\n    \"为什么需要\",\n    \"从上下文过载，走向可路由的项目记忆\"\n  ],\n  \"speaker_focus\": null\n}\n\n## Layout\n{\n  \"composition\": \"统一杂志章节扉页。左侧占60%：小号 CHAPTER 01，深墨色中文超大标题，副标题小号；右侧低密度抽象插画：松散纸张在右侧逐渐收束为一条清晰路径。强调色珊瑚色。70%暖白留白。\"\n}\n\n## Constraints\n[\n  \"2560x1440，完整16:9图片；暖白纸张、轻微肌理、深墨色大标题、细线、克制手绘边缘。\",\n  \"章节标签是内容，允许 CHAPTER 01 等；严禁任何页面页码如 06/18。\",\n  \"不使用卡片网格、流程说明、终端、霓虹、dashboard、Logo、密集信息。\",\n  \"所有中文准确、清晰，无任何遮挡。参考图只参考配色与质感，完全不要复制其四张卡片布局。\",\n  \"仅渲染 key_points 的三段文字，不加目录或额外解释。\"\n]\n\n## Style Reference Rule\nUse Image 1 as the approved sample-slide style reference. Match its palette, typography mood, density, texture, and overall visual identity. Do not copy its exact layout unless this slide's layout explicitly asks for it.\n\n## Input Image Handling Rules\nFor any input image marked as a strict input asset, include it visibly and preserve its content. Do not redraw, replace, relabel, or invent a similar figure. Scale and crop only as needed for composition while keeping the important labels, arrows, data, and relationships recognizable.\n\n## Universal Constraints\n- The final image itself must contain the title and key points.\n- Render Chinese text exactly and legibly; avoid garbled characters.\n- Keep the confirmed deck style consistent while varying layout by slide role.\n- No watermark, unrelated logo, or extra slide number.\n",
+  "out": "slide_03.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png",
+      "role": "approved style reference; match style only, do not copy layout or content",
+      "fidelity": "style only"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_03.json"
+}
