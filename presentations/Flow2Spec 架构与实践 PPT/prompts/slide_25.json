@@ -1,13 +1,12 @@
 {
   "slide": 25,
-  "title": "真实团队规模下如何不串戏",
-  "prompt": "完整16:9图片，2560x1440。高级杂志风，暖白纸张背景、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。中文清晰、准确无乱码。无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。箭头不得穿过卡片、文字或其他箭头。可不画角色。参考图仅参考配色字体质感，不复制其内容与版式。\n标题：真实团队规模下如何不串戏\n全部内容：\n主仓 A · 3 个月 · 27 位作者 · 2786 commit · 43 归档任务\n个人任务本地：.task/<developerId>/\n各自维护任务、验收与外部待办\n确认知识共享：.Knowledge/ 通过 Git / PR 共享\nkb-delta.json + topic revision\nrevision 匹配才合入；冲突时重读最新知识，避免静默覆盖\n来源：flow2spec-intro-public · 2026-09\n布局：顶部一行真实团队数据，中部左右两块：个人工作区和共享知识，左边两位开发者各自任务夹，右边 Git / PR 与知识文件。底部 delta + revision 门禁短流程。严格不把 .task 当共享看板；线段只在留白间隔。",
+  "title": "使用感受：从带新人，到给老员工交代工作",
+  "prompt": "完整16:9图片，2560x1440。参考输入图的暖白纸张、深墨大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。参考其横向场景带版式，但替换全部内容。不加页码、黑色面板、终端、霓虹、复杂仪表盘。中文准确清晰。箭头只在留白区域，禁止穿过卡片、文字或其他箭头。只显示指定文案，不要自行扩写。\n标题：使用感受：从带新人，到给老员工交代工作。副标题：我的体验：需求交代清楚，AI 按已有知识和规则推进。三条横向带，左侧为短场景标题、中间工作方式、右侧体感收益。第一行：‘讲业务’；‘已有概念与历史知识’；‘不用从头补背景’。第二行：‘澄清需求’；‘结合项目约束追问’；‘问题更容易问到点上’。第三行：‘推进实现’；‘沿已有规范与边界开发’；‘少盯细节，少打补丁’。底部醒目短句：‘我负责目标、关键澄清和验收，AI 负责持续推进。’小字：‘个人真实使用感受；前提是熟悉项目、知识持续维护。’不要任何效率数字。不要写无人监管、完全无需检查、部门第一等。",
   "out": "slide_25.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-      "role": "approved style reference; match style only, do not copy layout or content",
-      "fidelity": "style only"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/使用效果初版预览/origin_image/slide_02.png",
+      "role": "approved style and format reference only"
     }
   ],
   "requires_context_images": true,
@@ -16,13 +15,11 @@
     "backend_used": "scripts/image_gen.py",
     "tool_name": "scripts/image_gen.py",
     "mode": "edit",
-    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
     "model": "gpt-image-2.5-flare via Peta provider adapter",
     "size": "2560x1440",
     "quality": "medium",
-    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/使用效果初版预览/origin_image/slide_02.png",
+    "input_context_preparation": "Peta edit single style reference; use approved second preview horizontal-lane format."
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +37,5 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_25.json"
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_24.json"
 }

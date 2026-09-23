@@ -1,0 +1,45 @@
+{
+  "slide": 39,
+  "title": "完善前后端自动化测试环节",
+  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n规划页，不写具体技术栈、时间表或已实现承诺。右上角醒目“规划中”。中部左右两个宽松栏目“前端”“后端”，下方通栏“联调与回归”，以两条不相交短箭头汇入下方边缘，禁止穿过卡片。最底部目标一句话，不画循环。\n标题：完善前后端自动化测试环节\n必需内容：\n规划中\n前端\n页面行为与关键交互验证\n后端\n接口行为与业务逻辑验证\n联调与回归\n补齐跨端关键链路的自动化验证\n目标：让验收更可重复，让问题更早暴露\n完善测试执行与结果反馈，支撑交付质量",
+  "out": "slide_39.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_09.png",
+      "role": "style reference only; replace content according to this page"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_05.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_38.json"
+}

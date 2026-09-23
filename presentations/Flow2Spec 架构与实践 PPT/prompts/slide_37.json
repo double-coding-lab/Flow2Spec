@@ -1,0 +1,43 @@
+{
+  "slide": 37,
+  "title": "后期迭代计划",
+  "prompt": "完整16:9，2560x1440，中文清晰准确，无乱码。精确局部编辑：仅把左上角“CHAPTER 07”改为“CHAPTER 08”。其他全部文字、插画、配色、背景、位置保持原样，尤其保留“后期迭代计划”“全链路可追溯 · 前后端自动化测试”“规划中”。无页码。",
+  "out": "slide_37.png",
+  "input_images": [
+    {
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/origin_image/slide_36.png",
+      "role": "strict localized edit asset"
+    }
+  ],
+  "requires_context_images": true,
+  "expected_backend": "scripts/image_gen.py",
+  "sample_generation_method": {
+    "backend_used": "scripts/image_gen.py",
+    "tool_name": "scripts/image_gen.py",
+    "mode": "edit",
+    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
+    "model": "gpt-image-2.5-flare via Peta provider adapter",
+    "size": "2560x1440",
+    "quality": "medium",
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit exactly one input image: strict edit asset or chapter style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+  },
+  "generation_contract": {
+    "must_use_selected_image_backend": true,
+    "must_match_sample_generation_method": true,
+    "forbidden_final_image_methods": [
+      "local drawing/rendering scripts",
+      "Pillow-generated slides",
+      "SVG/HTML/CSS/canvas screenshots",
+      "python-pptx/PptxGenJS/native PPT layout screenshots",
+      "manually composited text/image overlays"
+    ],
+    "must_return": [
+      "backend_used",
+      "selected_source",
+      "qa_note"
+    ]
+  },
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/eight-chapters/prompts/slide_05.json"
+}

@@ -1,12 +1,12 @@
 {
   "slide": 32,
-  "title": "后期迭代计划",
-  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n章节扉页，左侧CHAPTER 07，超大中文标题，下一行副标题。右侧克制的索引标签与测试勾选纸张插画，70%留白。显著小标“规划中”，不是现有能力。\n标题：后期迭代计划\n必需内容：\nCHAPTER 07\n后期迭代计划\n全链路可追溯 · 前后端自动化测试\n规划中",
+  "title": "其他",
+  "prompt": "完整16:9，2560x1440，中文清晰准确，无乱码。精确局部编辑：仅把左上角“CHAPTER 06”改为“CHAPTER 07”。其他全部文字、插画、配色、背景、位置保持原样，尤其保留“其他”和“配置、冷知识与常用命令”。无页码。",
   "out": "slide_32.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_27.png",
-      "role": "style reference only; replace content according to this page"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/origin_image/slide_31.png",
+      "role": "strict localized edit asset"
     }
   ],
   "requires_context_images": true,
@@ -19,10 +19,9 @@
     "model": "gpt-image-2.5-flare via Peta provider adapter",
     "size": "2560x1440",
     "quality": "medium",
-    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
-    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/origin_image/slide_06.png",
+    "input_context_preparation": "Peta edit exactly one input image: strict edit asset or chapter style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +39,5 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_03.json"
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/eight-chapters/prompts/slide_04.json"
 }

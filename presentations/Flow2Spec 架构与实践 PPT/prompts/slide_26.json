@@ -1,12 +1,12 @@
 {
   "slide": 26,
-  "title": "知识库合并冲突，用 f2s-kb-merge",
-  "prompt": "局部编辑输入幻灯片。保持所有文字颜色内容布局基本不变，只改两点：\n1. 第一张“同事 A”与第二张“同事 B”卡片之间的右箭头，替换成一个深墨色加号“+”，表示双方独立贡献而非先后顺序。后面的箭头保留。\n2. 最右“合并结果”卡片内容下方留白中新增一行小字“复核结果，再提交”，中文清晰、留出内边距，不与原文重叠。\n其余所有元素、标题、底部边界说明原样保留。2560x1440完整16:9，中文无乱码，无页码。",
+  "title": "个人效率案例：5 天排期，3 天完成开发与测试",
+  "prompt": "完整16:9图片，2560x1440。参考输入图的暖白纸张、深墨大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。参考其横向场景带版式，但替换全部内容。不加页码、黑色面板、终端、霓虹、复杂仪表盘。中文准确清晰。箭头只在留白区域，禁止穿过卡片、文字或其他箭头。只显示指定文案，不要自行扩写。\n标题：个人效率案例：5 天排期，3 天完成开发与测试。副标题：熟悉项目、知识已积累，是这个案例的前提。主体两条横向时间带，使用等宽日格展示同一尺度。上带标签‘原排期’，5个等宽浅灰日格，总标注‘5 天’；下带标签‘实际完成’，2个钴蓝等宽日格合并标注‘开发 2 天’，紧接1个绿色等宽日格标注‘测试 1 天’，右侧强调‘合计 3 天’，剩余2格保持为空白而非增加工作阶段。底部三枚简洁短语：‘先提炼产品需求’‘只澄清关键问题’‘按既有知识实现’。底部结论：‘做需求的那几天，反而成了我更轻松的几天。’脚注：‘来源：讲述者个人案例 · 2026-09；非对照实验，不代表所有需求。’数字只允许5、2、1、3天，不增加任何百分比或倍数。不要将这个通用个人案例标为乐赚贴或盲盒，不做错误归因。",
   "out": "slide_26.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/refresh_05.png",
-      "role": "strict localized edit input"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/使用效果初版预览/origin_image/slide_02.png",
+      "role": "approved style and format reference only"
     }
   ],
   "requires_context_images": true,
@@ -15,14 +15,11 @@
     "backend_used": "scripts/image_gen.py",
     "tool_name": "scripts/image_gen.py",
     "mode": "edit",
-    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
     "model": "gpt-image-2.5-flare via Peta provider adapter",
     "size": "2560x1440",
     "quality": "medium",
-    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
-    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/使用效果初版预览/origin_image/slide_02.png",
+    "input_context_preparation": "Peta edit single style reference; use approved second preview horizontal-lane format."
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +37,5 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_26.json"
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_25.json"
 }

@@ -1,12 +1,12 @@
 {
   "slide": 34,
-  "title": "完善前后端自动化测试环节",
-  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n规划页，不写具体技术栈、时间表或已实现承诺。右上角醒目“规划中”。中部左右两个宽松栏目“前端”“后端”，下方通栏“联调与回归”，以两条不相交短箭头汇入下方边缘，禁止穿过卡片。最底部目标一句话，不画循环。\n标题：完善前后端自动化测试环节\n必需内容：\n规划中\n前端\n页面行为与关键交互验证\n后端\n接口行为与业务逻辑验证\n联调与回归\n补齐跨端关键链路的自动化验证\n目标：让验收更可重复，让问题更早暴露\n完善测试执行与结果反馈，支撑交付质量",
+  "title": "几个容易忽略，但很实用的细节",
+  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n四个松散杂志分区，两列两行但不用厚卡片边框；编号01到04只是知识点不是页码。每点大字判断+短解释。\n标题：几个容易忽略，但很实用的细节\n必需文本：\n01 init ≠ 业务知识已更新\ninit 对齐骨架；业务事实由知识技能维护\n02 req-plan 始终维护任务\n不受 feat / fix 追踪开关影响\n03 kb-rm ≠ 删除业务代码\n移除知识主题与路由，保留源文档\n04 同名 build，职责不同\nf2s-kb-build：从终稿提炼知识\nflow2spec kb build：从 topic 元数据归一化路由",
   "out": "slide_34.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_09.png",
-      "role": "style reference only; replace content according to this page"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_09.png",
+      "role": "style reference only; replace content according to this job"
     }
   ],
   "requires_context_images": true,
@@ -40,5 +40,6 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_05.json"
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_29.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_33.json"
 }

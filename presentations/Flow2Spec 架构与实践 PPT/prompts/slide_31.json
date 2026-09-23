@@ -1,12 +1,12 @@
 {
   "slide": 31,
-  "title": "CLI 命令：诊断、校验与安全合库",
-  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n三栏宽松文字速查，副标题“在终端运行；不是聊天里的 f2s-* 技能”。一项命令+一行中文解释。命令省略统一前缀flow2spec，页脚写“以下命令统一加 flow2spec 前缀；apply / build 会写盘”。第一栏3项，第二栏3项，第三栏3项。没有终端窗口，没有代码框。\n标题：CLI 命令：诊断、校验与安全合库\n必需文本：\n接入与版本\ninit · 初始化项目骨架\nversion · 查看本地版本\nupdate --check · 检查可用更新\n诊断与校验\ndoctor · 只读环境与项目体检\nkb status · 查看知识库与 delta 状态\nkb check --strict · 严格校验知识库\n安全合库\nkb plan <delta.json> · 预演合入与冲突\nkb apply <delta.json> · 应用已通过的变更\nkb build · 按 topic 元数据重建路由\ndoctor 只诊断，不自动修复",
+  "title": "知识库合并冲突，用 f2s-kb-merge",
+  "prompt": "局部编辑输入幻灯片。保持所有文字颜色内容布局基本不变，只改两点：\n1. 第一张“同事 A”与第二张“同事 B”卡片之间的右箭头，替换成一个深墨色加号“+”，表示双方独立贡献而非先后顺序。后面的箭头保留。\n2. 最右“合并结果”卡片内容下方留白中新增一行小字“复核结果，再提交”，中文清晰、留出内边距，不与原文重叠。\n其余所有元素、标题、底部边界说明原样保留。2560x1440完整16:9，中文无乱码，无页码。",
   "out": "slide_31.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_09.png",
-      "role": "style reference only; replace content according to this job"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/refresh_05.png",
+      "role": "strict localized edit input"
     }
   ],
   "requires_context_images": true,
@@ -40,5 +40,6 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_30.json"
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_26.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_30.json"
 }

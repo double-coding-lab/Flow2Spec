@@ -1,12 +1,13 @@
 {
   "slide": 29,
-  "title": "几个容易忽略，但很实用的细节",
-  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n四个松散杂志分区，两列两行但不用厚卡片边框；编号01到04只是知识点不是页码。每点大字判断+短解释。\n标题：几个容易忽略，但很实用的细节\n必需文本：\n01 init ≠ 业务知识已更新\ninit 对齐骨架；业务事实由知识技能维护\n02 req-plan 始终维护任务\n不受 feat / fix 追踪开关影响\n03 kb-rm ≠ 删除业务代码\n移除知识主题与路由，保留源文档\n04 同名 build，职责不同\nf2s-kb-build：从终稿提炼知识\nflow2spec kb build：从 topic 元数据归一化路由",
+  "title": "真实团队规模下如何不串戏",
+  "prompt": "完整16:9图片，2560x1440。高级杂志风，暖白纸张背景、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、轻微纸张肌理、大留白、细线、克制手绘边缘。中文清晰、准确无乱码。无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。箭头不得穿过卡片、文字或其他箭头。可不画角色。参考图仅参考配色字体质感，不复制其内容与版式。\n标题：真实团队规模下如何不串戏\n全部内容：\n主仓 A · 3 个月 · 27 位作者 · 2786 commit · 43 归档任务\n个人任务本地：.task/<developerId>/\n各自维护任务、验收与外部待办\n确认知识共享：.Knowledge/ 通过 Git / PR 共享\nkb-delta.json + topic revision\nrevision 匹配才合入；冲突时重读最新知识，避免静默覆盖\n来源：flow2spec-intro-public · 2026-09\n布局：顶部一行真实团队数据，中部左右两块：个人工作区和共享知识，左边两位开发者各自任务夹，右边 Git / PR 与知识文件。底部 delta + revision 门禁短流程。严格不把 .task 当共享看板；线段只在留白间隔。",
   "out": "slide_29.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_09.png",
-      "role": "style reference only; replace content according to this job"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
+      "role": "approved style reference; match style only, do not copy layout or content",
+      "fidelity": "style only"
     }
   ],
   "requires_context_images": true,
@@ -21,8 +22,7 @@
     "quality": "medium",
     "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
     "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
-    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +40,6 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_29.json"
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_25.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_28.json"
 }

@@ -1,13 +1,12 @@
 {
   "slide": 35,
-  "title": "让项目知识成为团队可演进的基础设施",
-  "prompt": "# Codex PPT Slide Image Prompt\n\n## Canvas\n{\n  \"type\": \"16:9 full-slide PowerPoint image\",\n  \"language\": \"Chinese\",\n  \"slide_number\": 18,\n  \"render_slide_number\": false\n}\n\n## Deck Goal\n向技术团队解释 Flow2Spec 如何将可路由知识、Agent 执行约束、任务状态与团队协作组合成可演进的工程系统。\n\n## Required Background\n{\n  \"deck_context\": {\n    \"source_summary\": \"Flow2Spec 是面向 AI 编程客户端的 Spec-driven 工作流层。它在项目中建立 .Knowledge/ 多层知识库，并以 rules/AGENTS、f2s-* skills 和 .task/ 把知识、执行与续作状态连接起来。CLI 是薄壳，@double-coding/flow2spec-core 承担初始化、路由、协作、doctor、资源和更新 API。\",\n    \"core_claim\": \"不是让 AI 更聪明，而是让 AI 在每次任务中按需读到正确、可验证、能持续演进的项目事实。\",\n    \"canonical_terms\": [\n      \"Memory Coding\",\n      \".Knowledge/\",\n      \".task/\",\n      \"manifest → matcher → topic\",\n      \"match → expand → verify → act\",\n      \"topicDependencies\",\n      \"kb-delta.json\",\n      \"topic revision\",\n      \"f2s-*\"\n    ],\n    \"mascot_policy\": \"携程 Yoyo 是小尺寸讲解陪伴角色，只出现在留白充足的角落或章节转场；不遮挡标题、关键图、文本、页码或严格输入素材；不添加携程 Logo 或品牌文字。\"\n  },\n  \"slide_local_context\": {\n    \"required_background\": \"重申：不是让 AI 更聪明，而是让 AI 一直知道你在做什么；适合长期多人协作和高上下文漂移成本项目。\"\n  }\n}\n\n## Global Style\n{\n  \"name\": \"Flow2Spec editorial architecture with Yoyo mascot\",\n  \"visual_direction\": \"高级杂志风的专业架构说明：暖白纸张背景、深墨色大标题、钴蓝与珊瑚色强调、精致几何标记、轻微纸张肌理和大量留白。\",\n  \"color_palette\": \"warm off-white, ink black, cobalt blue, muted coral, occasional sage green and amber\",\n  \"typography\": \"oversized bold Chinese sans-serif headline, compact editorial captions, small monospace English technical labels\",\n  \"texture_and_finish\": \"editorial paper finish, thin rules, restrained hand-ink edge texture; no neon, no terminal chrome, no dense dashboards\",\n  \"deck_consistency\": \"vary cover, architecture, process, evidence, timeline and closing layouts; add small Yoyo only where suitable\"\n}\n\n## Input Images\n\n- Image 1: /Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png — approved style reference; match style only, do not copy layout or content; style only\n\n\n## Slide\n{\n  \"number\": 18,\n  \"title\": \"让项目知识成为团队可演进的基础设施\",\n  \"role\": \"closing\",\n  \"intent\": \"给出行动起点\"\n}\n\n## Text\n{\n  \"title\": \"让项目知识成为团队可演进的基础设施\",\n  \"key_points\": [\n    \"安装 CLI\",\n    \"flow2spec init\",\n    \"从当前需求或一个模块开始\",\n    \"不需要先写完文档\"\n  ],\n  \"speaker_focus\": null\n}\n\n## Layout\n{\n  \"composition\": \"大结论左侧，右侧三步启动卡片，底部仓库与 init 命令\"\n}\n\n## Visual Elements\n{\n  \"main_visual\": \"three-step launch path\"\n}\n\n## Constraints\n[\n  \"结尾克制留白大\",\n  \"Yoyo 可作告别角色\"\n]\n\n## Style Reference Rule\nUse Image 1 as the approved sample-slide style reference. Match its palette, typography mood, density, texture, and overall visual identity. Do not copy its exact layout unless this slide's layout explicitly asks for it.\n\n## Input Image Handling Rules\nFor any input image marked as a strict input asset, include it visibly and preserve its content. Do not redraw, replace, relabel, or invent a similar figure. Scale and crop only as needed for composition while keeping the important labels, arrows, data, and relationships recognizable.\n\n## Universal Constraints\n- The final image itself must contain the title and key points.\n- Render Chinese text exactly and legibly; avoid garbled characters.\n- Keep the confirmed deck style consistent while varying layout by slide role.\n- No watermark, unrelated logo, or extra slide number.\n",
+  "title": "冷知识：主题过长时，主动拆分",
+  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n左侧一份随业务迭代增厚的topic纸张，右侧三张边界清楚的topic纸签，中间一个短箭头。底部当前做法与未来考虑上下两行明确区分。不要给skill编造名字。用很少文字说清楚，不画代码块。\n标题：冷知识：主题过长时，主动拆分\n必需内容：\n业务持续迭代，单个 topic 可能越来越长\n已有长度、分类与职责边界约束，仍需持续维护\n当前：手动让 AI 按业务职责拆分主题\n主 topic 保留入口与业务闭环\n子 topic 承担可独立命中的职责\n同步调整 matcher、索引与 topicDependencies\n拆分后核验路由、依赖与事实是否完整\n未来考虑：提供专用拆分 skill（尚未推出）",
   "out": "slide_35.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-      "role": "approved style reference; match style only, do not copy layout or content",
-      "fidelity": "style only"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_29.png",
+      "role": "style reference only; replace content according to this page"
     }
   ],
   "requires_context_images": true,
@@ -21,8 +20,9 @@
     "size": "2560x1440",
     "quality": "medium",
     "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-    "input_context_preparation": "Peta /images/edits with the approved sample as style input and listed strict assets as image inputs",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable."
+    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
+    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
+    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +40,6 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_31.json"
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_02.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_34.json"
 }

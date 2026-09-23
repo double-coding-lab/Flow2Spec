@@ -1,12 +1,12 @@
 {
   "slide": 33,
-  "title": "一个索引 ID，串起一次需求的全部产物",
-  "prompt": "完整16:9幻灯片，2560x1440 medium。延续暖白纸张肌理、深墨色大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、大留白、细线、克制手绘边缘的高级杂志风。中文准确清晰，无页码、无水印、无终端框、无霓虹、无密集dashboard、无Logo堆砌。所有箭头只能在留白连接，不穿文字、卡片或其他箭头。只渲染指定内容。\n规划架构页，右上角醒目标“规划中”。左侧65%是三层竖直结构：顶部“每次需求生成一个索引 ID”，中间“独立 JSON 记录关联关系”，底部六个小纸签两行三列无相互箭头：需求澄清、技术方案、topic、终稿、初稿、task。六个纸签共用一个细线括号表明关联，不要画成这六项的固定先后流程。右侧35%单独浅框“后续 Web 展示”，仅三个大要点，左侧索引到右框一个短箭头，不能穿过文字。下方一句说明当前与未来界限。不要模拟密集dashboard。\n标题：一个索引 ID，串起一次需求的全部产物\n必需内容：\n规划中\n每次需求生成一个索引 ID\n独立 JSON 记录关联关系\n需求澄清\n技术方案\ntopic\n终稿\n初稿\ntask\n同一 ID 关联各节点与产物\n后续 Web 展示\n团队成员的工作情况\n每个节点的产物与状态\n沿需求查看完整交付过程\n先建立可追溯索引，再建设团队可视化；当前尚未实现",
+  "title": "很多工作规范，都可以配置",
+  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n副标题“项目根目录：flow2spec.config.json”。杂志式两栏说明，左侧“Agent 如何工作”，右侧“任务如何记录”。每个配置key清晰独立一行，中文语义短行。底部窄条放其他配置和提醒。不要代码块，不需要显示JSON花括号。\n标题：很多工作规范，都可以配置\n必需文本：\nAgent 如何工作\nsubAgent · 是否允许拆子 Agent\nswitchAgentVerification · 按技能约定交叉校验\nintentRecognition · 高置信意图自动分流\n任务如何记录\nchangeTracking.feat / fix / implement\n分别控制三类变更追踪\ncollaboration.enabled / developerId\n控制个人任务目录隔离与身份\nlocale · 模板语言\nupdateCheck.enabled · 版本更新提示\n默认：feat 开启，fix 关闭，implement 开启\n开关按技能约定生效；并非所有行为都有开关",
   "out": "slide_33.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/origin_image/slide_09.png",
-      "role": "style reference only; replace content according to this page"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_09.png",
+      "role": "style reference only; replace content according to this job"
     }
   ],
   "requires_context_images": true,
@@ -40,5 +40,6 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/roadmap-additions/prompts/slide_04.json"
+  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_28.json",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_32.json"
 }

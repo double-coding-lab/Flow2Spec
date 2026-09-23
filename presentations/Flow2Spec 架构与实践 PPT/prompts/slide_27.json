@@ -1,12 +1,12 @@
 {
   "slide": 27,
-  "title": "其他",
-  "prompt": "完整16:9，2560x1440。暖白纸张轻微肌理，深墨色大标题，钴蓝/珊瑚/鼠尾草绿/琥珀强调，大留白、细线、克制手绘边缘。清晰中文，无乱码。无页码、无水印、无霓虹、无终端框、无密集dashboard、无Logo堆砌。不要箭头穿过任何卡片或文字。文字准确，只显示指定文字。\n章节标题页，沿用输入图的章节构图，左侧CHAPTER 06超大标题“其他”，副标题“配置、冷知识与常用命令”。右侧换成极简纸张、开关、书签的抽象插画。70%留白，不保留团队相关文字。只渲染三段文字。\n标题：其他\n必需文本：\nCHAPTER 06\n其他\n配置、冷知识与常用命令",
+  "title": "真实需求，效率提升了多少？",
+  "prompt": "生成完整16:9幻灯片，2560x1440，中文准确清晰。输入图仅作风格参考，完全替换内容。暖白纸张微肌理、深墨大标题、钴蓝/珊瑚/鼠尾草绿/琥珀强调、克制手绘细线、大留白。不要深色背景、霓虹、dashboard、页码或卡通角色。主标题“真实需求，效率提升了多少？”。主体左右两栏，用细竖线分隔，每栏上方需求名称、其下三行耗时对照，底部突出效能倍数，不做复杂图表，不画箭头，不使用比例不明的条形图。\n左栏标题“乐赚贴 · 一批需求交付”，小标签“2026-06-25 快照”。范围一行或两行：“4 张新表 · 25 个新接口”“admin 净增 5494 行”。三行清晰对齐：“纯手工  约 1 个月”“普通 AI 辅助  约 2 周”“Flow2Spec  3 天”。Flow2Spec行用蓝色强调。下方大字“约 10×”，说明“对比纯手工 · 原述职口径”。\n右栏标题“盲盒次卡 · 后端需求”，小标签“2026-07-02 归档 · 仅后端”。范围两行：“3 张新表 · 4 处主卡联动”“7 个新 handler”。三行清晰对齐：“纯手工  8–12 工作日”“普通 AI 辅助  4–6 工作日”“Flow2Spec  2 工作日”。后者下小字“开发 1 天 + 接口调试 1 天”。下方大字“4–6×”，说明“对比纯手工”；旁边较小强调“对比普通 AI：2–3×”。\n底部一条细线下可读注释：“个人单次案例，效果因需求与熟练度而异；乐赚贴倍数沿用原述职口径，盲盒不含前端。”最下来源“来源：兰涛_2026H1述职 · 乐赚贴 / 盲盒次卡”。所有指定信息准确呈现，主次分明，无内容遮挡。不要混入参考图的5天排期3天完成数据。",
   "out": "slide_27.png",
   "input_images": [
     {
-      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-content-refresh-20260922-154230/origin_image/slide_22.png",
-      "role": "style reference only; replace content according to this job"
+      "path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/origin_image/slide_26.png",
+      "role": "style reference only; do not copy content"
     }
   ],
   "requires_context_images": true,
@@ -15,14 +15,11 @@
     "backend_used": "scripts/image_gen.py",
     "tool_name": "scripts/image_gen.py",
     "mode": "edit",
-    "prompt_source": "prompts/sample_slide_06_b_yoyo.txt",
     "model": "gpt-image-2.5-flare via Peta provider adapter",
     "size": "2560x1440",
     "quality": "medium",
-    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-chapter-inserts-20260922-124556/origin_image/slide_06.png",
-    "input_context_preparation": "Peta edit accepts exactly one input image: strict asset if required, otherwise approved slide_06 style reference.",
-    "handoff_rule": "Use scripts/image_gen.py edit with Peta and gpt-image-2.5-flare only; return a blocker if unavailable.",
-    "preserved_approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/generated/slide_06_approved_with_page_number.png"
+    "approved_sample_path": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/使用效果初版预览/origin_image/slide_02.png",
+    "input_context_preparation": "Peta edit exactly one style reference; all new factual content specified in prompt."
   },
   "generation_contract": {
     "must_use_selected_image_backend": true,
@@ -40,5 +37,5 @@
       "qa_note"
     ]
   },
-  "original_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践/drafts/before-roadmap-20260922-172840/prompts/slide_27.json"
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_26.json"
 }

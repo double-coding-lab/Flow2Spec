@@ -126,5 +126,6 @@
       "prompt": "Edit ONLY the five numbered circles in the far-right column. Remove their black outlines and black fragments. Keep their existing blue, coral, green, amber, blue watercolor fills and white digits 1,2,3,4,5. They must have NO black border. Everything outside these five tiny circular regions must remain identical to the input. Especially do not redraw the central black panel or its text. Preserve exactly f2s-git-commit 提交前检查, Agent 按知识库渐进获取 → 实现代码, manifest, matcher, topic, match, expand, verify, act. Keep all yellow arrows identical. Do not change characters or words anywhere. Do not add red marks. Full-slide 16:9 at2560x1440. 仅去掉最右侧五个编号圆圈的黑色描边和黑色小碎片，圆圈保持彩色水彩底和白色数字。其他区域像素内容保持不变，尤其不要重新书写黑色面板中的中文。"
     }
   ],
-  "note": "最终页通过原图与顺序局部编辑形成。prompt 为最后一步；original_generation_job 和 accepted_edit_lineage 保留生成及修订提示词。历史参考图路径仅作为来源记录。"
+  "note": "最终页通过原图与顺序局部编辑形成。prompt 为最后一步；original_generation_job 和 accepted_edit_lineage 保留生成及修订提示词。历史参考图路径仅作为来源记录。",
+  "preserved_source_job": "/Users/temptrip/Desktop/项目/double coding/Flow2Spec/presentations/Flow2Spec 架构与实践 PPT/drafts/before-eight-chapters-39/prompts/slide_14.json"
 }
