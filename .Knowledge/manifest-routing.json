@@ -35,7 +35,8 @@
     "flow2spec-doctor": ".Knowledge/topics/flow2spec-doctor.md",
     "flow2spec-core-package": ".Knowledge/topics/flow2spec-core-package.md",
     "flow2spec-qoder-plugin": ".Knowledge/topics/flow2spec-qoder-plugin.md",
-    "kb-routing-summary": ".Knowledge/topics/kb-routing-summary.md"
+    "kb-routing-summary": ".Knowledge/topics/kb-routing-summary.md",
+    "architecture-document-naming": ".Knowledge/topics/architecture-document-naming.md"
   },
   "taskToTopicRules": [
     {
@@ -209,6 +210,15 @@
         "kb-routing-summary"
       ],
       "summary": "初筛 summary 与 matcher 分片 4 字段(资格/否决门)语义"
+    },
+    {
+      "task": "architecture-document-naming",
+      "matcherId": "m-architecture-document-naming",
+      "matcherPath": ".Knowledge/matchers/m-architecture-document-naming.json",
+      "topics": [
+        "architecture-document-naming"
+      ],
+      "summary": "架构文档固定命名与业务主题去项目名前缀"
     }
   ],
   "projectRev": 3,
@@ -311,6 +321,10 @@
     "kb-routing-summary": {
       "primary": "feature",
       "confidence": "manual"
+    },
+    "architecture-document-naming": {
+      "primary": "policy",
+      "confidence": "inferred"
     }
   }
 }

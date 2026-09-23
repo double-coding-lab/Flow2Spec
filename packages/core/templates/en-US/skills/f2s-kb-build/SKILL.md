@@ -25,8 +25,8 @@ description: Generate knowledge-routing topics and indexes from `.Knowledge/stoc
 
 - Accepts one argument: a URL or local path.
 - Local paths must be under `.Knowledge/stock-docs/`.
-- **Must be a final draft**: recommended filename contains `_final.md`, or has been normalized by **`f2s-doc-final`**. It is **forbidden** to execute this skill directly with a `*_draft.md` produced by `f2s-doc-arch`.
-- If the input path contains **`_draft`**, or the user has just completed an architecture draft but has not run `f2s-doc-final`: **stop** and reply that they must first run **`f2s-doc-final <draft-path>`**, then call this skill with the final-draft path after it is written.
+- **Must be finalized**: project architecture uses `project-architecture_final.md` (Chinese: `项目架构终稿.md`); other documents should contain `_final.md` or have been normalized by **`f2s-doc-final`**. Never build directly from an architecture draft, including `project-architecture_draft.md` or `项目架构初稿.md`.
+- If the input filename contains **`_draft`** or **`初稿`** (including `项目架构初稿.md` without an underscore), or the user has just completed an architecture draft but has not run `f2s-doc-final`: **stop** and reply that they must first run **`f2s-doc-final <draft-path>`**, then call this skill with the final-draft path after it is written.
 - If `.Knowledge/req-docs/` is passed, tell the user to organize it into a `stock-docs` final draft before executing.
 
 ## Generation Principles
@@ -60,6 +60,8 @@ Extract from the document:
 ## Step 3: Write topics
 
 - Target path: `.Knowledge/topics/<topic>.md`
+- Fix the architecture overview topic id to `project-architecture`, filename to `project-architecture.md`, heading to `Project Architecture` (Chinese: `项目架构`), and `sourceDoc` to the actual architecture final document. Name split topics by responsibility. Do not add downstream project-name prefixes to topic ids, filenames, headings or derived matcher ids.
+- If an equivalent project-prefixed topic already exists, confirm migration scope and naming conflicts before updating its topic, matcher, index, routing and incoming references together. Until confirmed, report the pending migration; do not create duplicate architecture topics or automatically delete old files.
 - If the same topic already exists: prefer incremental updates to avoid duplicate topics.
 - If it is a new topic: add the file with a clear title, applicable scenarios, rules, and workflow.
 

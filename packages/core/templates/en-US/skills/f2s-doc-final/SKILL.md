@@ -19,6 +19,14 @@ The user provides **at least one argument** after this skill: the **first argume
 
 **The `final-overview-template` is only guidance**: if `.Knowledge/template/final-overview-template.md` exists, read it as a structural reference. Do not force an exact template fit.
 
+## Project Architecture Naming (Overrides Generic Design Naming)
+
+- For `f2s-doc-arch` output or content explicitly describing the overall project architecture, fix draft filename/H1 to `project-architecture_draft.md` / `Project Architecture Draft` and final filename/H1 to `project-architecture_final.md` / `Project Architecture Final`. Default directory: `.Knowledge/stock-docs/`. Chinese equivalents are `项目架构初稿.md` / `项目架构初稿` and `项目架构终稿.md` / `项目架构终稿`.
+- Apply this branch to both MD and PDF flows. Do not prefix names with the downstream project name inferred from an old input filename, source heading, `package.json.name` or repository directory; do not produce `project-architecture_draft_final.md`. The second argument can change the directory, but normalize the basename for the artifact stage and report the actual path.
+- Keep project names in body prose. Incrementally update an existing target while preserving valid content. When converting an old-named input, do not automatically delete it or overwrite a document of a different scope; confirm reference migrations.
+- Hand off `f2s-kb-build <actual-directory>/project-architecture_final.md`. Use architecture topic id `project-architecture` and title `Project Architecture`; name split topics by responsibility, without downstream project-name prefixes.
+- Other capability/design documents retain the generic `<design-name>_draft.md` / `<design-name>_final.md` convention below.
+
 ## Embedded Template Structure (Use When `.Knowledge/template/final-overview-template.md` Does Not Exist)
 
 Standard requirements:

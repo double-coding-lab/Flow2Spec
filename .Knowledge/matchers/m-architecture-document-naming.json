@@ -1,0 +1,13 @@
+{
+  "id": "m-architecture-document-naming",
+  "version": "1.0.0",
+  "schema": "flow2spec.matcher.v1",
+  "includeAny": [
+    "项目架构初稿",
+    "项目架构终稿",
+    "架构文档命名",
+    "主题命名前缀",
+    "下游项目名前缀",
+    "project-architecture"
+  ]
+}

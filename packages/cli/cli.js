@@ -64,13 +64,16 @@ function runCommandSync(command, commandArgs, options = {}) {
   });
 }
 
-function queryLatestCoreMetadata() {
+function queryLatestCoreMetadata(range = coreRange) {
   const output = runCommandSync(
     "npm",
-    ["view", CORE_PACKAGE, "version", "templateVersion", "--json", "--registry=https://registry.npmjs.org"],
+    ["view", `${CORE_PACKAGE}@${range}`, "version", "templateVersion", "--json", "--registry=https://registry.npmjs.org"],
     { encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] },
   );
-  const metadata = JSON.parse(output);
+  const candidates = [].concat(JSON.parse(output)).filter((item) => /^\d+\.\d+\.\d+$/.test(typeof item === "string" ? item : item.version));
+  candidates.sort((a, b) => compareVersions(typeof a === "string" ? a : a.version, typeof b === "string" ? b : b.version));
+  const metadata = candidates.pop();
+  if (!metadata) throw new Error(`没有找到兼容 ${range} 的稳定 Core 版本`);
   return {
     version: typeof metadata === "string" ? metadata : metadata.version,
     templateVersion: typeof metadata === "string"
@@ -317,8 +320,8 @@ Flow2Spec - 统一知识库工作流（AI 配置入口）  v${pkg.version}
   flow2spec kb                  知识库协作引擎：status / check / plan / apply / build
   flow2spec version             显示 CLI / Core / Template / Protocol 版本
   flow2spec update --check      检查 CLI 与 Core 更新
-  flow2spec update --cli        整体更新（CLI 与配套 Core 联动）
-  flow2spec update --core       同 --cli：Core 随 CLI 联动发布，执行整体更新
+  flow2spec update --cli        更新 CLI，并刷新其兼容范围内的 Core
+  flow2spec update --core       保持当前 CLI 版本，刷新兼容范围内的 Core
   flow2spec --help              显示本说明
 
 agent（可多个，空格分隔；省略时交互选择）：
@@ -358,7 +361,7 @@ if (sub === "version" || sub === "--version" || sub === "-v") {
   console.log([
     `Flow2Spec CLI:       ${pkg.version}`,
     `Flow2Spec Core:      ${coreVersions.coreVersion}`,
-    `Core Pinned:         ${coreRange}`,
+    `Core Range:          ${coreRange}`,
     `Template Version:    ${coreVersions.templateVersion}`,
     `Protocol Version:    ${getCapabilities().protocolVersion}`,
   ].join("\n"));
@@ -380,61 +383,74 @@ if (sub === "update") {
       timeout: 5000,
       stdio: ["ignore", "pipe", "ignore"],
     }).trim();
-    const latestCore = queryLatestCoreMetadata();
+    const targetCli = mode === "--cli" ? latestCli : pkg.version;
+    const targetRange = mode === "--cli" ? JSON.parse(runCommandSync("npm", ["view", `${pkg.name}@${targetCli}`, "dependencies", "--json"], {
+      encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"],
+    }))[CORE_PACKAGE] : coreRange;
+    if (!targetRange) throw new Error("目标 CLI 未声明 Core 兼容范围");
+    const latestCore = queryLatestCoreMetadata(targetRange);
 
     if (mode === "--check") {
       console.log([
         `CLI:      ${pkg.version} -> ${latestCli}`,
         `Core:     ${coreVersions.coreVersion} -> ${latestCore.version}`,
         `Template: ${coreVersions.templateVersion} -> ${latestCore.templateVersion}`,
-        `Policy:   Core 随 CLI 联动发布（当前 CLI pin Core ${coreRange}）`,
+        `Policy:   当前 CLI Core 兼容范围 ${coreRange}（Core 目标仅限该范围）`,
       ].join("\n"));
       if (compareVersions(latestCli, pkg.version) > 0) {
-        console.log("\n可运行 flow2spec update --cli 一键更新（CLI 与配套 Core 一起到位）。");
+        console.log("\n可运行 flow2spec update --cli 一键更新 CLI 及兼容 Core。");
       }
+      if (compareVersions(latestCore.version, coreVersions.coreVersion) > 0) console.log("可运行 flow2spec update --core，仅更新兼容 Core，保持 CLI 版本。");
       process.exit(0);
     }
 
-    // --cli 与 --core 统一为整体更新：CLI pin 精确 Core 版本，更新 CLI 即同时拿到配套 Core。
-    if (mode === "--core") {
-      console.log("Core 随 CLI 联动发布；执行整体更新（等价 update --cli）。");
-    }
-    if (!getGlobalInstalledVersion()) {
-      runCommandSync("npx", ["--yes", `${pkg.name}@latest`, "version"], { stdio: "inherit" });
-      console.log("\n✓ 当前为 npx 场景；已用 latest CLI 启动并验证（自带配套 Core），无需写入全局安装。");
-      process.exit(0);
-    }
-
-    const cliUpToDate = compareVersions(latestCli, pkg.version) <= 0;
-    const effectiveBefore = getGlobalEffectiveCoreVersion();
-    const coreHealthy = Boolean(effectiveBefore) && compareVersions(effectiveBefore, latestCore.version) >= 0;
-    if (cliUpToDate && coreHealthy) {
-      console.log(`CLI v${pkg.version} 与 Core v${effectiveBefore} 均已是最新。`);
-      process.exit(0);
-    }
-    if (cliUpToDate && !coreHealthy) {
-      // CLI 已是 latest 但实际生效的 Core 落后（历史孤儿副本 / 嵌套遮蔽）：先卸再装强制重建依赖树。
-      console.log(`检测到 Core 实际生效版本 v${effectiveBefore || "未知"} 落后于 v${latestCore.version}，重装 CLI 修复依赖树…`);
+    const globalRoot = runCommandSync("npm", ["root", "-g"], { encoding: "utf8", timeout: 5000 }).trim();
+    const globalCliDir = path.join(globalRoot, pkg.name);
+    const isGlobalInvocation = fs.existsSync(globalCliDir) && fs.realpathSync(globalCliDir) === fs.realpathSync(__dirname);
+    if (!isGlobalInvocation) {
+      // A fresh temporary cache avoids reusing a stale npx dependency tree; never change a separate global install.
+      const cacheDir = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-update-"));
       try {
-        runCommandSync("npm", ["uninstall", "-g", pkg.name], { stdio: "inherit" });
-      } catch {
-        // 卸载失败不阻断，继续安装。
+        const output = runCommandSync("npx", ["--yes", "--cache", cacheDir, `${pkg.name}@${targetCli}`, "version"], {
+          encoding: "utf8", env: { ...process.env, FLOW2SPEC_SKIP_UPDATE_CHECK: "1" },
+        });
+        const actualCli = output.match(/Flow2Spec CLI:\s+(\S+)/)?.[1];
+        const actualCore = output.match(/Flow2Spec Core:\s+(\S+)/)?.[1];
+        if (actualCli !== targetCli || actualCore !== latestCore.version) throw new Error(`临时安装验证失败：CLI ${actualCli || "未知"} / Core ${actualCore || "未知"}，期望 ${targetCli} / ${latestCore.version}`);
+        console.log(output.trim());
+        console.log("\n✓ 临时运行验证通过；未写入全局安装。后续 npx 缓存可能仍需刷新。");
+      } finally {
+        fs.rmSync(cacheDir, { recursive: true, force: true });
       }
+      process.exit(0);
     }
-    runCommandSync("npm", ["install", "-g", `${pkg.name}@latest`], { stdio: "inherit" });
+
+    const cliUpToDate = getGlobalInstalledVersion() === targetCli;
+    const effectiveBefore = getGlobalEffectiveCoreVersion();
+    const coreHealthy = effectiveBefore === latestCore.version;
+    if (cliUpToDate && coreHealthy) {
+      console.log(`CLI v${targetCli} 的 Core v${effectiveBefore} 已是兼容范围 ${targetRange} 内最新稳定版。`);
+      process.exit(0);
+    }
+    if (!coreHealthy) {
+      // Installing a top-level Core does not replace CLI's nested copy. Rebuild the target CLI tree.
+      console.log(`Core 实际生效版本 v${effectiveBefore || "未知"} 与兼容目标 v${latestCore.version} 不同，重装 CLI v${targetCli} 刷新依赖树…`);
+      runCommandSync("npm", ["uninstall", "-g", pkg.name], { stdio: "inherit" });
+    }
+    runCommandSync("npm", ["install", "-g", `${pkg.name}@${targetCli}`], { stdio: "inherit" });
 
     // 生效验证：以实际解析到的 Core 为准，不再仅凭 npm 退出码报成功。
     const installedCli = getGlobalInstalledVersion();
     const effectiveAfter = getGlobalEffectiveCoreVersion();
-    console.log(`\n✓ CLI 已更新到 v${installedCli || latestCli}；Core 实际生效版本 v${effectiveAfter || "未知"}`);
-    if (!effectiveAfter || compareVersions(effectiveAfter, latestCore.version) < 0) {
+    if (installedCli !== targetCli || effectiveAfter !== latestCore.version) {
       console.error([
         `⚠ Core 生效版本仍为 v${effectiveAfter || "未知"}（期望 v${latestCore.version}）。`,
-        `若刚发布新版，可能处于 CLI/Core 联动发布窗口，稍后重试；否则请手动执行：`,
-        `  npm uninstall -g ${pkg.name} && npm install -g ${pkg.name}@latest`,
+        `CLI 实际版本 v${installedCli || "未知"}（期望 v${targetCli}）；请检查 registry 或手动重装：`,
+        `  npm uninstall -g ${pkg.name} && npm install -g ${pkg.name}@${targetCli}`,
       ].join("\n"));
       process.exit(1);
     }
+    console.log(`\n✓ CLI v${installedCli}；Core 实际生效版本 v${effectiveAfter}，验证通过。`);
     console.log(latestCore.templateVersion === coreVersions.templateVersion
       ? "Template Version 未变化，无需执行 f2s-kb-upgrade。"
       : "Template Version 已变化；请运行 init，并仅在 projectRev 与 pkgRev 不等时进入 f2s-kb-upgrade。"

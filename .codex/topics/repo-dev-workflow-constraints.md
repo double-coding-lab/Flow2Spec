@@ -47,10 +47,10 @@ Template Version  packages/core/package.json.templateVersion
 Protocol Version  packages/core/capabilities.json.protocolVersion
 ```
 
-- CLI 对 Core 使用运行时依赖**精确 pin**（`packages/cli/package.json` 里写死 Core 版本号,不是 caret range）；`scripts/workspace-version.js` 会自动同步。
-- Core 兼容修复/新增 API 也**必须 CLI 锁步 patch bump 并同发**——CLI 精确 pin 决定的:Core 一升,CLI 依赖字段就变,CLI 版本号必须跟着走(`version:set:core` 回执会提示 `remember to bump CLI patch — release in lockstep`)。仅改 CLI 自身代码(不动 Core)时才允许 CLI 单独发。
-- Rule、Skill、Hook、知识模板变化时升 Core,并显式执行 `version:set:template`（同样锁步 CLI patch）。
-- CLI 开始调用新版 Core API 时,升 CLI 并同步 Core 精确 pin。
+- CLI 对 Core 使用运行时 **caret 兼容范围**（如 `^3.8.2`）；已安装依赖通过显式更新刷新，不会静默变化。
+- Core 在 CLI 兼容范围内的更新可独立发布，`version:set:core` 保留 CLI 版本和依赖范围；不兼容时在写盘前报错。
+- Rule、Skill、Hook、知识模板变化时升 Core，并显式执行 `version:set:template`；兼容变更无需为此升 CLI。
+- CLI 开始调用新版 Core API 时，升 CLI 并通过 `version:set:cli --core-range ^x.y.z` 调整兼容下限；不兼容升级须显式评估。
 - Protocol Version 只在公共协议不兼容时调整。
 - 根 private workspace version 不参与 npm 发布匹配。
 
@@ -67,7 +67,7 @@ npm run version:check
 
 - `core-vX.Y.Z` 只测试、打包并发布 `@double-coding/flow2spec-core`。
 - `cli-vX.Y.Z` 只测试、打包并发布 `@double-coding/flow2spec`。
-- 同时发布时先 Core 后 CLI(CLI 精确 pin Core);禁止发布没有版本变化的包。
+- 同时发布时先 Core 后 CLI（先确保其兼容下限可安装）；仅 Core 变化时只创建 Core Release，禁止发布没有版本变化的包。
 - CLI README 与根 README 保持一致;Core README 独立维护。
 - 发布前运行 `npm run version:check`、`npm run pack:check`、`node scripts/test-package-install.js`。
 - `packages/core/templates/` 必须直接进入 Core tarball;不存在模板复制或漂移检查步骤。
@@ -79,8 +79,8 @@ npm run version:check
 标准流程:
 
 1. 在版本 PR(如 `chore/release-core-3.8.0`) merge 到 main 后,本地 `git checkout main && git pull`;
-2. 打两个 tag 并推送:`git tag core-vX.Y.Z && git tag cli-vX.Y.Z && git push --tags`;
-3. **到 GitHub Releases 页面**为每个 tag **创建 Release**(标题 `core-vX.Y.Z` / `cli-vX.Y.Z`);Release published 事件触发 `publish-npm.yml`;
+2. 只为实际升版的包创建并推送对应 tag：`core-vX.Y.Z` 或 `cli-vX.Y.Z`；
+3. 为对应 tag 创建 GitHub Release，触发 `publish-npm.yml`；双包发布时先等 Core 发布成功，再发布 CLI；
 4. workflow 内已包含 `npm run version:check --tag`、`npm test`、`pack:check`、`npm publish --provenance`,失败即中止。
 
 **禁止本地跑 `npm publish`**——即便临时需要 hotfix,也应通过 workflow 走。若确因意外走了本地发布(如本次 3.8.0 / 3.6.3),须在发版 PR / Release notes 中显式记录「本次发布无 provenance」。
@@ -88,7 +88,7 @@ npm run version:check
 ## 更新语义
 
 - `flow2spec version` 展示 CLI、Core、Core Range、Template、Protocol。
-- `flow2spec update --check|--cli|--core` 分别检查、更新 CLI、更新兼容 Core。
+- `flow2spec update --check|--cli|--core` 分别检查、更新 latest CLI 及其兼容 Core、保持当前 CLI 版本只刷新兼容 Core，并验证实际生效版本。
 - Hook 同时比较 Core Version 与 Template Version。
 - Core 变化且 Template 不变：更新 Core 并执行一次幂等 init 刷新 Hook，不进入 `f2s-kb-upgrade`。
 - Template 变化：更新 Core、执行 init，再按 `projectRev` / `pkgRev` 判断是否进入 `f2s-kb-upgrade`。

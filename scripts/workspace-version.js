@@ -7,7 +7,7 @@ const path = require("path");
 const CORE_PACKAGE = "@double-coding/flow2spec-core";
 const SEMVER_SOURCE = "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?";
 const SEMVER_PATTERN = new RegExp(`^${SEMVER_SOURCE}$`);
-const CORE_PIN_PATTERN = new RegExp(`^(${SEMVER_SOURCE})$`);
+const CORE_RANGE_PATTERN = new RegExp(`^\\^(${SEMVER_SOURCE})$`);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -75,14 +75,39 @@ function compareVersions(left, right) {
   if (a.prerelease === b.prerelease) return 0;
   if (!a.prerelease) return 1;
   if (!b.prerelease) return -1;
-  return a.prerelease.localeCompare(b.prerelease, "en", { numeric: true });
+  const leftParts = a.prerelease.split(".");
+  const rightParts = b.prerelease.split(".");
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+    const leftPart = leftParts[index];
+    const rightPart = rightParts[index];
+    if (leftPart === undefined) return -1;
+    if (rightPart === undefined) return 1;
+    if (leftPart === rightPart) continue;
+    const leftNumeric = /^\d+$/.test(leftPart);
+    const rightNumeric = /^\d+$/.test(rightPart);
+    if (leftNumeric && rightNumeric) return BigInt(leftPart) < BigInt(rightPart) ? -1 : 1;
+    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+    return leftPart < rightPart ? -1 : 1;
+  }
+  return 0;
 }
 
-function normalizeCorePin(input) {
+function normalizeCoreRange(input) {
   const raw = String(input || "").trim();
-  const match = CORE_PIN_PATTERN.exec(raw);
-  if (!match) throw new Error(`Core dependency must be pinned to an exact version (release-in-lockstep policy), received: ${raw || "<empty>"}`);
-  return normalizeVersion(match[1]);
+  const match = CORE_RANGE_PATTERN.exec(raw);
+  if (!match) throw new Error(`Core dependency must use a caret compatibility range (^x.y.z), received: ${raw || "<empty>"}`);
+  return `^${normalizeVersion(match[1])}`;
+}
+
+function satisfiesCoreRange(version, input) {
+  const lower = parseVersion(normalizeCoreRange(input).slice(1));
+  const candidate = parseVersion(version);
+  if (compareVersions(candidate.version, lower.version) < 0) return false;
+  // Prereleases are eligible only when the range explicitly opts into the same tuple.
+  if (candidate.prerelease && (!lower.prerelease || candidate.numbers.some((value, index) => value !== lower.numbers[index]))) return false;
+  const [major, minor, patch] = lower.numbers;
+  const upper = major > 0 ? `${major + 1}.0.0` : minor > 0 ? `0.${minor + 1}.0` : `0.0.${patch + 1}`;
+  return compareVersions(candidate.version, upper) < 0;
 }
 
 function collectVersionErrors(workspace, tag) {
@@ -90,7 +115,7 @@ function collectVersionErrors(workspace, tag) {
   const cliVersion = String(cli.version || "").trim();
   const coreVersion = String(core.version || "").trim();
   const templateVersion = String(core.templateVersion || "").trim();
-  const corePin = String(cli.dependencies?.[CORE_PACKAGE] || "").trim();
+  const coreRange = String(cli.dependencies?.[CORE_PACKAGE] || "").trim();
   const protocolVersion = capabilities.protocolVersion;
   const errors = [];
   const expect = (actual, wanted, label) => {
@@ -111,10 +136,8 @@ function collectVersionErrors(workspace, tag) {
   }
 
   try {
-    normalizeCorePin(corePin);
-    // 联动发版硬约束：CLI 必须 pin 到当前 Core 版本，Core 发版必带 CLI patch。
-    if (compareVersions(corePin, coreVersion) !== 0) {
-      errors.push(`CLI must pin Core exactly: pinned ${corePin}, Core version ${coreVersion} (run version:set:core to sync, then bump CLI)`);
+    if (!satisfiesCoreRange(coreVersion, coreRange)) {
+      errors.push(`Core version ${coreVersion} does not satisfy CLI dependency ${coreRange} (review compatibility and use set-cli --core-range explicitly)`);
     }
   } catch (error) {
     errors.push(`packages/cli/package.json dependency ${CORE_PACKAGE}: ${error.message}`);
@@ -128,7 +151,7 @@ function collectVersionErrors(workspace, tag) {
   expect(String(lock.packages?.[""]?.version || "").trim(), String(root.version || "").trim(), "package-lock.json root version");
   expect(String(lock.packages?.["packages/core"]?.version || "").trim(), coreVersion, "package-lock.json Core version");
   expect(String(lock.packages?.["packages/cli"]?.version || "").trim(), cliVersion, "package-lock.json CLI version");
-  expect(String(lock.packages?.["packages/cli"]?.dependencies?.[CORE_PACKAGE] || "").trim(), corePin, `package-lock.json CLI dependency ${CORE_PACKAGE}`);
+  expect(String(lock.packages?.["packages/cli"]?.dependencies?.[CORE_PACKAGE] || "").trim(), coreRange, `package-lock.json CLI dependency ${CORE_PACKAGE}`);
   if (lock.packages?.[""]?.dependencies?.[CORE_PACKAGE]) errors.push(`package-lock.json root must not depend on ${CORE_PACKAGE}`);
   if (root.dependencies?.[CORE_PACKAGE]) errors.push(`package.json root must not depend on ${CORE_PACKAGE}`);
 
@@ -151,7 +174,12 @@ function collectVersionErrors(workspace, tag) {
     }
   }
 
-  return { errors, cliVersion, coreVersion, templateVersion, corePin, protocolVersion };
+  return { errors, cliVersion, coreVersion, templateVersion, coreRange, protocolVersion };
+}
+
+function validateWorkspace(workspace) {
+  const { errors } = collectVersionErrors(workspace);
+  if (errors.length) throw new Error(`workspace version check failed:\n- ${errors.join("\n- ")}`);
 }
 
 function checkWorkspaceVersion(options = {}) {
@@ -168,16 +196,16 @@ function setCliVersion(input, options = {}) {
   const rootDir = path.resolve(options.rootDir || path.join(__dirname, ".."));
   const version = normalizeVersion(input);
   const workspace = loadWorkspace(rootDir);
-  // pin 自动对齐当前 Core 版本（联动发版策略）。
-  const corePin = normalizeVersion(workspace.core.version);
+  const coreRange = normalizeCoreRange(options.coreRange === undefined ? workspace.cli.dependencies[CORE_PACKAGE] : options.coreRange);
   workspace.cli.version = version;
-  workspace.cli.dependencies[CORE_PACKAGE] = corePin;
+  workspace.cli.dependencies[CORE_PACKAGE] = coreRange;
   workspace.lock.packages["packages/cli"].version = version;
-  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = corePin;
+  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = coreRange;
+  validateWorkspace(workspace);
   writeJson(workspace.paths.cli, workspace.cli);
   writeJson(workspace.paths.lock, workspace.lock);
   checkWorkspaceVersion({ rootDir });
-  return { cliVersion: version, corePin };
+  return { cliVersion: version, coreRange };
 }
 
 function setCoreVersion(input, options = {}) {
@@ -186,14 +214,12 @@ function setCoreVersion(input, options = {}) {
   const workspace = loadWorkspace(rootDir);
   workspace.core.version = version;
   workspace.lock.packages["packages/core"].version = version;
-  // 联动同步 CLI 的 pin；Core 发版必须随后 bump CLI patch（check 会强制兼容校验）。
-  workspace.cli.dependencies[CORE_PACKAGE] = version;
-  workspace.lock.packages["packages/cli"].dependencies[CORE_PACKAGE] = version;
+  // Core can advance independently within the existing CLI compatibility range.
+  validateWorkspace(workspace);
   writeJson(workspace.paths.core, workspace.core);
-  writeJson(workspace.paths.cli, workspace.cli);
   writeJson(workspace.paths.lock, workspace.lock);
   checkWorkspaceVersion({ rootDir });
-  return { coreVersion: version, corePin: version };
+  return { coreVersion: version, coreRange: workspace.cli.dependencies[CORE_PACKAGE] };
 }
 
 function setTemplateVersion(input, options = {}) {
@@ -234,13 +260,13 @@ function main(args = process.argv.slice(2)) {
     return;
   }
   if (command === "set-cli") {
-    const result = setCliVersion(versionArgument(rest, "usage: npm run version:set:cli -- <version>"));
-    console.log(`CLI version updated: ${result.cliVersion} (Core pinned ${result.corePin})`);
+    const result = setCliVersion(versionArgument(rest, "usage: npm run version:set:cli -- <version> [--core-range ^x.y.z]"), { coreRange: readOption(rest, "--core-range") });
+    console.log(`CLI version updated: ${result.cliVersion} (Core compatibility ${result.coreRange})`);
     return;
   }
   if (command === "set-core") {
     const result = setCoreVersion(versionArgument(rest, "usage: npm run version:set:core -- <version>"));
-    console.log(`Core version updated: ${result.coreVersion} (CLI pin synced; remember to bump CLI patch — release in lockstep)`);
+    console.log(`Core version updated: ${result.coreVersion} (CLI compatibility unchanged: ${result.coreRange})`);
     return;
   }
   if (command === "set-template") {
@@ -264,7 +290,8 @@ module.exports = {
   checkWorkspaceVersion,
   collectVersionErrors,
   compareVersions,
-  normalizeCorePin,
+  normalizeCoreRange,
+  satisfiesCoreRange,
   normalizeVersion,
   setCliVersion,
   setCoreVersion,
