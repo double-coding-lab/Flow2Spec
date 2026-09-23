@@ -22,6 +22,7 @@
 
 | 主题 | 路径 | 适用场景 | 关联文档（摘要） |
 | --- | --- | --- | --- |
+| architecture-document-naming | `.Knowledge/topics/architecture-document-naming.md` | 架构初稿、终稿固定名称及业务主题无项目名前缀 | stock：[架构文档命名约定](stock-docs/架构文档命名约定_终稿.md) |
 | implement-tech-design | `.Knowledge/topics/f2s-implement-tech-design.md` | 按技术方案实现代码 | req：[技术方案](.Knowledge/req-docs/<技术方案>.md)（必填） |
 | f2s-doc-routing | `.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` | stock-docs / req-docs 目录分工 | stock：[目录边界说明](.Knowledge/stock-docs/<目录边界说明>.md)（可选） |
 | fallback-triage | `.Knowledge/topics/f2s-fallback-triage.md` | 未命中或低置信度：分诊与澄清 | stock：[路由分诊说明](.Knowledge/stock-docs/<分诊说明>.md)（可选） |
@@ -39,7 +40,7 @@
 | flow2spec-init-defaults | `.Knowledge/topics/f2s-init-defaults.md` | `flow2spec init` 字段默认值、四处落点一致性、老项目缺字段补写、init 目标与插件模式（`init plugin`）、`init` 不动 stock/req/topics/matchers、manifest 两个版本字段（`projectRev` / `pkgRev`）对照 | 包源码：`lib/flow2specConfig.js` `DEFAULTS` / `CONFIG_FIELDS`；模板：`templates/{locale}/flow2spec.config.json` |
 | flow2spec-doctor | `.Knowledge/topics/flow2spec-doctor.md` | `flow2spec doctor` 只读检查环境、项目初始化、协作上下文与知识库健康 | stock：[Doctor 诊断命令](stock-docs/Flow2Spec-doctor诊断命令.md)；中英文命令文档：`docs/命令说明.md` / `docs/en/commands-reference.md` |
 | flow2spec-dsh-adapter | `.Knowledge/topics/flow2spec-dsh-adapter.md` | `flow2spec init dsh`、DeepSeek Harness 项目技能发现与 `.dsh/` 目录适配 | 用户文档：`docs/使用说明.md` / `docs/en/usage-guide.md`；实现：`lib/dshAgentsAdapter.js` |
-| flow2spec-core-package | `.Knowledge/topics/flow2spec-core-package.md` | `@double-coding/flow2spec-core` 职责边界：核心实现、发包模板真源、原生插件 API 与 CLI/legacy shim 消费关系 | 开发者文档：`packages/core/README.md`；入口：`packages/core/index.js` |
+| flow2spec-core-package | `.Knowledge/topics/flow2spec-core-package.md` | Core/CLI 所有权、caret 兼容依赖、独立发布与更新 | stock：[兼容依赖与独立更新](stock-docs/Core兼容依赖与独立更新_终稿.md)；开发者文档：`packages/core/README.md` |
 | flow2spec-qoder-plugin | `.Knowledge/topics/flow2spec-qoder-plugin.md` | Qoder 插件构建、`build:qoder-plugin`、zip 打包与插件市场分发 | 构建脚本：`scripts/build-qoder-plugin.js`；内容源：`packages/core/index.js`（resources API） |
 | kb-routing-summary | `.Knowledge/topics/kb-routing-summary.md` | 路由初筛 `taskToTopicRules[].summary` 字段与 matcher 4 字段(`includeAny`/`includeAll`/`excludeAny`/`excludeAll`)语义 | 引擎：`packages/core/lib/knowledgeEngine.js`、`packages/core/lib/routing.js`；创作规范：配置根 `rules/f2s-topic-authoring.*` |
 

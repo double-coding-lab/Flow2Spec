@@ -1,6 +1,6 @@
 ---
 id: f2s-dev-workflow-constraints
-revision: 3
+revision: 4
 summary: "Flow2Spec 本仓的模板真源、配置根、版本发布与分发边界"
 primary: policy
 confidence: inferred
@@ -29,9 +29,9 @@ Flow2Spec 本仓开发时判断应改 Core templates、配置根、本仓知识�
 
 ## 版本与发布
 
-- CLI、Core、Template、Protocol 独立版本；CLI 用 caret range 约束 Core。
+- CLI、Core、Template、Protocol 独立版本；CLI 用 caret range 约束 Core，版本检查要求当前 Core 在范围内。
 - Core-only 兼容更新不升 Template Version，也不触发知识库升级。
-- `core-vX.Y.Z` 与 `cli-vX.Y.Z` 分别发布对应包。
+- `core-vX.Y.Z` 与 `cli-vX.Y.Z` 分别发布对应包；兼容 Core/Template 变更可独立发布，双包发布先 Core 后 CLI。
 - 发布前执行版本、打包、tarball 安装与 README 门禁。
 
 ## 边界与禁止项

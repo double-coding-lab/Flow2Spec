@@ -1,12 +1,22 @@
-# Flow2Spec Upgrade Guide (CLI 3.6.2 / Core 3.7.2 / Template 3.6.2)
+# Flow2Spec Upgrade Guide
+
+## Current update policy (CLI 3.6.5 onward)
+
+The CLI declares a caret Core range such as `^3.8.2`, allowing compatible Core releases independently. Existing CLI dependency declarations stay unchanged until users update the CLI once.
+
+- `flow2spec update --core` retains the current CLI version, refreshes its compatible Core, and verifies the actually resolved version.
+- `flow2spec update --cli` refreshes the latest CLI and its compatible Core; use it to enter a new compatibility range.
+- Installed dependencies do not change silently; lockfiles retain resolved versions. After template updates, run `flow2spec init <agents...>` and compare `projectRev` / `pkgRev` for knowledge upgrade.
+
+## Historical migration example (CLI 3.6.2 / Core 3.7.2 / Template 3.6.2)
 
 > Highlight of this release: **routing-summary recall anchors**. Every routing rule in `manifest-routing.json` now carries a `summary` semantic digest (synced automatically from topic frontmatter), which greatly improves knowledge-base hit rates for natural phrasings such as "where are the prototypes" or "which folder holds the flowcharts". `kb check` gains summary quality validation accordingly.
 
 ## Version matrix
 
-| Dimension | Latest | Notes |
+| Dimension | Example version | Notes |
 | --- | --- | --- |
-| CLI (`@double-coding/flow2spec`) | 3.6.2 | the only package you need to care about; pins its exact Core, released in lockstep |
+| CLI (`@double-coding/flow2spec`) | 3.6.2 | historical release; see the current update policy above |
 | Core (`@double-coding/flow2spec-core`) | 3.7.2 | installed automatically with the CLI, no separate action needed |
 | Template Version | 3.6.2 | templates carry topic-layer changes (projectRev 3) |
 | Qoder plugin | 3.7.2 | self-built (`npm run build:qoder-plugin`), named after the Core version |
@@ -22,7 +32,7 @@ npm install -g @double-coding/flow2spec
 flow2spec init <codex|cursor|claude|dsh>   # multi-select, follow the prompts
 ```
 
-Installing the CLI automatically brings its exactly pinned Core (3.7.2); no separate install is needed. After init you are on the latest knowledge-base templates with summary-based first-pass recall built in — nothing extra to do.
+Installing the CLI automatically brings Core within its dependency range; no separate install is needed. Init enables the bundled knowledge templates and summary-based first-pass recall.
 
 ### Option 2: Qoder plugin (self-built install)
 
@@ -49,7 +59,7 @@ Template 3.5.0 → 3.6.x **includes topic-layer changes** (projectRev 2 → 3), 
 
 ### Step 1: Update the package
 
-The CLI and Core release in lockstep (the CLI pins its exact Core), so one command updates everything:
+Update to the latest CLI and its compatible Core:
 
 ```bash
 npm install -g @double-coding/flow2spec@latest
@@ -90,11 +100,11 @@ Then try one natural question (e.g. "where do the prototypes / requirement docs 
 
 ## FAQ
 
-**Q: Why does every Core update come with a new CLI version? Which package should I care about?**
-Only the CLI (`@double-coding/flow2spec`). It pins its exact Core version and the two packages release in lockstep: any Core update produces a new CLI version, so `npm install -g @double-coding/flow2spec@latest` always gets you the complete latest pair.
+**Q: Does a Core release require a CLI release?**
+Not within the compatibility range. CLI 3.6.5 onward uses a caret range; run `flow2spec update --core` for compatible Core releases, or update to a supporting CLI before entering a new compatibility range.
 
 **Q: On an older CLI, `flow2spec update --core` said "updated" but `flow2spec version` did not change?**
-A known defect in CLI ≤ 3.6.1: that command installed Core into an orphaned top-level global location, while the CLI actually loads its own nested copy — which never got updated. Fix: reinstall the CLI once (`npm uninstall -g @double-coding/flow2spec && npm install -g @double-coding/flow2spec@latest`). Since CLI 3.6.2, `update --cli/--core` performs the lockstep update and verifies the effective Core version — no more false success.
+A known defect in CLI ≤ 3.6.1: that command installed Core globally at the top level while the CLI loads a nested copy. Reinstall the CLI once (`npm uninstall -g @double-coding/flow2spec && npm install -g @double-coding/flow2spec@latest`). Current update commands refresh the CLI dependency tree, verify the effective Core version, and fail if verification does not pass.
 
 **Q: Will the upgrade overwrite the knowledge base I already wrote?**
 No. The init run by `f2s-kb-upgrade` is incremental and only updates template-owned routing structure and rules; your business content in `stock-docs` / `req-docs` / topic bodies is untouched. `--reset-knowledge` is used only when you explicitly ask for an overwrite reset.

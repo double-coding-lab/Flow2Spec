@@ -1,20 +1,21 @@
 # Flow2Spec
 
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="Flow2Spec routes a natural language coding request into compact project facts before code edits">
+  <img src="./assets/readme/hero-zh.svg" width="100%" alt="Flow2Spec 将自然语言编码需求路由到紧凑项目事实后再修改代码">
 </p>
 
 <p align="center">
-  <strong>Give each initialized AI coding client the project facts it needs before editing.</strong>
+  <strong>让每个已初始化的 AI 编程客户端在动手改代码前，先读到正确的项目事实。</strong>
 </p>
 
 <p align="center">
-  <a href="./README.zh-CN.md">中文</a> ·
-  <a href="https://double-coding-lab.github.io/Flow2Spec">Live demo</a> ·
-  <a href="./docs/en/Flow2Spec-Introduction.md">Introduction</a> ·
-  <a href="./docs/en/usage-guide.md">Usage guide</a> ·
-  <a href="./docs/en/commands-reference.md">Commands</a> ·
-  <a href="https://github.com/orgs/double-coding-lab/projects/2/views/1">Roadmap</a>
+  <a href="./README.en.md">English</a> ·
+  <a href="https://double-coding-lab.github.io/Flow2Spec">在线演示</a> ·
+  <a href="https://double-coding-lab.github.io/Flow2Spec/presentations/flow2spec-intro-public/">产品演示 PPT</a> ·
+  <a href="./docs/Flow2Spec基础介绍.md">基础介绍</a> ·
+  <a href="./docs/使用说明.md">使用说明</a> ·
+  <a href="./docs/命令说明.md">命令说明</a> ·
+  <a href="https://github.com/orgs/double-coding-lab/projects/2/views/1">路线图</a>
 </p>
 
 <p align="center">
@@ -23,143 +24,150 @@
   <img alt="license" src="https://img.shields.io/npm/l/@double-coding/flow2spec">
 </p>
 
-Flow2Spec adds a spec-driven workflow layer to AI coding agents. It creates a small, routable `.Knowledge/` knowledge base, installs agent-specific `f2s-*` skills, and keeps optional local task state separate from product knowledge. A new session can load the facts relevant to a request instead of rediscovering the repository.
+Flow2Spec 是给 AI 编码工具使用的 Spec-driven 工作流层。它会在项目里建立小而可路由的 `.Knowledge/` 知识库，安装面向 agent 的 `f2s-*` 技能，并把可选的本地任务状态和产品知识分开保存。新的会话可以按需求加载相关事实，而不是重新翻完整个仓库。
 
 ```bash
-# Recommended: install globally, then initialize
-# (keeps the `flow2spec` command available for kb maintenance and upgrades)
+# 推荐：全局安装后初始化（保留 flow2spec 命令，便于后续知识库维护与升级）
 npm install -g @double-coding/flow2spec
 flow2spec init
 
-# One-off trial without installing (always resolves the latest version):
+# 免安装一次性体验（始终解析最新版）：
 # npx @double-coding/flow2spec@latest init
 
-# Native DeepSeek Harness plugin:
+# DeepSeek Harness 原生插件：
 # https://github.com/double-coding-lab/Flow2Spec-DeepSeek-Harness
-# Project-level adapter without the plugin:
+# 未装插件时的项目级适配：
 flow2spec init dsh
 ```
 
-## Why it exists
+## 为什么需要它
 
-Without a maintained, routable project memory, an agent has to rediscover the same constraints on every request. Flow2Spec keeps those facts in compact topic shards and routes each request to the topics it needs.
+如果项目记忆不能维护、不能路由，agent 每次处理需求都要重新确认同一批约束。Flow2Spec 把这些事实整理成紧凑的 topic 分片，再把需求路由到需要读取的主题。
 
-| Without Flow2Spec | With Flow2Spec |
+| 没有 Flow2Spec | 有 Flow2Spec |
 | --- | --- |
-| “Which module owns this table?” | `[matcher hit] m-product-review-template-library` |
-| “Is batchReScore sync or async?” | `[loading deps] 4 topics · ~300 lines` |
-| “Is there a lock? What is the idempotency key?” | `Redis lock ... TTL 10 min` |
-| Agent searches 416 APIs, 796 files, and 4.7 MB of source before editing. | Agent reads the verified constraints first and opens the relevant files. |
+| “这个模块的表在哪？” | `[matcher 命中] m-product-review-template-library` |
+| “batchReScore 是同步还是异步？” | `[加载依赖] 4 个 topic · 约 300 行` |
+| “有没有锁？幂等键是什么？” | `Redis lock ... TTL 10 min` |
+| Agent 在修改前搜索 416 个接口、796 份文件、4.7 MB 源码。 | Agent 先读取已验证约束，再打开相关文件。 |
 
-Flow2Spec does not add documentation for its own sake. It keeps a small, machine-readable knowledge layer alongside the code, and lets the same skills update it when verified facts change.
+Flow2Spec 不是为了增加文档数量。它把项目事实保存在一层小而准的机读知识里，并让同一套技能在事实变化后同步更新它。
 
-## What you get
+## 它提供什么
 
-| Layer | What it does | Files |
+| 层 | 作用 | 文件 |
 | --- | --- | --- |
-| Knowledge routing | Maps a request to the few topics the agent needs to read. | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
-| Topic shards | Stores project facts such as APIs, limits, locks, data rules, and workflows. | `.Knowledge/topics/*.md` |
-| Agent entrypoints | Installs rules and skills for the selected AI coding clients. | client configuration roots, `.dsh/`, `AGENTS.md` |
-| Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
-| Team collaboration | Keeps each developer's task state local while merging reviewed knowledge through structured deltas and topic revisions. | `.task/<developerId>/`, `.Knowledge/` |
+| 知识路由 | 把一次需求映射到 agent 需要读取的少量 topics。 | `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json` |
+| 主题分片 | 保存 API、上限、锁、数据规则、业务流程等项目事实。 | `.Knowledge/topics/*.md` |
+| Agent 入口 | 为选中的 AI 编程客户端安装规则和技能。 | 客户端配置根、`.dsh/`、`AGENTS.md` |
+| 技能工作流 | 澄清需求、编写方案、实现、修复、同步知识、提交。 | `f2s-*` skills |
+| 团队协作 | 每个人的任务现场留在本地，确认后的知识通过结构化 delta 与 topic revision 合入共享仓库。 | `.task/<developerId>/`, `.Knowledge/` |
 
-## Built for shared repositories
+## 多人共用一份知识库
 
-Flow2Spec separates collaboration state by ownership. Checklists, session context, and user todos stay under each developer's local `TASK_ROOT` and do not enter Git. Confirmed project knowledge remains shared in `.Knowledge/`.
+Flow2Spec 按所有权拆分协作状态。checklist、会话上下文和用户代办保存在每名开发者自己的 `TASK_ROOT`，默认不进 Git；已经确认的项目知识统一进入 `.Knowledge/`。
 
-Knowledge-producing skills write a structured `kb-delta.json` instead of editing topic files directly. Before apply, the CLI compares the delta's `baseRevisions` with the topic revisions on disk. Different topics can merge independently; concurrent changes to the same topic stop for a semantic review after the latest branch state is pulled.
+知识类技能先生成结构化 `kb-delta.json`，不直接改 topic。真正 apply 前，CLI 会比较 delta 的 `baseRevisions` 与磁盘上的 topic revision。修改不同 topic 可以分别合入；两个人同时修改同一 topic 时，后合入的一方需要先拉取最新版本、重读语义，再改写 delta。
 
-Read the full model in [Team Collaboration](./docs/en/team-collaboration.md).
+完整流程见 [团队协作](./docs/团队协作.md)。
 
-## First use
+## 第一次怎么用
 
-After initialization, you do not need to document the whole project upfront. Start with the change you actually need. The agent reads the relevant code and existing docs while it works, then saves confirmed project facts back into the knowledge base.
+初始化以后，不需要先把整个项目文档补齐。更推荐的方式是从当前要处理的需求开始，让 Agent 在开发过程中读取真实代码和已有文档，再把确认过的项目事实沉淀下来。
 
-For an existing project, you can ask the agent to draft the project structure first:
+如果这是一个已有项目，可以先让 Agent 整理一次项目结构：
 
 ```text
 /f2s-doc-arch
 ```
 
-This helps the agent understand the main directories, module boundaries, and existing conventions. It is optional. For a small change, you can start directly from the request.
+这一步会帮助 Agent 理解主要目录、模块边界和已有约定。它不是必选步骤；如果只是处理一个很小的修改，也可以直接从需求开始。
 
-## Daily development
-
-Most of the time, describe the task in natural language:
+跑完 `/f2s-doc-arch` 之后，如果你已经知道**当前需求会动到哪些模块**，可以顺手让 Agent 把这几个模块的存量说明也提前入库，例如：
 
 ```text
-Add batch recalculation. It should retry failed items and avoid running the same batch twice.
+/f2s-kb-add src/services/product-review src/functions/batch-rescore
 ```
 
-The agent should look for relevant project knowledge first. If something is missing, it should explain the gap, then read the necessary code or ask you a follow-up question. Confirmed facts such as APIs, limits, locks, data rules, and workflows can be synced back into `.Knowledge`.
+这样第一次真正开发前，`.Knowledge` 里就已经有：项目全景（`f2s-doc-arch` 出的架构文档）+ 命中模块的内部约束（`f2s-kb-add` 生成的 topic + matcher）。Agent 在后续对话里读到的是聚焦的项目事实，而不是零散的源码。
 
-A larger change usually follows this path:
+## 日常开发怎么用
+
+大多数时候，直接用自然语言说明要处理的事情即可：
 
 ```text
-describe the requirement
-  → agent fills in missing details
-  → generate or review the technical spec
-  → implement / fix
-  → sync verified project facts
-  → check knowledge coverage before commit
+帮我新增一个批量重算功能，需要支持失败重试，并且不要重复执行同一批任务。
 ```
 
-If you already know which workflow you want, use one of the explicit entrypoints below.
+Agent 会先根据规则查找相关项目知识。如果信息不够，它应该先说明缺口，再读取必要代码或反问你。实现过程中确认下来的接口、限制、锁、数据规则等事实，会在合适的时候同步回 `.Knowledge`。
 
-## How the knowledge base grows
+较大的需求通常按这个顺序推进：
 
-Flow2Spec's knowledge base is not meant to be finished in one pass. It grows with development:
+```text
+说明需求
+  → Agent 补齐缺失信息
+  → 生成或复核技术方案
+  → 实现 / 修复
+  → 同步已验证的项目事实
+  → 提交前检查知识库覆盖情况
+```
 
-1. `init` creates the base skeleton.
-2. The first time a module matters, the agent reads the relevant code and docs.
-3. Confirmed facts from the development process become routable topics.
-4. Later similar requests can hit those topics directly instead of searching the whole repository again.
+如果你已经知道要走哪个流程，可以直接输入下面的显式入口。
 
-The directories can be read this way:
+## 知识库会怎么增长
 
-- `req-docs/`: technical specs and implementation plans for concrete changes.
-- `stock-docs/`: stable project background, architecture notes, and imported source material.
-- `topics/`: compact facts the agent should actually load.
-- `matchers/`: rules that route a user request to the right topics.
+Flow2Spec 的知识库不是一次性整理完的。它会随着开发逐步变完整：
 
-## Explicit skill entrypoints
+1. `init` 先生成基础骨架。
+2. 第一次处理某个模块时，Agent 读取相关代码和文档。
+3. 开发过程中确认下来的事实，会被整理成可路由的主题。
+4. 后续再处理相似需求时，Agent 可以直接命中这些主题，不需要重新翻完整个仓库。
 
-Natural-language requests can select these workflows automatically when intent recognition is enabled. Use the entrypoints below when you want to choose one directly.
+目录可以简单理解为：
 
-| Command | Purpose |
+- `req-docs/`：某次具体变更的技术方案和实现计划。
+- `stock-docs/`：稳定的项目背景、架构说明和导入材料。
+- `topics/`：Agent 实际会读取的精简事实。
+- `matchers/`：把用户需求路由到对应 topics 的匹配规则。
+
+## 显式技能入口
+
+开启意图识别后，自然语言需求可以自动选择这些工作流。下面这些入口适合在你想明确指定流程时使用。
+
+| 命令 | 用途 |
 | --- | --- |
-| `/f2s-req-clarify` | Clarify missing requirements until the change is unambiguous. |
-| `/f2s-req-tech` | Turn confirmed requirements into an implementation-ready technical proposal. |
-| `/f2s-kb-feat` | Add a capability and update project knowledge. |
-| `/f2s-kb-fix` | Fix behavior and correct the matching knowledge. |
-| `/f2s-kb-sync` | Sync already implemented facts into `.Knowledge/`. |
-| `/f2s-kb-add <path>` | Import an existing module or document set. |
-| `/f2s-git-commit` | Check changed files and knowledge coverage before committing. |
+| `/f2s-req-clarify` | 补齐缺失信息，直到变更目标没有明显歧义。 |
+| `/f2s-req-tech` | 把已确认的需求整理成可实现的技术方案。 |
+| `/f2s-kb-feat` | 新增能力，并同步项目知识。 |
+| `/f2s-kb-fix` | 修复行为，并更正对应知识。 |
+| `/f2s-kb-sync` | 把已实现事实同步进 `.Knowledge/`。 |
+| `/f2s-kb-add <path>` | 导入已有模块或文档集。 |
+| `/f2s-git-commit` | 提交前检查变更文件和知识覆盖情况。 |
 
-Full references:
+完整参考：
 
-- [Usage guide](./docs/en/usage-guide.md)
-- [Commands reference](./docs/en/commands-reference.md)
-- [Directory conventions](./docs/en/directory-conventions.md)
-- [Architecture and principles](./docs/en/architecture.md)
-- [Team collaboration](./docs/en/team-collaboration.md)
-- [Design principles](./docs/en/design-principles.md)
-- [Project milestones](./docs/en/milestones.md)
+- [使用说明](./docs/使用说明.md)
+- [命令说明](./docs/命令说明.md)
+- [目录与路径约定](./docs/目录与路径约定.md)
+- [体系与原理](./docs/体系与原理.md)
+- [团队协作](./docs/团队协作.md)
+- [设计说明](./docs/设计说明.md)
+- [项目里程碑](./docs/项目里程碑.md)
 
-## When not to use it
+## 什么时候不适合
 
-Flow2Spec is useful when context drift is expensive. It may be unnecessary for:
+Flow2Spec 适合上下文漂移成本较高的项目。下面这些场景可能不需要它：
 
-- throwaway one-off scripts;
-- tiny solo projects where one `CLAUDE.md` is enough;
-- teams that will not keep `.Knowledge/` aligned with the code.
+- 写完就删的一次性脚本；
+- 很小的个人项目，一份 `CLAUDE.md` 已经够用；
+- 团队不愿意让 `.Knowledge/` 和代码保持同步。
 
-## Learn more
+## 继续了解
 
-- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — product narrative, diagrams, and comparison with ordinary project memory.
-- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — Chinese long-form introduction.
-- [Product website](https://double-coding-lab.github.io/Flow2Spec/en/) — a website-style guide to Flow2Spec's core capabilities and workflow.
+- [Flow2Spec 基础介绍](./docs/Flow2Spec基础介绍.md) — 产品叙事、配图、与普通项目记忆的区别。
+- [Flow2Spec Introduction](./docs/en/Flow2Spec-Introduction.md) — 英文长文介绍。
+- [在线产品介绍](https://double-coding-lab.github.io/Flow2Spec) — 网站式产品导览，快速了解核心能力与使用路径。
 
-## License
+## 协议
 
 [MIT](./LICENSE)

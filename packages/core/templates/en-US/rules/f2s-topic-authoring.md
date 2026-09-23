@@ -21,8 +21,11 @@ This rule is touched when any of the following is true:
 ## 1. Topic Naming
 
 - **id**: `kebab-case`, matching the key in `manifest-routing.topicPaths`.
+- **Business naming**: name topic ids, filenames, headings and derived matcher ids by responsibility, without prefixes from downstream project names, repository names or `package.json.name`; keep project identity in the body. Fix the architecture overview to `project-architecture` / `project-architecture.md` / `Project Architecture`, sourced from `project-architecture_final.md` (Chinese heading/source: `项目架构` / `项目架构终稿.md`). Preserve existing `f2s-*` identifiers shared with skills/rules.
 - **Filename**: `.Knowledge/topics/<topic-id>.md`. If the topic is strongly bound to an `f2s-*` skill / rule of the same name (for example `f2s-task` / `f2s-req-plan`), the filename may include the `f2s-` prefix to show shared origin.
 - **Avoid**: version suffixes (`-v2` / `-new`), personal nicknames, and synonyms that conflict with heading-level titles in `index.md`.
+
+References to `*_终稿.md` below also include the fixed architecture final names `project-architecture_final.md` and `项目架构终稿.md`; both are valid final sources without a project-name prefix.
 
 ## 2. Topic Positioning and Body Skeleton
 
