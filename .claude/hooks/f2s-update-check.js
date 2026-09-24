@@ -9,8 +9,8 @@ const MANIFEST_PATH = path.join(process.cwd(), '.Knowledge', 'manifest-routing.j
 const CACHE_FILE = path.join(process.cwd(), '.Knowledge', 'update-check.json');
 const PACKAGE_NAME_PLACEHOLDER = '__FLOW2SPEC_' + 'PACKAGE_NAME__';
 const PACKAGE_NAME = '@double-coding/flow2spec-core';
-const GENERATED_CORE_VERSION = '3.8.1';
-const GENERATED_TEMPLATE_VERSION = '3.8.0';
+const GENERATED_CORE_VERSION = '3.8.2';
+const GENERATED_TEMPLATE_VERSION = '3.8.1';
 
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }

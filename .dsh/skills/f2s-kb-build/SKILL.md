@@ -25,8 +25,8 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 
 - 接收一个参数：URL 或本地路径。
 - 本地路径必须位于 `.Knowledge/stock-docs/`。
-- **须为终稿**：推荐文件名含 `_终稿.md`，或已由 **`f2s-doc-final`** 规范化；**禁止**以 `f2s-doc-arch` 产出的 `*_初稿.md` 作为入参直接执行本技能。
-- 若入参路径含 **`_初稿`**、或用户刚完成架构初稿尚未执行 `f2s-doc-final`：**停止**，回复须先执行 **`f2s-doc-final <初稿路径>`**，待终稿落盘后再以终稿路径调用本技能。
+- **须为终稿**：项目架构使用 `项目架构终稿.md`；其他文档推荐文件名含 `_终稿.md`，或已由 **`f2s-doc-final`** 规范化。**禁止**直接以 `项目架构初稿.md`、`*_初稿.md` 或其他尚未定稿的架构文档执行本技能。
+- 若入参文件名含 **`初稿`**（包括不带下划线的 `项目架构初稿.md`）或 **`_draft`**、或用户刚完成架构初稿尚未执行 `f2s-doc-final`：**停止**，回复须先执行 **`f2s-doc-final <初稿路径>`**，待终稿落盘后再以终稿路径调用本技能。
 - 若传入 `.Knowledge/req-docs/`，提示用户先整理为 `stock-docs` 终稿后再执行。
 
 ## 生成原则
@@ -47,9 +47,10 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 从文档中提炼：
 
 - 主题名与主题意图（可形成 topic id）
+- frontmatter `summary`（初筛召回锚：职责 + 用户会问的核心名词，按 `f2s-topic-authoring`「初筛召回规范」写；kb build 会同步进 manifest rule.summary）
 - 核心概念与关键流程
 - 业务规则与边界条件
-- 任务触发词（写入对应 `matchers/<matcherId>.json` 的 `includeAny`）
+- 任务触发词（写入对应 `matchers/<matcherId>.json` 的 `includeAny`；单概念核心词优先，复合词仅作补充）
 - 与现有主题的依赖关系（用于 `topicDependencies`）
 
 > **创作侧准则**：本步骤涉及新增 / 修改 topic 与 `topicDependencies`，**须先 Read** `rules/f2s-topic-authoring.*` 全文（**Cursor/Claude**：`rules/f2s-topic-authoring.mdc`；**Codex**：`.codex/topics/f2s-topic-authoring.md`），再继续步骤 3 / 步骤 5。命名、骨架、依赖判定、DAG 最小化、判定时机均以该条为准，本 SKILL 不复述。
@@ -59,6 +60,8 @@ description: 根据 .Knowledge/stock-docs 文档生成知识路由主题与索�
 ## 步骤 3：写入 topics
 
 - 目标路径：`.Knowledge/topics/<topic>.md`
+- 项目架构概览的 topic id 固定为 `project-architecture`，文件 `project-architecture.md`，标题 `项目架构`，`sourceDoc` 指向实际的 `项目架构终稿.md`。拆分主题按职责命名；topic id、文件名、标题及派生 matcher id 均不拼接下游项目名前缀。
+- 若发现同义的带项目名前缀旧主题，先确认迁移范围与同名冲突，再同步 topic、matcher、index、路由和入站引用；未确认前报告待迁移项，不并存新旧两套架构主题、不自动删除旧文件。
 - 若已存在同主题：优先增量更新，避免重复主题。
 - 若为新主题：新增文件并补充清晰标题、适用场景、规则与流程。
 

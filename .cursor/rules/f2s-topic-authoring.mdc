@@ -20,10 +20,13 @@ alwaysApply: false
 ## 1. topic 命名
 
 - **id**：`kebab-case`，与 `manifest-routing.topicPaths` 的 key 一致。
+- **业务命名**：topic id、文件名、标题以及派生 matcher id 按职责命名，不拼接下游项目名、仓库名或 `package.json.name` 前缀；项目身份放在正文。项目架构概览固定为 `project-architecture` / `project-architecture.md` / `项目架构`，其源文档为 `项目架构终稿.md`。既有 `f2s-*` 技能/规则同源标识保留。
 - **文件名**：`.Knowledge/topics/<topic-id>.md`；若该 topic 与同名 `f2s-*` 技能 / 规则强绑定（如 `f2s-task` / `f2s-req-plan`），文件名可加 `f2s-` 前缀以示同源。
 - **不要**：版本后缀（`-v2` / `-new`）、个人花名、与 `index.md` 行级标题冲突的同义词。
 
 ## 2. topic 定位与正文骨架
+
+本规则下文的 `*_终稿.md` 同时包含固定命名的 `项目架构终稿.md`；它是合法的终稿事实源，无需补下划线或项目名前缀。
 
 **topic 的定位**：可执行路由摘要 + 关键边界。topic 可以包含必要的边界说明、关键流程步骤、禁止项、配置摘要——Agent 读完即可执行或判断是否需要继续下钻；**不应承载**完整实现细节、长文背景或可在 stock-doc 里查的原始内容。stock-doc 承载完整背景与长文细节，topic 指向它。
 

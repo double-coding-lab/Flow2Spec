@@ -83,7 +83,7 @@ description: 把用户口述的规则沉淀进知识库，自动判定「新建�
   - 补 `manifest-routing.topicPaths`：`<id> -> .Knowledge/topics/<id>.md`；
   - 按需补 `manifest-routing.topicMetadata`：口述规则主题通常为 `{ "primary": "policy", "confidence": "inferred" }`；用户明确确认分类可写 `manual`；如同时包含配置项 / 模块 / 能力性质，可写入不与 `primary` 重复的 `tags`；证据不足则不写 metadata，并在摘要列为待确认。分类只用于治理、审计和阅读预期，不参与路由命中或执行强制性；
   - 视情况补 `taskToTopicRules[]`——**仅当**该规则会作为**用户任务路由命中**（参见 `f2s-topic-authoring` 第 5 节判据）才补；纯被其它规则 / SKILL 引用的内部规则**不进** `taskToTopicRules`；
-  - 若补了 `taskToTopicRules[]`，须新建 `.Knowledge/matchers/<matcherId>.json`，从用户口述中抽取 `includeAny` 关键词（用户原话 + 1–2 个明显近义说法，宁缺勿滥）；
+  - 若补了 `taskToTopicRules[]`，须新建 `.Knowledge/matchers/<matcherId>.json`，`includeAny` 按 `f2s-topic-authoring`「初筛召回规范」抽取：**单概念核心词优先**，复合词仅作补充；除用户口述原词外须补 1–2 个“日后自然问法”词，并用 2–3 个模拟问句自测命中；topic frontmatter `summary` 同步按该规范写（kb build 会将其同步进 rule.summary 作初筛锚）；
 - **并入存量主题**：
   - `topicPaths` 不变；
   - 可按需补齐该 topic 的 `topicMetadata`，但不得为了分类创建、重命名或拆分 topic；
