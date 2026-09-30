@@ -24,7 +24,7 @@ tags: [policy]
 ## Required Steps
 
 1. Use **Read** to open project-root **`flow2spec.config.json`** (must happen before any step in an `f2s-*` skill body).
-2. The `{{FLOW2SPEC_PROJECT_CONFIG}}` table in repository-root **`AGENTS.md`** only explains field semantics; current values come from the **Read** result.
+2. The project configuration table in repository-root **`AGENTS.md`** (template placeholder `FLOW2SPEC_PROJECT_CONFIG`) only explains field semantics; current values come from the **Read** result.
 3. When `subAgent=true`, the main agent must explicitly decide early in the skill body whether this run meets the split preconditions / thresholds; even when deciding not to split, it must output the no-split reason. The SessionStart summary is only a reminder and does not replace that decision.
 
 ## Prohibitions
