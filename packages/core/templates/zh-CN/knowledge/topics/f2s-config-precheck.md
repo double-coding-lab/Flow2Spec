@@ -24,7 +24,7 @@ tags: [policy]
 ## 必备步骤
 
 1. 用 **Read** 打开项目根 **`flow2spec.config.json`**（须在 `f2s-*` 技能正文任何步骤之前）。
-2. 仓库根 **`AGENTS.md`** 中 `{{FLOW2SPEC_PROJECT_CONFIG}}` 表仅说明字段语义；当前值以 **Read** 结果为准。
+2. 仓库根 **`AGENTS.md`** 中的项目配置表（模板占位符 `FLOW2SPEC_PROJECT_CONFIG`）仅说明字段语义；当前值以 **Read** 结果为准。
 3. `subAgent=true` 时，主 agent 必须在进入技能正文早期**显式判断**本次是否满足拆子前提 / 阈值；即使判断不拆，也必须输出不拆原因。SessionStart 摘要只负责提醒，不替代该判断。
 
 ## 禁止项
