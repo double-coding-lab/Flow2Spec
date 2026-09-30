@@ -46,9 +46,11 @@ if(a[0]==='root') console.log(e.MOCK_GLOBAL);
 else if(a[0]==='view') {
  if(a[1]===cli) console.log('3.6.6');
  else if(a[1].startsWith(cli+'@')) console.log(JSON.stringify({[core]:'^4.0.0'}));
- else if(a[1]===core+'@^3.8.2') console.log(JSON.stringify([{version:'3.8.2',templateVersion:'3.8.1'},{version:'3.9.0',templateVersion:'3.9.0'},{version:'3.10.0-beta.1'}]));
- else if(a[1]===core+'@^4.0.0') console.log(JSON.stringify({version:'4.1.0',templateVersion:'4.0.0'}));
- else if(a[1]===core+'@^0.2.3') console.log(JSON.stringify([{version:'0.2.4'},{version:'0.2.5-beta.1'}]));
+ else if(a[1]===core&&a[2]==='versions') console.log(JSON.stringify(['0.2.4','0.2.5-beta.1','3.8.2','3.9.0','3.10.0-beta.1','4.1.0']));
+ else if(a[1]===core+'@3.8.2') console.log(JSON.stringify('3.8.1'));
+ else if(a[1]===core+'@3.9.0') console.log(JSON.stringify('3.9.0'));
+ else if(a[1]===core+'@4.1.0') console.log(JSON.stringify('4.0.0'));
+ else if(a[1]===core+'@0.2.4') console.log('');
  else throw Error('Unexpected query '+a.join(' '));
 } else if(a[0]==='uninstall') { if(e.MOCK_FAIL) process.exit(1); }
 else if(a[0]==='install') {
@@ -73,13 +75,17 @@ try {
   const check = run("--check");
   assert.strictEqual(check.status, 0, check.stderr);
   assert.match(check.stdout, /Core:\s+3.8.2 -> 3.9.0/);
+  assert.match(check.stdout, /Template:\s+3.8.1 -> 3.9.0/);
   assert.match(check.stdout, /兼容范围 \^3.8.2/);
   assert.doesNotMatch(check.stdout, /4.1.0|3.10.0-beta/);
   assert.match(check.stdout, /update --cli 一键更新/);
   const zero = run("--check", { MOCK_RANGE: "^0.2.3" });
   assert.strictEqual(zero.status, 0, zero.stderr);
   assert.match(zero.stdout, /Core:\s+3.8.2 -> 0.2.4/);
-  assert(zero.calls.some(c => c.args[1] === `${coreName}@^0.2.3`));
+  assert(zero.calls.some(c => c.args[1] === coreName && c.args[2] === "versions"));
+  // Windows 下参数经 cmd.exe 执行且不转义，`^` 会被吃掉（范围退化成精确版本），故任何调用都不得传 `^`。
+  const caretFree = [...check.calls, ...zero.calls];
+  assert(!caretFree.some(c => c.args.some(arg => typeof arg === "string" && arg.includes("^"))), "CLI 不得把 caret 范围拼进命令行参数");
   const core = run("--core");
   assert.strictEqual(core.status, 0, core.stderr);
   assert.deepStrictEqual(core.calls.filter(c => c.args[0] === "install").map(c => c.args), [["install", "-g", `${cliName}@3.6.5`]]);

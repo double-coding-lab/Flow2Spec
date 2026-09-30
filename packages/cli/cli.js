@@ -64,22 +64,47 @@ function runCommandSync(command, commandArgs, options = {}) {
   });
 }
 
+/**
+ * 判断版本是否落在 CLI 声明的 caret 兼容范围内（CLI 只接受 ^x.y.z）。
+ */
+function satisfiesCoreRange(version, range) {
+  const match = /^\^(\d+)\.(\d+)\.(\d+)$/.exec(String(range || "").trim());
+  if (!match) throw new Error(`Core 兼容范围必须是 ^x.y.z 形式，收到：${range || "<empty>"}`);
+  const [major, minor, patch] = match.slice(1).map(Number);
+  const lower = `${major}.${minor}.${patch}`;
+  const upper = major > 0 ? `${major + 1}.0.0` : minor > 0 ? `0.${minor + 1}.0` : `0.0.${patch + 1}`;
+  return compareVersions(version, lower) >= 0 && compareVersions(version, upper) < 0;
+}
+
+/**
+ * 查询兼容范围内最新稳定 Core。
+ *
+ * 不能在 argv 里拼 `@^x.y.z`：Windows 下命令经 cmd.exe 执行（shell:true 才能找到 npm.cmd），
+ * 参数只拼接不转义，`^` 会被 cmd 当转义符吃掉、退化成精确版本查询，导致目标永远等于当前基线。
+ * 改为列全部版本后在 JS 里按范围过滤，再对选中的精确版本取 templateVersion。
+ */
 function queryLatestCoreMetadata(range = coreRange) {
-  const output = runCommandSync(
-    "npm",
-    ["view", `${CORE_PACKAGE}@${range}`, "version", "templateVersion", "--json", "--registry=https://registry.npmjs.org"],
-    { encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] },
-  );
-  const candidates = [].concat(JSON.parse(output)).filter((item) => /^\d+\.\d+\.\d+$/.test(typeof item === "string" ? item : item.version));
-  candidates.sort((a, b) => compareVersions(typeof a === "string" ? a : a.version, typeof b === "string" ? b : b.version));
-  const metadata = candidates.pop();
-  if (!metadata) throw new Error(`没有找到兼容 ${range} 的稳定 Core 版本`);
-  return {
-    version: typeof metadata === "string" ? metadata : metadata.version,
-    templateVersion: typeof metadata === "string"
-      ? metadata
-      : metadata.templateVersion || metadata.version,
-  };
+  const registry = ["--registry=https://registry.npmjs.org"];
+  const query = (args) => runCommandSync("npm", [...args, ...registry], {
+    encoding: "utf8",
+    timeout: 5000,
+    stdio: ["ignore", "pipe", "ignore"],
+  }).trim();
+  const candidates = [].concat(JSON.parse(query(["view", CORE_PACKAGE, "versions", "--json"])))
+    .map((value) => String(value))
+    .filter((value) => /^\d+\.\d+\.\d+$/.test(value))
+    .filter((value) => satisfiesCoreRange(value, range));
+  candidates.sort(compareVersions);
+  const version = candidates.pop();
+  if (!version) throw new Error(`没有找到兼容 ${range} 的稳定 Core 版本`);
+  let templateVersion = "";
+  try {
+    const parsed = JSON.parse(query(["view", `${CORE_PACKAGE}@${version}`, "templateVersion", "--json"]));
+    if (typeof parsed === "string") templateVersion = parsed;
+  } catch {
+    // 老版本可能没有 templateVersion 字段，回落到 Core 版本本身。
+  }
+  return { version, templateVersion: templateVersion || version };
 }
 
 function updateCheckCacheFile() {
