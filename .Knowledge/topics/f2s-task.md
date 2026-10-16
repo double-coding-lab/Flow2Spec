@@ -1,6 +1,6 @@
 ---
 id: f2s-task
-revision: 0
+revision: 1
 summary: "任务清单 .task 目录的创建、续作与归档规则"
 primary: policy
 confidence: manual
@@ -48,6 +48,12 @@ TASK_ROOT/                       ← `.task` 或 `.task/<developerId>`
 ```
 
 用户代办**必须**落在与 `task.md` 同目录的 **`user-todos.md`**；归档前**必须**生成与 `task.md` 同目录的 **`acceptance.md`**（验收清单），二者职责分离。细则见配置根 **`rules/f2s-task.*`**。
+
+## Git 与跨电脑续作
+
+- `.gitignore` 使用 `.task/completed/` 与 `.task/*/completed/`，忽略单人及多人布局的已完成归档。
+- `active/`、`todo.json` 与任务上下文可提交并推送；另一台电脑拉取后，使用相同 developerId 解析到原 TASK_ROOT 续作。
+- `init` 自动将旧的整目录 `.task/` 忽略规则迁为上述两条规则。
 
 ## 跨会话续作
 

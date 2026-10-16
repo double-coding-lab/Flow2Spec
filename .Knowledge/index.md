@@ -27,7 +27,7 @@
 | f2s-doc-routing | `.Knowledge/topics/f2s-stock-docs-vs-req-docs.md` | stock-docs / req-docs 目录分工 | stock：[目录边界说明](.Knowledge/stock-docs/<目录边界说明>.md)（可选） |
 | fallback-triage | `.Knowledge/topics/f2s-fallback-triage.md` | 未命中或低置信度：分诊与澄清 | stock：[路由分诊说明](.Knowledge/stock-docs/<分诊说明>.md)（可选） |
 | config-precheck | `.Knowledge/topics/f2s-config-precheck.md` | 执行 `f2s-*` 前读 `flow2spec.config.json` / 编排开关（含 `intentRecognition` 意图识别）/ 更新检测 | Codex 长文：仓库根 `.codex/topics/f2s-config-check.md`；Claude/Cursor/Codex hooks：[路由摘要](topics/f2s-config-precheck.md) |
-| f2s-task | `.Knowledge/topics/f2s-task.md` | 变更追踪、`.task/` 任务清单与跨会话续作 | stock：[任务清单与变更追踪](stock-docs/Flow2Spec-任务清单与变更追踪.md)；长文：`rules/f2s-task.*` |
+| f2s-task | `.Knowledge/topics/f2s-task.md` | 变更追踪、`.task/` 任务清单与跨会话/跨电脑续作 | stock：[任务清单与变更追踪](stock-docs/Flow2Spec-任务清单与变更追踪.md)；长文：`rules/f2s-task.*` |
 | f2s-req-plan | `.Knowledge/topics/f2s-req-plan.md` | 需求/方案规划与实现；始终维护 `.task/` | 技能：`skills/f2s-req-plan/SKILL.md`；依赖 `f2s-task` |
 | f2s-git-commit | `.Knowledge/topics/f2s-git-commit.md` | 提交代码；默认检查知识库覆盖，快捷提交跳过覆盖检查 | 技能：`skills/f2s-git-commit/SKILL.md`；模板：[f2s-git-commit](../templates/skills/f2s-git-commit/SKILL.md) |
 | flow2spec-presentations | `.Knowledge/topics/f2s-flow2spec-presentations.md` | 本仓 Astro 宣传网站、文档导航与遗留 HTML 演示稿维护约定 | stock：[对外网站与演示](stock-docs/Flow2Spec-对外介绍演示.md) |

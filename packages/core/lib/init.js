@@ -50,23 +50,31 @@ function removeKnowledgeUpdateCheckCache(cwd) {
 
 function ensureFlow2specGitignore(cwd) {
   const gitignorePath = path.join(cwd, ".gitignore");
-  const required = [".task/", ".Knowledge/update-check.json"];
+  const required = [".task/completed/", ".task/*/completed/", ".Knowledge/update-check.json"];
   const existing = fs.existsSync(gitignorePath)
     ? fs.readFileSync(gitignorePath, "utf8")
     : "";
-  const lines = existing.split(/\r?\n/).map((line) => line.trim());
+  // Migrate the blanket ignore written by earlier init versions so active tasks
+  // and their index can travel with the repository between computers.
+  const retained = existing.split(/\r?\n/).filter((line) =>
+    ![".task/", ".task", "/.task/", "/.task"].includes(line.trim()),
+  ).join(existing.includes("\r\n") ? "\r\n" : "\n");
+  const lines = retained.split(/\r?\n/).map((line) => line.trim());
   const missing = required.filter((item) => !lines.includes(item));
-  if (missing.length === 0) {
+  if (missing.length === 0 && retained === existing) {
     return { path: gitignorePath, changed: false, added: [] };
   }
   const additions = [];
-  if (!lines.includes("# Flow2Spec local state")) {
+  if (missing.length > 0 && !lines.includes("# Flow2Spec local state")) {
     additions.push("# Flow2Spec local state");
   }
   additions.push(...missing);
-  const prefix = existing && !existing.endsWith("\n") ? `${existing}\n` : existing;
+  const prefix = retained && !retained.endsWith("\n") ? `${retained}\n` : retained;
   const separator = prefix && !prefix.endsWith("\n\n") ? "\n" : "";
-  fs.writeFileSync(gitignorePath, `${prefix}${separator}${additions.join("\n")}\n`, "utf8");
+  const next = additions.length > 0
+    ? `${prefix}${separator}${additions.join("\n")}\n`
+    : retained;
+  fs.writeFileSync(gitignorePath, next, "utf8");
   return { path: gitignorePath, changed: true, added: missing };
 }
 

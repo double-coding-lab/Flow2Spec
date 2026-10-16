@@ -371,7 +371,7 @@ init 会:
      传 --reset-knowledge 时才会强制用模板覆盖 .Knowledge 中模板承载部分。
   4. 在各 agent 配置根写入对应的 rules、skills、入口和 hooks（若该客户端支持）；具体落盘方式以客户端适配器为准。
   5. 每次 init 将当前 locale 包模板 knowledge/index.md 复制到 .Knowledge/template/index.template.md，供 f2s-kb-upgrade 技能与 .Knowledge/index.md 对照；不自动改写 index.md。（「知识库升级」指 f2s-kb-upgrade 技能，init 本身不是升级命令。）
-  6. 非破坏式补充 .gitignore：忽略 .task/ 与 .Knowledge/update-check.json 这类本地运行态。
+  6. 维护 .gitignore：仅忽略 .task/completed/、.task/*/completed/ 与 .Knowledge/update-check.json，进行中任务可提交。
   7. 规则与技能在各 agent 配置根加载；其他模版类文件在 .Knowledge/template/ 等目录。
 
 更多说明见 README.md 或 docs/使用说明.md

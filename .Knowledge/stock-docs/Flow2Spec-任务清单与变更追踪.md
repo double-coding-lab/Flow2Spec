@@ -48,6 +48,10 @@
 - **归档**：完成后将 `active/<task-name>/` 整体移至 `completed/<YYYYMMDD>-<task-name>/`，并从 `todo.json` 删除对应条目；若数组为空可删除 `todo.json`。
 - **子任务与 Git worktree**：`subAgent=true` 或并行子任务若使用 **`git worktree`**（或 IDE 等价隔离目录），须在子任务结束或主 agent 合并后 **`git worktree remove`** 并 `git worktree list` 自检，禁止长期遗留孤儿 worktree；细则见配置根 **`rules/f2s-flow2spec-unified-entry.*`**。
 
+### Git 与跨电脑续作
+
+`.gitignore` 使用 `.task/completed/` 与 `.task/*/completed/`，仅忽略两种布局的已完成归档。进行中的 `active/`、`todo.json` 与任务上下文可随代码提交、推送，在另一台电脑拉取后续作；两端应保持相同 `collaboration.developerId`（或相同的 Git 身份解析结果）。`init` 会将旧的整目录 `.task/` 忽略规则迁为上述两条规则。
+
 ### 3.1 `user-todos.md` 与 `acceptance.md`：用户侧两份文件，职责分离
 
 | 文件 | 谁在做 | 内容焦点 | 写入时机 |

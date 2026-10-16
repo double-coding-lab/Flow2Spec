@@ -292,16 +292,19 @@ function runDoctor(cwd = process.cwd(), options = {}) {
     }
   }
 
-  const taskIgnored = isIgnoredByRootGitignore(cwd, ".task/");
+  const taskIgnored = isIgnoredByRootGitignore(cwd, ".task/completed/") &&
+    isIgnoredByRootGitignore(cwd, ".task/*/completed/") &&
+    !isIgnoredByRootGitignore(cwd, ".task/") &&
+    !isIgnoredByRootGitignore(cwd, "/.task/");
   checks.push(
     taskIgnored
-      ? makeCheck("task-ignore", "任务目录", STATUS.pass, ".task/ 已在根 .gitignore 中忽略。")
+      ? makeCheck("task-ignore", "任务目录", STATUS.pass, "已忽略 completed 归档，进行中任务可提交。")
       : makeCheck(
           "task-ignore",
           "任务目录",
           STATUS.warning,
-          ".task/ 未在根 .gitignore 中忽略。",
-          "在根 .gitignore 中加入 .task/，或重新运行 flow2spec init。",
+          "任务忽略规则未对齐：应仅忽略 completed 归档。",
+          "将整目录 .task/ 规则替换为 .task/completed/ 与 .task/*/completed/，或重新运行 flow2spec init。",
         ),
   );
 

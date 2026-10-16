@@ -2,6 +2,7 @@ const assert = require("assert");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const runInit = require("../packages/core/lib/init");
 const corePkg = require("../packages/core/package.json");
@@ -19,14 +20,16 @@ const corePkg = require("../packages/core/package.json");
     });
     assert.strictEqual(first.gitignoreResult.changed, true);
     assert.deepStrictEqual(first.gitignoreResult.added, [
-      ".task/",
+      ".task/completed/",
+      ".task/*/completed/",
       ".Knowledge/update-check.json",
     ]);
 
     const afterFirst = fs.readFileSync(gitignorePath, "utf8");
     assert(afterFirst.includes("node_modules/"));
     assert(afterFirst.includes("# Flow2Spec local state"));
-    assert(afterFirst.includes(".task/"));
+    assert(afterFirst.includes(".task/completed/"));
+    assert(afterFirst.includes(".task/*/completed/"));
     assert(afterFirst.includes(".Knowledge/update-check.json"));
     for (const agentRoot of [".cursor", ".claude", ".codex"]) {
       const hook = fs.readFileSync(
@@ -48,15 +51,46 @@ const corePkg = require("../packages/core/package.json");
     assert.strictEqual(second.gitignoreResult.changed, false);
     const afterSecond = fs.readFileSync(gitignorePath, "utf8");
     assert.strictEqual(
-      afterSecond.split(".task/").length - 1,
+      afterSecond.split(".task/completed/").length - 1,
       1,
-      ".task/ should not be duplicated",
+      "completed ignore should not be duplicated",
     );
     assert.strictEqual(
       afterSecond.split(".Knowledge/update-check.json").length - 1,
       1,
       ".Knowledge/update-check.json should not be duplicated",
     );
+
+    spawnSync("git", ["init", "--quiet", tmpRoot]);
+    const taskPaths = [
+      [".task/todo.json", false],
+      [".task/active/example/task.md", false],
+      [".task/alice/todo.json", false],
+      [".task/alice/active/example/task.md", false],
+      [".task/completed/example/task.md", true],
+      [".task/alice/completed/example/task.md", true],
+      [".Knowledge/update-check.json", true],
+    ];
+    const checkIgnores = () => {
+      for (const [file, ignored] of taskPaths) {
+        const result = spawnSync("git", ["check-ignore", "--no-index", "-q", file], { cwd: tmpRoot });
+        assert.strictEqual(result.status, ignored ? 0 : 1, file);
+      }
+    };
+    checkIgnores();
+
+    // Migrate old blanket rules, including when all narrow rules already exist.
+    for (const blanket of [".task/", "/.task/", ".task", "/.task"]) {
+      for (const base of ["node_modules/\n", afterSecond]) {
+        fs.writeFileSync(gitignorePath, `${base}${blanket}\n`);
+        const migrated = await runInit(tmpRoot, ["cursor"], { configValues: { locale: "zh-CN" } });
+        assert.strictEqual(migrated.gitignoreResult.changed, true);
+        assert(fs.readFileSync(gitignorePath, "utf8").includes("node_modules/"));
+        checkIgnores();
+        const stable = await runInit(tmpRoot, ["cursor"], { configValues: { locale: "zh-CN" } });
+        assert.strictEqual(stable.gitignoreResult.changed, false);
+      }
+    }
 
     console.log("init gitignore tests passed");
   } finally {
