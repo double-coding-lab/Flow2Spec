@@ -1,0 +1,39 @@
+packages/core/lib/init.js
+  s_e85366da32395f::t_13506ce293d8cc 53,57-62,64,68,72,74-77
+.Knowledge/stock-docs/Flow2Spec-任务清单与变更追踪.md
+  s_e85366da32395f::t_0a89c6bd29da05 51-54
+.Knowledge/manifest-routing.json
+  s_e85366da32395f::t_0f6b5e748e891c 176
+.gitignore
+  s_e85366da32395f::t_13506ce293d8cc 2-3
+.Knowledge/topics/flow2spec-collaboration.md
+  s_e85366da32395f::t_0f6b5e748e891c 3-4,14-15,20,33
+package-lock.json
+  s_e85366da32395f::t_9138981342835a 28,31,42
+docs/en/team-collaboration.md
+  s_e85366da32395f::t_0f6b5e748e891c 5,7,18,129,153,185,194,202,208,214
+docs/团队协作.md
+  s_e85366da32395f::t_0f6b5e748e891c 3,7,18,22,169,188,231,242,252,254,260,266
+.Knowledge/topics/f2s-task.md
+  s_e85366da32395f::t_0f6b5e748e891c 3,52-56
+.Knowledge/index.md
+  s_e85366da32395f::t_0a89c6bd29da05 30
+scripts/test-init-gitignore.js
+  s_e85366da32395f::t_6f72a25f0a0299 5,23-24,31-32,54,56,64-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.50-trip",
+  "base_commit_sha": "59d0cdff0e1b7232f43404d14ba5c5e4e0cd33fd",
+  "prompts": {},
+  "sessions": {
+    "s_e85366da32395f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a143a8-e3cb-7f23-9cf3-de28d623ab02",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "兰涛 <550947002@qq.com>"
+    }
+  }
+}
