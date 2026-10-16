@@ -703,7 +703,7 @@ It checks:
 - whether `flow2spec.config.json`, root `AGENTS.md`, and `.Knowledge/manifest-routing.json` exist and are usable
 - whether detected `.codex`, `.claude`, and `.cursor` roots contain their required entry and hook files
 - the resolved `developerId`, source, and `TASK_ROOT`; falling back to the legacy `.task/` root produces a warning
-- whether the root `.gitignore` ignores `.task/`
+- whether the root `.gitignore` ignores `.task/completed/` and `.task/*/completed/` while allowing active tasks to be committed
 - strict knowledge graph health, topic revisions, and routing metadata drift
 
 Human-readable output marks each check with `[PASS]`, `[WARN]`, or `[FAIL]` and includes a repair suggestion when applicable. `--json` returns a stable `ok / package / cwd / summary / checks` structure for CI and scripts.

@@ -173,7 +173,7 @@
       "topics": [
         "flow2spec-collaboration"
       ],
-      "summary": "任务状态本地隔离、共享知识 delta 合入与 revision 冲突处理"
+      "summary": "任务按身份隔离与跨电脑续作、知识 delta 合入及 revision 冲突处理"
     },
     {
       "task": "flow2spec-doctor",

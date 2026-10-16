@@ -1,7 +1,7 @@
 ---
 id: flow2spec-collaboration
-revision: 0
-summary: "任务状态本地隔离、共享知识 delta 合入与 revision 冲突处理"
+revision: 2
+summary: "任务按身份隔离与跨电脑续作、知识 delta 合入及 revision 冲突处理"
 dependsOn: [f2s-task]
 primary: feature
 confidence: manual
@@ -11,11 +11,13 @@ tags: [policy]
 
 ## 适用场景
 
+执行前须先读依赖主题 `f2s-task`。
+
 用于回答 Flow2Spec 多人共用知识库、developerId 任务隔离、kb-delta 合入、topic revision 冲突与团队进度可见性。
 
 ## 协作边界
 
-- `.task/<developerId>/` 保存个人 checklist、会话上下文与用户代办，默认不进 Git；Agent 只读写当前 `TASK_ROOT`。
+- `.task/<developerId>/` 保存个人 checklist、会话上下文与用户代办；进行中任务可随代码提交，completed 归档由 `.task/completed/` 与 `.task/*/completed/` 忽略；Agent 只读写当前 `TASK_ROOT`。
 - `.Knowledge/` 保存团队共享事实，随代码通过 Git / PR 评审。
 - `collaboration.enabled` 只控制任务根是否按 developerId 分层，不关闭知识库协作。
 
@@ -28,7 +30,7 @@ tags: [policy]
 
 ## 团队观察面
 
-团队进度以 PR、commit、`.Knowledge/` diff、`req-docs/` 与项目里程碑为准。`.task/` 是本地过程状态，不作为团队看板。
+团队进度以 PR、commit、`.Knowledge/` diff、`req-docs/` 与项目里程碑为准。`.task/` 保存个人过程状态，可通过 Git 同步进行中任务以跨电脑续作；两端保持相同 developerId。
 
 ## 下钻入口
 

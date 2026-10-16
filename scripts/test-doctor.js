@@ -24,7 +24,7 @@ function createHealthyProject(root) {
   write(path.join(root, ".Knowledge", "manifest-routing.json"), "{}\n");
   write(path.join(root, ".codex", "AGENTS.md"), "See ../AGENTS.md\n");
   write(path.join(root, ".codex", "hooks.json"), "{}\n");
-  write(path.join(root, ".gitignore"), "node_modules/\n.task/\n");
+  write(path.join(root, ".gitignore"), "node_modules/\n.task/completed/\n.task/*/completed/\n");
 }
 
 const passKnowledge = () => ({
@@ -55,6 +55,17 @@ try {
   assert.strictEqual(healthy.summary.warnings, 0);
   assert.match(formatDoctorReport(healthy), /\[PASS\] Node\.js/);
   assert.match(formatDoctorReport(healthy), /developerId=alice/);
+
+  for (const rules of [".task/\n", ".task/completed/\n", ".task/completed/\n.task/*/completed/\n/.task/\n"]) {
+    write(path.join(healthyRoot, ".gitignore"), rules);
+    const report = runDoctor(healthyRoot, {
+      nodeVersion: "v20.11.1",
+      knowledgeCheck: passKnowledge,
+    });
+    const taskCheck = report.checks.find((check) => check.id === "task-ignore");
+    assert.strictEqual(taskCheck.status, "warning");
+    assert.match(taskCheck.repair, /completed/);
+  }
 
   write(
     path.join(warningRoot, "flow2spec.config.json"),

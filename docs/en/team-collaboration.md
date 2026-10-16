@@ -2,9 +2,9 @@
 
 # Team Collaboration
 
-Flow2Spec does not put every piece of runtime state into Git. It separates two kinds of information: what one developer is currently doing stays local; knowledge that can affect team decisions enters the repository.
+Flow2Spec isolates task state by developer. Active tasks can travel with the code through Git for continuation on another computer, while confirmed team knowledge lives in `.Knowledge/`.
 
-- `.task/` is personal working state and is ignored by Git by default.
+- `.task/` holds personal working state. Active tasks and `todo.json` can be committed; completed archives are ignored.
 - `.Knowledge/` is team knowledge and is reviewed, committed, and pulled with the code.
 
 `developerId`, `kb-delta.json`, and topic revisions make this boundary executable.
@@ -15,7 +15,7 @@ Flow2Spec does not put every piece of runtime state into Git. It separates two k
 
 | Content | Typical path | Visibility | Collaboration model |
 | --- | --- | --- | --- |
-| Personal task state | `.task/<developerId>/` | Current developer and local Agent | Resume locally; do not commit |
+| Personal task state | `.task/<developerId>/` | Members who pull the relevant commits | Resume by developerId; archive completed tasks locally |
 | Project knowledge | `.Knowledge/` | Everyone who pulls the repository | Delta merge and Git review |
 | Implementation and formal docs | Source code and `docs/` | Everyone who pulls the repository | Branches, PRs, and commits |
 
@@ -126,7 +126,7 @@ skill forms a knowledge change
   -> task is archived locally after its gates pass
 ```
 
-`plan` does not write files. `apply` plans again immediately before writing, so a stale preview cannot force an outdated change onto disk. The delta remains local with the task; the `.Knowledge/` diff is the shared result.
+`plan` does not write files. `apply` plans again immediately before writing, so a stale preview cannot force an outdated change onto disk. The delta stays with the task and can be committed for continuation; the `.Knowledge/` diff holds the confirmed result.
 
 ---
 
@@ -150,7 +150,7 @@ flow2spec kb build
 flow2spec kb check --strict
 ```
 
-After apply, inspect the real `.Knowledge/` diff and commit it with the implementation. `.task/` should not appear among staged files.
+After apply, inspect the real `.Knowledge/` diff and commit it with the implementation. Include active tasks and `todo.json` when continuation on another computer is needed.
 
 ---
 
@@ -182,7 +182,7 @@ Step 4 cannot be replaced by concatenating text. The conflict exists to force a 
 - Give each developer a stable, readable `collaboration.developerId`, especially on shared machines.
 - Pull before starting; keep a knowledge change and its implementation in the same PR or in traceable commits.
 - Keep topics focused. Oversized topics enlarge both the routing surface and the revision conflict surface.
-- Do not add `.task/` back to Git or use `todo.json` as a team board.
+- Ignore `.task/completed/` and `.task/*/completed/`; active tasks can be committed, while `todo.json` remains a personal continuation index.
 - Prefer delta-producing `f2s-kb-*` workflows for topic changes. Direct edits bypass revision preflight.
 - Review the `.Knowledge/` diff before merging. “Mergeable” means structurally safe, not necessarily correct business wording.
 - Keep the team on one Flow2Spec version so CLI schemas and templates agree.
@@ -191,7 +191,7 @@ Step 4 cannot be replaced by concatenating text. The conflict exists to force a 
 
 ## 7. How managers see progress
 
-Managers cannot see another developer's active `.task/` checklist, by design. Team progress should come from durable commitments and outputs:
+Committed active checklists provide task context. Formal team progress should come from durable commitments and outputs:
 
 - PRs or draft PRs for current delivery and blockers;
 - commits and `.Knowledge/` diffs for actual capability or rule changes;
@@ -199,19 +199,19 @@ Managers cannot see another developer's active `.task/` checklist, by design. Te
 - milestones for results spanning multiple commits;
 - the team's issue tracker, board, or status reports for owners and deadlines.
 
-If the team needs shared work-in-progress state, integrate the existing issue tracker instead of synchronizing `.task/active/`, which may contain session context, tentative judgments, and user todos with a different lifecycle.
+Use `.task/active/` for resumable working state and the existing issue tracker for owners, deadlines, and blockers. Completed archives stay local. Archiving a previously committed active task produces deletions that should travel with the next commit.
 
 ---
 
 ## 8. Common questions
 
-### If `.task/` is local, why keep developerId?
+### If `.task/` can travel through Git, why keep developerId?
 
 Shared workspaces, build machines, and devcontainers can host multiple identities. More importantly, `TASK_ROOT` gives the Agent an enforceable boundary for task continuation.
 
 ### Does switching computers restore active tasks?
 
-No. `.task/` is local. Put confirmed handoff information in a PR, requirement document, or `.Knowledge/`.
+Commit and push the active task and `todo.json`, then pull them on the other computer. Keep the same `collaboration.developerId` or Git identity resolution so the Agent resumes from the same `TASK_ROOT`.
 
 ### Does `collaboration.enabled: false` disable knowledge collaboration?
 
