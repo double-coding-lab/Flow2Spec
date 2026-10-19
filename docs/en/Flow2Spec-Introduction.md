@@ -288,7 +288,7 @@ flowchart LR
 
 Figure 3: Tasks stay separate; knowledge converges
 
-`.task/` is ignored by Git by default and split into developer-specific `TASK_ROOT` directories. `.Knowledge/` is shared. Skills express changes as structured deltas with the topic revisions they read; `flow2spec kb plan` checks those revisions before disk writes. Different topics can advance independently. When two people change the same topic, the second person pulls, rereads the latest meaning, and rewrites the delta.
+`.task/` keeps only `completed/` archives local by default; in-progress tasks can travel through Git (controlled by `collaboration.syncActiveTasks`) for the same developer's cross-computer continuation, and remain split into developer-specific `TASK_ROOT` directories. `.Knowledge/` is shared. Skills express changes as structured deltas with the topic revisions they read; `flow2spec kb plan` checks those revisions before disk writes. Different topics can advance independently. When two people change the same topic, the second person pulls, rereads the latest meaning, and rewrites the delta.
 
 This is not automatic text concatenation. It isolates state that should remain personal, keeps shared facts in Git, and stops where a semantic decision is needed. See [Team Collaboration](./team-collaboration.md).
 

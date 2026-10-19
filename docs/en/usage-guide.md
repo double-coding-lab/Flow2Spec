@@ -69,10 +69,10 @@ If **`changeTracking` is off** but you still need a task checklist temporarily, 
 
 Flow2Spec separates personal execution state from team knowledge:
 
-- `.task/` is local and ignored by Git. With collaboration enabled it is partitioned into `.task/<developerId>/`; continuation logic reads only the current `TASK_ROOT`.
+- `.task/` is task runtime state. With `collaboration.syncActiveTasks=true` (default), in-progress tasks can be committed while `completed/` stays local; with `false`, the whole directory stays local. Collaboration mode partitions it into `.task/<developerId>/`, and continuation logic reads only the current `TASK_ROOT`.
 - `.Knowledge/` is shared through Git. Knowledge skills produce a structured `kb-delta.json`, and the CLI checks topic revisions before merging it.
 
-developerId resolution follows explicit `collaboration.developerId` -> Git email prefix -> Git user name -> legacy `.task/`. Invalid explicit ids fail instead of silently changing identity. Non-ASCII Git identities use a stable `dev-xxxxxxxx` hash fallback with a warning. Setting `collaboration.enabled: false` always selects the legacy root.
+developerId resolution follows explicit `collaboration.developerId` -> Git email prefix -> Git user name -> legacy `.task/`. Invalid explicit ids fail instead of silently changing identity. Non-ASCII Git identities use a stable `dev-xxxxxxxx` hash fallback with a warning. Setting `collaboration.enabled: false` always selects the legacy root. For cross-computer continuation, use the same `git config user.email` on both machines so the resolved `TASK_ROOT` matches; `flow2spec doctor` prints the source.
 
 The knowledge merge commands are:
 

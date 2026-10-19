@@ -44,6 +44,10 @@ async function main() {
   await api.project.init({ mode: "native-host", integrations: ["dsh"], locale: "zh-CN" });
   assert.ok(fs.existsSync(path.join(tempDir, ".Knowledge")));
   assert.ok(fs.existsSync(path.join(tempDir, "flow2spec.config.json")));
+  const projectConfig = JSON.parse(
+    fs.readFileSync(path.join(tempDir, "flow2spec.config.json"), "utf8"),
+  );
+  assert.strictEqual(projectConfig.collaboration.syncActiveTasks, true);
   assert.ok(!fs.existsSync(path.join(tempDir, ".dsh")));
 
   const report = api.knowledge.check({ strict: true });

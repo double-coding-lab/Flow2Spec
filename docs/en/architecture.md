@@ -98,16 +98,16 @@ The documentation curation chain produces two document types:
 
 Flow2Spec assumes that a team shares one knowledge base. It applies opposite policies to two loops: **task state is separated; knowledge is merged**.
 
-- **Task loop**: `.task/` stays out of Git and is partitioned by `<developerId>/` as personal working state.
+- **Task loop**: `.task/` is partitioned by `<developerId>`. With `collaboration.syncActiveTasks=true` (default), only `completed/` stays out of Git while in-progress tasks can travel with the code for the same developer's cross-computer continuation; with `false`, the whole directory stays local.
 - **Knowledge loop**: `.Knowledge/` stays in Git. Topic-level integer `revision` values act as optimistic disk locks, while `kb-delta.json` carries structured changes into the shared knowledge base.
 
-Both policies follow the same rule: team facts belong in Git; personal execution state does not.
+Both policies follow the same rule: team facts belong in Git; personal execution state may travel for continuity, but it is not team truth.
 
 ### 6.1 Task loop: a local TASK_ROOT per developer
 
 With collaboration enabled, each developer gets `.task/<developerId>/`. The task rule creates, resumes, and archives tasks only under the current `TASK_ROOT`; it must not scan another developer's `todo.json`. If collaboration is disabled or no identity is available, Flow2Spec retains the legacy `.task/` root.
 
-Because `.task/` is local, team progress should be read from PRs, commits, `.Knowledge/` diffs, and milestones, not from another person's active checklist.
+With `collaboration.syncActiveTasks=true`, `active/`, `todo.json`, and `kb-delta.json` can be committed with the code; `completed/` stays local. Both machines must resolve the same `developerId` (preferably the same `git config user.email`); `flow2spec doctor` prints the resolved source and `TASK_ROOT`. Team progress should still be read from PRs, commits, `.Knowledge/` diffs, and milestones, not from task files.
 
 ### 6.2 Knowledge loop: structured deltas and optimistic locking
 
@@ -125,7 +125,7 @@ This is a topic-level lock. Two unrelated edits to different sections of the sam
 
 ### 6.3 Why the boundary is drawn here
 
-Sharing `.task/` would turn rapidly changing checklists and session context into repository noise. Splitting `.Knowledge/` by developer would create competing versions of project truth. Keeping the first local and the second reviewable gives each kind of state one owner and one lifecycle. See [Team Collaboration](./team-collaboration.md) for the complete workflow and conflict examples.
+Treating task state as a team board would turn rapidly changing checklists and session context into repository noise. Splitting `.Knowledge/` by developer would create competing versions of project truth. Keeping `completed/` local, syncing only in-progress tasks for the same developer, and keeping knowledge reviewable gives each kind of state one owner and one lifecycle. See [Team Collaboration](./team-collaboration.md) for the complete workflow and conflict examples.
 
 ---
 

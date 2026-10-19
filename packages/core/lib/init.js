@@ -48,21 +48,36 @@ function removeKnowledgeUpdateCheckCache(cwd) {
   }
 }
 
-function ensureFlow2specGitignore(cwd) {
+function ensureFlow2specGitignore(cwd, options = {}) {
+  const syncActiveTasks = options.syncActiveTasks !== false;
   const gitignorePath = path.join(cwd, ".gitignore");
-  const required = [".task/completed/", ".task/*/completed/", ".Knowledge/update-check.json"];
   const existing = fs.existsSync(gitignorePath)
     ? fs.readFileSync(gitignorePath, "utf8")
     : "";
-  // Migrate the blanket ignore written by earlier init versions so active tasks
-  // and their index can travel with the repository between computers.
-  const retained = existing.split(/\r?\n/).filter((line) =>
-    ![".task/", ".task", "/.task/", "/.task"].includes(line.trim()),
-  ).join(existing.includes("\r\n") ? "\r\n" : "\n");
+  const eol = existing.includes("\r\n") ? "\r\n" : "\n";
+  // true：迁移旧的整目录规则，只忽略 completed 归档；false：恢复整目录忽略。
+  const remove = syncActiveTasks
+    ? [".task/", ".task", "/.task/", "/.task"]
+    : [".task/completed/", ".task/*/completed/"];
+  const required = syncActiveTasks
+    ? [".task/completed/", ".task/*/completed/", ".Knowledge/update-check.json"]
+    : [".task/", ".Knowledge/update-check.json"];
+  const originalLines = existing.split(/\r?\n/);
+  const retained = originalLines
+    .filter((line) => !remove.includes(line.trim()))
+    .join(eol);
+  const removed = [
+    ...new Set(
+      originalLines
+        .map((line) => line.trim())
+        .filter((line) => remove.includes(line)),
+    ),
+  ];
   const lines = retained.split(/\r?\n/).map((line) => line.trim());
   const missing = required.filter((item) => !lines.includes(item));
-  if (missing.length === 0 && retained === existing) {
-    return { path: gitignorePath, changed: false, added: [] };
+  const mode = syncActiveTasks ? "sync" : "local";
+  if (missing.length === 0 && removed.length === 0) {
+    return { path: gitignorePath, changed: false, added: [], removed: [], mode };
   }
   const additions = [];
   if (missing.length > 0 && !lines.includes("# Flow2Spec local state")) {
@@ -72,10 +87,10 @@ function ensureFlow2specGitignore(cwd) {
   const prefix = retained && !retained.endsWith("\n") ? `${retained}\n` : retained;
   const separator = prefix && !prefix.endsWith("\n\n") ? "\n" : "";
   const next = additions.length > 0
-    ? `${prefix}${separator}${additions.join("\n")}\n`
+    ? `${prefix}${separator}${additions.join(eol)}\n`
     : retained;
   fs.writeFileSync(gitignorePath, next, "utf8");
-  return { path: gitignorePath, changed: true, added: missing };
+  return { path: gitignorePath, changed: true, added: missing, removed, mode };
 }
 
 function ensureAgentDirs(cwd, agentId) {
@@ -1265,10 +1280,13 @@ async function run(cwd, agentIds, options = {}) {
 
   ensureKnowledgeDirs(cwd);
   removeKnowledgeUpdateCheckCache(cwd);
-  const gitignoreResult = ensureFlow2specGitignore(cwd);
   ensureFlow2specProjectConfig(cwd, templatesDir, {
     overwrite: false,
     values: Object.keys(effectiveConfigValues).length ? effectiveConfigValues : undefined,
+  });
+  const projectConfig = loadFlow2specConfig(cwd);
+  const gitignoreResult = ensureFlow2specGitignore(cwd, {
+    syncActiveTasks: projectConfig.collaboration.syncActiveTasks,
   });
   const knowledgeResult = copyKnowledgeTemplates(cwd, templatesDir, {
     overwrite: overwriteKnowledge,
@@ -1280,8 +1298,6 @@ async function run(cwd, agentIds, options = {}) {
   validateKnowledgeRouting(cwd);
 
   const indexSnapshot = copyKnowledgeIndexTemplateSnapshot(cwd, templatesDir);
-
-  const projectConfig = loadFlow2specConfig(cwd);
 
   const claudeHooksResult = {};
   for (const id of ids) {

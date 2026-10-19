@@ -18,7 +18,7 @@ function write(file, content = "") {
 function createHealthyProject(root) {
   write(
     path.join(root, "flow2spec.config.json"),
-    `${JSON.stringify({ collaboration: { enabled: true, developerId: "alice" } })}\n`,
+    `${JSON.stringify({ collaboration: { enabled: true, developerId: "alice", syncActiveTasks: true } })}\n`,
   );
   write(path.join(root, "AGENTS.md"), "# Project\n");
   write(path.join(root, ".Knowledge", "manifest-routing.json"), "{}\n");
@@ -40,6 +40,7 @@ assert.strictEqual(satisfiesNodeEngine("v15.9.0", ">=16"), false);
 assert.strictEqual(satisfiesNodeEngine("v20.11.1", ">=16"), true);
 
 const healthyRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-doctor-ok-"));
+const localRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-doctor-local-"));
 const warningRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-doctor-warn-"));
 const errorRoot = fs.mkdtempSync(path.join(os.tmpdir(), "flow2spec-doctor-error-"));
 
@@ -66,6 +67,29 @@ try {
     assert.strictEqual(taskCheck.status, "warning");
     assert.match(taskCheck.repair, /completed/);
   }
+
+  createHealthyProject(localRoot);
+  write(
+    path.join(localRoot, "flow2spec.config.json"),
+    `${JSON.stringify({ collaboration: { enabled: true, developerId: "alice", syncActiveTasks: false } })}\n`,
+  );
+  write(path.join(localRoot, ".gitignore"), "node_modules/\n.task/\n");
+  const local = runDoctor(localRoot, {
+    nodeVersion: "v20.11.1",
+    knowledgeCheck: passKnowledge,
+  });
+  const localTaskCheck = local.checks.find((check) => check.id === "task-ignore");
+  assert.strictEqual(localTaskCheck.status, "pass");
+  assert.match(localTaskCheck.message, /任务同步已关闭/);
+  write(path.join(localRoot, ".gitignore"), "node_modules/\n.task/completed/\n.task/*/completed/\n");
+  const localMisconfigured = runDoctor(localRoot, {
+    nodeVersion: "v20.11.1",
+    knowledgeCheck: passKnowledge,
+  });
+  assert.strictEqual(
+    localMisconfigured.checks.find((check) => check.id === "task-ignore").status,
+    "warning",
+  );
 
   write(
     path.join(warningRoot, "flow2spec.config.json"),
@@ -114,6 +138,7 @@ try {
   console.log("doctor tests passed");
 } finally {
   fs.rmSync(healthyRoot, { recursive: true, force: true });
+  fs.rmSync(localRoot, { recursive: true, force: true });
   fs.rmSync(warningRoot, { recursive: true, force: true });
   fs.rmSync(errorRoot, { recursive: true, force: true });
 }

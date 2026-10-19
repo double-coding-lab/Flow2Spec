@@ -272,9 +272,9 @@ function runDoctor(cwd = process.cwd(), options = {}) {
           warnings.length > 0 ? STATUS.warning : STATUS.pass,
           context.legacy
             ? `使用 ${context.taskRoot}（${context.enabled ? "legacy" : "协作隔离已关闭"}）。`
-            : `developerId=${context.developerId}，TASK_ROOT=${context.taskRoot}。`,
+            : `developerId=${context.developerId}（source=${context.source}），TASK_ROOT=${context.taskRoot}。`,
           warnings.length > 0
-            ? "在 flow2spec.config.json 配置 collaboration.developerId。"
+            ? "两端使用相同的 git user.email/name；单人仓库也可在 flow2spec.config.json 配置 collaboration.developerId。"
             : null,
           { ...context, warnings },
         ),
@@ -292,19 +292,34 @@ function runDoctor(cwd = process.cwd(), options = {}) {
     }
   }
 
-  const taskIgnored = isIgnoredByRootGitignore(cwd, ".task/completed/") &&
-    isIgnoredByRootGitignore(cwd, ".task/*/completed/") &&
-    !isIgnoredByRootGitignore(cwd, ".task/") &&
-    !isIgnoredByRootGitignore(cwd, "/.task/");
+  const syncActiveTasks = config?.collaboration?.syncActiveTasks !== false;
+  const taskIgnored = syncActiveTasks
+    ? isIgnoredByRootGitignore(cwd, ".task/completed/") &&
+      isIgnoredByRootGitignore(cwd, ".task/*/completed/") &&
+      !isIgnoredByRootGitignore(cwd, ".task/") &&
+      !isIgnoredByRootGitignore(cwd, "/.task/")
+    : isIgnoredByRootGitignore(cwd, ".task/");
   checks.push(
     taskIgnored
-      ? makeCheck("task-ignore", "任务目录", STATUS.pass, "已忽略 completed 归档，进行中任务可提交。")
+      ? makeCheck(
+          "task-ignore",
+          "任务目录",
+          STATUS.pass,
+          syncActiveTasks
+            ? "已忽略 completed 归档，进行中任务可提交。"
+            : "任务同步已关闭，整个 .task/ 保留在本地。",
+        )
       : makeCheck(
           "task-ignore",
           "任务目录",
           STATUS.warning,
-          "任务忽略规则未对齐：应仅忽略 completed 归档。",
-          "将整目录 .task/ 规则替换为 .task/completed/ 与 .task/*/completed/，或重新运行 flow2spec init。",
+          syncActiveTasks
+            ? "任务忽略规则未对齐：应仅忽略 completed 归档。"
+            : "任务同步已关闭，但整个 .task/ 未被忽略。",
+          syncActiveTasks
+            ? "将整目录 .task/ 规则替换为 .task/completed/ 与 .task/*/completed/，或重新运行 flow2spec init。"
+            : "在根 .gitignore 中加入 .task/，或重新运行 flow2spec init。",
+          { syncActiveTasks },
         ),
   );
 

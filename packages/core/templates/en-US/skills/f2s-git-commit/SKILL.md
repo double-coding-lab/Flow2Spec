@@ -49,6 +49,12 @@ Scan all changed file contents. If any file contains conflict markers `<<<<<<<`,
 Please resolve the conflict before committing.
 ```
 
+**Task-file sync and security check (only when pending files include `.task/**`)**:
+
+1. Read `collaboration.syncActiveTasks` from `flow2spec.config.json` (default `true`). If it is `false` but `.task/**` changes still appear, the root `.gitignore` is not taking effect; stop and ask the user to fix the ignore rules. Do not commit task files.
+2. Scan the `.task/**` files to be committed (especially `user-todos.md` / `context.md` / `todo.json` / `kb-delta.json`) for sensitive data: passwords, tokens, secrets, API keys, private keys, database connection strings, and internal addresses. On a hit, stop, list the file and line, and ask the user to remove it or replace it with a placeholder. Do not commit.
+3. When the check passes, commit `.task/**` together with the code; also commit the deletion diff produced by archiving a task. Mention which task files were synced in the closing note.
+
 ### Step 2: Knowledge-Base Coverage Check (Required by Default; Skipped for Quick Commit)
 
 If in **quick commit mode**, skip this step and mention in the Step 5 closing note that "the knowledge-base coverage check was skipped according to quick commit mode."
@@ -65,6 +71,7 @@ If **every** pending file collected in Step 1 matches one of these patterns, ski
 - `docs/**` / `docs/en/**`
 - `README*.md` / `LICENSE` / `CHANGELOG*`
 - `.claude/**` / `.cursor/**` / `.codex/**` (agent config roots; distributed by `flow2spec init` and unrelated to business capability coverage)
+- `.task/**` (personal task working state; whether it travels with the code is controlled by `collaboration.syncActiveTasks`)
 - `presentations/**` / `assets/**` / other pure static resources
 
 **Any** file falling under `src/` / `lib/` / `cli.js` / `templates/` / business code directories disables this shortcut; continue to the coverage check.
@@ -222,6 +229,9 @@ git commit -m "<final full commit message from Step 3>"
 
 [If skip rule B matched: recent sync within 30 min]
 🔄 Skipped coverage check because <skill name> ran within the last 30 min (.Knowledge/.last-sync.json).
+
+[If this commit includes .task/ files]
+📌 Synced <N> in-progress task file(s). On another computer, pull and resume with the same developerId resolution; never write credentials into task files.
 ```
 
 ## Constraints
@@ -235,6 +245,7 @@ git commit -m "<final full commit message from Step 3>"
 - **`git commit`**: a separate user reply of "confirm" is **not required**; however, it is **forbidden** to commit without showing the proposed first line in the same reply first.
 - The commit-message **first line** must follow the **emoji + type** format in Step 3 (keep a user-provided compliant line as-is).
 - If merge-conflict markers exist, stop and do not continue.
+- Whether `.task/**` enters the commit is controlled by `collaboration.syncActiveTasks`; when it is `false`, do not commit `.task/`. The sensitive-data scan is mandatory before committing task files.
 
 ## Completion Self-Check
 
@@ -247,5 +258,6 @@ git commit -m "<final full commit message from Step 3>"
 7. Does the commit-message **first line** match `<emoji> <type>[(scope)]: <summary>`, with emoji and type consistent with the table? Exceptions such as merge revert must be explained when shown.
 8. If pre-commit failed, was the hook bypassed? Must be no.
 9. If Step 2 chose B, does the closing note include an uncovered-knowledge reminder?
+10. If pending files include `.task/**`, was `syncActiveTasks` checked, was the sensitive-data scan completed, and does the closing note list the synced task files?
 10. If Step 2 chose A, does the flow continue after the user records knowledge or triggers again (**without** requiring a separate confirmation just to continue commit)?
 11. If this flow ever needed `git pull`: was explicit confirmation for **pull** obtained before running it? Must be yes; if not involved, mark N/A.

@@ -50,7 +50,9 @@
 
 ### Git 与跨电脑续作
 
-`.gitignore` 使用 `.task/completed/` 与 `.task/*/completed/`，仅忽略两种布局的已完成归档。进行中的 `active/`、`todo.json` 与任务上下文可随代码提交、推送，在另一台电脑拉取后续作；两端应保持相同 `collaboration.developerId`（或相同的 Git 身份解析结果）。`init` 会将旧的整目录 `.task/` 忽略规则迁为上述两条规则。
+`collaboration.syncActiveTasks=true`（默认）时，`.gitignore` 使用 `.task/completed/` 与 `.task/*/completed/`，仅忽略两种布局的已完成归档；进行中的 `active/`、`todo.json` 与任务上下文可随代码提交、推送，在另一台电脑拉取后续作。`false` 时整个 `.task/` 留在本地。`init` 会按开关维护 `.gitignore`，并迁移旧的整目录 `.task/` 规则。
+
+跨机续作要求两端解析出相同 `developerId`；共享仓库中推荐两端使用相同 `git config user.email`，不要把个人 id 写进受跟踪的 `flow2spec.config.json`。`flow2spec doctor` 会显示解析来源与 `TASK_ROOT`。提交前必须检查 `user-todos.md` / `context.md`，不得写入密码、token、私钥、数据库连接串或内网地址；归档已提交任务时，把 Git 显示的删除一并提交。
 
 ### 3.1 `user-todos.md` 与 `acceptance.md`：用户侧两份文件，职责分离
 

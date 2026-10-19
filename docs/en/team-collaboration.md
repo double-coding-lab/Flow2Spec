@@ -4,8 +4,10 @@
 
 Flow2Spec isolates task state by developer. Active tasks can travel with the code through Git for continuation on another computer, while confirmed team knowledge lives in `.Knowledge/`.
 
-- `.task/` holds personal working state. Active tasks and `todo.json` can be committed; completed archives are ignored.
+- `.task/` holds personal working state. With `collaboration.syncActiveTasks=true` (default), active tasks and `todo.json` can be committed while completed archives are ignored; with `false`, the whole directory stays local.
 - `.Knowledge/` is team knowledge and is reviewed, committed, and pulled with the code.
+
+Cross-computer continuation requires both machines to resolve the same `developerId`. In a shared repository, prefer the same `git config user.email` on both machines instead of putting a personal id into the tracked `flow2spec.config.json`; an explicit `collaboration.developerId` is appropriate for a single-developer repository. `flow2spec doctor` prints the resolved source and `TASK_ROOT`.
 
 `developerId`, `kb-delta.json`, and topic revisions make this boundary executable.
 
@@ -179,10 +181,10 @@ Step 4 cannot be replaced by concatenating text. The conflict exists to force a 
 
 ## 6. Team conventions worth agreeing on
 
-- Give each developer a stable, readable `collaboration.developerId`, especially on shared machines.
+- Use the same Git identity on both machines (preferably the same `git config user.email`). Do not put a personal `developerId` into the tracked `flow2spec.config.json` in a shared repository; an explicit value is appropriate for a single-developer repository.
 - Pull before starting; keep a knowledge change and its implementation in the same PR or in traceable commits.
 - Keep topics focused. Oversized topics enlarge both the routing surface and the revision conflict surface.
-- Ignore `.task/completed/` and `.task/*/completed/`; active tasks can be committed, while `todo.json` remains a personal continuation index.
+- With `collaboration.syncActiveTasks=true`, ignore `.task/completed/` and `.task/*/completed/`; active tasks can be committed, while `todo.json` remains a personal continuation index. With `false`, the whole `.task/` stays local.
 - Prefer delta-producing `f2s-kb-*` workflows for topic changes. Direct edits bypass revision preflight.
 - Review the `.Knowledge/` diff before merging. “Mergeable” means structurally safe, not necessarily correct business wording.
 - Keep the team on one Flow2Spec version so CLI schemas and templates agree.
@@ -211,7 +213,11 @@ Shared workspaces, build machines, and devcontainers can host multiple identitie
 
 ### Does switching computers restore active tasks?
 
-Commit and push the active task and `todo.json`, then pull them on the other computer. Keep the same `collaboration.developerId` or Git identity resolution so the Agent resumes from the same `TASK_ROOT`.
+Commit and push the active task and `todo.json`, then pull them on the other computer (requires `collaboration.syncActiveTasks=true`). Make sure both machines resolve the same Git identity, preferably the same `git config user.email`; the Agent then resumes from the same `TASK_ROOT`. `flow2spec doctor` shows the resolved source.
+
+### How do I keep task files out of Git?
+
+Set `collaboration.syncActiveTasks` to `false`. `flow2spec init` restores the blanket `.task/` ignore rule, and task state stays on the local machine.
 
 ### Does `collaboration.enabled: false` disable knowledge collaboration?
 
