@@ -24,14 +24,14 @@ See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 | `.Knowledge/manifest-routing.json` | **L0** Machine-readable routing skeleton (task/topic/`topicDependencies`/`topicMetadata`) |
 | `.Knowledge/matchers/*.json` | **L1** Keyword fragments (`id` plus `includeAny`/`includeAll` qualifiers and `excludeAny`/`excludeAll` vetoes); **match** reads one shard via `matcherPath` |
 | `.Knowledge/migration-report.md` | Migration comparison table and deletion path list written by the historical `f2s-kb-migrate` skill (removed from the package; existing files may be kept) |
-| `.task/` | Local change-tracking state, ignored by Git by default. In collaboration mode it has an extra `<developerId>/` layer; see “The two `.task/` layouts” below. It is created only when `changeTracking.*` is `true` or `f2s-req-plan` is explicitly invoked. |
+| `.task/` | Change-tracking task state. With `collaboration.syncActiveTasks=true` (default), only `.task/completed/` and `.task/*/completed/` are ignored, so in-progress tasks can travel through Git; with `false`, the whole directory stays local. In collaboration mode it has an extra `<developerId>/` layer; see “The two `.task/` layouts” below. It is created only when `changeTracking.*` is `true` or `f2s-req-plan` is explicitly invoked. |
 | `Config Root/rules/` | Rule files (Cursor `.mdc`, Claude `.md`) |
 | `Config Root/skills/` | Skill definitions (`SKILL.md`) |
 | `Config Root/template/` | (Deprecated) No longer written to; historical directories may be cleaned up |
 | `.codex/AGENTS.md` | Codex unified entry point and loading instructions |
 | `.dsh/AGENTS.md` | DeepSeek Harness directory pointer; the complete project entry remains root `AGENTS.md` |
 | `.dsh/topics/` | Long-form rule mirrors loaded on demand by DeepSeek Harness |
-| `flow2spec.config.json` | Project root configuration, controls `subAgent`, `switchAgentVerification`, `changeTracking` (nested object with `feat` / `fix` / `implement` sub-items) |
+| `flow2spec.config.json` | Project root configuration, controls `subAgent`, `switchAgentVerification`, `changeTracking` (nested object with `feat` / `fix` / `implement` sub-items), and `collaboration.syncActiveTasks` |
 
 > See [Usage Guide Section 1](./usage-guide.md) for multi-platform references and path tables (detail maintained in a single table); **the authoritative source remains `Read(flow2spec.config.json)`**.
 
@@ -43,7 +43,7 @@ See [architecture.md §1](./architecture.md) for Memory Coding four rings.
 2. `f2s-kb-build` reads from `.Knowledge/stock-docs` and updates `.Knowledge/topics`, `.Knowledge/index.md`, `.Knowledge/manifest-routing.json`, `.Knowledge/matchers/*.json`.
 3. Implementation tasks uniformly read from `.Knowledge/req-docs/*.md`.
 4. `manifest-routing.json` and `matchers/*.json` are maintained by `f2s-*` skill workflows; `.Knowledge/manifest-matchers.json` is no longer used (`flow2spec init` will delete legacy files).
-5. `.task/` and `.Knowledge/update-check.json` are local runtime state and should not be committed by default; `flow2spec init` non-destructively adds the corresponding `.gitignore` entries. Task progress is a personal working draft; the knowledge base is the shared team record.
+5. `.task/` is task runtime state whose Git boundary is controlled by `collaboration.syncActiveTasks`: `true` (default) ignores only completed archives and allows in-progress tasks to travel with the code; `false` keeps the whole directory local. `flow2spec init` maintains the corresponding `.gitignore` entries non-destructively. Task progress is a personal working draft; the knowledge base is the shared team record.
 
 ---
 
@@ -58,6 +58,8 @@ The layout depends on the resolved `collaboration` settings in `flow2spec.config
 
 Both layouts use the same child-directory convention: active tasks use the task name; archived tasks use **`<YYYYMMDD>-<task-name>`**.
 
+`syncActiveTasks` does not change `TASK_ROOT` itself: when `true`, `active/`, `todo.json`, and `kb-delta.json` can be committed and `completed/` is ignored; when `false`, the whole `.task/` stays local. Cross-computer continuation also requires both machines to resolve the same `developerId` (preferably the same `git config user.email`).
+
 ### How developerId is resolved
 
 Flow2Spec takes the first usable value in this order:
@@ -71,7 +73,7 @@ For Git-derived identities, a non-ASCII value becomes a stable `dev-<first 8 cha
 
 ### Why isolate local state by developer
 
-The extra layer covers shared build machines, devcontainers, and shared workspaces. It also gives the Agent a stable `TASK_ROOT` boundary: continuation logic must not scan another developer's unfinished tasks. `developerId` is a local path identity, not a remote account or permission system.
+The extra layer covers shared build machines, devcontainers, and shared workspaces. It also gives the Agent a stable `TASK_ROOT` boundary: continuation logic must not scan another developer's unfinished tasks. For cross-computer continuation, it makes the path a function of the resolved identity rather than local directory state. `developerId` is a local path identity, not a remote account or permission system.
 
 ### Migrating from the legacy layout
 

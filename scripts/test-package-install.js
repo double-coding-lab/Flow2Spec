@@ -25,11 +25,12 @@ const tarballs = fs.readdirSync(tempDir).filter((file) => file.endsWith(".tgz"))
 assert.strictEqual(tarballs.length, 2, "expected Core and CLI tarballs");
 const cliTarball = tarballs.find((file) => /^double-coding-flow2spec-\d/.test(file));
 assert.ok(cliTarball, "expected CLI tarball");
-const packedReadme = run("tar", [
-  "-xOf",
-  path.join(tempDir, cliTarball),
-  "package/README.md",
-]);
+const tarArgs = ["-xOf", path.join(tempDir, cliTarball), "package/README.md"];
+if (process.platform === "win32") {
+  // GNU tar interprets "D:" in an absolute path as a remote host without this.
+  tarArgs.unshift("--force-local");
+}
+const packedReadme = run("tar", tarArgs);
 assert.strictEqual(
   packedReadme,
   fs.readFileSync(path.resolve(__dirname, "..", "README.md"), "utf8"),

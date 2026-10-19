@@ -82,6 +82,22 @@ TASK_ROOT/                             ← `.task` 或 `.task/<developerId>`
 
 **从单人布局迁移**：若磁盘仍有根级 `.task/active/` 与 `.task/todo.json`，而当前已解析出非 legacy 的 `TASK_ROOT=.task/<id>`，可在用户确认后将旧 `active/*` 与条目迁入新根（一次性）；未确认前 **不要** 自动挪动他人可能共用的根目录。
 
+## Git 与跨电脑续作
+
+`collaboration.syncActiveTasks` 控制进行中任务是否随 Git 同步（默认 `true`）：
+
+- `true`：`.gitignore` 仅忽略 `.task/completed/` 与 `.task/*/completed/`；`active/`、`todo.json`、`kb-delta.json` 可与代码一起提交。
+- `false`：整个 `.task/` 留在本地；`flow2spec init` 会写回整目录忽略规则。
+
+跨电脑续作的前提：
+
+1. 两端解析出**相同 `developerId`**（推荐两端设置相同 `git config user.email`；`flow2spec doctor` 会显示当前来源与 `TASK_ROOT`）。
+2. 提交时把 `TASK_ROOT/active/**`、`todo.json` 与对应代码放在同一组提交/分支；只提交 checklist 而代码未推送，另一台机器无法继续实现。
+3. **提交前必须检查敏感信息**：`user-todos.md` / `context.md` 不得写入密码、token、私钥、数据库连接串、内网地址；只写“需要做什么”，值由用户在本地提供。
+4. 归档时 `active/` 会移入 `completed/`；若该任务此前已提交，必须把 Git 显示的删除一并提交，避免另一台机器继续看到过期任务。
+
+`syncActiveTasks=false` 时不要执行上述提交；任务现场只在本机续作。
+
 ## todo.json 结构
 
 ```json
@@ -207,6 +223,7 @@ TASK_ROOT/                             ← `.task` 或 `.task/<developerId>`
 2. **执行中**：每出现一类新的用户代办，**当次**追加（推荐按日期分二级标题 `## YYYY-MM-DD`，下列 `- [ ]` 可勾选项或步骤编号）。
 3. **与 `task.md` 分工**：`task.md` 管 Agent 侧步骤 checkbox；`user-todos.md` 管用户侧待办；**勿**把「仅用户可执行」的长操作说明只写在 `task.md` 步骤正文代替本文件。
 4. **续作**：加载任务时 `Read` 本文件，向用户展示仍未勾选的 `- [ ]` 项（若有）。
+5. **禁止写入凭据**：密码、token、私钥、数据库连接串、内网地址等只写“需要用户提供/执行”，不要把值落盘；任务文件可能随 Git 提交。
 
 **示例结构**：
 

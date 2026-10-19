@@ -21,9 +21,11 @@ const DEFAULTS = {
   },
   // 多人协作：进度按 developerId 隔离到 .task/<id>/；缺省 enabled
   // developerId 解析：config → git → legacy 单根 .task/（见 lib/developerId.js）
+  // syncActiveTasks：true 时进行中任务可随 Git 同步；false 时整个 .task/ 留在本地
   collaboration: {
     enabled: true,
     developerId: "",
+    syncActiveTasks: true,
   },
 };
 
@@ -87,6 +89,13 @@ const CONFIG_FIELDS = [
     default: true,
     question:
       "启用多人协作进度隔离（.task/<developerId>/；关闭则始终用单人 .task/ 根路径）？",
+  },
+  {
+    key: "collaboration.syncActiveTasks",
+    type: "boolean",
+    default: true,
+    question:
+      "允许进行中任务随 Git 同步以跨电脑续作？（默认 Y；关闭则整个 .task/ 留在本地）",
   },
 ];
 
@@ -196,6 +205,10 @@ function loadFlow2specConfig(cwd) {
       out.collaboration = {
         enabled: normalizeBool(collab.enabled, DEFAULTS.collaboration.enabled),
         developerId: idRaw,
+        syncActiveTasks: normalizeBool(
+          collab.syncActiveTasks,
+          DEFAULTS.collaboration.syncActiveTasks,
+        ),
       };
     }
   }

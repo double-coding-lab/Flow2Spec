@@ -82,6 +82,22 @@ TASK_ROOT/                             <- `.task` or `.task/<developerId>`
 
 **Migration from single-root**: if root `.task/active/` still exists while `TASK_ROOT=.task/<id>`, move only after user confirmation.
 
+## Git and cross-computer continuation
+
+`collaboration.syncActiveTasks` controls whether in-progress tasks travel with Git (default `true`):
+
+- `true`: `.gitignore` ignores only `.task/completed/` and `.task/*/completed/`; `active/`, `todo.json`, and `kb-delta.json` can be committed with the code.
+- `false`: the whole `.task/` stays local; `flow2spec init` writes the blanket ignore rule.
+
+Prerequisites for continuing on another computer:
+
+1. Both machines must resolve the **same `developerId`** (preferably set the same `git config user.email`; `flow2spec doctor` shows the current source and `TASK_ROOT`).
+2. Commit `TASK_ROOT/active/**`, `todo.json`, and the corresponding code in the same commit/branch. A checklist without the pushed code cannot be resumed.
+3. **Scan for sensitive data before committing**: `user-todos.md` / `context.md` must not contain passwords, tokens, private keys, database connection strings, or internal addresses. Describe *what* the user must do; keep the values local.
+4. Archiving moves `active/` into `completed/`. If the task was previously committed, commit the deletion Git reports so another machine does not keep seeing a stale active task.
+
+When `syncActiveTasks=false`, do not commit any of the above; the task state stays local.
+
 ## todo.json Structure
 
 ```json
@@ -205,6 +221,7 @@ At the start of a new session, resolve **`TASK_ROOT` first**; if `TASK_ROOT/todo
 2. **During execution**: each time a new category of user todo appears, append it **in that turn** (recommended: second-level heading by date `## YYYY-MM-DD`, followed by `- [ ]` checklist items or step numbers).
 3. **Division from `task.md`**: `task.md` tracks Agent-side step checkboxes; `user-todos.md` tracks user-side pending items. **Do not** write long "user-only" operation instructions only in `task.md` as a substitute for this file.
 4. **Continuation**: when loading a task, `Read` this file and show the user any `- [ ]` items that remain unchecked.
+5. **Never write credentials**: describe what the user must provide or execute; do not persist passwords, tokens, private keys, database connection strings, or internal addresses. Task files can travel through Git.
 
 **Example structure**:
 

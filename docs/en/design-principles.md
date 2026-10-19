@@ -157,10 +157,12 @@ Old
   .task/ -> Git -> everyone shares one todo.json
 
 Current
-  .task/alice/ -> Alice resumes locally
+  .task/alice/ -> Alice resumes locally; with syncActiveTasks=true, active/todo can travel through Git
   .task/bob/   -> Bob resumes locally
   .Knowledge/  -> Git -> shared team facts
 ```
+
+Cross-computer continuation does not return to a single shared `todo.json`: the `developerId` partition remains, only in-progress tasks and `todo.json` can be synced, `completed/` stays local, and both machines must resolve the same `developerId`. The behavior is controlled by `collaboration.syncActiveTasks` (default on; it can be turned off for local-only state).
 
 The current developer's `TASK_ROOT` owns progress. Code, formal documents, and `.Knowledge/` own the delivered capability. `developerId` remains useful on shared machines and as an Agent read boundary; it is not a remote identity or authorization system.
 

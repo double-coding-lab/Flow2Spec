@@ -62,11 +62,11 @@ Flow2Spec does not add documentation for its own sake. It keeps a small, machine
 | Topic shards | Stores project facts such as APIs, limits, locks, data rules, and workflows. | `.Knowledge/topics/*.md` |
 | Agent entrypoints | Installs rules and skills for the selected AI coding clients. | client configuration roots, `.dsh/`, `AGENTS.md` |
 | Skill workflows | Clarifies requirements, writes specs, implements, fixes, syncs knowledge, and commits. | `f2s-*` skills |
-| Team collaboration | Keeps each developer's task state local while merging reviewed knowledge through structured deltas and topic revisions. | `.task/<developerId>/`, `.Knowledge/` |
+| Team collaboration | In-progress tasks can travel with the code for continuation on another computer, while completed archives stay local; reviewed knowledge is merged through structured deltas and topic revisions. | `.task/<developerId>/`, `.Knowledge/` |
 
 ## Built for shared repositories
 
-Flow2Spec separates collaboration state by ownership. Checklists, session context, and user todos stay under each developer's local `TASK_ROOT` and do not enter Git. Confirmed project knowledge remains shared in `.Knowledge/`.
+Flow2Spec separates collaboration state by ownership. Checklists, session context, and user todos live under each developer's `TASK_ROOT`; with `collaboration.syncActiveTasks=true` (the default), in-progress tasks can be committed with the code while `completed/` archives stay local. Confirmed project knowledge remains shared in `.Knowledge/`.
 
 Knowledge-producing skills write a structured `kb-delta.json` instead of editing topic files directly. Before apply, the CLI compares the delta's `baseRevisions` with the topic revisions on disk. Different topics can merge independently; concurrent changes to the same topic stop for a semantic review after the latest branch state is pulled.
 

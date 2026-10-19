@@ -371,7 +371,7 @@ init 会:
      传 --reset-knowledge 时才会强制用模板覆盖 .Knowledge 中模板承载部分。
   4. 在各 agent 配置根写入对应的 rules、skills、入口和 hooks（若该客户端支持）；具体落盘方式以客户端适配器为准。
   5. 每次 init 将当前 locale 包模板 knowledge/index.md 复制到 .Knowledge/template/index.template.md，供 f2s-kb-upgrade 技能与 .Knowledge/index.md 对照；不自动改写 index.md。（「知识库升级」指 f2s-kb-upgrade 技能，init 本身不是升级命令。）
-  6. 维护 .gitignore：仅忽略 .task/completed/、.task/*/completed/ 与 .Knowledge/update-check.json，进行中任务可提交。
+  6. 维护 .gitignore：collaboration.syncActiveTasks=true（默认）时仅忽略 .task/completed/、.task/*/completed/，进行中任务可提交；false 时忽略整个 .task/。同时忽略 .Knowledge/update-check.json。
   7. 规则与技能在各 agent 配置根加载；其他模版类文件在 .Knowledge/template/ 等目录。
 
 更多说明见 README.md 或 docs/使用说明.md
@@ -994,10 +994,15 @@ if (sub === "init") {
           ? `  - .Knowledge/template/index.template.md：未复制（${indexSnapshot?.reason || "skip"}）`
           : `  - .Knowledge/template/index.template.md：已从包内 templates/${locale}/knowledge/index.md 复制（与 .Knowledge/index.md 对照见 f2s-kb-upgrade 技能）`;
       const pc = projectConfig || {};
-      const configLine = `  - ${CONFIG_FILENAME}：locale=${pc.locale || locale}, subAgent=${Boolean(pc.subAgent)}, switchAgentVerification=${Boolean(pc.switchAgentVerification)}`;
-      const gitignoreLine = gitignoreResult?.changed
-        ? `  - .gitignore：已补充 ${gitignoreResult.added.join(", ")}`
-        : "  - .gitignore：Flow2Spec 本地态忽略项已存在";
+      const configLine = `  - ${CONFIG_FILENAME}：locale=${pc.locale || locale}, subAgent=${Boolean(pc.subAgent)}, switchAgentVerification=${Boolean(pc.switchAgentVerification)}, syncActiveTasks=${pc.collaboration?.syncActiveTasks !== false}`;
+      const gi = gitignoreResult || {};
+      const giParts = [];
+      if (gi.added?.length) giParts.push(`补充 ${gi.added.join(", ")}`);
+      if (gi.removed?.length) giParts.push(`移除 ${gi.removed.join(", ")}`);
+      const giMode = gi.mode === "local" ? "任务同步关闭" : "任务同步开启";
+      const gitignoreLine = gi.changed
+        ? `  - .gitignore：${giParts.join("；") || "已更新"}（${giMode}）`
+        : `  - .gitignore：${giMode}，忽略项已是最新`;
       console.log(`
 ✓ Flow2Spec init 完成
 ${knowledgeLine}

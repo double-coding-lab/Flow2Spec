@@ -19,6 +19,7 @@ const corePkg = require("../packages/core/package.json");
       },
     });
     assert.strictEqual(first.gitignoreResult.changed, true);
+    assert.strictEqual(first.gitignoreResult.mode, "sync");
     assert.deepStrictEqual(first.gitignoreResult.added, [
       ".task/completed/",
       ".task/*/completed/",
@@ -71,8 +72,8 @@ const corePkg = require("../packages/core/package.json");
       [".task/alice/completed/example/task.md", true],
       [".Knowledge/update-check.json", true],
     ];
-    const checkIgnores = () => {
-      for (const [file, ignored] of taskPaths) {
+    const checkIgnores = (paths = taskPaths) => {
+      for (const [file, ignored] of paths) {
         const result = spawnSync("git", ["check-ignore", "--no-index", "-q", file], { cwd: tmpRoot });
         assert.strictEqual(result.status, ignored ? 0 : 1, file);
       }
@@ -91,6 +92,34 @@ const corePkg = require("../packages/core/package.json");
         assert.strictEqual(stable.gitignoreResult.changed, false);
       }
     }
+
+    // Switch to local-only mode: the whole .task/ stays ignored.
+    fs.writeFileSync(gitignorePath, afterFirst, "utf8");
+    const local = await runInit(tmpRoot, ["cursor"], {
+      configValues: { locale: "zh-CN", "collaboration.syncActiveTasks": false },
+    });
+    assert.strictEqual(local.gitignoreResult.changed, true);
+    assert.strictEqual(local.gitignoreResult.mode, "local");
+    assert(local.gitignoreResult.added.includes(".task/"));
+    assert(local.gitignoreResult.removed.includes(".task/completed/"));
+    assert(local.gitignoreResult.removed.includes(".task/*/completed/"));
+    const afterLocal = fs.readFileSync(gitignorePath, "utf8");
+    assert(afterLocal.includes(".task/"));
+    assert(!afterLocal.includes(".task/completed/"));
+    const localPaths = taskPaths.map(([file]) => [file, true]);
+    checkIgnores(localPaths);
+    const stableLocal = await runInit(tmpRoot, ["cursor"], {
+      configValues: { locale: "zh-CN", "collaboration.syncActiveTasks": false },
+    });
+    assert.strictEqual(stableLocal.gitignoreResult.changed, false);
+
+    // Switch back to sync mode: narrow rules return, blanket rule is removed.
+    const backToSync = await runInit(tmpRoot, ["cursor"], {
+      configValues: { locale: "zh-CN", "collaboration.syncActiveTasks": true },
+    });
+    assert.strictEqual(backToSync.gitignoreResult.mode, "sync");
+    assert(backToSync.gitignoreResult.removed.includes(".task/"));
+    checkIgnores();
 
     console.log("init gitignore tests passed");
   } finally {

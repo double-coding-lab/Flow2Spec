@@ -49,6 +49,12 @@ git diff HEAD
 请先解决冲突后再提交。
 ```
 
+**任务文件同步与安全检查（仅当 pending 含 `.task/**`）**：
+
+1. 读取 `flow2spec.config.json` 的 `collaboration.syncActiveTasks`（缺省 `true`）。若为 `false` 却仍出现 `.task/**` 变更，说明根 `.gitignore` 未生效；先停止提交并提示用户修正忽略规则，不要提交任务文件。
+2. 对将提交的 `.task/**` 文件（重点 `user-todos.md` / `context.md` / `todo.json` / `kb-delta.json`）做敏感信息扫描：密码、token、secret、API key、私钥、数据库连接串、内网地址。命中即停止，列出文件与行号，要求用户移除或改为占位；不得直接提交。
+3. 若检查通过，`.task/**` 与代码一起提交；归档任务产生的删除 diff 也要一并提交。收尾提示中说明同步了哪些任务文件。
+
 ### 步骤 2：知识库覆盖检查（默认必须；三种情况可跳过）
 
 若处于**快捷提交模式**，本步骤直接跳过，并在步骤 5 收尾提示中说明“已按快捷提交跳过知识库覆盖检查”。
@@ -65,6 +71,7 @@ git diff HEAD
 - `docs/**` / `docs/en/**`
 - `README*.md` / `LICENSE` / `CHANGELOG*`
 - `.claude/**` / `.cursor/**` / `.codex/**`（agent 配置根,由 flow2spec init 分发,与业务能力覆盖无关）
+- `.task/**`（个人任务过程状态；是否随代码同步由 `collaboration.syncActiveTasks` 决定）
 - `presentations/**` / `assets/**` / 其他纯静态资源
 
 **任一**文件落在 `src/` / `lib/` / `cli.js` / `templates/` / 业务代码目录时,本捷径**不生效**,继续走覆盖检查。
@@ -222,6 +229,9 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 
 [若命中跳过判定 B：近 30 分钟内已同步]
 🔄 近 30 分钟内已跑过 <skill 名>,已跳过覆盖检查（.Knowledge/.last-sync.json）。
+
+[若本次提交包含 .task/ 文件]
+📌 已同步 <N> 个进行中任务文件。另一台电脑拉取后，用相同 developerId 解析结果续作；凭据不得写入任务文件。
 ```
 
 ## 约束
@@ -235,6 +245,7 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 - **`git commit`**：**不要求**用户单独回复「确认」；但**禁止完全不展示**拟提交首行就执行 commit（须在当条回复中可见首行后再执行）。
 - 提交信息**首行**须符合步骤 3 的 **emoji + type** 格式（用户已合规给出时可保留）。
 - 存在 merge conflict 标记时必须终止，不得继续。
+- `.task/**` 是否进入提交由 `collaboration.syncActiveTasks` 决定；该开关为 `false` 时禁止提交 `.task/`。提交前必须完成敏感信息扫描。
 
 ## 完成后自检
 
@@ -247,5 +258,6 @@ git commit -m "<步骤 3 定稿的完整提交信息>"
 7. 提交信息**首行**是否为 `<emoji> <type>[(scope)]: <简述>` 且 emoji 与 type 与上表一致（合并 revert 等例外须在展示中说明）。
 8. 若 pre-commit 失败，是否跳过了 hook（必须为否）。
 9. 若步骤 2 选 B，收尾提示是否包含未补录提醒。
+10. 若 pending 含 `.task/**`，是否检查了 `syncActiveTasks`、完成敏感信息扫描，并在收尾提示中说明同步的任务文件？
 10. 若步骤 2 选 A，是否在用户补录或再次触发后继续流程（**不要求**为继续 commit 单独要确认）。
 11. 若本流程中曾需要 `git pull`：是否在执行前取得用户对 **pull** 的明确确认（必须为是）；未涉及 pull 则标 N/A。

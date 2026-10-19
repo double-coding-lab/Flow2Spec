@@ -1,7 +1,7 @@
 ---
 id: f2s-task
-revision: 1
-summary: "任务清单 .task 目录的创建、续作与归档规则"
+revision: 2
+summary: "任务清单 .task 目录的创建、续作、归档与跨机同步规则"
 primary: policy
 confidence: manual
 ---
@@ -51,9 +51,11 @@ TASK_ROOT/                       ← `.task` 或 `.task/<developerId>`
 
 ## Git 与跨电脑续作
 
-- `.gitignore` 使用 `.task/completed/` 与 `.task/*/completed/`，忽略单人及多人布局的已完成归档。
+- `collaboration.syncActiveTasks=true`（默认）：`.gitignore` 仅使用 `.task/completed/` 与 `.task/*/completed/`，进行中任务可随 Git 同步；`false` 时整个 `.task/` 留在本地。
 - `active/`、`todo.json` 与任务上下文可提交并推送；另一台电脑拉取后，使用相同 developerId 解析到原 TASK_ROOT 续作。
-- `init` 自动将旧的整目录 `.task/` 忽略规则迁为上述两条规则。
+- 跨机身份要求两端解析一致，推荐两端使用相同 `git config user.email`；`flow2spec doctor` 显示当前来源与 TASK_ROOT。
+- 提交前检查 `user-todos.md` / `context.md` 是否含凭据或内网信息；归档产生的删除 diff 与任务提交一并同步。
+- `init` 按 `syncActiveTasks` 维护 `.gitignore`，并迁移旧的整目录 `.task/` 规则。
 
 ## 跨会话续作
 

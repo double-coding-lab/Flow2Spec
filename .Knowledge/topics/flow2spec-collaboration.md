@@ -1,6 +1,6 @@
 ---
 id: flow2spec-collaboration
-revision: 2
+revision: 3
 summary: "任务按身份隔离与跨电脑续作、知识 delta 合入及 revision 冲突处理"
 dependsOn: [f2s-task]
 primary: feature
@@ -17,9 +17,10 @@ tags: [policy]
 
 ## 协作边界
 
-- `.task/<developerId>/` 保存个人 checklist、会话上下文与用户代办；进行中任务可随代码提交，completed 归档由 `.task/completed/` 与 `.task/*/completed/` 忽略；Agent 只读写当前 `TASK_ROOT`。
+- `.task/<developerId>/` 保存个人 checklist、会话上下文与用户代办；`collaboration.syncActiveTasks=true`（默认）时进行中任务可随代码提交，completed 归档由 `.task/completed/` 与 `.task/*/completed/` 忽略；`false` 时整个 `.task/` 留在本地；Agent 只读写当前 `TASK_ROOT`。
 - `.Knowledge/` 保存团队共享事实，随代码通过 Git / PR 评审。
 - `collaboration.enabled` 只控制任务根是否按 developerId 分层，不关闭知识库协作。
+- 跨机续作要求两端解析出相同 developerId；推荐两端使用相同 `git config user.email`，共享仓库不要往受跟踪的 `flow2spec.config.json` 写个人 id。
 
 ## 知识合入
 

@@ -270,7 +270,7 @@ flowchart TD
 
 图 3：任务分开，知识合流
 
-`.task/` 默认不进 Git，并按 `developerId` 分成不同的 `TASK_ROOT`。Alice 的 Agent 不会为了找续作任务去扫描 Bob 的目录。这里保存的是 checklist、会话上下文和用户代办，它们属于执行者自己的工作现场。
+`.task/` 默认只把 `completed/` 归档留在本地，进行中任务可按 `collaboration.syncActiveTasks` 随代码同步，用于同一开发者跨电脑续作；目录仍按 `developerId` 分成不同的 `TASK_ROOT`。Alice 的 Agent 不会为了找续作任务去扫描 Bob 的目录。这里保存的是 checklist、会话上下文和用户代办，它们属于执行者自己的工作现场。
 
 `.Knowledge/` 则必须全员共享。技能先把知识变更写成结构化 delta，里面带着读取时的 topic revision；真正写入前由 `flow2spec kb plan` 检查磁盘版本。两个人改不同 topic 可以各自推进，改到同一个 topic 时，后合入的一方必须拉取最新版本、重新理解语义，再更新 delta。
 
